@@ -6,5 +6,6 @@ const common = {};
 module.exports = common;
 
 Object.assign(
+  common,
   data // Data structures manipulations
 );
