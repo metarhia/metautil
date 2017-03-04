@@ -1,0 +1,37 @@
+{
+  "name": "metarhia-common",
+  "version": "0.0.1",
+  "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
+  "description": "Metarhia Common Library",
+  "license": "MIT",
+  "keywords": [
+    "metarhia",
+    "common",
+    "impress",
+    "jstp",
+    "globalstorege",
+    "metasync"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metarhia/Common"
+  },
+  "main": "./common.js",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "node tests/examples.js"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "3.x"
+  },
+  "jshintConfig": {
+    "esversion": 6,
+    "predef": [],
+    "node": true,
+    "indent": 2,
+    "maxcomplexity": 7
+  }
+}
