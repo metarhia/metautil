@@ -11,7 +11,8 @@ const submodules = [
   'units', // Units conversion
   'network', // Network utilities
   'id', // Kyes and identifiers
-  'sort' // Sort compare functions
+  'sort', // Sort compare functions
+  'cache' // Cache (enhanced Map)
 ];
 
 const requires = submodules
