@@ -1,7 +1,10 @@
 'use strict';
 
-const common = {};
-module.exports = common;
+const api = {};
+api.events = require('events');
+api.crypto = require('crypto');
+api.common = {};
+module.exports = api.common;
 
 const submodules = [
   'data', // Data structures manipulations
@@ -15,8 +18,7 @@ const submodules = [
   'cache' // Cache (enhanced Map)
 ];
 
-const requires = submodules
+submodules
   .map(path => './lib/' + path)
-  .map(require);
-
-Object.assign(common, ...requires);
+  .map(require)
+  .map(exports => exports(api));
