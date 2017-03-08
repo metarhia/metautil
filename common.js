@@ -1,6 +1,8 @@
 'use strict';
 
 const api = {};
+api.os = require('os');
+api.path = require('path');
 api.events = require('events');
 api.crypto = require('crypto');
 api.common = {};
