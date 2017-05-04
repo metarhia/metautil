@@ -17,7 +17,8 @@ const submodules = [
   'network', // Network utilities
   'id', // Kyes and identifiers
   'sort', // Sort compare functions
-  'cache' // Cache (enhanced Map)
+  'cache', // Cache (enhanced Map)
+  'functional' // Functional programming
 ];
 
 submodules
