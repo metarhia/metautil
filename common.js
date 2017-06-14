@@ -9,6 +9,7 @@ api.common = {};
 module.exports = api.common;
 
 const submodules = [
+  'array', // Arrays manipulations
   'data', // Data structures manipulations
   'strings', // Strings utilities
   'time', // Data and Time functions
