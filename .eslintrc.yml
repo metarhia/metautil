@@ -2,6 +2,8 @@ env:
   es6: true
   node: true
 extends: 'eslint:recommended'
+plugins:
+  - 'metarhia'
 rules:
   indent:
     - error
@@ -169,3 +171,5 @@ rules:
   template-curly-spacing:
     - error
     - never
+  metarhia/typeof-with-parentheses:
+    - error
