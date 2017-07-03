@@ -19,7 +19,7 @@
   "main": "./common.js",
   "readmeFilename": "README.md",
   "scripts": {
-    "test": "node tests/examples.js && tap test/*.js && npm run lint",
+    "test": "tap test/*.js && npm run lint",
     "code-coverage": "tap test/*.js --100",
     "code-coverage-report": "tap test/*.js --coverage-report=html",
     "lint": "eslint ."
