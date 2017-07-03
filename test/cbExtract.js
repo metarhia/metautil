@@ -21,6 +21,6 @@ tap.test('cbExctract without callback', (test) => {
   const args = [1, 2, 3];
   const wrappedCb = common.cbExtract(args);
   test.strictSame(args, expectedArgs);
-  test.strictSame(wrappedCb, common.falseness);
+  test.strictSame(wrappedCb, common.emptiness);
   test.end();
 });
