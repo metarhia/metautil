@@ -1,9 +1,7 @@
 env:
-  es6: true
   node: true
+  es6: true
 extends: 'eslint:recommended'
-plugins:
-  - 'metarhia'
 rules:
   indent:
     - error
@@ -12,7 +10,7 @@ rules:
       VariableDeclarator:
         var: 2
         let: 2
-        const: 3
+        const: 1
       MemberExpression: 1
   linebreak-style:
     - error
@@ -70,7 +68,7 @@ rules:
       ignoreUrls: true
   max-nested-callbacks:
     - error
-    - max: 7
+    - max: 5
   new-cap:
     - error
     - newIsCap: true
@@ -171,5 +169,3 @@ rules:
   template-curly-spacing:
     - error
     - never
-  metarhia/typeof-with-parentheses:
-    - error

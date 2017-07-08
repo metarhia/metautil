@@ -1,12 +1,5 @@
 'use strict';
 
-const api = {};
-api.os = require('os');
-api.path = require('path');
-api.events = require('events');
-api.crypto = require('crypto');
-api.common = {};
-module.exports = api.common;
 
 const submodules = [
   'array', // Arrays manipulations
@@ -20,9 +13,6 @@ const submodules = [
   'id', // Kyes and identifiers
   'sort', // Sort compare functions
   'cache', // Cache (enhanced Map)
-];
+].map(path => './lib/' + path).map(require);
 
-submodules
-  .map(path => './lib/' + path)
-  .map(require)
-  .map(exports => exports(api));
+module.exports = Object.assign({}, ...submodules);
