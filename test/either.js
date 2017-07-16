@@ -4,7 +4,7 @@ const tap = require('tap');
 const common = require('..');
 
 tap.test('either', (test) => {
-  const fnEither = common.either((x) => (x * 2));
+  const fnEither = common.either(x => x * 2);
 
   const res = fnEither(1, 2);
 

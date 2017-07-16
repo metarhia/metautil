@@ -1,6 +1,5 @@
 'use strict';
 
-
 const submodules = [
   'array', // Arrays manipulations
   'data', // Data structures manipulations
