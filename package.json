@@ -1,6 +1,6 @@
 {
   "name": "metarhia-common",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "description": "Metarhia Common Library",
   "license": "MIT",
@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "metaschema": "^0.0.3",
-    "eslint": "^4.1.1",
+    "eslint": "^4.3.0",
     "tap": "^10.7.0"
   }
 }
