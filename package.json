@@ -22,12 +22,14 @@
     "test": "eslint . && tap test/*.js",
     "code-coverage": "tap test/*.js --100",
     "code-coverage-report": "tap test/*.js --coverage-report=html",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "docs": "metaschema ./common.js"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "devDependencies": {
+    "metaschema": "^0.0.3",
     "eslint": "^4.1.1",
     "tap": "^10.7.0"
   }
