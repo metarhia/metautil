@@ -7,6 +7,7 @@ const submodules = [
   'time', // Data and Time functions
   'functional', // Functional programming
   'misc', // Miscellaneous tools
+  'events', // Events and emitter
   'units', // Units conversion
   'network', // Network utilities
   'id', // Kyes and identifiers
