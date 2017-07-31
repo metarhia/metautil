@@ -15,7 +15,6 @@ const submodules = [
   'id', // Kyes and identifiers
   'sort', // Sort compare functions
   'cache', // Cache (enhanced Map)
-  'require', // Require dependency functions
 ].map(path => './lib/' + path).map(require);
 
 module.exports = Object.assign({}, ...submodules);
