@@ -418,6 +418,20 @@ $ npm install metasync
 `common.cache()`
 - Returns: cache instance
 
+## Splits string by the first occurrence of separator
+`common.section`
+- `s` - String
+- `separator` - char or String
+- Example: rsection('All you need is JavaScript', 'is')
+- Returns: ['All you need ', ' JavaScript']
+
+## Splits string by the last occurrence of separator
+`commin.rsection`
+- `s` - String
+- `separator` - char or String
+- Example: rsection('All you need is JavaScript', 'a')
+- Returns: ['All you need is Jav', 'Script']
+
 ## Contributors
 
   - Timur Shemsedinov (marcusaurelius) <timur.shemsedinov@gmail.com>
