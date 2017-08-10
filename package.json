@@ -29,7 +29,7 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
-    "metaschema": "^0.0.3",
+    "metaschema": "^0.0.4",
     "eslint": "^4.3.0",
     "tap": "^10.7.0"
   }
