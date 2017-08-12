@@ -310,6 +310,13 @@ Returns: always undefined
 
 Returns: function, wrapped callback
 
+### Exctracts callback
+`common.cbUnsafe(callback, args)`
+- `callback` - is last argument
+- `args:array` - arguments
+
+Returns: function, callback
+
 ### Exctracts callback and wraps it with common.cb
 `common.cbExtract(args)
 callback is last argument, otherwise it's common.falseness, args
@@ -345,6 +352,12 @@ Example:
 - range from..to: sequence([81,,83]) = [81, 82, 83]
 - range from..count: sequence([81, [3]]) = [81, 82, 83]
 - range from..max-to: sequence([81, [-2]], 5) = [81, 82, 83]
+
+### Last array element
+`common.last(arr)`
+- `arr:array`
+
+Returns: element
 
 ### Generate random int in given range
 `common.random(min, max)`
@@ -501,18 +514,19 @@ Returns: object, cache instance
 - `s:string`
 - `separator:string` - or char
 
+Returns: `['All you need ', ' JavaScript']`
+
 Example: `rsection('All you need is JavaScript', 'is')`
 
-Returns: `['All you need ', ' JavaScript']`
 
 ### Splits string by the last occurrence of separator
 `common.rsection(s, separator)`
 - `s:string`
 - `separator:string` - or char
 
-Example: `rsection('All you need is JavaScript', 'a')`
-
 Returns: `['All you need is Jav', 'Script']`
+
+Example: `rsection('All you need is JavaScript', 'a')`
 
 ### Mixin for ES6 classes without overriding existing methods
 `common.mixin(target, source)`
@@ -532,6 +546,18 @@ Example: `common.forwardEvent(from, to, 'eventName');`
 Example: `common.forwardEvent(from, to, { eventName: 'newEventName' });`
 
 Example: `common.forwardEvent(from, to, ['eventName1', 'eventName2']);`
+
+### List method names
+`common.methods(iface)`
+- `iface:object` - to be introspected
+
+Returns: array of string, method names
+
+### List property names
+`common.properties(iface)`
+- `iface:object` - to be introspected
+
+Returns: array of string, property names
 
 ## Contributors
 
