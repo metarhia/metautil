@@ -304,25 +304,33 @@ Returns: always undefined
 - `empty` - incoming value to be ignored
 - `callback:function` - callback to be called with (null, null)
 
-### Wrap callback: call once, not null
-`common.cb(callback)`
-- `callback:function` (optional)
+### Wrap function: call once, not null
+`common.once(fn)`
+- `fn:function (optional)`
 
 Returns: function, wrapped callback
 
-### Exctracts callback
-`common.cbUnsafe(callback, args)`
-- `callback` - is last argument
+Hint: previous name: `common.cb` (deprecated)
+
+### Extract callback function
+It's unsafe: may return null, allow multiple calls
+`common.unsafeCallback(args)`
 - `args:array` - arguments
 
-Returns: function, callback
+Returns: function, callback or null
 
-### Exctracts callback and wraps it with common.cb
-`common.cbExtract(args)
-callback is last argument, otherwise it's common.falseness, args
+Hint: previous name: `common.cbUnsafe` (deprecated)
+
+Hint: another alias: `common.extractCallback` (deprecated)
+
+### Exctracts callback and make it safe
+Wrap collback with once and return common.emptiness if no callback
+`common.safeCallback(args)`
 - `args:array` - arguments
 
 Returns: function, wrapped callback
+
+Hint: previous name: `cbExtract` (deprecated)
 
 ### Override method: save old to `fn.inherited`
 `common.override(obj, fn, Hint)`
