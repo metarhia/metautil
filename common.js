@@ -1,6 +1,7 @@
 'use strict';
 
 const submodules = [
+  'utilities', // Common utilities
   'math', // Math common function
   'array', // Arrays manipulations
   'data', // Data structures manipulations
