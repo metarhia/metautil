@@ -82,3 +82,31 @@ tap.test('rsection multiple', (test) => {
   test.strictSame(result[1], 'Script');
   test.end();
 });
+
+tap.test('split', (test) => {
+  const s = 'a,b,c,d';
+  const result = common.split(s, ',', 2);
+  test.strictSame(result, ['a', 'b']);
+  test.end();
+});
+
+tap.test('split all', (test) => {
+  const s = 'a,b,c,d';
+  const result = common.split(s);
+  test.strictSame(result, ['a', 'b', 'c', 'd']);
+  test.end();
+});
+
+tap.test('rsplit', (test) => {
+  const s = 'a,b,c,d';
+  const result = common.rsplit(s, ',', 2);
+  test.strictSame(result, ['c', 'd']);
+  test.end();
+});
+
+tap.test('rsplit all', (test) => {
+  const s = 'a,b,c,d';
+  const result = common.rsplit(s);
+  test.strictSame(result, ['a', 'b', 'c', 'd']);
+  test.end();
+});

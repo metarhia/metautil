@@ -536,6 +536,33 @@ Returns: `['All you need is Jav', 'Script']`
 
 Example: `rsection('All you need is JavaScript', 'a')`
 
+### Splits string by multiple occurrence of separator
+`common.split(s, separator, limit)`
+- `s:string`
+- `separator:string (optional)` - default: ','
+- `limit:number (optional)` - max length of result array
+
+```js
+Example: split('a,b,c,d')
+Result: ['a', 'b', 'c', 'd']
+```
+
+```js
+Example: split('a,b,c,d', ',', 2)
+Result: ['a', 'b']
+```
+
+### Splits string by multiple occurrence of separator
+`common.rsplit(s, separator, limit)`
+- `s:string`
+- `separator:string (optional)` - default: ','
+- `limit:number (optional)` - max length of result array
+
+```js
+Example: split('a,b,c,d', ',', 2)
+Result: ['c', 'd']
+```
+
 ### Mixin for ES6 classes without overriding existing methods
 `common.mixin(target, source)`
 - `target` - mixin to target
