@@ -332,6 +332,20 @@ Returns: function, wrapped callback
 
 Hint: previous name: `cbExtract` (deprecated)
 
+### Exctracts callback and throw if no callback
+`common.requiredCallback(args)`
+- `args:array` - arguments
+
+Returns: function
+
+### Exctracts callback and make it safe
+`common.onceCallback(args)`
+Wrap collback with once()
+and return common.emptiness if no callback
+- `args:array` - arguments
+
+Returns: function
+
 ### Override method: save old to `fn.inherited`
 `common.override(obj, fn, Hint)`
 - `obj:object` - containing method to override
@@ -366,6 +380,12 @@ Example:
 - `arr:array`
 
 Returns: element
+
+### Make function raise-safe
+`common.safe(fn)`
+- `fn:function`
+
+Returns: function, wrapped with try/catch interception
 
 ### Generate random int in given range
 `common.random(min, max)`
@@ -550,6 +570,17 @@ Result: ['a', 'b', 'c', 'd']
 ```js
 Example: split('a,b,c,d', ',', 2)
 Result: ['a', 'b']
+```
+
+### Splits string by multiple occurrence of separator
+`common.rsplit(s, separator, limit)`
+- `s:string`
+- `separator:string (optional)` - default: ','
+- `limit:number (optional)` - max length of result array
+
+```js
+Example: split('a,b,c,d', ',', 2)
+Result: ['c', 'd']
 ```
 
 ### Splits string by multiple occurrence of separator
