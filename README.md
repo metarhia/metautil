@@ -66,7 +66,7 @@ Returns: value
 
 Returns: boolean
 
-### Distinct merge miltiple arrays
+### Distinct merge multiple arrays
 `common.merge(...args)`
 - `args:array of array`
 
