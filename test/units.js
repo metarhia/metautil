@@ -3,6 +3,22 @@
 const tap = require('tap');
 const common = require('..');
 
+tap.test('duration', (test) => {
+  const cases = [
+    [           '9s', 9000     ],
+    [           '7m', 420000   ],
+    [           '5h', 18000000 ],
+    [           '2d', 172800000],
+    ['1d 10h 7m 13s', 122833000],
+  ];
+  cases.forEach((testCase) => {
+    const [value, expected] = testCase;
+    const result = common.duration(value);
+    test.strictSame(result, expected);
+  });
+  test.end();
+});
+
 tap.test('bytesToSize', (test) => {
   const cases = [
     [                         0, '0'      ],
