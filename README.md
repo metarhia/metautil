@@ -194,6 +194,13 @@ Returns: string
 
 Returns: string
 
+### Partial apply
+`common.partial(fn, ...args)`
+- `fn:function`
+- `...args:array` - argumants
+
+Returns: function
+
 ### Function for mapping object fields
 `common.omap(mapFn, obj)`
 - `mapFn:funtion` - to appy to every field value
@@ -624,6 +631,11 @@ Returns: array of string, method names
 - `iface:object` - to be introspected
 
 Returns: array of string, property names
+
+### Generate file storage key
+`common.generateStorageKey()`
+
+Returns: Array of string, [folder1, folder2, code]
 
 ## Contributors
 
