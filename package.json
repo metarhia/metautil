@@ -29,8 +29,8 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
+    "eslint": "^4.10.0",
     "metaschema": "^0.0.5",
-    "eslint": "^4.9.0",
     "tap": "^10.7.2"
   }
 }
