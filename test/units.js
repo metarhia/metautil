@@ -5,10 +5,19 @@ const common = require('..');
 
 tap.test('duration', (test) => {
   const cases = [
+    [            500, 500      ],
+    [              0, 0        ],
     [           '9s', 9000     ],
     [           '7m', 420000   ],
     [           '5h', 18000000 ],
     [           '2d', 172800000],
+    [             '', 0        ],
+    [           null, 0        ],
+    [      undefined, 0        ],
+    [           '15', 0        ],
+    [          '10q', 0        ],
+    [       '2d 43s', 172843000],
+    ['5d 17h 52m 1s', 496321000],
     ['1d 10h 7m 13s', 122833000],
   ];
   cases.forEach((testCase) => {
