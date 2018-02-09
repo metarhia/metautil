@@ -30,3 +30,34 @@ tap.test('last empty', (test) => {
   test.strictSame(result, undefined);
   test.end();
 });
+
+tap.test('range', (test) => {
+  const rangeArray = common.range(1, 5);
+  test.strictSame(rangeArray, [1, 2, 3, 4, 5]);
+  test.end();
+});
+
+tap.test('sequence full', (test) => {
+  const sequence = common.sequence([80, 81, 82]);
+  test.strictSame(sequence, [80, 81, 82]);
+  test.end();
+});
+
+tap.test('sequence from..to', (test) => {
+  // eslint-disable-next-line no-sparse-arrays
+  const sequence = common.sequence([40,, 45]);
+  test.strictSame(sequence, [40, 41, 42, 43, 44, 45]);
+  test.end();
+});
+
+tap.test('sequence from..count', (test) => {
+  const sequence = common.sequence([40, [6]]);
+  test.strictSame(sequence, [40, 41, 42, 43, 44, 45]);
+  test.end();
+});
+
+tap.test('sequence from..max-to', (test) => {
+  const sequence = common.sequence([40, [-3]], 6);
+  test.strictSame(sequence, [40, 41, 42]);
+  test.end();
+});
