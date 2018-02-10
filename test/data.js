@@ -46,6 +46,18 @@ tap.test('setByPath non-object', (test) => {
   test.end();
 });
 
+tap.test('setByPath non-object first', (test) => {
+  const nonobj = 10;
+  test.assertNot(common.setByPath(nonobj, 'a.b.c', 42));
+  test.end();
+});
+
+tap.test('setByPath non-object last', (test) => {
+  const obj = { a: { b: 10 } };
+  test.assertNot(common.setByPath(obj, 'a.b.c', 42));
+  test.end();
+});
+
 tap.test('deleteByPath', (test) => {
   const obj = { a: { b: { c: 42 } } };
   test.assert(common.deleteByPath(obj, 'a.b.c'));
