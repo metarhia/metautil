@@ -18,6 +18,7 @@ const submodules = [
   'cache', // Cache (enhanced Map)
   'mp', // Metaprogramming
   'enum', // Enumerated type
+  'iterator', // Iterator
 ].map(path => './lib/' + path).map(require);
 
 module.exports = Object.assign({}, ...submodules);

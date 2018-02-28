@@ -13,7 +13,7 @@ const all = [
   'array', 'cache', 'callback', 'curry', 'curryN',
   'data', 'either', 'enum', 'events', 'id', 'math', 'mixin',
   'mp', 'network', 'omap', 'partial', 'replicate', 'restLeft',
-  'safe', 'sort', 'strings', 'time', 'units', 'zip', 'zipWith'
+  'safe', 'sort', 'strings', 'time', 'units', 'zip', 'zipWith', 'iterator'
 ];
 
 all.forEach(name => require('./' + name));
