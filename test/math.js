@@ -19,3 +19,10 @@ tap.test('random max only', (test) => {
   test.assert(num <= max);
   test.end();
 });
+
+tap.test('cryptoRandom', (test) => {
+  const num = common.cryptoRandom();
+  test.assert(num >= 0);
+  test.assert(num < 1);
+  test.end();
+});
