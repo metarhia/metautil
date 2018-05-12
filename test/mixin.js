@@ -1,8 +1,5 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
 class Parent {
   constructor() {
     this.property0 = 'from Parent.constructor';
@@ -34,9 +31,9 @@ class Child extends Parent {
   }
 }
 
-common.mixin(Child.prototype, Lazy.prototype);
+api.common.mixin(Child.prototype, Lazy.prototype);
 
-tap.test('multiple inheritance with mixin', (test) => {
+api.metatests.test('multiple inheritance with mixin', (test) => {
   const obj = new Child();
   obj.method1();
   obj.method2();

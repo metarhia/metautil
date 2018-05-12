@@ -1,9 +1,6 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
-tap.test('zip', (test) => {
+api.metatests.test('zip', (test) => {
   const data = [
     [1, 2, 3],
     ['one', 'two', 'three'],
@@ -14,13 +11,13 @@ tap.test('zip', (test) => {
     [2, 'two', 'два'],
     [3, 'three', 'три'],
   ];
-  const res = common.zip(...data);
+  const res = api.common.zip(...data);
   test.strictSame(res, expected);
   test.end();
 });
 
-tap.test('zip with no elements', (test) => {
-  const res = common.zip();
+api.metatests.test('zip with no elements', (test) => {
+  const res = api.common.zip();
   test.strictSame(res, []);
   test.end();
 });

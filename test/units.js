@@ -1,9 +1,6 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
-tap.test('duration', (test) => {
+api.metatests.test('duration', (test) => {
   const cases = [
     [            500, 500      ],
     [              0, 0        ],
@@ -22,13 +19,13 @@ tap.test('duration', (test) => {
   ];
   cases.forEach((testCase) => {
     const [value, expected] = testCase;
-    const result = common.duration(value);
+    const result = api.common.duration(value);
     test.strictSame(result, expected);
   });
   test.end();
 });
 
-tap.test('bytesToSize', (test) => {
+api.metatests.test('bytesToSize', (test) => {
   const cases = [
     [                         0, '0'      ],
     [                         1, '1'      ],
@@ -54,13 +51,13 @@ tap.test('bytesToSize', (test) => {
   ];
   cases.forEach((testCase) => {
     const [value, expected] = testCase;
-    const result = common.bytesToSize(value);
+    const result = api.common.bytesToSize(value);
     test.strictSame(result, expected);
   });
   test.end();
 });
 
-tap.test('sizeToBytes', (test) => {
+api.metatests.test('sizeToBytes', (test) => {
   const cases = [
     [       '',                       NaN ],
     [        0,                         0 ],
@@ -85,7 +82,7 @@ tap.test('sizeToBytes', (test) => {
   ];
   cases.forEach((testCase) => {
     const [value, expected] = testCase;
-    const result = common.sizeToBytes(value);
+    const result = api.common.sizeToBytes(value);
     test.strictSame(result, expected);
   });
   test.end();

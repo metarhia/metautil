@@ -1,24 +1,20 @@
 'use strict';
 
-const tap = require('tap');
-const events = require('events');
-const common = require('..');
-
-tap.test('emitter', (test) => {
-  const ee = common.emitter();
+api.metatests.test('emitter', (test) => {
+  const ee = api.common.emitter();
   ee.on('name', () => {
     test.end();
   });
   ee.emit('name');
 });
 
-tap.test('forward all events', (test) => {
+api.metatests.test('forward all events', (test) => {
   test.plan(3);
 
-  const sourceEmitter = common.emitter();
-  const targetEmitter = common.emitter();
+  const sourceEmitter = api.common.emitter();
+  const targetEmitter = api.common.emitter();
 
-  common.forwardEvents(sourceEmitter, targetEmitter);
+  api.common.forwardEvents(sourceEmitter, targetEmitter);
 
   targetEmitter.on('testEvent1', () => {
     test.pass('event #1');
@@ -37,11 +33,11 @@ tap.test('forward all events', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-tap.test('forward all events by method', (test) => {
+api.metatests.test('forward all events by method', (test) => {
   test.plan(3);
 
-  const sourceEmitter = common.emitter();
-  const targetEmitter = common.emitter();
+  const sourceEmitter = api.common.emitter();
+  const targetEmitter = api.common.emitter();
 
   sourceEmitter.forward(targetEmitter);
 
@@ -62,13 +58,13 @@ tap.test('forward all events by method', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-tap.test('forward a single event', (test) => {
+api.metatests.test('forward a single event', (test) => {
   test.plan(1);
 
-  const sourceEventEmitter = new events.EventEmitter();
-  const targetEventEmitter = new events.EventEmitter();
+  const sourceEventEmitter = new api.events.EventEmitter();
+  const targetEventEmitter = new api.events.EventEmitter();
 
-  common.forwardEvents(sourceEventEmitter, targetEventEmitter, 'testEvent');
+  api.common.forwardEvents(sourceEventEmitter, targetEventEmitter, 'testEvent');
 
   targetEventEmitter.on('testEvent', () => {
     test.pass('event handler must be called');
@@ -77,13 +73,13 @@ tap.test('forward a single event', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-tap.test('forward a single event under a new name', (test) => {
+api.metatests.test('forward a single event under a new name', (test) => {
   test.plan(1);
 
-  const sourceEventEmitter = new events.EventEmitter();
-  const targetEventEmitter = new events.EventEmitter();
+  const sourceEventEmitter = new api.events.EventEmitter();
+  const targetEventEmitter = new api.events.EventEmitter();
 
-  common.forwardEvents(
+  api.common.forwardEvents(
     sourceEventEmitter, targetEventEmitter, { testEvent: 'renamedEvent' }
   );
 
@@ -94,13 +90,13 @@ tap.test('forward a single event under a new name', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-tap.test('forward multiple events', (test) => {
+api.metatests.test('forward multiple events', (test) => {
   test.plan(2);
 
-  const sourceEventEmitter = new events.EventEmitter();
-  const targetEventEmitter = new events.EventEmitter();
+  const sourceEventEmitter = new api.events.EventEmitter();
+  const targetEventEmitter = new api.events.EventEmitter();
 
-  common.forwardEvents(
+  api.common.forwardEvents(
     sourceEventEmitter, targetEventEmitter, ['event1', 'event2']
   );
 

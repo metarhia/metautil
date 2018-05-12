@@ -1,10 +1,7 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
-tap.test('generateStorageKey', (test) => {
-  const key = common.generateStorageKey();
+api.metatests.test('generateStorageKey', (test) => {
+  const key = api.common.generateStorageKey();
   test.strictSame(Array.isArray(key), true);
   test.strictSame(key.length, 3);
   const [dir1, dir2, file] = key;

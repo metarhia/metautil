@@ -1,8 +1,5 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
 const iface = {
   fn1(x) {
     return x * 1;
@@ -19,14 +16,14 @@ iface.fn3 = function(x) {
   return x * 3;
 };
 
-tap.test('methods', (test) => {
-  const result = common.methods(iface);
+api.metatests.test('methods', (test) => {
+  const result = api.common.methods(iface);
   test.strictSame(result, ['fn1', 'fn2', 'fn3']);
   test.end();
 });
 
-tap.test('properties', (test) => {
-  const result = common.properties(iface);
+api.metatests.test('properties', (test) => {
+  const result = api.common.properties(iface);
   test.strictSame(result, ['prop1', 'prop2', 'prop3', 'prop4', 'prop5']);
   test.end();
 });

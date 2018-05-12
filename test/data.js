@@ -1,85 +1,89 @@
 'use strict';
 
-const tap = require('tap');
-const common = require('..');
-
-tap.test('isScalar', (test) => {
-  test.assert(common.isScalar(0));
-  test.assert(common.isScalar(''));
-  test.assert(common.isScalar(true));
-  test.assert(common.isScalar(undefined));
-  test.assertNot(common.isScalar([]));
-  test.assertNot(common.isScalar({}));
-  test.end();
+api.metatests.case('Common / data types', {
+  'common.isScalar': [
+    [0,         true ],
+    ['value1',  true ],
+    [50,        true ],
+    [true,      true ],
+    [false,     true ],
+    [null,      false],
+    [undefined, true ],
+    [NaN,       true ],
+    [Infinity,  true ],
+    [[],        false],
+    [{},        false],
+    ['',        true ],
+  ]
 });
 
-tap.test('copy', (test) => {
+api.metatests.test('copy', (test) => {
   const array = [1, 2, 3];
-  const copy = common.copy(array);
+  const copy = api.common.copy(array);
   test.assertNot(array === copy);
   test.strictSame(array, copy);
   test.end();
 });
 
-tap.test('getByPath', (test) => {
+api.metatests.test('getByPath', (test) => {
   const obj = { a: { b: { c: 42 } } };
-  test.strictSame(common.getByPath(obj, 'a.b.c'), 42);
+  test.strictSame(api.common.getByPath(obj, 'a.b.c'), 42);
   test.end();
 });
 
-tap.test('getByPath non-existent', (test) => {
+api.metatests.test('getByPath non-existent', (test) => {
   const obj = { a: { b: {} } };
-  test.assertNot(common.getByPath(obj, 'a.b.c'));
+  test.assertNot(api.common.getByPath(obj, 'a.b.c'));
   test.end();
 });
 
-tap.test('setByPath', (test) => {
+api.metatests.test('setByPath', (test) => {
   const obj = { a: {} };
-  test.assert(common.setByPath(obj, 'a.b.c', 42));
+  test.assert(api.common.setByPath(obj, 'a.b.c', 42));
   test.strictSame(obj.a.b.c, 42);
   test.end();
 });
 
-tap.test('setByPath non-object', (test) => {
+api.metatests.test('setByPath non-object', (test) => {
   const obj = { a: 10 };
-  test.assertNot(common.setByPath(obj, 'a.b.c', 42));
+  test.assertNot(api.common.setByPath(obj, 'a.b.c', 42));
   test.end();
 });
 
-tap.test('setByPath non-object first', (test) => {
+api.metatests.test('setByPath non-object first', (test) => {
   const nonobj = 10;
-  test.assertNot(common.setByPath(nonobj, 'a.b.c', 42));
+  test.assertNot(api.common.setByPath(nonobj, 'a.b.c', 42));
   test.end();
 });
 
-tap.test('setByPath non-object last', (test) => {
+api.metatests.test('setByPath non-object last', (test) => {
   const obj = { a: { b: 10 } };
-  test.assertNot(common.setByPath(obj, 'a.b.c', 42));
+  test.assertNot(api.common.setByPath(obj, 'a.b.c', 42));
   test.end();
 });
 
-tap.test('deleteByPath', (test) => {
+api.metatests.test('deleteByPath', (test) => {
   const obj = { a: { b: { c: 42 } } };
-  test.assert(common.deleteByPath(obj, 'a.b.c'));
+  test.assert(api.common.deleteByPath(obj, 'a.b.c'));
   test.assertNot(obj.a.b.c);
   test.end();
 });
 
-tap.test('deleteByPath non-existent', (test) => {
+api.metatests.test('deleteByPath non-existent', (test) => {
   const obj = { a: {} };
-  test.assertNot(common.deleteByPath(obj, 'a.b.c'));
+  test.assertNot(api.common.deleteByPath(obj, 'a.b.c'));
   test.end();
 });
 
-tap.test('deleteByPath non-existent last', (test) => {
+api.metatests.test('deleteByPath non-existent last', (test) => {
   const obj = { a: { b: {} } };
-  test.assertNot(common.deleteByPath(obj, 'a.b.c'));
+  test.assertNot(api.common.deleteByPath(obj, 'a.b.c'));
   test.end();
 });
 
-tap.test('merge', (test) => {
+api.metatests.test('merge', (test) => {
   const array1 = [1, 2, 3];
   const array2 = [3, 4, 5];
-  test.strictSame(common.merge(array1, array2), [1, 2, 3, 4, 5]);
+  test.strictSame(api.common.merge(array1, array2), [1, 2, 3, 4, 5]);
   test.end();
 });
