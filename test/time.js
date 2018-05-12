@@ -1,20 +1,25 @@
 'use strict';
 
-api.metatests.test('isTimeEqual', (test) => {
-  const t1 = new Date('December 17, 1995 03:24:00');
-  const t2 = new Date('1995-12-17T03:24:00');
-  test.assert(api.common.isTimeEqual(t1, t2));
-  test.end();
-});
-
-api.metatests.test('nowDate', (test) => {
-  const date = new Date('1995-12-17T03:24:00Z');
-  test.strictSame(api.common.nowDate(date), '1995-12-17');
-  test.end();
-});
-
-api.metatests.test('nowDateTime', (test) => {
-  const date = new Date('1995-12-17T03:24:00Z');
-  test.strictSame(api.common.nowDateTime(date), '1995-12-17 03:24');
-  test.end();
+api.metatests.case('Common / date & time', {
+  'common.isTimeEqual': [
+    ['2014-01-01', '2014-01-01',                            true],
+    ['2014-01-01', '2014-01-02',                           false],
+    ['1234-12-12', '1234-12-12',                            true],
+    ['1234-12-12', '4321-12-21',                           false],
+    ['December 17, 1995 03:24:00', '1995-12-17T03:24:00',   true],
+  ],
+  'common.nowDate': [
+    [new Date('2014-12-12 12:30:15.150'), '2014-12-12'],
+    [new Date('2014-12-12 12:30:15'),     '2014-12-12'],
+    [new Date('2014-12-12 12:30'),        '2014-12-12'],
+    [new Date('2014-12-12'),              '2014-12-12'],
+    [new Date('1995-12-17T03:24:00Z'),    '1995-12-17'],
+  ],
+  'common.nowDateTime': [
+    [new Date('2014-12-12 12:30:15.150Z'), '2014-12-12 12:30'],
+    [new Date('2014-12-12 12:30:15Z'),     '2014-12-12 12:30'],
+    [new Date('2014-12-12 12:30Z'),        '2014-12-12 12:30'],
+    [new Date('2014-12-12Z'),              '2014-12-12 00:00'],
+    [new Date('1995-12-17T03:24:00Z'),     '1995-12-17 03:24'],
+  ],
 });

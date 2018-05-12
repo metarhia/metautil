@@ -17,3 +17,5 @@ const all = [
 ];
 
 all.forEach(name => require('./' + name));
+
+api.metatests.report();

@@ -1,109 +1,129 @@
 'use strict';
 
-api.metatests.test('section normal', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.section(s, 'is');
-  test.strictSame(result[0], 'All you need ');
-  test.strictSame(result[1], ' JavaScript');
-  test.end();
-});
+/*eslint max-len: ["error", { "code": 120 }]*/
 
-api.metatests.test('section not found', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.section(s, 'not-found');
-  test.strictSame(result[0], 'All you need is JavaScript');
-  test.strictSame(result[1], '');
-  test.end();
-});
-
-api.metatests.test('section ends with', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.section(s, 'JavaScript');
-  test.strictSame(result[0], 'All you need is ');
-  test.strictSame(result[1], '');
-  test.end();
-});
-
-api.metatests.test('section strarts with', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.section(s, 'All');
-  test.strictSame(result[0], '');
-  test.strictSame(result[1], ' you need is JavaScript');
-  test.end();
-});
-
-api.metatests.test('section multiple', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.section(s, 'a');
-  test.strictSame(result[0], 'All you need is J');
-  test.strictSame(result[1], 'vaScript');
-  test.end();
-});
-
-api.metatests.test('rsection normal', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.rsection(s, 'is');
-  test.strictSame(result[0], 'All you need ');
-  test.strictSame(result[1], ' JavaScript');
-  test.end();
-});
-
-api.metatests.test('rsection not found', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.rsection(s, 'not-found');
-  test.strictSame(result[0], 'All you need is JavaScript');
-  test.strictSame(result[1], '');
-  test.end();
-});
-
-api.metatests.test('rsection ends with', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.rsection(s, 'JavaScript');
-  test.strictSame(result[0], 'All you need is ');
-  test.strictSame(result[1], '');
-  test.end();
-});
-
-api.metatests.test('rsection strarts with', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.rsection(s, 'All');
-  test.strictSame(result[0], '');
-  test.strictSame(result[1], ' you need is JavaScript');
-  test.end();
-});
-
-api.metatests.test('rsection multiple', (test) => {
-  const s = 'All you need is JavaScript';
-  const result = api.common.rsection(s, 'a');
-  test.strictSame(result[0], 'All you need is Jav');
-  test.strictSame(result[1], 'Script');
-  test.end();
-});
-
-api.metatests.test('split', (test) => {
-  const s = 'a,b,c,d';
-  const result = api.common.split(s, ',', 2);
-  test.strictSame(result, ['a', 'b']);
-  test.end();
-});
-
-api.metatests.test('split all', (test) => {
-  const s = 'a,b,c,d';
-  const result = api.common.split(s);
-  test.strictSame(result, ['a', 'b', 'c', 'd']);
-  test.end();
-});
-
-api.metatests.test('rsplit', (test) => {
-  const s = 'a,b,c,d';
-  const result = api.common.rsplit(s, ',', 2);
-  test.strictSame(result, ['c', 'd']);
-  test.end();
-});
-
-api.metatests.test('rsplit all', (test) => {
-  const s = 'a,b,c,d';
-  const result = api.common.rsplit(s);
-  test.strictSame(result, ['a', 'b', 'c', 'd']);
-  test.end();
+api.metatests.case('Metarhia common library', {
+  'common.subst': [
+    ['Hello, @name@', { name: 'Ali' }, '', true,                      'Hello, Ali'],
+    ['Hello, @.name@', { person: { name: 'Ali' } }, 'person', true,   'Hello, Ali'],
+  ],
+  'common.section': [
+    ['All you need is JavaScript', 'is',   ['All you need ', ' JavaScript']],
+    ['All you need is JavaScript', 'no', ['All you need is JavaScript', '']],
+    ['All you need is JavaScript', 'JavaScript',   ['All you need is ', '']],
+    ['All you need is JavaScript', 'All',   ['', ' you need is JavaScript']],
+    ['All you need is JavaScript', 'a', ['All you need is J',   'vaScript']],
+  ],
+  'common.split': [
+    ['a,b,c,d', ',', 2,              ['a', 'b']],
+    ['a,b,c,d',            ['a', 'b', 'c', 'd']],
+    ['a;b;c;d', ';',       ['a', 'b', 'c', 'd']],
+    ['a,b,c,d', ';',                ['a,b,c,d']],
+  ],
+  'common.rsplit': [
+    ['a,b,c,d', ',', 2,              ['c', 'd']],
+    ['a,b,c,d',            ['a', 'b', 'c', 'd']],
+    ['a;b;c;d', ';',       ['a', 'b', 'c', 'd']],
+    ['a,b,c,d', ';',                ['a,b,c,d']],
+  ],
+  'common.htmlEscape': [
+    ['text',                         'text'],
+    ['<tag>',                 '&lt;tag&gt;'],
+    ['You &amp; Me',     'You &amp;amp; Me'],
+    ['You & Me',             'You &amp; Me'],
+    ['"Quotation"', '&quot;Quotation&quot;'],
+  ],
+  'common.fileExt': [
+    ['/dir/dir/file.txt', 'txt'],
+    ['/dir/dir/file.txt', 'txt'],
+    ['\\dir\\file.txt',   'txt'],
+    ['/dir/dir/file.txt', 'txt'],
+    ['/dir/file.txt',     'txt'],
+    ['/dir/file.TXt',     'txt'],
+    ['//file.txt',        'txt'],
+    ['file.txt',          'txt'],
+    ['/dir.ext/',         'ext'],
+    ['/dir/',                ''],
+    ['/',                    ''],
+    ['.',                    ''],
+    ['',                     ''],
+  ],
+  'common.spinalToCamel': [
+    ['hello-world',     'helloWorld'],
+    ['hello_world',     'helloWorld'],
+    ['one-two-three',  'oneTwoThree'],
+    ['one_two_three',  'oneTwoThree'],
+    ['OneTwoThree',    'OneTwoThree'],
+    ['oneTwoThree',    'oneTwoThree'],
+    ['hello',                'hello'],
+    ['h',                        'h'],
+    ['-',                         ''],
+    ['_',                         ''],
+    ['',                          ''],
+  ],
+  'common.capitalize': [
+    ['abc', 'Abc'],
+    ['Abc', 'Abc'],
+    ['aBC', 'Abc'],
+    ['ABC', 'Abc'],
+    ['a',     'A'],
+    [' bc', ' Bc'],
+    [' ',     ' '],
+    ['',       ''],
+    ['+',     '+'],
+  ],
+  'common.between': [
+    ['abcdefghijk', 'cd', 'h',     'efg'],
+    ['field="value"', '"', '"',  'value'],
+    ['field:"value"', '"', '"',  'value'],
+    ['field[value]', '[', ']',   'value'],
+    ['kjihgfedcba', 'cd', 'h',        ''],
+    ['kjihgfedcba', 'dc', 'h',        ''],
+    ['field="value"', '=', '=',       ''],
+    ['field[value]', '{', '}',        ''],
+    ['{a:"b",c:"d"}', '"', '"',      'b'],
+  ],
+  'common.escapeRegExp': [
+    ['/path/to/res?search=this.that&a=b', '\\\\/path\\\\/to\\\\/res\\\\?search=this\\\\.that&a=b'],
+    ['/path/to/res?search=this.that',         '\\\\/path\\\\/to\\\\/res\\\\?search=this\\\\.that'],
+    ['/path/to/res?search',                                 '\\\\/path\\\\/to\\\\/res\\\\?search'],
+    ['/path/to/res',                                                   '\\\\/path\\\\/to\\\\/res'],
+    ['/path',                                                                         '\\\\/path'],
+  ],
+  'common.addTrailingSlash': [
+    ['/path',   '/path/'],
+    ['/path/',  '/path/'],
+    ['/',            '/'],
+    ['',             '/'],
+  ],
+  'common.stripTrailingSlash': [
+    ['/path',   '/path'],
+    ['/path/',  '/path'],
+    ['/',            ''],
+    ['',             ''],
+  ],
+  'common.dirname': [
+    ['/path/dir/',   '/path/'],
+    ['/path/dir',    '/path/'],
+    ['/path/',            '/'],
+    ['/path',             '/'],
+    ['/',                 '/'],
+    ['',                 './'],
+  ],
+  'common.removeBOM': [
+    ['\uBBBF\uFEFFabc', 'abc'],
+    ['\uBBBF\uFEFF',       ''],
+    ['\uFEFFabc',       'abc'],
+    ['\uBBBFabc',       'abc'],
+    ['\uFEFF',             ''],
+    ['\uBBBF',             ''],
+    ['abc',             'abc'],
+  ],
+  'common.arrayRegExp': [
+    [['*'],                                             '^.*$'],
+    [['/css/*', '/folder*'], '^((\\/css\\/.*)|(\\/folder.*))$'],
+    [['/', '/js/*'],                  '^((\\/)|(\\/js\\/.*))$'],
+    [['/css/*.css'],                     '^\\/css\\/.*\\.css$'],
+    [['*/css/*'],                            '^.*\\/css\\/.*$'],
+  ],
 });

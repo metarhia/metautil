@@ -1,60 +1,39 @@
 'use strict';
 
-api.metatests.test('splitAt', (test) => {
-  const array = [1, 2, 3, 4, 5];
-  const result = api.common.splitAt(3, array);
-  test.strictSame(result, [[1, 2, 3], [4, 5]]);
-  test.end();
-});
-
-api.metatests.test('last', (test) => {
-  const array = [1, 2, 3, 4, 5];
-  const result = api.common.last(array);
-  test.strictSame(result, 5);
-  test.end();
-});
-
-api.metatests.test('last single', (test) => {
-  const array = [5];
-  const result = api.common.last(array);
-  test.strictSame(result, 5);
-  test.end();
-});
-
-api.metatests.test('last empty', (test) => {
-  const array = [];
-  const result = api.common.last(array);
-  test.strictSame(result, undefined);
-  test.end();
-});
-
-api.metatests.test('range', (test) => {
-  const rangeArray = api.common.range(1, 5);
-  test.strictSame(rangeArray, [1, 2, 3, 4, 5]);
-  test.end();
-});
-
-api.metatests.test('sequence full', (test) => {
-  const sequence = api.common.sequence([80, 81, 82]);
-  test.strictSame(sequence, [80, 81, 82]);
-  test.end();
-});
-
-api.metatests.test('sequence from..to', (test) => {
-  // eslint-disable-next-line no-sparse-arrays
-  const sequence = api.common.sequence([40,, 45]);
-  test.strictSame(sequence, [40, 41, 42, 43, 44, 45]);
-  test.end();
-});
-
-api.metatests.test('sequence from..count', (test) => {
-  const sequence = api.common.sequence([40, [6]]);
-  test.strictSame(sequence, [40, 41, 42, 43, 44, 45]);
-  test.end();
-});
-
-api.metatests.test('sequence from..max-to', (test) => {
-  const sequence = api.common.sequence([40, [-3]], 6);
-  test.strictSame(sequence, [40, 41, 42]);
-  test.end();
+api.metatests.case('Common / array', {
+  'common.splitAt': [
+    [0, [1, 2, 3, 4, 5],   [[], [1, 2, 3, 4, 5]]],
+    [1, [1, 2, 3, 4, 5],     [[1], [2, 3, 4, 5]]],
+    [2, [1, 2, 3, 4, 5],     [[1, 2], [3, 4, 5]]],
+    [3, [1, 2, 3, 4, 5],     [[1, 2, 3], [4, 5]]],
+    [4, [1, 2, 3, 4, 5],     [[1, 2, 3, 4], [5]]],
+    [5, [1, 2, 3, 4, 5],   [[1, 2, 3, 4, 5], []]],
+  ],
+  'common.last': [
+    [[5],                       5],
+    [[1, 2, 3, 4, 5],           5],
+    [[true, true, false],   false],
+    [[false, true, true],    true],
+    [[],                undefined],
+  ],
+  'common.range': [
+    [1, 5,    [1, 2, 3, 4, 5]],
+    [5, 1,                 []],
+    [1, 0,                 []],
+    [1, 1,                [1]],
+    [8, 9,             [8, 9]],
+  ],
+  'common.sequence': [
+    [[80, 81, 82],                 [80, 81, 82]],
+    // eslint-disable-next-line no-sparse-arrays
+    [[40,, 45],        [40, 41, 42, 43, 44, 45]],
+    [[40, [6]],        [40, 41, 42, 43, 44, 45]],
+    [[40, [-3]], 6,                [40, 41, 42]],
+  ],
+  'common.shuffle': [
+    [[1, 2, 3],   (result) => (JSON.stringify(result.sort()) === '[1,2,3]')  ],
+    [['a', 'b'],  (result) => (JSON.stringify(result.sort()) === '["a","b"]')],
+    [[1, 'a', 3], (result) => (JSON.stringify(result.sort()) === '[1,3,"a"]')],
+    [[],          (result) => (JSON.stringify(result.sort()) === '[]')       ],
+  ],
 });

@@ -1,26 +1,25 @@
 'use strict';
 
-api.metatests.test('ipToInt', (test) => {
-  const ip = '8.8.8.8';
-  const ipNum = 0x08080808;
-  test.strictSame(api.common.ipToInt(ip), ipNum);
-  test.end();
-});
-
-api.metatests.test('ipToInt default', (test) => {
-  const ipNum = 0x7F000001;
-  test.strictSame(api.common.ipToInt(), ipNum);
-  test.end();
-});
-
-api.metatests.test('parseHost', (test) => {
-  const host = 'localhost:8080';
-  test.strictSame(api.common.parseHost(host), 'localhost');
-  test.end();
-});
-
-api.metatests.test('parseHost empty', (test) => {
-  const host = '';
-  test.strictSame(api.common.parseHost(host), 'no-host-name-in-http-headers');
-  test.end();
+api.metatests.case('Common / network', {
+  'common.ipToInt': [
+    ['127.0.0.1',        2130706433],
+    ['10.0.0.1',          167772161],
+    ['192.168.1.10',    -1062731510],
+    ['165.225.133.150', -1511946858],
+    ['0.0.0.0',                   0],
+    ['wrong-string',           null],
+    ['',                          0],
+    ['8.8.8.8',          0x08080808],
+    [undefined,          0x7F000001],
+  ],
+  'common.parseHost': [
+    ['',   'no-host-name-in-http-headers'],
+    ['domain.com',           'domain.com'],
+    ['localhost',             'localhost'],
+    ['domain.com:8080',      'domain.com'],
+    ['localhost:8080',        'localhost'],
+  ],
+  'common.localIPs': [
+    [[], (value) => Array.isArray(value)],
+  ],
 });

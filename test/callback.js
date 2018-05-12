@@ -1,5 +1,11 @@
 'use strict';
 
+api.metatests.case('Common / callbacks', {
+  'common.falseness': [[[],     false]],
+  'common.trueness':  [[[],      true]],
+  'common.emptyness': [[[], undefined]],
+});
+
 api.metatests.test('unsafeCallback', (test) => {
   const callback = (...args) => {
     test.strictSame(args, [1, 2, 3]);
