@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "metaschema": "^0.0.6",
-    "metatests": "^0.1.10",
+    "metaschema": "^0.0.9",
+    "metatests": "^0.1.11",
     "metasync": "^0.3.28"
   }
 }
