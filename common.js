@@ -17,6 +17,7 @@ const submodules = [
   'sort', // Sort compare functions
   'cache', // Cache (enhanced Map)
   'mp', // Metaprogramming
+  'enum', // Enumerated type
 ].map(path => './lib/' + path).map(require);
 
 module.exports = Object.assign({}, ...submodules);
