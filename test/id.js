@@ -29,7 +29,25 @@ api.metatests.case('Common / id', {
       (result)  => (result.length === 4)
     ]
   ],
+  'common.idToChunks': [
+    [0,                ['0000', '0000']],
+    [1,                ['0001', '0000']],
+    [30,               ['001e', '0000']],
+    [123456789,        ['cd15', '075b']],
+    [123456789123,     ['1a83', 'be99', '001c']],
+    [9007199254740991, ['ffff', 'ffff', 'ffff', '001f']]
+  ],
+  'common.idToPath': [
+    [0,                '0000/0000'],
+    [1,                '0001/0000'],
+    [30,               '001e/0000'],
+    [123456789,        'cd15/075b'],
+    [123456789123,     '1a83/be99/001c'],
+    [9007199254740991, 'ffff/ffff/ffff/001f']
+  ]
 });
+
+//console.dir(idToChunks());
 
 api.metatests.test('generateStorageKey', (test) => {
   const key = api.common.generateStorageKey();
