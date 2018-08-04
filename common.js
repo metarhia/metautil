@@ -1,6 +1,7 @@
 'use strict';
 
 const submodules = [
+  'auth', // Validation of data for authentication/authorization
   'utilities', // Common utilities
   'math', // Math common function
   'array', // Arrays manipulations
