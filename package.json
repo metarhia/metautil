@@ -17,16 +17,23 @@
     "url": "https://github.com/metarhia/common"
   },
   "main": "./common.js",
+  "browser": {
+    "common.js": "./dist/common.js"
+  },
   "readmeFilename": "README.md",
   "scripts": {
     "test": "eslint . && node test/all.js",
     "lint": "eslint .",
-    "docs": "metaschema ./common.js"
+    "docs": "metaschema ./common.js",
+    "build": "babel common.js -d dist && babel lib -d dist/lib",
+    "prepublish": "npm run -s build"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^4.19.1",
     "metaschema": "^0.0.10",
     "metasync": "^0.3.29",
