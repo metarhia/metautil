@@ -3,6 +3,7 @@
 const submodules = [
   'array', // Arrays manipulations
   'auth', // Validation of data for authentication/authorization
+  'btree', // B-Tree for indexes in DB
   'cache', // Cache (enhanced Map)
   'callbacks', // Callback utilities
   'data', // Data structures manipulations
