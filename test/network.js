@@ -7,7 +7,7 @@ api.metatests.case('Common / network', {
     ['192.168.1.10',    -1062731510],
     ['165.225.133.150', -1511946858],
     ['0.0.0.0',                   0],
-    ['wrong-string',           null],
+    ['wrong-string',     Number.NaN],
     ['',                          0],
     ['8.8.8.8',          0x08080808],
     [undefined,          0x7F000001],
