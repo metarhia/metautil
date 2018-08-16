@@ -4,8 +4,12 @@
 
 api.metatests.case('Metarhia common library', {
   'common.subst': [
-    ['Hello, @name@', { name: 'Ali' }, '', true,                      'Hello, Ali'],
-    ['Hello, @.name@', { person: { name: 'Ali' } }, 'person', true,   'Hello, Ali'],
+    ['Hello, name', { name: 'Ali' }, '', true,                                     'Hello, name'],
+    ['Hello, @date@', { date: new Date(0) }, '', true,                 'Hello, 1970-01-01 00:00'],
+    ['Hello, @n@', { name: 'Ali' }, '', true,                               'Hello, [undefined]'],
+    ['Hello, @name@', { name: null }, '', true,                                  'Hello, [null]'],
+    ['Hello, @name@', { name: 'Ali' }, '', true,                                    'Hello, Ali'],
+    ['Hello, @.name@', { person: { name: 'Ali' } }, 'person', true,                 'Hello, Ali'],
   ],
   'common.section': [
     ['All you need is JavaScript', 'is',   ['All you need ', ' JavaScript']],
