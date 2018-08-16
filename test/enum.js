@@ -18,15 +18,15 @@ api.metatests.test('Enum with key/value', (test) => {
     Dec: 'December'
   });
 
-  test.strictSame(typeof(Month), 'function');
-  test.strictSame(typeof(Month.values), 'object');
+  test.strictSame(typeof Month, 'function');
+  test.strictSame(typeof Month.values, 'object');
   test.strictSame(Array.isArray(Month.values), false);
 
   test.strictSame(Month.has('May'), true);
   test.strictSame(Month.key('Aug'), 7);
 
   const may = Month.from('May');
-  test.strictSame(typeof(may), 'object');
+  test.strictSame(typeof may, 'object');
   test.strictSame(may.value, 'May');
   test.strictSame(may.index, 4);
   test.strictSame(may.data, 'May');
@@ -43,7 +43,7 @@ api.metatests.test('Enum string month keys', (test) => {
     'July', 'August', 'September', 'October', 'November', 'December'
   );
 
-  test.strictSame(typeof(Month), 'function');
+  test.strictSame(typeof Month, 'function');
   test.strictSame(Array.isArray(Month.values), true);
 
   test.strictSame(Month.has('May'), true);
@@ -51,7 +51,7 @@ api.metatests.test('Enum string month keys', (test) => {
   test.strictSame(Month.key('August'), 7);
 
   const may = Month.from('May');
-  test.strictSame(typeof(may), 'object');
+  test.strictSame(typeof may, 'object');
   test.strictSame(Month.has('May'), true);
   test.strictSame(may.value, 'May');
   test.strictSame(may.index, 4);
@@ -79,15 +79,15 @@ api.metatests.test('Enum string month typed keys', (test) => {
     12: 'December'
   });
 
-  test.strictSame(typeof(Month), 'function');
-  test.strictSame(typeof(Month.values), 'object');
+  test.strictSame(typeof Month, 'function');
+  test.strictSame(typeof Month.values, 'object');
   test.strictSame(Array.isArray(Month.values), false);
 
   test.strictSame(Month.has('5'), true);
   test.strictSame(Month.has(13), false);
 
   const may = Month.from('5');
-  test.strictSame(typeof(may), 'object');
+  test.strictSame(typeof may, 'object');
   test.strictSame(may.value, '5');
   test.strictSame(may.index, 4);
   test.strictSame(may.data, 'May');
@@ -110,7 +110,7 @@ api.metatests.test('Enum hundreds keys', (test) => {
   test.strictSame(Hundreds.from(600), Enum.NaE);
   test.strictSame(Hundreds.from('Hello'), Enum.NaE);
 
-  test.strictSame(typeof(Hundreds), 'function');
+  test.strictSame(typeof Hundreds, 'function');
   test.strictSame(Array.isArray(Hundreds.values), true);
   test.strictSame(Hundreds.values.length, 5);
 

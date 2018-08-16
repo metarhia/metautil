@@ -32,7 +32,7 @@ api.metatests.test('safeCallback', (test) => {
   };
   const args = [10, 20, 30, 40, 50, callback];
   const wrappedCb = api.common.safeCallback(args);
-  test.strictSame(typeof(wrappedCb), 'function');
+  test.strictSame(typeof wrappedCb, 'function');
   wrappedCb(...args);
 });
 
@@ -59,7 +59,7 @@ api.metatests.test('onceCallback prevent callback twice', (test) => {
   };
   const args = ['A', 'B', 'C', callback];
   const wrappedCb = api.common.onceCallback(args);
-  test.strictSame(typeof(wrappedCb), 'function');
+  test.strictSame(typeof wrappedCb, 'function');
   wrappedCb(...args);
   wrappedCb(...args);
 });
@@ -71,7 +71,7 @@ api.metatests.test('requiredCallback', (test) => {
   };
   const args = [100, 200, 300, callback];
   const wrappedCb = api.common.requiredCallback(args);
-  test.strictSame(typeof(wrappedCb), 'function');
+  test.strictSame(typeof wrappedCb, 'function');
   wrappedCb(...args);
 });
 
