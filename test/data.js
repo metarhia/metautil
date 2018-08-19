@@ -58,6 +58,11 @@ api.metatests.case('Common / data types', {
     [[1, 2, 3],  [1, 2, 3],              [1, 2, 3]],
     [[1, 2, 3],  [4, 5, 1],        [1, 2, 3, 4, 5]],
   ],
+  'common.mergeObjects': [
+    [(a, b) => a + b,               { a: 'a', b: 'b' }, { a: 'a', b: 'c' },    { a: 'aa', b: 'bc' }],
+    [(a, b) => a || b,              { a: 'a' }, { d: 'd', a: 'c' },              { a: 'a', d: 'd' }],
+    [(a, b) => (a || 0) + (b || 0), { a: 1, b: 2, c: 3 }, { a: 1, b: 2 },      { a: 2, b: 4, c: 3 }],
+  ],
 });
 
 api.metatests.test('setByPath', (test) => {
