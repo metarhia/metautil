@@ -153,4 +153,5 @@ api.metatests.test('Enum.NaE property', (test) => {
     configurable: false,
     value: Enum.NaE,
   });
+  test.end();
 });
