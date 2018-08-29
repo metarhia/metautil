@@ -19,6 +19,6 @@ const submodules = [
   'mp', // Metaprogramming
   'enum', // Enumerated type
   'iterator', // Iterator
-].map(path => './lib/' + path).map(require);
+].map(path => require('./lib/' + path));
 
 module.exports = Object.assign({}, ...submodules);
