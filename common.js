@@ -6,14 +6,14 @@ const submodules = [
   'array', // Arrays manipulations
   'data', // Data structures manipulations
   'strings', // Strings utilities
-  'time', // Data and Time functions
+  'time', // Date and Time functions
   'fp', // Functional programming
   'oop', // Object-oriented programming
   'callbacks', // Callback utilities
   'events', // Events and emitter
   'units', // Units conversion
   'network', // Network utilities
-  'id', // Kyes and identifiers
+  'id', // Keys and identifiers
   'sort', // Sort compare functions
   'cache', // Cache (enhanced Map)
   'mp', // Metaprogramming
