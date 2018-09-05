@@ -1,5 +1,8 @@
 'use strict';
 
+const metatests = require('metatests');
+const common = require('..');
+
 class Parent {
   constructor() {
     this.property0 = 'from Parent.constructor';
@@ -31,9 +34,9 @@ class Child extends Parent {
   }
 }
 
-api.common.mixin(Child.prototype, Lazy.prototype);
+common.mixin(Child.prototype, Lazy.prototype);
 
-api.metatests.test('multiple inheritance with mixin', (test) => {
+metatests.test('multiple inheritance with mixin', (test) => {
   const obj = new Child();
   obj.method1();
   obj.method2();

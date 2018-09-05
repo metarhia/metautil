@@ -1,7 +1,10 @@
 'use strict';
 
-api.metatests.test('either', (test) => {
-  const fnEither = api.common.either(x => x * 2);
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.test('either', (test) => {
+  const fnEither = common.either(x => x * 2);
 
   const res = fnEither(1, 2);
 
@@ -9,7 +12,7 @@ api.metatests.test('either', (test) => {
   test.end();
 });
 
-api.metatests.test('either with one error and one success', (test) => {
+metatests.test('either with one error and one success', (test) => {
   const fnError = new Error('either with error');
   const fn = (x) => {
     if (x === 1) {
@@ -18,7 +21,7 @@ api.metatests.test('either with one error and one success', (test) => {
       return x * 2;
     }
   };
-  const fnEither = api.common.either(fn);
+  const fnEither = common.either(fn);
 
   const res = fnEither(1, 2);
 
@@ -26,7 +29,7 @@ api.metatests.test('either with one error and one success', (test) => {
   test.end();
 });
 
-api.metatests.test('either with all errors', (test) => {
+metatests.test('either with all errors', (test) => {
   const fnError1 = new Error('either with error 1');
   const fnError2 = new Error('either with error 2');
   const fn = (x) => {
@@ -36,7 +39,7 @@ api.metatests.test('either with all errors', (test) => {
       throw fnError2;
     }
   };
-  const fnEither = api.common.either(fn);
+  const fnEither = common.either(fn);
 
   test.throws(fnEither.bind(null, 1, 2), fnError2);
   test.end();

@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.case('Common / array', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Common / array', { common }, {
   'common.splitAt': [
     [0, [1, 2, 3, 4, 5],   [[], [1, 2, 3, 4, 5]]],
     [1, [1, 2, 3, 4, 5],     [[1], [2, 3, 4, 5]]],

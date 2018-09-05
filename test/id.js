@@ -2,13 +2,16 @@
 
 /*eslint max-len: ["error", { "code": 120 }]*/
 
+const metatests = require('metatests');
+const common = require('..');
+
 const config = {
   characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
   secret: 'secret',
   length: 64
 };
 
-api.metatests.case('Common / id', {
+metatests.case('Common / id', { common }, {
   'common.validateSID': [
     [config, 'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bc',  true],
     [config, 'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bK', false],
@@ -22,7 +25,7 @@ api.metatests.case('Common / id', {
   'common.crcSID': [
     [
       config,
-      api.common.generateKey(
+      common.generateKey(
         config.length - 4,
         config.characters
       ),
@@ -65,10 +68,8 @@ api.metatests.case('Common / id', {
   ]
 });
 
-//console.dir(idToChunks());
-
-api.metatests.test('generateStorageKey', (test) => {
-  const key = api.common.generateStorageKey();
+metatests.test('generateStorageKey', (test) => {
+  const key = common.generateStorageKey();
   test.strictSame(Array.isArray(key), true);
   test.strictSame(key.length, 3);
   const [dir1, dir2, file] = key;

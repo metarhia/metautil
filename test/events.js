@@ -1,20 +1,24 @@
 'use strict';
 
-api.metatests.test('emitter', (test) => {
-  const ee = api.common.emitter();
+const metatests = require('metatests');
+const events = require('events');
+const common = require('..');
+
+metatests.test('emitter', (test) => {
+  const ee = common.emitter();
   ee.on('name', () => {
     test.end();
   });
   ee.emit('name');
 });
 
-api.metatests.test('forward all events', (test) => {
+metatests.test('forward all events', (test) => {
   test.plan(3);
 
-  const sourceEmitter = api.common.emitter();
-  const targetEmitter = api.common.emitter();
+  const sourceEmitter = common.emitter();
+  const targetEmitter = common.emitter();
 
-  api.common.forwardEvents(sourceEmitter, targetEmitter);
+  common.forwardEvents(sourceEmitter, targetEmitter);
 
   targetEmitter.on('testEvent1', () => {
     test.pass('event #1');
@@ -33,11 +37,11 @@ api.metatests.test('forward all events', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-api.metatests.test('forward all events by method', (test) => {
+metatests.test('forward all events by method', (test) => {
   test.plan(3);
 
-  const sourceEmitter = api.common.emitter();
-  const targetEmitter = api.common.emitter();
+  const sourceEmitter = common.emitter();
+  const targetEmitter = common.emitter();
 
   sourceEmitter.forward(targetEmitter);
 
@@ -58,13 +62,13 @@ api.metatests.test('forward all events by method', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-api.metatests.test('forward a single event', (test) => {
+metatests.test('forward a single event', (test) => {
   test.plan(1);
 
-  const sourceEventEmitter = new api.events.EventEmitter();
-  const targetEventEmitter = new api.events.EventEmitter();
+  const sourceEventEmitter = new events.EventEmitter();
+  const targetEventEmitter = new events.EventEmitter();
 
-  api.common.forwardEvents(sourceEventEmitter, targetEventEmitter, 'testEvent');
+  common.forwardEvents(sourceEventEmitter, targetEventEmitter, 'testEvent');
 
   targetEventEmitter.on('testEvent', () => {
     test.pass('event handler must be called');
@@ -73,13 +77,13 @@ api.metatests.test('forward a single event', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-api.metatests.test('forward a single event under a new name', (test) => {
+metatests.test('forward a single event under a new name', (test) => {
   test.plan(1);
 
-  const sourceEventEmitter = new api.events.EventEmitter();
-  const targetEventEmitter = new api.events.EventEmitter();
+  const sourceEventEmitter = new events.EventEmitter();
+  const targetEventEmitter = new events.EventEmitter();
 
-  api.common.forwardEvents(
+  common.forwardEvents(
     sourceEventEmitter, targetEventEmitter, { testEvent: 'renamedEvent' }
   );
 
@@ -90,13 +94,13 @@ api.metatests.test('forward a single event under a new name', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-api.metatests.test('forward multiple events', (test) => {
+metatests.test('forward multiple events', (test) => {
   test.plan(2);
 
-  const sourceEventEmitter = new api.events.EventEmitter();
-  const targetEventEmitter = new api.events.EventEmitter();
+  const sourceEventEmitter = new events.EventEmitter();
+  const targetEventEmitter = new events.EventEmitter();
 
-  api.common.forwardEvents(
+  common.forwardEvents(
     sourceEventEmitter, targetEventEmitter, ['event1', 'event2']
   );
 

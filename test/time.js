@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.case('Common / date & time', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Common / date & time', { common }, {
   'common.isTimeEqual': [
     ['2014-01-01', '2014-01-01',                            true],
     ['2014-01-01', '2014-01-02',                           false],

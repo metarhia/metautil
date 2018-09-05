@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.test('zipWith', (test) => {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.test('zipWith', (test) => {
   const data = [
     [1, 2, 3],
     ['one', 'two', 'three'],
@@ -12,7 +15,7 @@ api.metatests.test('zipWith', (test) => {
     { num: 2, eng: 'two', rus: 'два' },
     { num: 3, eng: 'three', rus: 'три' },
   ];
-  const res = api.common.zipWith(makeDict, ...data);
+  const res = common.zipWith(makeDict, ...data);
   test.strictSame(res, expected);
   test.end();
 });

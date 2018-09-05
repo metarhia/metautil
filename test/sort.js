@@ -2,6 +2,9 @@
 
 /*eslint max-len: ["error", { "code": 120 }]*/
 
+const metatests = require('metatests');
+const common = require('..');
+
 const CONFIG_FILES_PRIORITY = [
   'sandbox.js',
   'log.js',
@@ -18,7 +21,7 @@ const CONFIG_FILES_PRIORITY = [
   'routes.js'
 ];
 
-api.metatests.case('Common / sort', {
+metatests.case('Common / sort', { common }, {
   'common.sortComparePriority': [
     [CONFIG_FILES_PRIORITY, 'files.js', 'sandbox.js',       1],
     [CONFIG_FILES_PRIORITY, 'filestorage.js', 'routes.js', -1],
@@ -51,7 +54,7 @@ api.metatests.case('Common / sort', {
   ],
 });
 
-api.metatests.test('sortCompareDirectories', (test) => {
+metatests.test('sortCompareDirectories', (test) => {
   const array = [
     { name: 'file0.txt' },
     { name: '/dir' },
@@ -66,13 +69,13 @@ api.metatests.test('sortCompareDirectories', (test) => {
     { name: 'file0.txt' },
     { name: 'file1.txt' },
   ];
-  test.strictSame(array.sort(api.common.sortCompareDirectories), sorted);
+  test.strictSame(array.sort(common.sortCompareDirectories), sorted);
   test.end();
 });
 
-api.metatests.test('sortCompareByName', (test) => {
+metatests.test('sortCompareByName', (test) => {
   const array = [{ name: 'c' }, { name: 'a' }, { name: 'a' }, { name: 'b' }];
   const sorted = [{ name: 'a' }, { name: 'a' }, { name: 'b' }, { name: 'c' }];
-  test.strictSame(array.sort(api.common.sortCompareByName), sorted);
+  test.strictSame(array.sort(common.sortCompareByName), sorted);
   test.end();
 });

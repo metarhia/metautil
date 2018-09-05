@@ -2,7 +2,10 @@
 
 /*eslint max-len: ["error", { "code": 120 }]*/
 
-api.metatests.case('Metarhia common library', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Metarhia common library', { common }, {
   'common.subst': [
     ['Hello, name', { name: 'Ali' }, '', true,                                     'Hello, name'],
     ['Hello, @date@', { date: new Date(0) }, '', true,                 'Hello, 1970-01-01 00:00'],

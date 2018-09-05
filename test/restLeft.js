@@ -1,11 +1,14 @@
 'use strict';
 
-api.metatests.test('restLeft', (test) => {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.test('restLeft', (test) => {
   const expectedArgs = [3, 4, 5];
   const expectedArg1 = 1;
   const expectedArg2 = 2;
   const expectedCallbackArgs = [6, 7, 8];
-  const af = api.common.restLeft((args, arg1, arg2, callback) => {
+  const af = common.restLeft((args, arg1, arg2, callback) => {
     test.strictSame(args, expectedArgs);
     test.strictSame(arg1, expectedArg1);
     test.strictSame(arg2, expectedArg2);

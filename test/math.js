@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.case('Common / math', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Common / math', { common }, {
   'common.random': [
     [ 0, 10, (result) => (result >=  0 && result <= 10)],
     [ 1, 10, (result) => (result >=  1 && result <= 10)],

@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.case('Common / network', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Common / network', { common }, {
   'common.ipToInt': [
     ['127.0.0.1',        2130706433],
     ['10.0.0.1',          167772161],

@@ -1,6 +1,9 @@
 'use strict';
 
-api.metatests.case('Common / units', {
+const metatests = require('metatests');
+const common = require('..');
+
+metatests.case('Common / units', { common }, {
   'common.duration': [
     [           '1d', 86400000 ],
     [           '2d', 172800000],

@@ -1,23 +1,24 @@
 'use strict';
 
-const { Iterator, iter } = api.common;
+const metatests = require('metatests');
+const { Iterator, iter } = require('..');
 
 const array = [1, 2, 3, 4];
 
-api.metatests.test('new Iterator() on non Iterable', test => {
+metatests.test('new Iterator() on non Iterable', test => {
   test.throws(() => {
     new Iterator(2);
   }, new TypeError('Base is not Iterable'));
   test.end();
 });
 
-api.metatests.test('iter returns an Iterator', test => {
+metatests.test('iter returns an Iterator', test => {
   const iterator = iter(array);
   test.assert(iterator instanceof Iterator);
   test.end();
 });
 
-api.metatests.test('Iterator is Iterable', test => {
+metatests.test('Iterator is Iterable', test => {
   const iterator = iter(array);
   let sum = 0;
   for (const value of iterator) {
@@ -28,7 +29,7 @@ api.metatests.test('Iterator is Iterable', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.each', test => {
+metatests.test('Iterator.each', test => {
   const iterator = iter(array);
   let sum = 0;
   iterator.each(value => {
@@ -39,7 +40,7 @@ api.metatests.test('Iterator.each', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.forEach', test => {
+metatests.test('Iterator.forEach', test => {
   const iterator = iter(array);
   let sum = 0;
   iterator.forEach(value => {
@@ -50,7 +51,7 @@ api.metatests.test('Iterator.forEach', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.forEach with thisArg ', test => {
+metatests.test('Iterator.forEach with thisArg ', test => {
   const iterator = iter(array);
   const obj = {
     sum: 0,
@@ -65,17 +66,17 @@ api.metatests.test('Iterator.forEach with thisArg ', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.reduce', test => {
+metatests.test('Iterator.reduce', test => {
   test.strictSame(iter(array).reduce((acc, current) => acc + current, 0), 10);
   test.end();
 });
 
-api.metatests.test('Iterator.reduce with no initialValue', test => {
+metatests.test('Iterator.reduce with no initialValue', test => {
   test.strictSame(iter(array).reduce((acc, current) => acc + current), 10);
   test.end();
 });
 
-api.metatests.test(
+metatests.test(
   'Iterator.reduce with no initialValue on consumed iterator',
   test => {
     const iterator = iter(array);
@@ -88,7 +89,7 @@ api.metatests.test(
   }
 );
 
-api.metatests.test('Iterator.map', test => {
+metatests.test('Iterator.map', test => {
   test.strictSame(
     iter(array)
       .map(value => value * 2)
@@ -98,7 +99,7 @@ api.metatests.test('Iterator.map', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.map with thisArg', test => {
+metatests.test('Iterator.map with thisArg', test => {
   const obj = {
     multiplier: 2,
     mapper(value) {
@@ -115,7 +116,7 @@ api.metatests.test('Iterator.map with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.filter', test => {
+metatests.test('Iterator.filter', test => {
   test.strictSame(
     iter(array)
       .filter(value => !(value % 2))
@@ -125,7 +126,7 @@ api.metatests.test('Iterator.filter', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.filter with thisArg', test => {
+metatests.test('Iterator.filter with thisArg', test => {
   const obj = {
     divider: 2,
     predicate(value) {
@@ -142,7 +143,7 @@ api.metatests.test('Iterator.filter with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.flat', test => {
+metatests.test('Iterator.flat', test => {
   const array = [[[[1], 2], 3], 4];
   const flatArray = [1, 2, 3, 4];
   test.strictSame(
@@ -154,7 +155,7 @@ api.metatests.test('Iterator.flat', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.flat with no depth', test => {
+metatests.test('Iterator.flat with no depth', test => {
   const array = [[[[1], 2], 3], 4];
   const flatArray = [[[1], 2], 3, 4];
   test.strictSame(
@@ -166,7 +167,7 @@ api.metatests.test('Iterator.flat with no depth', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.flatMap', test => {
+metatests.test('Iterator.flatMap', test => {
   const array = [1, 2, 3];
   const result = [1, 1, 2, 2, 3, 3];
   test.strictSame(
@@ -178,7 +179,7 @@ api.metatests.test('Iterator.flatMap', test => {
   test.end();
 });
 
-api.metatests.test(
+metatests.test(
   'Iterator.flatMap that returns neither Iterator nor Iterable',
   test => {
     const array = [1, 2, 3];
@@ -193,7 +194,7 @@ api.metatests.test(
   }
 );
 
-api.metatests.test('Iterator.flatMap with thisArg', test => {
+metatests.test('Iterator.flatMap with thisArg', test => {
   const obj = {
     value: 1,
     mapper(element) {
@@ -212,7 +213,7 @@ api.metatests.test('Iterator.flatMap with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.zip', test => {
+metatests.test('Iterator.zip', test => {
   const it = iter(array);
   const itr = iter(array).take(3);
   const iterator = iter(array).take(2);
@@ -220,7 +221,7 @@ api.metatests.test('Iterator.zip', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.join', test => {
+metatests.test('Iterator.join', test => {
   const it = iter(array).take(1);
   const itr = iter(array)
     .skip(1)
@@ -232,7 +233,7 @@ api.metatests.test('Iterator.join', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.take', test => {
+metatests.test('Iterator.take', test => {
   const it = iter(array).take(2);
   test.strictSame(it.next().value, 1);
   test.strictSame(it.next().value, 2);
@@ -240,7 +241,7 @@ api.metatests.test('Iterator.take', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.skip', test => {
+metatests.test('Iterator.skip', test => {
   const it = iter(array).skip(2);
   test.strictSame(it.next().value, 3);
   test.strictSame(it.next().value, 4);
@@ -248,17 +249,17 @@ api.metatests.test('Iterator.skip', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.every that must return true', test => {
+metatests.test('Iterator.every that must return true', test => {
   test.assert(iter(array).every(element => element > 0));
   test.end();
 });
 
-api.metatests.test('Iterator.every that must return false', test => {
+metatests.test('Iterator.every that must return false', test => {
   test.assertNot(iter(array).every(element => element % 2));
   test.end();
 });
 
-api.metatests.test('Iterator.every with thisArg', test => {
+metatests.test('Iterator.every with thisArg', test => {
   const obj = {
     min: 0,
     predicate(value) {
@@ -270,17 +271,17 @@ api.metatests.test('Iterator.every with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.some that must return true', test => {
+metatests.test('Iterator.some that must return true', test => {
   test.assert(iter(array).some(element => element % 2));
   test.end();
 });
 
-api.metatests.test('Iterator.some that must return false', test => {
+metatests.test('Iterator.some that must return false', test => {
   test.assertNot(iter(array).some(element => element < 0));
   test.end();
 });
 
-api.metatests.test('Iterator.some with thisArg', test => {
+metatests.test('Iterator.some with thisArg', test => {
   const obj = {
     max: 0,
     predicate(value) {
@@ -292,17 +293,17 @@ api.metatests.test('Iterator.some with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.find that must find an element', test => {
+metatests.test('Iterator.find that must find an element', test => {
   test.strictSame(iter(array).find(element => element % 2 === 0), 2);
   test.end();
 });
 
-api.metatests.test('Iterator.find that must not find an element', test => {
+metatests.test('Iterator.find that must not find an element', test => {
   test.strictSame(iter(array).find(element => element > 4), undefined);
   test.end();
 });
 
-api.metatests.test('Iterator.find with thisArg', test => {
+metatests.test('Iterator.find with thisArg', test => {
   const obj = {
     divider: 2,
     predicate(value) {
@@ -314,22 +315,22 @@ api.metatests.test('Iterator.find with thisArg', test => {
   test.end();
 });
 
-api.metatests.test('Iterator.includes that must return true', test => {
+metatests.test('Iterator.includes that must return true', test => {
   test.assert(iter(array).includes(1));
   test.end();
 });
 
-api.metatests.test('Iterator.includes with a NaN', test => {
+metatests.test('Iterator.includes with a NaN', test => {
   test.assert(iter([1, 2, NaN]).includes(NaN));
   test.end();
 });
 
-api.metatests.test('Iterator.includes that must return false', test => {
+metatests.test('Iterator.includes that must return false', test => {
   test.assertNot(iter(array).includes(0));
   test.end();
 });
 
-api.metatests.test(
+metatests.test(
   'Iterator.collectTo must collect to given Collection',
   test => {
     const set = iter(array).collectTo(Set);
@@ -338,12 +339,12 @@ api.metatests.test(
   }
 );
 
-api.metatests.test('Iterator.toArray must convert to array', test => {
+metatests.test('Iterator.toArray must convert to array', test => {
   test.strictSame(iter(array).toArray(), array);
   test.end();
 });
 
-api.metatests.test(
+metatests.test(
   'Iterator.collectWith must collect to a provided object',
   test => {
     const set = new Set();
