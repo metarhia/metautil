@@ -293,6 +293,26 @@ metatests.test('Iterator.some with thisArg', test => {
   test.end();
 });
 
+metatests.testSync('Iterator.someCount that must return true', test => {
+  test.assert(iter(array).someCount(element => element % 2, 2));
+});
+
+metatests.testSync('Iterator.someCount that must return false', test => {
+  test.assertNot(iter(array).someCount(element => element % 2, 3));
+  test.assertNot(iter(array).someCount(element => element < 0, 1));
+});
+
+metatests.testSync('Iterator.someCount with thisArg', test => {
+  const obj = {
+    max: 3,
+    predicate(value) {
+      return value < this.max;
+    },
+  };
+
+  test.assert(iter(array).someCount(obj.predicate, 2, obj));
+});
+
 metatests.test('Iterator.find that must find an element', test => {
   test.strictSame(iter(array).find(element => element % 2 === 0), 2);
   test.end();
