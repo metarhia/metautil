@@ -283,13 +283,13 @@ metatests.test('Iterator.some that must return false', test => {
 
 metatests.test('Iterator.some with thisArg', test => {
   const obj = {
-    max: 0,
+    max: 2,
     predicate(value) {
       return value < this.max;
     },
   };
 
-  test.assertNot(iter(array).every(obj.predicate, obj));
+  test.assert(iter(array).some(obj.predicate, obj));
   test.end();
 });
 
