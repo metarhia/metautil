@@ -241,6 +241,12 @@ metatests.test('Iterator.take', test => {
   test.end();
 });
 
+metatests.testSync('Iterator.takeWhile', test => {
+  const it = iter(array).takeWhile(x => x < 3);
+  test.strictSame(it.toArray(), [1, 2]);
+  test.assert(it.next().done);
+});
+
 metatests.test('Iterator.skip', test => {
   const it = iter(array).skip(2);
   test.strictSame(it.next().value, 3);
