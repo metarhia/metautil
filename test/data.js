@@ -25,6 +25,20 @@ metatests.case('Common / data types', { common }, {
     [[],                       []],
     [[true, false], [true, false]],
   ],
+  'common.clone': [
+    [{},                                        {}],
+    [{ a: [1, 2, 3] },            { a: [1, 2, 3] }],
+    [{ a: 1, b: 2, c: 3 },    { a: 1, b: 2, c: 3 }],
+    [{ a: { b: 2, c: 3 } },  { a: { b: 2, c: 3 } }],
+    [{ a: new Date('2000-01-01') },      { a: {} }],
+  ],
+  'common.duplicate': [
+    [{},                                                       {}],
+    [{ a: [1, 2, 3] },                           { a: [1, 2, 3] }],
+    [{ a: 1, b: 2, c: 3 },                   { a: 1, b: 2, c: 3 }],
+    [{ a: { b: 2, c: 3 } },                 { a: { b: 2, c: 3 } }],
+    [{ a: new Date('2000-01-01') }, { a: new Date('2000-01-01') }],
+  ],
   'common.getByPath': [
     [{ item: { subitem: { value: 'Gagarin' } } }, 'item.subitem.value',            'Gagarin'],
     [{ item: { subitem: { value: 123       } } }, 'item.subitem.value',                  123],
