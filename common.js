@@ -1,26 +1,26 @@
 'use strict';
 
 const submodules = [
-  'auth', // Validation of data for authentication/authorization
-  'utilities', // Common utilities
-  'math', // Math common function
   'array', // Arrays manipulations
+  'auth', // Validation of data for authentication/authorization
+  'cache', // Cache (enhanced Map)
+  'callbacks', // Callback utilities
   'data', // Data structures manipulations
+  'enum', // Enumerated type
+  'events', // Events and emitter
+  'fp', // Functional programming
+  'id', // Keys and identifiers
+  'iterator', // Iterator
+  'math', // Math common function
+  'mp', // Metaprogramming
+  'network', // Network utilities
+  'oop', // Object-oriented programming
+  'sort', // Sort compare functions
   'strings', // Strings utilities
   'time', // Date and Time functions
-  'fp', // Functional programming
-  'oop', // Object-oriented programming
-  'callbacks', // Callback utilities
-  'events', // Events and emitter
-  'units', // Units conversion
-  'network', // Network utilities
-  'id', // Keys and identifiers
-  'sort', // Sort compare functions
-  'cache', // Cache (enhanced Map)
-  'mp', // Metaprogramming
-  'enum', // Enumerated type
-  'iterator', // Iterator
   'uint64', // Uint64
+  'units', // Units conversion
+  'utilities', // Common utilities
 ].map(path => require('./lib/' + path));
 
 module.exports = Object.assign({}, ...submodules);
