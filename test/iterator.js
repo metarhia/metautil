@@ -29,6 +29,16 @@ metatests.test('Iterator is Iterable', test => {
   test.end();
 });
 
+metatests.test('Iterator.count', test => {
+  test.strictSame(iter(array).count(), array.length);
+  test.end();
+});
+
+metatests.test('Iterator.count on consumed iterator', test => {
+  test.strictSame(iter(array).skip(array.length).count(), 0);
+  test.end();
+});
+
 metatests.test('Iterator.each', test => {
   const iterator = iter(array);
   let sum = 0;
