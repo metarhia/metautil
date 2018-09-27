@@ -32,7 +32,7 @@ const UNICODE_VERSION = '11.0.0';
 const UCD_LINK = 'http://www.unicode.org/Public/' + UNICODE_VERSION +
   '/ucd/UnicodeData.txt';
 
-const OUTPUT_PATH = path.join(__dirname, '../lib/utils/unicode-categories.js');
+const OUTPUT_PATH = path.join(__dirname, '../lib/unicode-categories.js');
 
 const getFileHeader = () =>
   `// Copyright (c) 2018 mdsf project authors. Use of this source code is

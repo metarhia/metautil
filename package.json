@@ -26,7 +26,8 @@
     "lint": "eslint .",
     "docs": "metaschema ./common.js",
     "build": "babel common.js -d dist && babel lib -d dist/lib",
-    "prepublish": "npm run -s build"
+    "prepublish": "npm run -s build",
+    "install": "node tools/unicode-category-parser.js"
   },
   "engines": {
     "node": ">=6.0.0"
