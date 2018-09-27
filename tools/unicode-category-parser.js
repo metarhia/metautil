@@ -35,7 +35,7 @@ const UCD_LINK = 'http://www.unicode.org/Public/' + UNICODE_VERSION +
 const OUTPUT_PATH = path.join(__dirname, '../lib/unicode-categories.js');
 
 const getFileHeader = () =>
-  `// Copyright (c) 2018 mdsf project authors. Use of this source code is
+  `// Copyright (c) 2017-2018 Metarhia contributors. Use of this source code is
 // governed by the MIT license that can be found in the LICENSE file.
 //
 //
