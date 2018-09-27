@@ -9,6 +9,7 @@ const submodules = [
   'data', // Data structures manipulations
   'enum', // Enumerated type
   'events', // Events and emitter
+  'flags', // Flags data type
   'fp', // Functional programming
   'id', // Keys and identifiers
   'iterator', // Iterator
