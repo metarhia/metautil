@@ -22,7 +22,7 @@
   },
   "readmeFilename": "README.md",
   "scripts": {
-    "test": "eslint . && node test/all.js",
+    "test": "eslint . && metatests test/",
     "lint": "eslint .",
     "docs": "metaschema ./common.js",
     "build": "babel common.js -d dist && babel lib -d dist/lib",
@@ -39,6 +39,6 @@
     "eslint": "^4.19.1",
     "metaschema": "^0.0.21",
     "metasync": "^0.3.29",
-    "metatests": "^0.2.0"
+    "metatests": "^0.2.1"
   }
 }
