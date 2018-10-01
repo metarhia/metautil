@@ -1,6 +1,6 @@
 {
   "name": "metarhia-common",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "description": "Metarhia Common Library",
   "license": "MIT",
@@ -33,9 +33,9 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0",
-    "@babel/core": "^7.0.1",
-    "@babel/preset-env": "^7.0.0",
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
     "eslint": "^4.19.1",
     "metaschema": "^0.0.21",
     "metasync": "^0.3.29",
