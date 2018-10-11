@@ -12,6 +12,7 @@ const submodules = [
   'flags', // Flags data type
   'fp', // Functional programming
   'id', // Keys and identifiers
+  'int64', // Int64
   'iterator', // Iterator
   'math', // Math common function
   'mp', // Metaprogramming
