@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('restLeft', (test) => {
+metatests.test('restLeft', test => {
   const expectedArgs = [3, 4, 5];
   const expectedArg1 = 1;
   const expectedArg2 = 2;

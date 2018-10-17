@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('either', (test) => {
+metatests.test('either', test => {
   const fnEither = common.either(x => x * 2);
 
   const res = fnEither(1, 2);
@@ -12,9 +12,9 @@ metatests.test('either', (test) => {
   test.end();
 });
 
-metatests.test('either with one error and one success', (test) => {
+metatests.test('either with one error and one success', test => {
   const fnError = new Error('either with error');
-  const fn = (x) => {
+  const fn = x => {
     if (x === 1) {
       throw fnError;
     } else {
@@ -29,10 +29,10 @@ metatests.test('either with one error and one success', (test) => {
   test.end();
 });
 
-metatests.test('either with all errors', (test) => {
+metatests.test('either with all errors', test => {
   const fnError1 = new Error('either with error 1');
   const fnError2 = new Error('either with error 2');
-  const fn = (x) => {
+  const fn = x => {
     if (x === 1) {
       throw fnError1;
     } else {

@@ -8,7 +8,7 @@ const common = require('..');
 const config = {
   characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
   secret: 'secret',
-  length: 64
+  length: 64,
 };
 
 metatests.case('Common / id', { common }, {
@@ -20,7 +20,7 @@ metatests.case('Common / id', { common }, {
     [config, '',                                                                 false],
   ],
   'common.generateSID': [
-    [config, (result) => (result.length === 64)],
+    [config, result => result.length === 64],
   ],
   'common.crcSID': [
     [
@@ -29,8 +29,8 @@ metatests.case('Common / id', { common }, {
         config.length - 4,
         config.characters
       ),
-      (result)  => (result.length === 4)
-    ]
+      result => result.length === 4,
+    ],
   ],
   'common.idToChunks': [
     [0,                ['0000', '0000']],
@@ -38,7 +38,7 @@ metatests.case('Common / id', { common }, {
     [30,               ['001e', '0000']],
     [123456789,        ['cd15', '075b']],
     [123456789123,     ['1a83', 'be99', '001c']],
-    [9007199254740991, ['ffff', 'ffff', 'ffff', '001f']]
+    [9007199254740991, ['ffff', 'ffff', 'ffff', '001f']],
   ],
   'common.idToPath': [
     [0,                '0000/0000'],
@@ -46,7 +46,7 @@ metatests.case('Common / id', { common }, {
     [30,               '001e/0000'],
     [123456789,        'cd15/075b'],
     [123456789123,     '1a83/be99/001c'],
-    [9007199254740991, 'ffff/ffff/ffff/001f']
+    [9007199254740991, 'ffff/ffff/ffff/001f'],
   ],
   'common.pathToId': [
     ['0000/0000',           0],
@@ -64,11 +64,11 @@ metatests.case('Common / id', { common }, {
     ['1a83/be99/001c',      123456789123],
     ['0000/0000/1000',      17592186044416],
     ['0000/0000/ffff',      281470681743360],
-    ['ffff/ffff/ffff/001f', 9007199254740991]
-  ]
+    ['ffff/ffff/ffff/001f', 9007199254740991],
+  ],
 });
 
-metatests.test('generateStorageKey', (test) => {
+metatests.test('generateStorageKey', test => {
   const key = common.generateStorageKey();
   test.strictSame(Array.isArray(key), true);
   test.strictSame(key.length, 3);

@@ -9,7 +9,7 @@ metatests.case('Common / callbacks', { common }, {
   'common.emptyness': [[[], undefined]],
 });
 
-metatests.test('unsafeCallback', (test) => {
+metatests.test('unsafeCallback', test => {
   const callback = (...args) => {
     test.strictSame(args, [1, 2, 3]);
     test.end();
@@ -20,7 +20,7 @@ metatests.test('unsafeCallback', (test) => {
   cb(...args);
 });
 
-metatests.test('unsafeCallback without callback', (test) => {
+metatests.test('unsafeCallback without callback', test => {
   const args = ['a', 'b', 'c'];
   const cb = common.unsafeCallback(args);
   test.strictSame(args, ['a', 'b', 'c']);
@@ -28,7 +28,7 @@ metatests.test('unsafeCallback without callback', (test) => {
   test.end();
 });
 
-metatests.test('safeCallback', (test) => {
+metatests.test('safeCallback', test => {
   const callback = (...args) => {
     test.strictSame(args, [10, 20, 30, 40, 50]);
     test.end();
@@ -39,7 +39,7 @@ metatests.test('safeCallback', (test) => {
   wrappedCb(...args);
 });
 
-metatests.test('safeCallback without callback', (test) => {
+metatests.test('safeCallback without callback', test => {
   const args = [11, 22, 33];
   const wrappedCb = common.safeCallback(args);
   test.strictSame(args, [11, 22, 33]);
@@ -47,7 +47,7 @@ metatests.test('safeCallback without callback', (test) => {
   test.end();
 });
 
-metatests.test('safeCallback return emptiness', (test) => {
+metatests.test('safeCallback return emptiness', test => {
   const args = [3, 2, 1];
   const wrappedCb = common.safeCallback(args);
   test.strictSame(wrappedCb, common.emptiness);
@@ -55,7 +55,7 @@ metatests.test('safeCallback return emptiness', (test) => {
   test.end();
 });
 
-metatests.test('onceCallback prevent callback twice', (test) => {
+metatests.test('onceCallback prevent callback twice', test => {
   const callback = (...args) => {
     test.strictSame(args, ['A', 'B', 'C']);
     test.end();
@@ -67,7 +67,7 @@ metatests.test('onceCallback prevent callback twice', (test) => {
   wrappedCb(...args);
 });
 
-metatests.test('requiredCallback', (test) => {
+metatests.test('requiredCallback', test => {
   const callback = (...args) => {
     test.strictSame(args, [100, 200, 300]);
     test.end();
@@ -78,7 +78,7 @@ metatests.test('requiredCallback', (test) => {
   wrappedCb(...args);
 });
 
-metatests.test('requiredCallback raise', (test) => {
+metatests.test('requiredCallback raise', test => {
   const args = [-1, -2, -3];
   try {
     const wrappedCb = common.requiredCallback(args);
@@ -89,7 +89,7 @@ metatests.test('requiredCallback raise', (test) => {
   }
 });
 
-metatests.test('once', (test) => {
+metatests.test('once', test => {
   const fn = () => {
     test.end();
   };
@@ -98,7 +98,7 @@ metatests.test('once', (test) => {
   wrapped();
 });
 
-metatests.test('once without function', (test) => {
+metatests.test('once without function', test => {
   const wrapped = common.once(null);
   test.strictSame(wrapped, common.emptiness);
   wrapped();

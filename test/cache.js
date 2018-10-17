@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('cache create add get', (test) => {
+metatests.test('cache create add get', test => {
   const cache = common.cache();
 
   cache.add('key1', 'value1');
@@ -15,7 +15,7 @@ metatests.test('cache create add get', (test) => {
   test.end();
 });
 
-metatests.test('cache del key', (test) => {
+metatests.test('cache del key', test => {
   const cache = common.cache();
 
   cache.add('key1', 'value1');
@@ -27,7 +27,7 @@ metatests.test('cache del key', (test) => {
   test.end();
 });
 
-metatests.test('cache clr', (test) => {
+metatests.test('cache clr', test => {
   const cache = common.cache({ });
 
   cache.add('key1', 'value1');
@@ -39,7 +39,7 @@ metatests.test('cache clr', (test) => {
   test.end();
 });
 
-metatests.test('cache calcSize', (test) => {
+metatests.test('cache calcSize', test => {
   const cache = common.cache({ calcSize: true });
 
   cache.add('key1', { length: 10, str: '0123456789' });

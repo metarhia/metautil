@@ -3,8 +3,8 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('partial ', (test) => {
-  const func = (a, b, c, d) => (a + b + c + d);
+metatests.test('partial ', test => {
+  const func = (a, b, c, d) => a + b + c + d;
   const fn1 = common.partial(func);
   const fn2 = common.partial(func, 10);
   const fn3 = common.partial(func, 10, 20);

@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('zipWith', (test) => {
+metatests.test('zipWith', test => {
   const data = [
     [1, 2, 3],
     ['one', 'two', 'three'],

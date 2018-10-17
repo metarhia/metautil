@@ -82,45 +82,45 @@ metatests.case('Common / data types', { common }, {
   ],
 });
 
-metatests.test('setByPath', (test) => {
+metatests.test('setByPath', test => {
   const obj = { a: {} };
   test.assert(common.setByPath(obj, 'a.b.c', 42));
   test.strictSame(obj.a.b.c, 42);
   test.end();
 });
 
-metatests.test('setByPath non-object', (test) => {
+metatests.test('setByPath non-object', test => {
   const obj = { a: 10 };
   test.assertNot(common.setByPath(obj, 'a.b.c', 42));
   test.end();
 });
 
-metatests.test('setByPath non-object first', (test) => {
+metatests.test('setByPath non-object first', test => {
   const nonobj = 10;
   test.assertNot(common.setByPath(nonobj, 'a.b.c', 42));
   test.end();
 });
 
-metatests.test('setByPath non-object last', (test) => {
+metatests.test('setByPath non-object last', test => {
   const obj = { a: { b: 10 } };
   test.assertNot(common.setByPath(obj, 'a.b.c', 42));
   test.end();
 });
 
-metatests.test('deleteByPath', (test) => {
+metatests.test('deleteByPath', test => {
   const obj = { a: { b: { c: 42 } } };
   test.assert(common.deleteByPath(obj, 'a.b.c'));
   test.assertNot(obj.a.b.c);
   test.end();
 });
 
-metatests.test('deleteByPath non-existent', (test) => {
+metatests.test('deleteByPath non-existent', test => {
   const obj = { a: {} };
   test.assertNot(common.deleteByPath(obj, 'a.b.c'));
   test.end();
 });
 
-metatests.test('deleteByPath non-existent last', (test) => {
+metatests.test('deleteByPath non-existent last', test => {
   const obj = { a: { b: {} } };
   test.assertNot(common.deleteByPath(obj, 'a.b.c'));
   test.end();

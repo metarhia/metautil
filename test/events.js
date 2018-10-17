@@ -4,7 +4,7 @@ const metatests = require('metatests');
 const events = require('events');
 const common = require('..');
 
-metatests.test('emitter', (test) => {
+metatests.test('emitter', test => {
   const ee = common.emitter();
   ee.on('name', () => {
     test.end();
@@ -12,7 +12,7 @@ metatests.test('emitter', (test) => {
   ee.emit('name');
 });
 
-metatests.test('forward all events', (test) => {
+metatests.test('forward all events', test => {
   test.plan(3);
 
   const sourceEmitter = common.emitter();
@@ -37,7 +37,7 @@ metatests.test('forward all events', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-metatests.test('forward all events by method', (test) => {
+metatests.test('forward all events by method', test => {
   test.plan(3);
 
   const sourceEmitter = common.emitter();
@@ -62,7 +62,7 @@ metatests.test('forward all events by method', (test) => {
   sourceEmitter.emit('testEvent3');
 });
 
-metatests.test('forward a single event', (test) => {
+metatests.test('forward a single event', test => {
   test.plan(1);
 
   const sourceEventEmitter = new events.EventEmitter();
@@ -77,7 +77,7 @@ metatests.test('forward a single event', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-metatests.test('forward a single event under a new name', (test) => {
+metatests.test('forward a single event under a new name', test => {
   test.plan(1);
 
   const sourceEventEmitter = new events.EventEmitter();
@@ -94,7 +94,7 @@ metatests.test('forward a single event under a new name', (test) => {
   sourceEventEmitter.emit('testEvent');
 });
 
-metatests.test('forward multiple events', (test) => {
+metatests.test('forward multiple events', test => {
   test.plan(2);
 
   const sourceEventEmitter = new events.EventEmitter();

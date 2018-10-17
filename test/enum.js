@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const { Enum } = require('..');
 
-metatests.test('Enum with key/value', (test) => {
+metatests.test('Enum with key/value', test => {
   const Month = Enum.from({
     Jan: 'January',
     Feb: 'February',
@@ -16,7 +16,7 @@ metatests.test('Enum with key/value', (test) => {
     Sep: 'September',
     Oct: 'October',
     Nov: 'November',
-    Dec: 'December'
+    Dec: 'December',
   });
 
   test.strictSame(typeof Month, 'function');
@@ -38,7 +38,7 @@ metatests.test('Enum with key/value', (test) => {
   test.end();
 });
 
-metatests.test('Enum string month keys', (test) => {
+metatests.test('Enum string month keys', test => {
   const Month = Enum.from(
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -64,7 +64,7 @@ metatests.test('Enum string month keys', (test) => {
   test.end();
 });
 
-metatests.test('Enum string month typed keys', (test) => {
+metatests.test('Enum string month typed keys', test => {
   const Month = Enum.from({
     1: 'January',
     2: 'February',
@@ -77,7 +77,7 @@ metatests.test('Enum string month typed keys', (test) => {
     9: 'September',
     10: 'October',
     11: 'November',
-    12: 'December'
+    12: 'December',
   });
 
   test.strictSame(typeof Month, 'function');
@@ -99,7 +99,7 @@ metatests.test('Enum string month typed keys', (test) => {
   test.end();
 });
 
-metatests.test('Enum hundreds keys', (test) => {
+metatests.test('Enum hundreds keys', test => {
   const Hundreds = Enum.from(100, 200, 300, 400, 500);
 
   const h100 = Hundreds.from(100);
@@ -134,7 +134,7 @@ metatests.test('Enum hundreds keys', (test) => {
   test.end();
 });
 
-metatests.test('Enum hundreds keys array', (test) => {
+metatests.test('Enum hundreds keys array', test => {
   const Hundreds = Enum.from([100, 200, 300, 400, 500]);
 
   test.strictSame(Hundreds.from(0), Enum.NaE);
@@ -147,7 +147,7 @@ metatests.test('Enum hundreds keys array', (test) => {
   test.end();
 });
 
-metatests.test('Enum.NaE property', (test) => {
+metatests.test('Enum.NaE property', test => {
   test.strictSame(Object.getOwnPropertyDescriptor(Enum, 'NaE'), {
     writable: false,
     enumerable: false,

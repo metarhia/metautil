@@ -18,7 +18,7 @@ const CONFIG_FILES_PRIORITY = [
   'filestorage.js',
   'mail.js',
   'hosts.js',
-  'routes.js'
+  'routes.js',
 ];
 
 metatests.case('Common / sort', { common }, {
@@ -54,13 +54,13 @@ metatests.case('Common / sort', { common }, {
   ],
 });
 
-metatests.test('sortCompareDirectories', (test) => {
+metatests.test('sortCompareDirectories', test => {
   const array = [
     { name: 'file0.txt' },
     { name: '/dir' },
     { name: 'file1.txt' },
     { name: 'file0.txt' },
-    { name: '/foo' }
+    { name: '/foo' },
   ];
   const sorted = [
     { name: '/dir' },
@@ -73,7 +73,7 @@ metatests.test('sortCompareDirectories', (test) => {
   test.end();
 });
 
-metatests.test('sortCompareByName', (test) => {
+metatests.test('sortCompareByName', test => {
   const array = [{ name: 'c' }, { name: 'a' }, { name: 'a' }, { name: 'b' }];
   const sorted = [{ name: 'a' }, { name: 'a' }, { name: 'b' }, { name: 'c' }];
   test.strictSame(array.sort(common.sortCompareByName), sorted);

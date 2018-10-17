@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.test('zip', (test) => {
+metatests.test('zip', test => {
   const data = [
     [1, 2, 3],
     ['one', 'two', 'three'],
@@ -19,7 +19,7 @@ metatests.test('zip', (test) => {
   test.end();
 });
 
-metatests.test('zip with no elements', (test) => {
+metatests.test('zip with no elements', test => {
   const res = common.zip();
   test.strictSame(res, []);
   test.end();

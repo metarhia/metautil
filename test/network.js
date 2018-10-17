@@ -23,6 +23,6 @@ metatests.case('Common / network', { common }, {
     ['localhost:8080',        'localhost'],
   ],
   'common.localIPs': [
-    [[], (value) => Array.isArray(value)],
+    [[], value => Array.isArray(value)],
   ],
 });
