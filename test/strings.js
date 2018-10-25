@@ -133,4 +133,11 @@ metatests.case('Metarhia common library', { common }, {
     [['/css/*.css'],                     '^\\/css\\/.*\\.css$'],
     [['*/css/*'],                            '^.*\\/css\\/.*$'],
   ],
+  'common.normalizeEmail': [
+    ['testemail@example.com', 'testemail@example.com'],
+    ['testemail@EXAMPLE.COM', 'testemail@example.com'],
+    ['testemail@eXaMpLe.CoM', 'testemail@example.com'],
+    ['TestEmail@example.COM', 'TestEmail@example.com'],
+    ['TESTEMAIL@EXAMPLE.COM', 'TESTEMAIL@example.com'],
+  ],
 });
