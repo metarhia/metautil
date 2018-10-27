@@ -125,3 +125,14 @@ metatests.test('deleteByPath non-existent last', (test) => {
   test.assertNot(common.deleteByPath(obj, 'a.b.c'));
   test.end();
 });
+
+metatests.test('duplicate correctly handling object prototypes', test => {
+  const objects = [
+    {}, new Date(), Object.create(null),
+  ];
+  objects.forEach(obj => {
+    const res = common.duplicate(obj);
+    test.strictSame(obj.constructor, res.constructor);
+  });
+  test.end();
+});
