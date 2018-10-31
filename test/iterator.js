@@ -389,3 +389,21 @@ metatests.test(
     test.end();
   }
 );
+
+metatests.testSync('Iterator.enumerate must return tuples', test => {
+  let i = 0;
+  iter(array).enumerate().forEach(t => {
+    test.strictSame(t, [i, array[i]]);
+    i++;
+  });
+});
+
+metatests.testSync('Iterator.enumerate must start from 0', test => {
+  const it = iter(array);
+  it.next();
+  let i = 0;
+  it.enumerate().forEach(t => {
+    test.strictSame(t, [i, array[i + 1]]);
+    i++;
+  });
+});
