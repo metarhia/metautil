@@ -13,6 +13,7 @@ metatests.case('Metarhia common library', { common }, {
     ['Hello, @name@', { name: null }, '', true,                                  'Hello, [null]'],
     ['Hello, @name@', { name: 'Ali' }, '', true,                                    'Hello, Ali'],
     ['Hello, @.name@', { person: { name: 'Ali' } }, 'person', true,                 'Hello, Ali'],
+    ['@w@, @.name@', { w: 'Hello', person: { name: 'Ali' } }, 'person', true,       'Hello, Ali'],
   ],
   'common.section': [
     ['All you need is JavaScript', 'is',   ['All you need ', ' JavaScript']],
