@@ -469,6 +469,12 @@ metatests.test('Uint64.constructor()', test => {
     },
     {
       value:
+        '0b10101010101010101010101010101010101010101010101010101010101010',
+      expectedString: '3074457345618258602',
+      message: 'must create Uint64 from a big bin number provided as a string',
+    },
+    {
+      value:
         '0b1010101010101010101010101010101010101010101010101010101010101010',
       expectedString: '12297829382473034410',
       message: 'must create Uint64 from a big bin number provided as a string',
