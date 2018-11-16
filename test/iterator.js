@@ -407,3 +407,28 @@ metatests.testSync('Iterator.enumerate must start from 0', test => {
     i++;
   });
 });
+
+metatests.testSync('Iterator.join default', test => {
+  const actual = iter(array).join();
+  test.strictSame(actual, '1,2,3,4');
+});
+
+metatests.testSync('Iterator.join', test => {
+  const actual = iter(array).join(', ');
+  test.strictSame(actual, '1, 2, 3, 4');
+});
+
+metatests.testSync('Iterator.join with prefix', test => {
+  const actual = iter(array).join(', ', 'a = ');
+  test.strictSame(actual, 'a = 1, 2, 3, 4');
+});
+
+metatests.testSync('Iterator.join with suffix', test => {
+  const actual = iter(array).join(', ', '', ' => 10');
+  test.strictSame(actual, '1, 2, 3, 4 => 10');
+});
+
+metatests.testSync('Iterator.join with prefix and suffix', test => {
+  const actual = iter(array).join(', ', '[', ']');
+  test.strictSame(actual, '[1, 2, 3, 4]');
+});
