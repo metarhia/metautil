@@ -231,7 +231,7 @@ metatests.test('Iterator.zip', test => {
   test.end();
 });
 
-metatests.test('Iterator.join', test => {
+metatests.test('Iterator.chain', test => {
   const it = iter(array).take(1);
   const itr = iter(array)
     .skip(1)
@@ -239,7 +239,7 @@ metatests.test('Iterator.join', test => {
   const iterator = iter(array)
     .skip(2)
     .take(2);
-  test.strictSame(it.join(itr, iterator).toArray(), [1, 2, 3, 4]);
+  test.strictSame(it.chain(itr, iterator).toArray(), [1, 2, 3, 4]);
   test.end();
 });
 
