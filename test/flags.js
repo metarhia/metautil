@@ -62,15 +62,14 @@ metatests.test('FlagsClass.get', test => {
 
 metatests.test('FlagsClass.has', test => {
   const Numeri = Flags.from('Uno', 'Due', 'Tre', 'Quatro');
-  const num = Numeri.from();
 
-  test.strictSame(num.has('Uno'), true);
-  test.strictSame(num.has('Due'), true);
-  test.strictSame(num.has('Tre'), true);
-  test.strictSame(num.has('Quatro'), true);
+  test.strictSame(Numeri.has('Uno'), true);
+  test.strictSame(Numeri.has('Due'), true);
+  test.strictSame(Numeri.has('Tre'), true);
+  test.strictSame(Numeri.has('Quatro'), true);
 
-  test.strictSame(num.has('Cinque'), false);
-  test.strictSame(num.has('Sei'), false);
+  test.strictSame(Numeri.has('Cinque'), false);
+  test.strictSame(Numeri.has('Sei'), false);
 
   test.end();
 });
