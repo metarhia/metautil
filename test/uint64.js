@@ -489,6 +489,21 @@ metatests.test('Uint64.constructor()', test => {
       expectedString: '18446744073709551615',
       message: 'must create Uint64 from a big dec number provided as a string',
     },
+    {
+      value: new common.Int64(1),
+      expectedString: '1',
+      message: 'must create Uint64 from a small Int64',
+    },
+    {
+      value: new common.Int64('9223372036854775807'),
+      expectedString: '9223372036854775807',
+      message: 'must create Uint64 from a big Int64',
+    },
+    {
+      value: new common.Int64('-1'),
+      expectedString: '18446744073709551615',
+      message: 'must create Uint64 from a negative Int64',
+    },
   ].forEach(testcase => {
     const uint64 = new common.Uint64(testcase.value);
     test.strictSame(
