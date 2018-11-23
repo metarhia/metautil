@@ -92,11 +92,11 @@ metatests.case('Metarhia common library', { common }, {
     ['{a:"b",c:"d"}', '"', '"',      'b'],
   ],
   'common.escapeRegExp': [
-    ['/path/to/res?search=this.that&a=b', '\\\\/path\\\\/to\\\\/res\\\\?search=this\\\\.that&a=b'],
-    ['/path/to/res?search=this.that',         '\\\\/path\\\\/to\\\\/res\\\\?search=this\\\\.that'],
-    ['/path/to/res?search',                                 '\\\\/path\\\\/to\\\\/res\\\\?search'],
-    ['/path/to/res',                                                   '\\\\/path\\\\/to\\\\/res'],
-    ['/path',                                                                         '\\\\/path'],
+    ['/path/to/res?search=this.that&a=b', '\\/path\\/to\\/res\\?search=this\\.that&a=b'],
+    ['/path/to/res?search=this.that',         '\\/path\\/to\\/res\\?search=this\\.that'],
+    ['/path/to/res?search',                               '\\/path\\/to\\/res\\?search'],
+    ['/path/to/res',                                               '\\/path\\/to\\/res'],
+    ['/path',                                                                 '\\/path'],
   ],
   'common.addTrailingSlash': [
     ['/path',   '/path/'],
@@ -128,11 +128,11 @@ metatests.case('Metarhia common library', { common }, {
     ['abc',             'abc'],
   ],
   'common.arrayRegExp': [
-    [['*'],                                             '^.*$'],
-    [['/css/*', '/folder*'], '^((\\/css\\/.*)|(\\/folder.*))$'],
-    [['/', '/js/*'],                  '^((\\/)|(\\/js\\/.*))$'],
-    [['/css/*.css'],                     '^\\/css\\/.*\\.css$'],
-    [['*/css/*'],                            '^.*\\/css\\/.*$'],
+    [['*'],                                          /^.*$/],
+    [['/css/*', '/folder*'], /^((\/css\/.*)|(\/folder.*))$/],
+    [['/', '/js/*'],                  /^((\/)|(\/js\/.*))$/],
+    [['/css/*.css'],                     /^\/css\/.*\.css$/],
+    [['*/css/*'],                           /^.*\/css\/.*$/],
   ],
   'common.normalizeEmail': [
     ['testemail@example.com', 'testemail@example.com'],
