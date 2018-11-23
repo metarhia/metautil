@@ -881,3 +881,15 @@ metatests.test('Int64.prototype.toString() with invalid radix', test => {
 
   test.end();
 });
+
+metatests.test('Int64 JSON serialization', test => {
+  const zero = new common.Int64(0);
+  const smallNumber = new common.Int64(10);
+  const bigNumber = new common.Int64('9223372036854775807');
+  const bigNegativeNumber = new common.Int64('-9223372036854775808');
+  test.strictEqual(JSON.stringify(zero), '"0"');
+  test.strictEqual(JSON.stringify(smallNumber), '"10"');
+  test.strictEqual(JSON.stringify(bigNumber), '"9223372036854775807"');
+  test.strictEqual(JSON.stringify(bigNegativeNumber), '"-9223372036854775808"');
+  test.end();
+});

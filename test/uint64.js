@@ -544,3 +544,21 @@ metatests.test('Uint64.prototype.toString() with invalid radix', test => {
 
   test.end();
 });
+
+metatests.test('Uint64 JSON serialization', test => {
+  const zero = new common.Uint64(0);
+  const smallNumber = new common.Uint64(10);
+  const bigNumber = new common.Uint64('18446744073709551615');
+  test.strictEqual(JSON.stringify(zero), '"0"');
+  test.strictEqual(JSON.stringify(smallNumber), '"10"');
+  test.strictEqual(JSON.stringify(bigNumber), '"18446744073709551615"');
+  test.end();
+});
+
+metatests.test('Uint64 Postgres serialization', test => {
+  const number = new common.Uint64(10);
+  const bigNumber = new common.Uint64('18446744073709551615');
+  test.strictSame(number.toPostgres(), new common.Int64(10));
+  test.strictEqual(bigNumber.toPostgres(), new common.Int64(-1));
+  test.end();
+});
