@@ -893,3 +893,15 @@ metatests.test('Int64 JSON serialization', test => {
   test.strictEqual(JSON.stringify(bigNegativeNumber), '"-9223372036854775808"');
   test.end();
 });
+
+metatests.test('Int64 Postgres serialization', test => {
+  const zero = new common.Int64(0);
+  const smallNumber = new common.Int64(10);
+  const bigNumber = new common.Int64('9223372036854775807');
+  const bigNegativeNumber = new common.Int64('-9223372036854775808');
+  test.strictEqual(zero.toPostgres(), '0');
+  test.strictEqual(smallNumber.toPostgres(), '10');
+  test.strictEqual(bigNumber.toPostgres(), '9223372036854775807');
+  test.strictEqual(bigNegativeNumber.toPostgres(), '-9223372036854775808');
+  test.end();
+});
