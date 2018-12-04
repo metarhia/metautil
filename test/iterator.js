@@ -223,7 +223,14 @@ metatests.test('Iterator.flatMap with thisArg', test => {
   test.end();
 });
 
-metatests.test('Iterator.zip', test => {
+metatests.test('Iterator.zip with single iterator', test => {
+  const it = iter(array).take(1);
+  const toZip = iter(array).skip(2);
+  test.strictSame(it.zip(toZip).toArray(), [[1, 3]]);
+  test.end();
+});
+
+metatests.test('Iterator.zip with multiple iterators', test => {
   const it = iter(array);
   const itr = iter(array).take(3);
   const iterator = iter(array).take(2);
@@ -431,4 +438,9 @@ metatests.testSync('Iterator.join with suffix', test => {
 metatests.testSync('Iterator.join with prefix and suffix', test => {
   const actual = iter(array).join(', ', '[', ']');
   test.strictSame(actual, '[1, 2, 3, 4]');
+});
+
+metatests.testSync('Iterator.join on empty iterator', test => {
+  const actual = iter([]).join(',', 'prefix', 'suffix');
+  test.strictSame(actual, 'prefixsuffix');
 });
