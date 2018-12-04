@@ -444,3 +444,33 @@ metatests.testSync('Iterator.join on empty iterator', test => {
   const actual = iter([]).join(',', 'prefix', 'suffix');
   test.strictSame(actual, 'prefixsuffix');
 });
+
+metatests.testSync('RangeIterator with start and stop', test => {
+  const actual = Iterator.range(1, 5).toArray();
+  test.strictSame(actual, [1, 2, 3, 4]);
+});
+
+metatests.testSync('RangeIterator with start, stop and step', test => {
+  const actual = Iterator.range(1, 6, 2).toArray();
+  test.strictSame(actual, [1, 3, 5]);
+});
+
+metatests.testSync('RangeIterator without start', test => {
+  const actual = Iterator.range(5).toArray();
+  test.strictSame(actual, [0, 1, 2, 3, 4]);
+});
+
+metatests.testSync('RangeIterator reverse', test => {
+  const actual = Iterator.range(4, -1, -1).toArray();
+  test.strictSame(actual, [4, 3, 2, 1, 0]);
+});
+
+metatests.testSync('RangeIterator empty range', test => {
+  const actual = Iterator.range(0).toArray();
+  test.strictSame(actual, []);
+});
+
+metatests.testSync('RangeIterator empty range with start > stop', test => {
+  const actual = Iterator.range(1, 0).toArray();
+  test.strictSame(actual, []);
+});
