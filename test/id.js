@@ -100,3 +100,11 @@ metatests.test('generateStorageKey', test => {
   test.strictSame(key.join('/').length, 14);
   test.end();
 });
+
+metatests.test('common.hash() with common.validateHash()', test => {
+  const password = 'password';
+  const salt = 'salt';
+  const hashValue = common.hash(password, salt);
+  test.assert(common.validateHash(hashValue, password, salt));
+  test.end();
+});
