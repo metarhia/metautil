@@ -136,3 +136,17 @@ metatests.test('duplicate correctly handling object prototypes', test => {
   });
   test.end();
 });
+
+metatests.test('duplicate handling only object own properties', test => {
+  const buf = Buffer.from('test data');
+  const res = common.duplicate(buf);
+  test.strictSame(buf, res);
+  test.end();
+});
+
+metatests.test('clone handling only object own properties', test => {
+  const buf = Buffer.from('test data');
+  const res = common.clone(buf);
+  test.strictSame(buf, res);
+  test.end();
+});
