@@ -150,3 +150,11 @@ metatests.test('clone handling only object own properties', test => {
   test.strictSame(buf, res);
   test.end();
 });
+
+metatests.testSync('mergeObjects correctly handles ownProperties', test => {
+  const bufs = [
+    Buffer.from([1, 2, 3]), Buffer.from([4, 5, 6]),
+  ];
+  const actual = common.mergeObjects((a, b) => a + b, ...bufs);
+  test.strictSame(actual, Buffer.from([5, 7, 9]));
+});
