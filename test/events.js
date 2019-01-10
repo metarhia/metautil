@@ -83,9 +83,9 @@ metatests.test('forward a single event under a new name', test => {
   const sourceEventEmitter = new events.EventEmitter();
   const targetEventEmitter = new events.EventEmitter();
 
-  common.forwardEvents(
-    sourceEventEmitter, targetEventEmitter, { testEvent: 'renamedEvent' }
-  );
+  common.forwardEvents(sourceEventEmitter, targetEventEmitter, {
+    testEvent: 'renamedEvent',
+  });
 
   targetEventEmitter.on('renamedEvent', () => {
     test.pass('event handler must be called');
@@ -100,9 +100,10 @@ metatests.test('forward multiple events', test => {
   const sourceEventEmitter = new events.EventEmitter();
   const targetEventEmitter = new events.EventEmitter();
 
-  common.forwardEvents(
-    sourceEventEmitter, targetEventEmitter, ['event1', 'event2']
-  );
+  common.forwardEvents(sourceEventEmitter, targetEventEmitter, [
+    'event1',
+    'event2',
+  ]);
 
   targetEventEmitter.on('event1', () => {
     test.pass('first event handler must be called');

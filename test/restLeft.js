@@ -19,4 +19,3 @@ metatests.test('restLeft', test => {
     test.end();
   });
 });
-

@@ -3,11 +3,15 @@
 const metatests = require('metatests');
 const common = require('..');
 
-metatests.case('Common / callbacks', { common }, {
-  'common.falseness': [[[],     false]],
-  'common.trueness':  [[[],      true]],
-  'common.emptyness': [[[], undefined]],
-});
+metatests.case(
+  'Common / callbacks',
+  { common },
+  {
+    'common.falseness': [[[], false]],
+    'common.trueness': [[[], true]],
+    'common.emptyness': [[[], undefined]],
+  }
+);
 
 metatests.test('unsafeCallback', test => {
   const callback = (...args) => {

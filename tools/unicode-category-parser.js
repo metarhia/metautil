@@ -29,8 +29,8 @@ const readline = require('readline');
 
 const UNICODE_CATEGORIES = ['Lu', 'Ll'];
 const UNICODE_VERSION = '11.0.0';
-const UCD_LINK = 'http://www.unicode.org/Public/' + UNICODE_VERSION +
-  '/ucd/UnicodeData.txt';
+const UCD_LINK =
+  'http://www.unicode.org/Public/' + UNICODE_VERSION + '/ucd/UnicodeData.txt';
 
 const OUTPUT_PATH = path.join(__dirname, '../lib/unicode-categories.js');
 
@@ -104,7 +104,7 @@ http.get(UCD_LINK, res => {
   let prevCategory;
   let range = {};
   linereader.on('line', line => {
-    const [code,, category] = line.split(';');
+    const [code, , category] = line.split(';');
     if (UNICODE_CATEGORIES.includes(category)) {
       const decimalCode = parseInt(code, 16);
       if (category === prevCategory) {
@@ -116,7 +116,6 @@ http.get(UCD_LINK, res => {
     }
     prevCategory = category;
   });
-
 
   linereader.on('close', () => {
     resultObject.addRange(range);

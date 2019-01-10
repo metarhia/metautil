@@ -146,7 +146,8 @@ metatests.test('FlagsClass.toString', test => {
     [['Uno', 'Due', 'Tre', 'Quatro'], '1111'],
   ];
   nums.forEach(num =>
-    test.strictSame(Numeri.from(...num[0]).toString(), num[1]));
+    test.strictSame(Numeri.from(...num[0]).toString(), num[1])
+  );
 
   test.end();
 });
@@ -166,7 +167,8 @@ metatests.test('FlagsClass.toNumber', test => {
     [['Uno', 'Due', 'Tre', 'Quatro'], 15],
   ];
   nums.forEach(num =>
-    test.strictSame(Numeri.from(...num[0]).toNumber(), new Uint64(num[1])));
+    test.strictSame(Numeri.from(...num[0]).toNumber(), new Uint64(num[1]))
+  );
 
   test.end();
 });
@@ -185,8 +187,7 @@ metatests.test('FlagsClass.toPrimitive', test => {
     [['Tre', 'Quatro'], 12],
     [['Uno', 'Due', 'Tre', 'Quatro'], 15],
   ];
-  nums.forEach(num =>
-    test.strictSame(+Numeri.from(...num[0]), num[1]));
+  nums.forEach(num => test.strictSame(+Numeri.from(...num[0]), num[1]));
 
   test.end();
 });

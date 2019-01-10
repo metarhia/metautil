@@ -174,10 +174,7 @@ metatests.test('test checkLogin / MAX_LENGTH', test => {
 });
 
 metatests.test('test checkLogin / IS_EMAIL', test => {
-  const emails = [
-    'local-part@domain',
-    'l@dom',
-  ];
+  const emails = ['local-part@domain', 'l@dom'];
   emails.forEach(email => {
     const passedResult = common.checkLogin(email, ['IS_EMAIL']);
     test.strictSame(passedResult.valid, true);

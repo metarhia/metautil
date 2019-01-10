@@ -28,7 +28,7 @@ metatests.test('cache del key', test => {
 });
 
 metatests.test('cache clr', test => {
-  const cache = common.cache({ });
+  const cache = common.cache({});
 
   cache.add('key1', 'value1');
   cache.add('str1', 'value2');

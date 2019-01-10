@@ -40,8 +40,18 @@ metatests.test('Enum with key/value', test => {
 
 metatests.test('Enum string month keys', test => {
   const Month = Enum.from(
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
   );
 
   test.strictSame(typeof Month, 'function');

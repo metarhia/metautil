@@ -35,7 +35,12 @@ metatests.test('Iterator.count', test => {
 });
 
 metatests.test('Iterator.count on consumed iterator', test => {
-  test.strictSame(iter(array).skip(array.length).count(), 0);
+  test.strictSame(
+    iter(array)
+      .skip(array.length)
+      .count(),
+    0
+  );
   test.end();
 });
 
@@ -373,14 +378,11 @@ metatests.test('Iterator.includes that must return false', test => {
   test.end();
 });
 
-metatests.test(
-  'Iterator.collectTo must collect to given Collection',
-  test => {
-    const set = iter(array).collectTo(Set);
-    test.strictSame([...set.values()], array);
-    test.end();
-  }
-);
+metatests.test('Iterator.collectTo must collect to given Collection', test => {
+  const set = iter(array).collectTo(Set);
+  test.strictSame([...set.values()], array);
+  test.end();
+});
 
 metatests.test('Iterator.toArray must convert to array', test => {
   test.strictSame(iter(array).toArray(), array);
@@ -399,10 +401,12 @@ metatests.test(
 
 metatests.testSync('Iterator.enumerate must return tuples', test => {
   let i = 0;
-  iter(array).enumerate().forEach(t => {
-    test.strictSame(t, [i, array[i]]);
-    i++;
-  });
+  iter(array)
+    .enumerate()
+    .forEach(t => {
+      test.strictSame(t, [i, array[i]]);
+      i++;
+    });
 });
 
 metatests.testSync('Iterator.enumerate must start from 0', test => {

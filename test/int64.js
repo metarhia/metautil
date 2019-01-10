@@ -226,10 +226,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '0x7ffffffffffffffe',
-        '1',
-      ],
+      values: ['0x7ffffffffffffffe', '1'],
       operations: {
         add: '7fffffffffffffff',
         mult: '7ffffffffffffffe',
@@ -240,10 +237,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '0x7fffffffffff0000',
-        '0xffff',
-      ],
+      values: ['0x7fffffffffff0000', '0xffff'],
       operations: {
         add: '7fffffffffffffff',
         cmp: 1,
@@ -253,10 +247,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '-9223372036854775807',
-        '1',
-      ],
+      values: ['-9223372036854775807', '1'],
       operations: {
         add: '-7ffffffffffffffe',
         sub: '-8000000000000000',
@@ -268,10 +259,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '-9223372036854775808',
-        '1',
-      ],
+      values: ['-9223372036854775808', '1'],
       operations: {
         mult: '-8000000000000000',
         cmp: -1,
@@ -281,10 +269,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '9223372036854775807',
-        '1',
-      ],
+      values: ['9223372036854775807', '1'],
       operations: {
         mult: '7fffffffffffffff',
         cmp: 1,
@@ -294,10 +279,7 @@ metatests.test('Int64 binary operators', test => {
       },
     },
     {
-      values: [
-        '9223372036854775807',
-        '-9223372036854775808',
-      ],
+      values: ['9223372036854775807', '-9223372036854775808'],
       operations: {
         add: '-1',
         cmp: 1,
@@ -307,31 +289,30 @@ metatests.test('Int64 binary operators', test => {
       },
     },
   ].forEach(testcase => {
-    Object.keys(testcase.operations)
-      .forEach(op => {
-        const a = new common.Int64(testcase.values[0]);
-        const b = new common.Int64(testcase.values[1]);
-        if (common.Int64[op]) {
-          const result = common.Int64[op](a, b);
-          test.strictSame(
-            op === 'cmp' ? result : result.toString(16),
-            testcase.operations[op],
-            `must successfully perform binary static operation ${op}` +
+    Object.keys(testcase.operations).forEach(op => {
+      const a = new common.Int64(testcase.values[0]);
+      const b = new common.Int64(testcase.values[1]);
+      if (common.Int64[op]) {
+        const result = common.Int64[op](a, b);
+        test.strictSame(
+          op === 'cmp' ? result : result.toString(16),
+          testcase.operations[op],
+          `must successfully perform binary static operation ${op}` +
             ` on numbers ${testcase.values[0].toString(16)} and` +
             ` ${testcase.values[1].toString(16)}`
-          );
-        }
-        if (a[op]) {
-          a[op](b);
-          test.strictSame(
-            a.toString(16),
-            testcase.operations[op],
-            `must successfully perform binary non-static operation ${op}` +
+        );
+      }
+      if (a[op]) {
+        a[op](b);
+        test.strictSame(
+          a.toString(16),
+          testcase.operations[op],
+          `must successfully perform binary non-static operation ${op}` +
             ` on numbers ${testcase.values[0].toString(16)} and` +
             ` ${testcase.values[1].toString(16)}`
-          );
-        }
-      });
+        );
+      }
+    });
   });
 
   test.end();
@@ -538,31 +519,30 @@ metatests.test('Int64 binary operators with numbers', test => {
       },
     },
   ].forEach(testcase => {
-    Object.keys(testcase.operations)
-      .forEach(op => {
-        const a = new common.Int64(testcase.values[0]);
-        const b = testcase.values[1];
-        if (common.Int64[op]) {
-          const result = common.Int64[op](a, b);
-          test.strictSame(
-            result.toString(16),
-            testcase.operations[op],
-            `must successfully perform binary static operation ${op}` +
+    Object.keys(testcase.operations).forEach(op => {
+      const a = new common.Int64(testcase.values[0]);
+      const b = testcase.values[1];
+      if (common.Int64[op]) {
+        const result = common.Int64[op](a, b);
+        test.strictSame(
+          result.toString(16),
+          testcase.operations[op],
+          `must successfully perform binary static operation ${op}` +
             ` on numbers ${testcase.values[0].toString(16)} and` +
             ` ${testcase.values[1]}`
-          );
-        }
-        if (a[op]) {
-          a[op](b);
-          test.strictSame(
-            a.toString(16),
-            testcase.operations[op],
-            `must successfully perform binary non-static operation ${op}` +
+        );
+      }
+      if (a[op]) {
+        a[op](b);
+        test.strictSame(
+          a.toString(16),
+          testcase.operations[op],
+          `must successfully perform binary non-static operation ${op}` +
             ` on numbers ${testcase.values[0].toString(16)} and` +
             ` ${testcase.values[1]}`
-          );
-        }
-      });
+        );
+      }
+    });
   });
 
   test.end();
@@ -619,28 +599,27 @@ metatests.test('Int64 unary operators', test => {
       },
     },
   ].forEach(testcase => {
-    Object.keys(testcase.operations)
-      .forEach(op => {
-        const a = new common.Int64(testcase.value);
-        if (common.Int64[op]) {
-          const result = common.Int64[op](a);
-          test.strictSame(
-            result.toString(16),
-            testcase.operations[op],
-            `must successfully perform unary static operation ${op}` +
+    Object.keys(testcase.operations).forEach(op => {
+      const a = new common.Int64(testcase.value);
+      if (common.Int64[op]) {
+        const result = common.Int64[op](a);
+        test.strictSame(
+          result.toString(16),
+          testcase.operations[op],
+          `must successfully perform unary static operation ${op}` +
             ` on number ${testcase.value.toString(16)}`
-          );
-        }
-        if (a[op]) {
-          a[op]();
-          test.strictSame(
-            a.toString(16),
-            testcase.operations[op],
-            `must successfully perform unary non-static operation ${op}` +
+        );
+      }
+      if (a[op]) {
+        a[op]();
+        test.strictSame(
+          a.toString(16),
+          testcase.operations[op],
+          `must successfully perform unary non-static operation ${op}` +
             ` on numbers ${testcase.value.toString(16)}`
-          );
-        }
-      });
+        );
+      }
+    });
   });
 
   test.end();
@@ -698,7 +677,7 @@ metatests.test('Int64.prototype.toInt32()', test => {
       new common.Int64(testcase[0]).toInt32(),
       testcase[1],
       `must extract Int32 number ${testcase[1]} ` +
-      `from Int64 number ${testcase[0]}`
+        `from Int64 number ${testcase[0]}`
     );
   });
 
@@ -720,7 +699,7 @@ metatests.test('Int64.prototype.toUint32()', test => {
       new common.Int64(testcase[0]).toUint32(),
       testcase[1],
       `must extract Uint32 number ${testcase[1]} ` +
-      `from Int64 number ${testcase[0]}`
+        `from Int64 number ${testcase[0]}`
     );
   });
 
@@ -767,32 +746,27 @@ metatests.test('Int64.constructor()', test => {
     {
       value: '0xinvalidnumber',
       expectedString: '0',
-      message:
-        'must create zero Int64 from an invalid hex string',
+      message: 'must create zero Int64 from an invalid hex string',
     },
     {
       value: '0o999',
       expectedString: '0',
-      message:
-        'must create zero Int64 from an invalid oct string',
+      message: 'must create zero Int64 from an invalid oct string',
     },
     {
       value: '0b333',
       expectedString: '0',
-      message:
-        'must create zero Int64 from an invalid bin string',
+      message: 'must create zero Int64 from an invalid bin string',
     },
     {
       value: 9999999999999999999999999999999999,
       expectedString: '0',
-      message:
-        'must create zero Int64 from an unsafe integer number',
+      message: 'must create zero Int64 from an unsafe integer number',
     },
     {
       value: -9999999999999999999999999999999999,
       expectedString: '0',
-      message:
-        'must create zero Int64 from an unsafe integer number',
+      message: 'must create zero Int64 from an unsafe integer number',
     },
     {
       value: '0xffffffffffffffff',
@@ -811,8 +785,7 @@ metatests.test('Int64.constructor()', test => {
       message: 'must create Int64 from a big bin number provided as a string',
     },
     {
-      value:
-        '0b10101010101010101010101010101010101010101010101010101010101010',
+      value: '0b10101010101010101010101010101010101010101010101010101010101010',
       expectedString: '3074457345618258602',
       message: 'must create Int64 from a big bin number provided as a string',
     },
@@ -856,28 +829,44 @@ metatests.test('Int64.constructor()', test => {
 metatests.test('Int64 division by zero', test => {
   const nonZeroNumber = new common.Int64(10);
   const zero = new common.Int64(0);
-  test.throws(() => {
-    common.Int64.div(nonZeroNumber, zero);
-  }, new RangeError('Int64: division by zero'),
-  'must throw when dividing by zero');
+  test.throws(
+    () => {
+      common.Int64.div(nonZeroNumber, zero);
+    },
+    new RangeError('Int64: division by zero'),
+    'must throw when dividing by zero'
+  );
 
   test.end();
 });
 
 metatests.test('Int64.prototype.toString() with invalid radix', test => {
   const number = new common.Int64(10);
-  const errorExpected =
-    new RangeError('toString() radix argument must be between 2 and 36');
+  const errorExpected = new RangeError(
+    'toString() radix argument must be between 2 and 36'
+  );
 
-  test.throws(() => {
-    number.toString(1000);
-  }, errorExpected, 'must throw when toString() radix argument is too big');
-  test.throws(() => {
-    number.toString(0);
-  }, errorExpected, 'must throw when toString() radix argument is too small');
-  test.throws(() => {
-    number.toString(-1);
-  }, errorExpected, 'must throw when toString() radix argument is negative');
+  test.throws(
+    () => {
+      number.toString(1000);
+    },
+    errorExpected,
+    'must throw when toString() radix argument is too big'
+  );
+  test.throws(
+    () => {
+      number.toString(0);
+    },
+    errorExpected,
+    'must throw when toString() radix argument is too small'
+  );
+  test.throws(
+    () => {
+      number.toString(-1);
+    },
+    errorExpected,
+    'must throw when toString() radix argument is negative'
+  );
 
   test.end();
 });
