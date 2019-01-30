@@ -18,6 +18,7 @@ const submodules = [
   'mp', // Metaprogramming
   'network', // Network utilities
   'oop', // Object-oriented programming
+  'pool', // Object pool
   'sort', // Sort compare functions
   'strings', // Strings utilities
   'time', // Date and Time functions
