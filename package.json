@@ -1,6 +1,6 @@
 {
   "name": "@metarhia/common",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "description": "Metarhia Common Library",
   "license": "MIT",
@@ -16,14 +16,14 @@
     "type": "git",
     "url": "https://github.com/metarhia/common"
   },
-  "main": "./common.js",
+  "main": "common.js",
   "browser": {
-    "common.js": "./dist/common.js"
+    "common.js": "./dist/common.js",
+    "lib/fs.js": false,
+    "lib/network.js": false
   },
   "readmeFilename": "README.md",
   "files": [
-    ".babelrc",
-    "common.js",
     "lib/",
     "dist/"
   ],
