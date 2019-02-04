@@ -11,6 +11,7 @@ const submodules = [
   'events', // Events and emitter
   'flags', // Flags data type
   'fp', // Functional programming
+  'fs', // File System
   'id', // Keys and identifiers
   'int64', // Int64
   'iterator', // Iterator
