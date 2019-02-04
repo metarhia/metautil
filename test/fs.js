@@ -2,11 +2,12 @@
 
 const metatests = require('metatests');
 const fs = require('fs');
-const { mkdirp } = require('..');
 const path = require('path');
+const { mkdirp, rmdirp } = require('..');
 
 const testMkdirp = metatests.test('mkdir');
 const mkdirpTestDir = 'test/ex1/ex2';
+const RMDIRP_TEST_DIR = 'testDir';
 
 const removeUsedDirs = (test, cb) => {
   fs.rmdir(mkdirpTestDir, err => {
@@ -34,3 +35,25 @@ testMkdirp.test('create 2 directories without mode', test => {
     test.end();
   });
 });
+
+metatests.test('rmdirp test', test =>
+  fs.mkdir(RMDIRP_TEST_DIR, err => {
+    if (err && err.code !== 'EEXISTS') {
+      test.bailout(err);
+    }
+    fs.mkdir(path.join(RMDIRP_TEST_DIR, 'subdir1'), err => {
+      if (err && err.code !== 'EEXISTS') {
+        test.bailout(err);
+      }
+      rmdirp(path.join(RMDIRP_TEST_DIR, 'subdir1'), err => {
+        if (err) {
+          test.bailout(err);
+        }
+        fs.access(RMDIRP_TEST_DIR, err => {
+          test.isError(err);
+          test.end();
+        });
+      });
+    });
+  })
+);
