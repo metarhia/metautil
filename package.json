@@ -39,17 +39,17 @@
     "node": ">=6.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.1.5",
-    "@babel/core": "^7.1.6",
-    "@babel/preset-env": "^7.1.6",
-    "eslint": "^5.9.0",
-    "eslint-config-metarhia": "^6.0.0",
-    "eslint-config-prettier": "^3.3.0",
-    "eslint-plugin-import": "^2.14.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "eslint": "^5.14.0",
+    "eslint-config-metarhia": "^7.0.0",
+    "eslint-config-prettier": "^4.0.0",
+    "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
     "metaschema": "0.0.28",
     "metasync": "^0.3.31",
-    "metatests": "^0.3.0",
+    "metatests": "^0.5.0",
     "prettier": "1.16.x"
   }
 }
