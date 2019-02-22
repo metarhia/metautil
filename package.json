@@ -28,7 +28,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "eslint . && metatests test/",
+    "test": "npm run -s lint && metatests test/",
     "lint": "eslint . && prettier -c \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "docs": "metaschema ./common.js",
