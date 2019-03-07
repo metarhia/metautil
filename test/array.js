@@ -44,3 +44,12 @@ metatests.case(
     ],
   }
 );
+
+metatests.test('array / pushSame', test => {
+  const array = [1, 2, 3];
+  test.strictSame(common.pushSame(array, 0, 1), 3);
+  test.strictSame(array, [1, 2, 3]);
+  test.strictSame(common.pushSame(array, 5, 0), 8);
+  test.strictSame(array, [1, 2, 3, 0, 0, 0, 0, 0]);
+  test.end();
+});
