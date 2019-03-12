@@ -251,7 +251,7 @@ metatests.test('test checkLoginPassword / PASSWORD_INCLUDES_LOGIN', test => {
   test.end();
 });
 
-metatests.test('test AuthenticationStrength / strength', test => {
+metatests.test('test AuthenticationStrength / compliance', test => {
   let password = 'pass';
   const required = [{ name: 'MIN_LENGTH', minLength: 5 }];
   const optional = [
@@ -262,26 +262,33 @@ metatests.test('test AuthenticationStrength / strength', test => {
   ];
 
   let result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Not valid');
+  test.assertNot(result.valid);
+  test.strictSame(result.compliance, 0.25);
 
   password = 'passsword';
   result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Very weak');
+  test.assert(result.valid);
+  test.strictSame(result.compliance, 0);
 
   password = 'password';
   result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Weak');
+  test.assert(result.valid);
+  test.strictSame(result.compliance, 0.25);
 
   password = 'password!';
   result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Good');
+  test.assert(result.valid);
+  test.strictSame(result.compliance, 0.5);
 
   password = 'Password!';
   result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Strong');
+  test.assert(result.valid);
+  test.strictSame(result.compliance, 0.75);
 
   password = 'Password!1';
   result = common.checkPassword(password, required, optional);
-  test.strictSame(result.strength, 'Very strong');
+  test.assert(result.valid);
+  test.strictSame(result.compliance, 1);
+
   test.end();
 });
