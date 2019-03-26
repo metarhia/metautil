@@ -125,6 +125,36 @@ metatests.test('test checkPassword / MIN_NUMBERS', test => {
   test.end();
 });
 
+metatests.test('test checkPassword / FOUND_TOPOLOGY', test => {
+  const topologies = ['ullllldd', 'ulldddds'];
+
+  const passedResult = common.checkPassword('UUUU', [
+    { name: 'FOUND_TOPOLOGY', topologies },
+  ]);
+  const failedResult = common.checkPassword('Ukk1111&', [
+    { name: 'FOUND_TOPOLOGY', topologies },
+  ]);
+
+  test.strictSame(passedResult.valid, true);
+  test.strictSame(failedResult.valid, false);
+  test.end();
+});
+
+metatests.test('test checkPassword / POPULAR_PASSWORD', test => {
+  const popularPasswords = ['pass'];
+
+  const passedResult = common.checkPassword('abcd', [
+    { name: 'POPULAR_PASSWORD', popularPasswords },
+  ]);
+  const failedResult = common.checkPassword('pass', [
+    { name: 'POPULAR_PASSWORD', popularPasswords },
+  ]);
+
+  test.strictSame(passedResult.valid, true);
+  test.strictSame(failedResult.valid, false);
+  test.end();
+});
+
 metatests.test('test checkPassword / MIN_SPECIAL_CHARS', test => {
   const password = 'pa!#ss&*';
   const passedResult = common.checkPassword(password, [
