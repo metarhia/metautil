@@ -48,8 +48,10 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
     "metaschema": "0.0.28",
-    "metasync": "^0.3.31",
     "metatests": "^0.5.0",
     "prettier": "1.16.x"
+  },
+  "dependencies": {
+    "metasync": "^0.3.31"
   }
 }
