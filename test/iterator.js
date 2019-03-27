@@ -378,6 +378,24 @@ metatests.test('Iterator.includes that must return false', test => {
   test.end();
 });
 
+metatests.test('Iterator.includes with strings', test => {
+  const strings = ['a', 'b', 'c'];
+  test.assert(iter(strings).includes('a'));
+  test.assertNot(iter(strings).includes('d'));
+  test.end();
+});
+
+metatests.test('Iterator.includes with non-number values', test => {
+  const obj = {};
+  const values = [undefined, null, obj, Symbol('symbol')];
+  test.assert(iter(values).includes(obj));
+  test.assertNot(iter(values).includes({}));
+  test.assert(iter(values).includes(undefined));
+  test.assert(iter(values).includes(null));
+  test.assertNot(iter(values).includes(Symbol('symbol')));
+  test.end();
+});
+
 metatests.test('Iterator.collectTo must collect to given Collection', test => {
   const set = iter(array).collectTo(Set);
   test.strictSame([...set.values()], array);
