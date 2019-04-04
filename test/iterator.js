@@ -29,6 +29,14 @@ metatests.test('Iterator is Iterable', test => {
   test.end();
 });
 
+metatests.testSync('Iterator has Symbol.toStringTag property', test => {
+  const tag = 'Metarhia Iterator';
+  test.strictSame(Iterator.prototype[Symbol.toStringTag], tag);
+  const iterator = iter(array);
+  test.strictSame(iterator[Symbol.toStringTag], tag);
+  test.strictSame(Object.prototype.toString.call(iterator), `[object ${tag}]`);
+});
+
 metatests.test('Iterator.count', test => {
   test.strictSame(iter(array).count(), array.length);
   test.end();
