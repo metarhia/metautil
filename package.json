@@ -31,7 +31,7 @@
     "test": "npm run -s lint && metatests test/",
     "lint": "eslint . && prettier -c \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
-    "docs": "metaschema ./common.js",
+    "doc": "metadoc",
     "build": "babel common.js -d dist && babel lib -d dist/lib",
     "prepublish": "npm run -s build"
   },
@@ -42,12 +42,12 @@
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
+    "@metarhia/doc": "^0.4.1",
     "eslint": "^5.14.0",
     "eslint-config-metarhia": "^7.0.0",
     "eslint-config-prettier": "^4.0.0",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "metaschema": "0.0.28",
     "metatests": "^0.5.0",
     "prettier": "1.16.x"
   }

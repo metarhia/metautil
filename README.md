@@ -14,628 +14,1468 @@ Namespace: `api.common` in [Impress Application Server](https://github.com/metar
 $ npm install @metarhia/common
 ```
 
-### Splits array into two parts
-`common.splitAt(index, array)`
-- `index:number` - index defining end of first part and start of second
-- `array:array` - to be splitted
+## API
 
-Returns: tuple with two parts of the array
+### splitAt(index, array)
 
-### Check is value scalar
-`common.isScalar(value)`
-- `value` - scalar value or Object
+- `index`: [`<number>`][number] index defining end of first part and start of
+  second
+- `array`: [`<Array>`][array] to be split
 
-Returns: boolean
+_Returns:_ [`<Array>`][array] tuple with two parts of the array
 
-### Copy dataset (copy objects to new array)
-`common.copy(ds)`
-- `ds:array of objects` - source dataset
+Split array into two parts
 
-Returns: array of objects
+### shuffle(arr)
 
-### Clone Object
-`common.clone(obj)`
-- `obj:object or array`
+- `arr`: [`<Array>`][array]
 
-Returns: object or array
+_Returns:_ [`<Array>`][array]
 
-### Duplicate object ot array
-`common.duplucate(obj)`
-- `obj:object or array`
+Shuffle an array
 
-Returns: object or array
+### range(from, to)
 
-### Read property by dot-separated path
-`common.getByPath(data, dataPath)`
-- `data:hash`
-- `dataPath:string` - dot-separated path
+- `from`: [`<number>`][number] range start
+- `to`: [`<number>`][number] range end
 
-Returns: value
+_Returns:_ [`<Array>`][array]
 
-### Set property by dot-separated path
-`common.setByPath(data, dataPath, value)`
-- `data:hash`
-- `dataPath:string` - dot-separated path
-- `value` - new value
+Generate int array from given range
 
-### Delete property by dot-separated path
-`common.deleteByPath(data, dataPath)`
-- `data:object`
-- `dataPath:string` - dot-separated path
-
-Returns: boolean
-
-### Distinct merge multiple arrays
-`common.merge(...args)`
-- `args:array of array`
-
-Returns: array
-
-### Substitute variables
-`common.subst(tpl, data, dataPath, escapeHtml)`
-- `tpl:string` - template body
-- `data:hash` - data structure to visualize
-- `dataPath:string` - current position in data structure
-- `escapeHtml:boolean` - escape html special characters if true
-
-Returns: string
-
-### Escape html characters
-`common.htmlEscape(content)`
-- `content:string` - to escape
-
-Returns: string
-
-Example: `htmlEscape('5>=5') = '5&lt;=5'`
-
-### Extract file extension in lower case with no dot
-`common.fileExt(fileName, Result)`
-- `fileName:string` - file name
-
-Returns: string
-
-Example: `fileExt('/dir/file.txt')`
-
-Result: 'txt'
-
-### Remove file extension from file name
-`common.removeExt(fileName, Result)`
-- `fileName:string` - file name
-
-Returns: string
-
-Example: `fileExt('file.txt')`
-
-Result: 'file'
-
-### Convert spinal case to camel case
-`common.spinalToCamel(name)`
-- `name:string`
-
-Returns: string
-
-### Escape regular expression control characters
-`common.escapeRegExp(s)`
-- `s:string`
-
-Returns: string
-
-Example:  escapeRegExp('/path/to/res?search=this.that')`
-
-### Generate escaped regular expression
-`common.newEscapedRegExp(s)`
-- `s:string`
-
-Returns: RegExp, instance
-
-### Add trailing slash at the end if it has no
-`common.addTrailingSlash(s)`
-- `s:string`
-
-Returns: string
-
-### Remove trailing slash from string
-`common.stripTrailingSlash(s)`
-- `s:string`
-
-Returns: string
-
-### Get directory name with trailing slash from path
-`common.dirname(filePath)`
-- `filePath:string`
-
-Returns: string
-
-### Capitalize string
-`common.capitalize(s)`
-- `s:string`
-
-### Extract substring between prefix and suffix
-`common.between(s, prefix, suffix)`
-- `s:string` - source
-- `prefix:string` - before needed fragment
-- `suffix:string` - after needed fragment
-
-Returns: string
-
-### Remove UTF-8 BOM
-`common.removeBOM(s)`
-- `s:string` - possibly starts with BOM
-
-Returns: string
-
-### Generate RegExp from array with '*' wildcards
-`common.arrayRegExp(items)`
-- `items:array of string`
-
-Returns: RegExp, instance
-
-Example: `['/css/*', '/index.html']`
-
-### Compare time1 and time2
-`common.isTimeEqual(time1, time2)`
-- `time1:string` - time or milliseconds
-- `time2:string` - time or milliseconds
-
-Returns: boolean
-
-Example: `isTimeEqual(sinceTime, buffer.stats.mtime);`
-
-### Current date in YYYY-MM-DD format
-`common.nowDate(now)`
-- `now:Date` (optional)
-
-Returns: string
-
-### Current date in YYYY-MM-DD  hh:mm format
-`common.nowDateTime(now)`
-- `now:Date` (optional)
-
-Returns: string
-
-### Partial apply
-`common.partial(fn, ...args)`
-- `fn:function`
-- `...args:array` - argumants
-
-Returns: function
-
-### Function for mapping object fields
-`common.omap(mapFn, obj)`
-- `mapFn:funtion` - to appy to every field value
-- `obj:object` - which fields used for mapping
-
-Returns: object, with same reference but with transformed fields
-
-### Compose multiple functions into one
-`common.compose(...fns)`
-- `fns:array of function`
-
-Returns: function, composed
-
-### Apply given function to value or default value
-`common.maybe(fn, defVal, value)`
-- `fn:function`
-- `defVal` - default value
-- `value` (optional)
-
-Returns: result of `fn` or `defVal`
-
-### Zipping several arrays into one
-`common.zip(...arrays)`
-- `arrays` - array of array
-
-Returns: array, length is minimal of input arrays length
-
-Hint: Element with index i of resulting array is array with
-elements with index i from input arrays
-
-### Create array of replicated value
-`common.replicate(count, elem)`
-- `count:number` - new array length
-- `elem` - value to replicate
-
-Returns: array, replicated
-
-### Zipping arrays using specific function
-`common.zipWith(fn, ...arrays)`
-- `fn:function` - for zipping elements with index i
-- `arrays:array of array`
-
-Returns: array
-
-Hint: Element with index i of resulting array is result of fn called with arguments from arrays
-
-### Curries function until the condition
-`common.curryUntil(condition, fn, ...args)`
-- `condition:function` - (argsI, argsParts) returns boolean
-- `fn:function` - which will be curried
-- `args:array` - arguments for fn
-
-Returns: function, curried
-### Curry fn count times, first curry uses args for first currying
-`common.curryN(fn, count, ...args)`
-- `fn:function` - curried
-- `count:number` - of times function should be curried
-- `args:array` - arguments for first currying
-
-Returns: function, curried given times count
-
-### Curry function curry with fn
-`common.curryTwice(fn)`
-- `fn:function` - to be curried
-
-Returns: function, to pass arguments that returns curried fn
-
-### Curry function with given arguments
-`common.curry(fn, ...args)`
-- `fn:function`
-- `args:array` - arguments
-
-Returns: function, curried
-
-### Apply arguments
-`common.applyArgs(...args)`
-- `args:array` - arguments to save in closure
-
-Returns: function, to pass (fn) arguments will be applied
-
-### Get first not errored result of fn
-`common.either(fn)`
-- `fn:function` - to be called
-
-Returns: result of `fn`
-
-### Empy function
-`common.falseness()`
-
-Returns: boolean, always false
-
-### Empy function
-`common.trueness()`
-
-Returns: boolean, always true
-
-### Empy function
-`common.emptiness()`
-
-Returns: always undefined
-
-### Empy asynchronous callback-last single-argument function
-`common.nop(callback)`
-- `callback:function` - callback to be called with (null)
-
-### Empy asynchronous callback-last double-argument function
-`common.noop(empty, callback)`
-- `empty` - incoming value to be ignored
-- `callback:function` - callback to be called with (null, null)
-
-### Wrap function: call once, not null
-`common.once(fn)`
-- `fn:function (optional)`
-
-Returns: function, wrapped callback
-
-Hint: previous name: `common.cb` (deprecated)
-
-### Extract callback function
-It's unsafe: may return null, allow multiple calls
-`common.unsafeCallback(args)`
-- `args:array` - arguments
-
-Returns: function, callback or null
-
-Hint: previous name: `common.cbUnsafe` (deprecated)
-
-Hint: another alias: `common.extractCallback` (deprecated)
-
-### Exctracts callback and make it safe
-Wrap collback with once and return common.emptiness if no callback
-`common.safeCallback(args)`
-- `args:array` - arguments
-
-Returns: function, wrapped callback
-
-Hint: previous name: `cbExtract` (deprecated)
-
-### Exctracts callback and throw if no callback
-`common.requiredCallback(args)`
-- `args:array` - arguments
-
-Returns: function
-
-### Exctracts callback and make it safe
-`common.onceCallback(args)`
-Wrap collback with once()
-and return common.emptiness if no callback
-- `args:array` - arguments
-
-Returns: function
-
-### Override method: save old to `fn.inherited`
-`common.override(obj, fn, Hint)`
-- `obj:object` - containing method to override
-- `fn:function` - name will be used to find method
-
-Hint: Previous function will be accessible by obj.fnName.inherited
-
-### Generate int array from given range
-`common.range(from, to)`
-- `from:naumber` - range start
-- `to:naumber` - range end
-
-Returns: array
-
-Example: `range(1, 5) = [1, 2, 3, 4, 5]`
-
-### Generate int array from sequence syntax
-`common.sequence(seq, max, list, range from..to, range from..count, range from..max-to)`
-- `seq:array`
-- `max:number` - optional max
-
-Returns: array
-
-Example:
-- list: sequence([81, 82, 83]) = [81, 82, 83]
-- range from..to: sequence([81,,83]) = [81, 82, 83]
-- range from..count: sequence([81, [3]]) = [81, 82, 83]
-- range from..max-to: sequence([81, [-2]], 5) = [81, 82, 83]
-
-### Last array element
-`common.last(arr)`
-- `arr:array`
-
-Returns: element
-
-### Make function raise-safe
-`common.safe(fn)`
-- `fn:function`
-
-Returns: function, wrapped with try/catch interception
-
-### Generate random int in given range
-`common.random(min, max)`
-- `min:number` - range start
-- `max:number` - range end
-
-Returns: number
-
-### Shuffle an array
-`common.shuffle(arr)`
-- `arr:array`
-
-Returns: array
-
-### Enhanced EventEmitter with wildcard
-`common.emitter()`
-
-Returns: EventEmitter, instance
-
-### Rest left, transfor function
-`common.restLeft(fn)`
-- `fn:function` - (args, arg1..argN, callback)
-
-Returns: function, (arg1..argN, ...args, callback)
-
-### Parse duration to seconds
-`common.duration(s)`
-- `s:string` - duration syntax
-
-Returns: number, milliseconds
-
-Example: `duration('1d 10h 7m 13s')`
-
-### Convert int to string size Kb, Mb, Gb and Tb
-`common.bytesToSize(bytes)`
-- `bytes:number` - size
-
-Returns: string
-
-### Convert string with units to int
-`common.sizeToBytes(size)`
-- `size:string` - size
-
-Returns: number
-
-### Convert IP string to number
-`common.ip2int(ip)`
-- `ip:string` - IP address
-
-Returns: number
-
-### Get local network interfaces
-`common.localIPs()`
-
-Returns: srray of strings
-
-### Parse host string
-`common.parseHost(host)`
-- `host:string` - host or empty string, may contain `:port`
-
-Returns: string, host without port but not empty
-
-### Divide a long big endian encoded unsigned integer by a small one
-(i.e., not longer than a machine word) in-place and return the remainder
-`common.longDivModBE(buffer, divisor)`
-- `buffer:Buffer` - containing a divident
-- `divisor:a divisor as a Number`
-
-Returns: number, the remainder
-
-### Generate random key
-`common.generateKey(length, possible)`
-- `length:number` - key length
-- `possible:string` - with possible characters
-
-Returns: string, key
-
-### Generate an RFC4122-compliant GUID (UUID v4)
-`common.generateGUID()`
-
-Returns: string, GUID
-
-### Generate random SID
-`common.generateSID(config)`
-- `config:record` - { length, characters, secret }
-
-Returns: string, SID
-
-### Calculate SID CRC
-`common.crcSID(config, key)`
-- `config:record` - { length, characters, secret }
-- `key:string` - SID key
-
-Returns: string, CRC
-
-### Validate SID
-`common.validateSID(config, sid)`
-- `config:record` - { length, characters, secret }
-- `sid:string` - session id
-
-Returns: boolean
-
-### Calculate hash with salt
-`common.hash(password, salt)`
-- `password:string`
-- `salt:string`
-
-Returns: string, hash
-
-### Validate hash
-`common.validateHash(hash, password, salt)`
-- `hash:string`
-- `password:string`
-- `salt:string`
-
-Returns: boolean
-
-### Compare for array.sort with priority
-`common.sortComparePriority(priority, s1, s2)`
-- `priority:array of strings with priority`
-- `s1, s2:string` - to compare
-
-Returns: number
-
-Example: `files.sort(common.sortComparePriority)`
-
-### Compare for array.sort, directories first
-`common.sortCompareDirectories(a, b)`
-- `a, b:string` - to compare
-
-Returns: number
-
-Example: `files.sort(sortCompareDirectories);`
-
-### Compare for array.sort
-`common.sortCompareByName(a, b)`
-- `a, b:object` - { name } to compare
-
-Returns: number
-
-Example: `files.sort(sortCompareByName)`
-
-### Extend Map interface with:
-`common.cache()`
-
-Returns: object, cache instance
-- `cache.allocated` - total allocated size
-- `cache.add(key, val)` - add record
-- `cache.del(key)` - delete record
-- `cache.clr(prefix, fn)` - delete all if `key.startsWith(prefix)`
-
-### Splits string by the first occurrence of separator
-`common.section(s, separator)`
-- `s:string`
-- `separator:string` - or char
-
-Returns: `['All you need ', ' JavaScript']`
-
-Example: `rsection('All you need is JavaScript', 'is')`
-
-
-### Splits string by the last occurrence of separator
-`common.rsection(s, separator)`
-- `s:string`
-- `separator:string` - or char
-
-Returns: `['All you need is Jav', 'Script']`
-
-Example: `rsection('All you need is JavaScript', 'a')`
-
-### Splits string by multiple occurrence of separator
-`common.split(s, separator, limit)`
-- `s:string`
-- `separator:string (optional)` - default: ','
-- `limit:number (optional)` - max length of result array
+_Example:_
 
 ```js
-Example: split('a,b,c,d')
-Result: ['a', 'b', 'c', 'd']
+range(1, 5);
 ```
+
+_Result:_
 
 ```js
-Example: split('a,b,c,d', ',', 2)
-Result: ['a', 'b']
+[1, 2, 3, 4, 5];
 ```
 
-### Splits string by multiple occurrence of separator
-`common.rsplit(s, separator, limit)`
-- `s:string`
-- `separator:string (optional)` - default: ','
-- `limit:number (optional)` - max length of result array
+### sequence(seq\[, max\])
+
+- `seq`: [`<Array>`][array]
+- `max`: [`<number>`][number] (optional), max
+
+_Returns:_ [`<Array>`][array]
+
+Generate int array from sequence syntax
+
+_Example:_
 
 ```js
-Example: split('a,b,c,d', ',', 2)
-Result: ['c', 'd']
+list: sequence([81, 82, 83]);
 ```
 
-### Splits string by multiple occurrence of separator
-`common.rsplit(s, separator, limit)`
-- `s:string`
-- `separator:string (optional)` - default: ','
-- `limit:number (optional)` - max length of result array
+_Result:_
 
 ```js
-Example: split('a,b,c,d', ',', 2)
-Result: ['c', 'd']
+[81, 82, 83];
 ```
 
-### Mixin for ES6 classes without overriding existing methods
-`common.mixin(target, source)`
-- `target` - mixin to target
-- `source` - source methods
+_Example:_
 
-### Forward events from one EventEmitter to another
-`common.forwardEvents(from, to, events)`
-- `from:EventEmitter` - to listen for event
-- `to:EventEmitter` - to emit event on
-- `events:array of string` - event names
+```js
+range from..to: sequence([81,,83]) = [81, 82, 83];
+```
 
-Example: `common.forwardEvent(from, to);`
+_Result:_
 
-Example: `common.forwardEvent(from, to, 'eventName');`
+```js
+[81, 82, 83];
+```
 
-Example: `common.forwardEvent(from, to, { eventName: 'newEventName' });`
+_Example:_
 
-Example: `common.forwardEvent(from, to, ['eventName1', 'eventName2']);`
+```js
+range from..count: sequence([81, [3]]) = [81, 82, 83];
+```
 
-### List method names
-`common.methods(iface)`
-- `iface:object` - to be introspected
+_Result:_
 
-Returns: array of string, method names
+```js
+[81, 82, 83];
+```
 
-### List property names
-`common.properties(iface)`
-- `iface:object` - to be introspected
+_Example:_
 
-Returns: array of string, property names
+```js
+range from..max-to: sequence([81, [-2]], 5) = [81, 82, 83];
+```
 
-### Generate file storage key
-`common.generateStorageKey()`
+_Result:_
 
-Returns: Array of string, [folder1, folder2, code]
+```js
+[81, 82, 83];
+```
+
+### last(arr)
+
+- `arr`: [`<Array>`][array]
+
+_Returns:_ `<any>` element
+
+Get last element of array
+
+### pushSame(arr, n, value)
+
+- `arr`: [`<Array>`][array]
+- `n`: [`<number>`][number]
+- `value`: `<any>`
+
+_Returns:_ [`<number>`][number] new value of arr.length
+
+Push single value multiple times
+
+### checkLogin(login, required\[, optional\])
+
+- `login`: [`<string>`][string] login to test
+- `required`: [`<Array>`][array] required tests configs
+- `optional`: [`<Array>`][array] optional tests configs, defalult: `[]`
+
+_Returns:_ `<AuthenticationStrength>`
+
+Function that tests the login
+
+### checkPassword(password, required\[, optional\])
+
+- `password`: [`<string>`][string] password to test
+- `required`: [`<Array>`][array] required tests configs
+- `optional`: [`<Array>`][array] optional tests configs, default: `[]`
+
+_Returns:_ `<AuthenticationStrength>`
+
+Function that tests the password
+
+### checkLoginPassword(login, password, required\[, optional\])
+
+- `login`: [`<string>`][string] login to test
+- `password`: [`<string>`][string] password to test
+- `required`: [`<Array>`][array] required tests configs
+- `optional`: [`<Array>`][array] optional tests configs, default: `[]`
+
+_Returns:_ `<AuthenticationStrength>`
+
+Function that tests the login with password
+
+### class BTree
+
+#### BTree.prototype.constructor(degree = DEFAULT\_DEGREE)
+
+#### BTree.prototype.get(key)
+
+#### BTree.prototype.set(key, data)
+
+#### BTree.prototype.iterator(start, finish)
+
+#### BTree.prototype.remove(key)
+
+### cache()
+
+_Returns:_ `<Cache>`
+
+Create Cache, enhanced Map
+
+### class Cache
+
+#### Cache.super\_()
+
+#### Cache.prototype.constructor()
+
+#### Cache.prototype.add(key, val)
+
+- `key`: [`<string>`][string] key
+- `val`: `<any>` associated value
+
+Add key-value pair to cache
+
+#### Cache.prototype.del(key)
+
+- `key`: [`<string>`][string] key
+
+Delete cache element
+
+#### Cache.prototype.clr(prefix\[, fn\])
+
+- `prefix`: [`<string>`][string] to compare with beginning of the key
+- `fn`: [`<Function>`][function] (optional)
+  - `key`: [`<string>`][string] key
+  - `val`: `<any>` associative value to be called on each key
+
+Clear cache elements that start with prefix
+
+### falseness()
+
+_Returns:_ [`<boolean>`][boolean] always `false`
+
+Empty function
+
+### trueness()
+
+_Returns:_ [`<boolean>`][boolean] always `true`
+
+Empty function
+
+### emptiness()
+
+Empty function
+
+### nop(callback)
+
+- `callback`: [`<Function>`][function] callback to be called with (null)
+
+Empty asynchronous callback-last single-argument function
+
+### noop(empty, callback)
+
+- `empty`: `<any>` incoming value to be ignored
+- `callback`: [`<Function>`][function] callback to be called with (null, null)
+
+Empty asynchronous callback-last double-argument function
+
+### once(\[fn\])
+
+- `fn`: [`<Function>`][function] (optional)
+
+_Returns:_ [`<Function>`][function] function(...args) wrapped callback
+
+- `args`: [`<Array>`][array]
+
+Wrap function: call once, not null
+
+### cb(...args)
+
+### unsafeCallback(args)
+
+- `args`: [`<Array>`][array] arguments
+
+_Returns:_ [`<Function>`][function]|[`<null>`][null] callback if any
+
+Extract callback function
+
+It's unsafe: may return null, allows multiple calls
+
+### extractCallback(...args)
+
+### cbUnsafe(...args)
+
+### safeCallback(args)
+
+- `args`: [`<Array>`][array] arguments
+
+_Returns:_ [`<Function>`][function] callback or common.emptiness if there is no
+callback
+
+Extract callback
+
+### cbExtract(...args)
+
+### requiredCallback(args)
+
+- `args`: [`<Array>`][array] arguments
+
+_Returns:_ [`<Function>`][function] extracted callback
+
+Extract callback
+
+_Throws:_ [`<TypeError>`][typeerror] if there is no callback
+
+### onceCallback(args)
+
+- `args`: [`<Array>`][array] arguments
+
+_Returns:_ [`<Function>`][function] callback or common.emptiness if there is no
+callback
+
+Extract callback and make it safe
+
+Wrap callback with once()
+
+### safeFunction(fn)
+
+- `fn`: [`<Function>`][function]
+
+_Returns:_ [`<Function>`][function] function or `common.emptiness` if fn is not
+a function
+
+Check function and make it safe
+
+### unsafeFunction(fn)
+
+- `fn`: [`<Function>`][function]
+
+_Returns:_ [`<Function>`][function]|[`<null>`][null] function or null if fn is
+not a function
+
+Check function
+
+### id(x)
+
+- `x`: `<any>` incoming value which will be returned
+
+_Returns:_ `<any>` incoming value
+
+Identity function
+
+### asyncId(x, callback)
+
+- `x`: `<any>` incoming value which will be returned into the callback
+- `callback`: [`<Function>`][function] callback to be called with first argument
+  - `err`: [`<null>`][null]
+  - `data`: `<any>`
+
+Async identity function
+
+### isScalar(value)
+
+- `value`: `<any>`
+
+_Returns:_ [`<boolean>`][boolean]
+
+Check if value is scalar
+
+### copy(ds)
+
+- `ds`: [`<Object[]>`][object] source dataset to be copied
+
+_Returns:_ [`<Object[]>`][object]
+
+Copy dataset (copy objects to new array)
+
+### clone(obj)
+
+- `obj`: [`<Object>`][object]|[`<Array>`][array]
+
+_Returns:_ [`<Object>`][object]|[`<Array>`][array]
+
+Clone object or array
+
+### duplicate(obj)
+
+- `obj`: [`<Object>`][object]|[`<Array>`][array]
+
+_Returns:_ [`<Object>`][object]|[`<Array>`][array]
+
+Duplicate object or array (properly handles prototype and circular links)
+
+### getByPath(data, dataPath)
+
+- `data`: [`<Object>`][object]
+- `dataPath`: [`<string>`][string] dot-separated path
+
+_Returns:_ `<any>` value
+
+Read property by dot-separated path
+
+### setByPath(data, dataPath, value)
+
+- `data`: [`<Object>`][object]
+- `dataPath`: [`<string>`][string] dot-separated path
+- `value`: `<any>` new value
+
+Set property by dot-separated path
+
+### deleteByPath(data, dataPath)
+
+- `data`: [`<Object>`][object]
+- `dataPath`: [`<string>`][string] dot-separated path
+
+_Returns:_ [`<boolean>`][boolean]
+
+Delete property by dot-separated path
+
+### merge(...args)
+
+- `args`: [`<Array[]>`][array] arrays with elements to be merged
+
+_Returns:_ [`<Array>`][array]
+
+Distinctly merge multiple arrays
+
+### mergeObjects(merger, ...objs)
+
+- `merger`: [`<Function>`][function]
+- `objs`: [`<Object[]>`][object] objects to be merged
+
+_Returns:_ [`<Object>`][object]
+
+Merge multiple objects with merger
+
+### class Enum
+
+#### Enum.from(...args)
+
+#### Enum.NaE()
+
+#### Enum.prototype.constructor(...args)
+
+### forwardEvents(from, to\[, events\])
+
+- `from`: [`<EventEmitter>`][eventemitter] to listen for event
+- `to`: [`<EventEmitter>`][eventemitter] to emit event on
+- `events`: [`<string>`][string]|[`<Object>`][object]|[`<string[]>`][string]
+  (optional), events names
+
+Forward events from one EventEmitter to another
+
+_Example:_
+
+```js
+forwardEvents(from, to);
+```
+
+_Example:_
+
+```js
+forwardEvents(from, to, 'eventName');
+```
+
+_Example:_
+
+```js
+forwardEvents(from, to, { eventName: 'newEventName' });
+```
+
+_Example:_
+
+```js
+forwardEvents(from, to, ['eventName1', 'eventName2']);
+```
+
+### emitter()
+
+_Returns:_ [`<EventEmitter>`][eventemitter]
+
+Create EnhancedEmitter, enhanced EventEmitter
+
+with wildcard and forward method
+
+### class EnhancedEmitter
+
+#### EnhancedEmitter.super\_()
+
+#### EnhancedEmitter.prototype.constructor()
+
+#### EnhancedEmitter.prototype.emit(...args)
+
+- `args`: [`<Array>`][array] arguments to be passed
+
+Call listener with provided arguments
+
+#### EnhancedEmitter.prototype.forward(to, events)
+
+- `to`: [`<EventEmitter>`][eventemitter] to emit event on
+- `events`: [`<string>`][string]|[`<Object>`][object]|[`<string[]>`][string]
+  events names
+
+Forward events from one EventEmitter to another
+
+### class Flags
+
+#### Flags.from(...args)
+
+#### Flags.prototype.constructor(...args)
+
+### partial(fn, ...args)
+
+- `fn`: [`<Function>`][function]
+- `args`: [`<Array>`][array] arguments to be applied
+
+_Returns:_ [`<Function>`][function] function(...rest)
+
+- `rest`: [`<Array>`][array] arguments
+
+Partially apply arguments to function
+
+### omap(mapFn, obj)
+
+- `mapFn`: [`<Function>`][function] to apply to every field value
+- `obj`: [`<Object>`][object] which fields used for mapping
+
+_Returns:_ [`<Object>`][object] with same reference but with transformed fields
+
+Map object fields with provided function
+
+### compose(...fns)
+
+- `fns`: [`<Array>`][array] functions to be composed
+
+_Returns:_ [`<Function>`][function] function(...args), composed
+
+- `args`: [`<Array>`][array] arguments to be passed to the first function
+
+Compose multiple functions into one
+
+### maybe(fn, defVal\[, value\])
+
+- `fn`: [`<Function>`][function]
+- `defVal`: `<any>` default value
+- `value`: `<any>` (optional), value
+
+_Returns:_ `<any>` result of `fn` or `defVal`
+
+Apply given function to value or default value
+
+### zip(...arrays)
+
+- `arrays`: [`<Array[]>`][array] arrays to be zipped
+
+_Returns:_ [`<Array>`][array] length is minimal of input arrays length, element
+with index i of resulting array is array with elements with index i from input
+array
+
+Zip several arrays into one
+
+### replicate(count, elem)
+
+- `count`: [`<number>`][number] new array length
+- `elem`: `<any>` value to replicate
+
+_Returns:_ [`<Array>`][array] replicated
+
+Create array of replicated values
+
+### zipWith(fn, ...arrays)
+
+- `fn`: [`<Function>`][function] for zipping elements with index i
+- `arrays`: [`<Array[]>`][array] arrays to be zipped
+
+_Returns:_ [`<Array>`][array] zipped, element with index i of resulting array is
+result of fn called with arguments from arrays
+
+Zip arrays using specific function
+
+### curryUntil(condition, fn, ...args)
+
+- `condition`: [`<Function>`][function] returns: [`<boolean>`][boolean]
+  - `argsI`: [`<Array>`][array] arguments for i-th currying
+  - `argsParts`: [`<Array>`][array] of args given for currying from first to
+    i-th currying
+- `fn`: [`<Function>`][function] to be curried
+- `args`: [`<Array>`][array] arguments for fn
+
+_Returns:_ [`<Function>`][function] function(...args), curried
+
+- `args`: [`<Array>`][array] arguments
+
+Curry function until the condition is met
+
+### curryN(fn, count, ...args)
+
+- `fn`: [`<Function>`][function] to be curried
+- `count`: [`<number>`][number] of times function should be curried
+- `args`: [`<Array>`][array] arguments for first currying
+
+_Returns:_ [`<Function>`][function] curried given times count
+
+Curry fn count times, first curry uses args for first currying
+
+### curryTwice(fn)
+
+- `fn`: [`<Function>`][function] to be curried
+
+_Returns:_ [`<Function>`][function] to pass arguments that returns curried fn
+
+Curry function curry with fn
+
+### curry(fn, ...param)
+
+- `fn`: [`<Function>`][function] to be curried
+- `param`: [`<Array>`][array] arguments to the function
+
+_Returns:_ [`<Function>`][function] function(...args), curried
+
+Curry function with given arguments
+
+### applyArgs(...args)
+
+- `args`: [`<Array>`][array] arguments to save in closure
+
+_Returns:_ [`<Function>`][function] returns: `<any>`, result of `fn(...args)`
+
+- `fn`: [`<Function>`][function] to be applied saved arguments
+
+Apply arguments
+
+### either(fn)
+
+- `fn`: [`<Function>`][function] to be called
+
+_Returns:_ [`<Function>`][function] function(...args), returns: `<any>`, result
+of `fn(arg)`, where `arg` - first valid element of `args`
+
+- `args`: [`<Array>`][array] arguments to iterate
+
+Get first not errored result of fn
+
+_Throws:_ [`<Error>`][error] if `fn` throws it
+
+### restLeft(fn)
+
+- `fn`: [`<Function>`][function] function(args, ...namedArgs, callback)
+  - `args`: [`<Array>`][array] rest of spreadArgs created by excluding namedArgs
+  - `namedArgs`: [`<Array>`][array] first values of spreadArgs, length is based
+    upon interface of fn
+  - `callback`: [`<Function>`][function] callback, last argument of spreadArgs
+
+_Returns:_ [`<Function>`][function] function(...spreadArgs)
+
+- `spreadArgs`: [`<Array>`][array] arguments to be added
+
+Rest left, transform function
+
+### mkdirp(dir, mode, cb)
+
+### rmdirp(dir, cb)
+
+### generateKey(length, possible)
+
+- `length`: [`<number>`][number] key length
+- `possible`: [`<string>`][string] with possible characters
+
+_Returns:_ [`<string>`][string] key
+
+Generate random key
+
+### generateGUID()
+
+_Returns:_ [`<string>`][string] GUID
+
+Generate an RFC4122-compliant GUID (UUID v4)
+
+### generateSID(config)
+
+- `config`: [`<Object>`][object] { length, characters, secret }
+
+_Returns:_ [`<string>`][string] SID
+
+Generate random SID
+
+_Deprecated:_ this method will be removed in the next major versions. Use
+`generateToken()` instead.
+
+### crcSID(config, key)
+
+- `config`: [`<Object>`][object] { secret }
+- `key`: [`<string>`][string] SID key
+
+_Returns:_ [`<string>`][string] CRC
+
+Calculate SID CRC
+
+_Deprecated:_ this method will be removed in the next major versions. Use
+`crcToken()` instead.
+
+### validateSID(config, sid)
+
+- `config`: [`<Object>`][object] { secret }
+- `sid`: [`<string>`][string] session id
+
+_Returns:_ [`<boolean>`][boolean]
+
+Validate SID
+
+_Deprecated:_ this method will be removed in the next major versions. Use
+`validateToken()` instead.
+
+### generateToken(secret, characters, length)
+
+- `secret`: [`<string>`][string]
+- `characters`: [`<string>`][string]
+- `length`: [`<number>`][number]
+
+_Returns:_ [`<string>`][string] token
+
+Generate random Token
+
+### crcToken(secret, key)
+
+- `secret`: [`<string>`][string]
+- `key`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string] crc
+
+Calculate Token crc
+
+### validateToken(secret, token)
+
+- `secret`: [`<string>`][string]
+- `token`: [`<string>`][string]
+
+_Returns:_ [`<boolean>`][boolean]
+
+Validate Token
+
+### hash(password, salt)
+
+- `password`: [`<string>`][string]
+- `salt`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string] hash
+
+Calculate hash with salt
+
+### validateHash(hashValue, password, salt)
+
+- `hashValue`: [`<string>`][string]
+- `password`: [`<string>`][string]
+- `salt`: [`<string>`][string]
+
+_Returns:_ [`<boolean>`][boolean]
+
+Validate hash
+
+### generateStorageKey()
+
+_Returns:_ [`<string[]>`][string] [folder1, folder2, code]
+
+Generate file storage key
+
+### idToChunks(id)
+
+- `id`: [`<number>`][number]
+
+_Returns:_ [`<Array>`][array] minimal length is 2 which contains hex strings
+with length of 4
+
+Convert id to array of hex strings
+
+### idToPath(id)
+
+- `id`: [`<number>`][number]
+
+_Returns:_ [`<string>`][string]
+
+Convert id to file path
+
+### pathToId(path)
+
+- `path`: [`<string>`][string]
+
+_Returns:_ [`<number>`][number]
+
+Convert file path to id
+
+### class Int64
+
+#### Int64.zero()
+
+#### Int64.one()
+
+#### Int64.\_conversion(value)
+
+Convert signed to 2's complement representation and vise versa
+
+#### Int64.add(a, b)
+
+#### Int64.sub(a, b)
+
+#### Int64.cmp(a, b)
+
+#### Int64.\_division(n, d)
+
+#### Int64.div(a, b)
+
+#### Int64.mod(a, b)
+
+#### Int64.mult(a, b)
+
+#### Int64.and(a, b)
+
+#### Int64.or(a, b)
+
+#### Int64.not(a)
+
+#### Int64.xor(a, b)
+
+#### Int64.shiftRight(a, b)
+
+#### Int64.shiftLeft(a, b)
+
+#### Int64.prototype.constructor(value)
+
+#### Int64.prototype.toInt32()
+
+#### Int64.prototype.toUint32()
+
+#### Int64.prototype.add(b)
+
+#### Int64.prototype.sub(b)
+
+#### Int64.prototype.and(b)
+
+#### Int64.prototype.or(b)
+
+#### Int64.prototype.not()
+
+#### Int64.prototype.xor(b)
+
+#### Int64.prototype.shiftRightLogical(b)
+
+#### Int64.prototype.shiftRightArithmetic(b)
+
+#### Int64.prototype.shiftRight(b)
+
+#### Int64.prototype.shiftLeft(b)
+
+#### Int64.prototype.inc()
+
+#### Int64.prototype.dec()
+
+#### Int64.prototype.toString(radix = 10)
+
+#### Int64.prototype.toJSON()
+
+#### Int64.prototype.toPostgres()
+
+### class Iterator
+
+#### Iterator.range(start, stop\[, step\])
+
+- `start`: [`<number>`][number]
+- `stop`: [`<number>`][number]
+- `step`: [`<number>`][number] (optional), default: `1`
+
+_Returns:_ `<Iterator>`
+
+Create iterator iterating over the range
+
+#### Iterator.prototype.constructor(base)
+
+#### Iterator.prototype.next()
+
+#### Iterator.prototype.count()
+
+#### Iterator.prototype.each(fn, thisArg)
+
+#### Iterator.prototype.forEach(fn, thisArg)
+
+#### Iterator.prototype.every(predicate, thisArg)
+
+#### Iterator.prototype.find(predicate, thisArg)
+
+#### Iterator.prototype.includes(element)
+
+#### Iterator.prototype.reduce(reducer, initialValue)
+
+#### Iterator.prototype.some(predicate, thisArg)
+
+#### Iterator.prototype.someCount(predicate, count, thisArg)
+
+#### Iterator.prototype.collectTo(CollectionClass)
+
+#### Iterator.prototype.collectWith(obj, collector)
+
+#### Iterator.prototype.toArray()
+
+#### Iterator.prototype.map(mapper, thisArg)
+
+#### Iterator.prototype.filter(predicate, thisArg)
+
+#### Iterator.prototype.flat(depth = 1)
+
+#### Iterator.prototype.flatMap(mapper, thisArg)
+
+#### Iterator.prototype.zip(...iterators)
+
+#### Iterator.prototype.chain(...iterators)
+
+#### Iterator.prototype.take(amount)
+
+#### Iterator.prototype.takeWhile(predicate, thisArg)
+
+#### Iterator.prototype.skip(amount)
+
+#### Iterator.prototype.enumerate()
+
+#### Iterator.prototype.join(sep = ', ', prefix = '', suffix = '')
+
+### iter(base)
+
+### cryptoPrefetcher(bufSize, valueSize)
+
+- `bufSize`: [`<number>`][number] size in bytes of the buffer to preallocate
+- `valueSize`: [`<number>`][number] size in bytes of the produced chunks
+
+Create prefetcher to use when crypto.randomBytes is required to generate
+
+multiple same-size values. `bufSize` must be a multiple of `valueSize` for this
+to work.
+
+### random(min, max)
+
+- `min`: [`<number>`][number] range start
+- `max`: [`<number>`][number] range end
+
+_Returns:_ [`<number>`][number]
+
+Generate random integer value in given range
+
+### cryptoRandom()
+
+_Returns:_ [`<number>`][number]
+
+Generate random number in the range from 0 inclusive up to
+
+but not including 1 (same as Math.random), using crypto-secure number generator.
+
+### methods(iface)
+
+- `iface`: [`<Object>`][object] to be introspected
+
+_Returns:_ [`<string[]>`][string] method names
+
+List method names
+
+### properties(iface)
+
+- `iface`: [`<Object>`][object] to be introspected
+
+_Returns:_ [`<string[]>`][string] property names
+
+List property names
+
+### ip2int(...args)
+
+### ipToInt(\[ip\])
+
+- `ip`: [`<string>`][string] (optional), default: '127.0.0.1', IP address
+
+_Returns:_ [`<number>`][number]
+
+Convert IP string to number
+
+### localIPs()
+
+_Returns:_ [`<string[]>`][string]
+
+Get local network interfaces
+
+### parseHost(host)
+
+- `host`: [`<string>`][string] host or empty string, may contain `:port`
+
+_Returns:_ [`<string>`][string] host without port but not empty
+
+Parse host string
+
+### inherits(child, base)
+
+### override(obj, fn)
+
+- `obj`: [`<Object>`][object] containing method to override
+- `fn`: [`<Function>`][function] name will be used to find method
+
+Override method: save old to `fn.inherited`
+
+Previous function will be accessible by obj.fnName.inherited
+
+### mixin(target, source)
+
+- `target`: [`<Object>`][object] mixin to target
+- `source`: [`<Object>`][object] source methods
+
+Mixin for ES6 classes without overriding existing methods
+
+### class Pool
+
+#### Pool.prototype.constructor(factory = null)
+
+#### Pool.prototype.put(value)
+
+#### Pool.prototype.get()
+
+### sortComparePriority(priority, s1, s2)
+
+- `priority`: [`<string[]>`][string] with priority
+- `s1`: [`<string>`][string] to compare
+- `s2`: [`<string>`][string] to compare
+
+_Returns:_ [`<number>`][number]
+
+Compare for array.sort with priority
+
+_Example:_
+
+```js
+files.sort(common.sortComparePriority);
+```
+
+### sortCompareDirectories(a, b)
+
+- `a`: [`<string>`][string] to compare
+- `b`: [`<string>`][string] to compare
+
+_Returns:_ [`<number>`][number]
+
+Compare for array.sort, directories first
+
+_Example:_
+
+```js
+files.sort(sortCompareDirectories);
+```
+
+### sortCompareByName(a, b)
+
+- `a`: [`<Object>`][object] { name } to compare
+- `b`: [`<Object>`][object] { name } to compare
+
+_Returns:_ [`<number>`][number]
+
+Compare for array.sort
+
+_Example:_
+
+```js
+files.sort(sortCompareByName);
+```
+
+### subst(tpl, data, dataPath, escapeHtml)
+
+- `tpl`: [`<string>`][string] template body
+- `data`: [`<Object>`][object] hash, data structure to visualize
+- `dataPath`: [`<string>`][string] current position in data structure
+- `escapeHtml`: [`<boolean>`][boolean] escape html special characters if true
+
+_Returns:_ [`<string>`][string]
+
+Substitute variables
+
+### htmlEscape(content)
+
+- `content`: [`<string>`][string] to escape
+
+_Returns:_ [`<string>`][string]
+
+Escape html characters
+
+_Example:_
+
+```js
+htmlEscape('5>=5') = '5&lt;=5';
+```
+
+### fileExt(fileName)
+
+- `fileName`: [`<string>`][string] file name
+
+_Returns:_ [`<string>`][string]
+
+Extract file extension in lower case without dot
+
+_Example:_
+
+```js
+fileExt('/dir/file.txt');
+```
+
+_Result:_
+
+```js
+'txt';
+```
+
+### removeExt(fileName)
+
+- `fileName`: [`<string>`][string] file name
+
+_Returns:_ [`<string>`][string]
+
+Remove file extension from file name
+
+_Example:_
+
+```js
+fileExt('file.txt');
+```
+
+_Result:_
+
+```js
+'file';
+```
+
+### spinalToCamel(name)
+
+- `name`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Convert spinal case to camel case
+
+### escapeRegExp(s)
+
+- `s`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Escape regular expression control characters
+
+_Example:_
+
+```js
+escapeRegExp('/path/to/res?search=this.that');
+```
+
+### newEscapedRegExp(s)
+
+- `s`: [`<string>`][string]
+
+_Returns:_ [`<RegExp>`][regexp]
+
+Generate escaped regular expression
+
+### addTrailingSlash(s)
+
+- `s`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Add trailing slash at the end if there isn't one
+
+### stripTrailingSlash(s)
+
+- `s`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Remove trailing slash from string
+
+### dirname(filePath)
+
+- `filePath`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Get directory name with trailing slash from path
+
+### capitalize(s)
+
+- `s`: [`<string>`][string]
+
+_Returns:_ [`<string>`][string]
+
+Capitalize string
+
+### between(s, prefix, suffix)
+
+- `s`: [`<string>`][string] source
+- `prefix`: [`<string>`][string] before needed fragment
+- `suffix`: [`<string>`][string] after needed fragment
+
+_Returns:_ [`<string>`][string]
+
+Extract substring between prefix and suffix
+
+### removeBOM(s)
+
+- `s`: [`<string>`][string] possibly starts with BOM
+
+_Returns:_ [`<string>`][string]
+
+Remove UTF-8 BOM
+
+### arrayRegExp(items)
+
+- `items`: [`<string[]>`][string]
+
+_Returns:_ [`<RegExp>`][regexp]
+
+Generate RegExp from array with '*' wildcards
+
+_Example:_
+
+```js
+['/css/*', '/index.html'];
+```
+
+### section(s, separator)
+
+- `s`: [`<string>`][string]
+- `separator`: [`<string>`][string] or char
+
+_Returns:_ [`<string[]>`][string]
+
+Split string by the first occurrence of separator
+
+_Example:_
+
+```js
+rsection('All you need is JavaScript', 'is');
+```
+
+_Result:_
+
+```js
+['All you need ', ' JavaScript'];
+```
+
+### rsection(s, separator)
+
+- `s`: [`<string>`][string]
+- `separator`: [`<string>`][string] or char
+
+_Returns:_ [`<string[]>`][string]
+
+Split string by the last occurrence of separator
+
+_Example:_
+
+```js
+rsection('All you need is JavaScript', 'a');
+```
+
+_Result:_
+
+```js
+['All you need is Jav', 'Script'];
+```
+
+### split(s\[, separator\[, limit\]\])
+
+- `s`: [`<string>`][string]
+- `separator`: [`<string>`][string] (optional), default: ','
+- `limit`: [`<number>`][number] (optional), default: `-1`, max length of result
+  array
+
+_Returns:_ [`<string[]>`][string]
+
+Split string by multiple occurrence of separator
+
+_Example:_
+
+```js
+split('a,b,c,d');
+```
+
+_Result:_
+
+```js
+['a', 'b', 'c', 'd'];
+```
+
+_Example:_
+
+```js
+split('a,b,c,d', ',', 2);
+```
+
+_Result:_
+
+```js
+['a', 'b'];
+```
+
+### rsplit(s\[, separator\[, limit\]\])
+
+- `s`: [`<string>`][string]
+- `separator`: [`<string>`][string] (optional), default: ','
+- `limit`: [`<number>`][number] (optional), default: `-1`, max length of result
+  array
+
+_Returns:_ [`<string[]>`][string]
+
+Split string by multiple occurrences of separator
+
+_Example:_
+
+```js
+split('a,b,c,d', ',', 2);
+```
+
+_Result:_
+
+```js
+['c', 'd'];
+```
+
+### normalizeEmail(email)
+
+- `email`: [`<string>`][string] email address to normalize
+
+_Returns:_ [`<string>`][string] normalized email address
+
+Normalize email address according to OWASP recommendations
+
+### isTimeEqual(time1, time2)
+
+- `time1`: [`<string>`][string] time or milliseconds
+- `time2`: [`<string>`][string] time or milliseconds
+
+_Returns:_ [`<boolean>`][boolean]
+
+Compare time1 and time2
+
+_Example:_
+
+```js
+isTimeEqual(sinceTime, buffer.stats.mtime);
+```
+
+### nowDate(\[date\])
+
+- `date`: [`<Date>`][date] (optional), default: `new Date()`
+
+_Returns:_ [`<string>`][string]
+
+Get current date in YYYY-MM-DD format
+
+### nowDateTime(\[date\])
+
+- `date`: [`<Date>`][date] (optional), default: `new Date()`
+
+_Returns:_ [`<string>`][string]
+
+Get current date in YYYY-MM-DD hh:mm format
+
+### class Uint64
+
+#### Uint64.add(a, b)
+
+#### Uint64.sub(a, b)
+
+#### Uint64.mult(a, b)
+
+#### Uint64.cmp(a, b)
+
+#### Uint64.\_division(n, d)
+
+#### Uint64.div(a, b)
+
+#### Uint64.mod(a, b)
+
+#### Uint64.and(a, b)
+
+#### Uint64.or(a, b)
+
+#### Uint64.not(a)
+
+#### Uint64.xor(a, b)
+
+#### Uint64.shiftRight(a, b)
+
+#### Uint64.shiftLeft(a, b)
+
+#### Uint64.prototype.constructor(value)
+
+#### Uint64.prototype.toUint32()
+
+#### Uint64.prototype.add(b)
+
+#### Uint64.prototype.sub(b)
+
+#### Uint64.prototype.and(b)
+
+#### Uint64.prototype.or(b)
+
+#### Uint64.prototype.not()
+
+#### Uint64.prototype.xor(b)
+
+#### Uint64.prototype.shiftRight(b)
+
+#### Uint64.prototype.shiftLeft(b)
+
+#### Uint64.prototype.inc()
+
+#### Uint64.prototype.dec()
+
+#### Uint64.prototype.toString(radix = 10)
+
+#### Uint64.prototype.toJSON()
+
+#### Uint64.prototype.toPostgres()
+
+### duration(s)
+
+- `s`: [`<string>`][string] duration syntax
+
+_Returns:_ [`<number>`][number] milliseconds
+
+Parse duration to seconds
+
+_Example:_
+
+```js
+duration('1d 10h 7m 13s');
+```
+
+### durationToString(n)
+
+- `n`: [`<number>`][number] duration
+
+_Returns:_ [`<string>`][string]
+
+Convert integer duration to string
+
+### bytesToSize(bytes)
+
+- `bytes`: [`<number>`][number] size
+
+_Returns:_ [`<string>`][string]
+
+Convert integer to string, representing data size in Kb, Mb, Gb, and Tb
+
+### sizeToBytes(size)
+
+- `size`: [`<string>`][string] size
+
+_Returns:_ [`<number>`][number]
+
+Convert string with data size to integer
+
+### deprecate(fn)
+
+- `fn`: [`<Function>`][function]
+
+_Returns:_ [`<Function>`][function] wrapped with deprecation warning
+
+- `args`: [`<Array>`][array] arguments to be passed to wrapped function
+
+Wrap method to mark it as deprecated
+
+### alias(fn)
+
+- `fn`: [`<Function>`][function]
+
+_Returns:_ [`<Function>`][function] wrapped with deprecation warning
+
+- `args`: [`<Array>`][array] arguments to be passed to wrapped function
+
+Wrap new method to mark old alias as deprecated
+
+### safe(fn)
+
+- `fn`: [`<Function>`][function]
+
+_Returns:_ [`<Function>`][function] function(...args), wrapped with try/catch
+interception
+
+- `args`: [`<Array>`][array] arguments to be passed to wrapped function
+
+Make function raise-safe
+
+### callerFilename(depth = 0, stack = null)
+
+### callerFilepath(depth = 0, stack = null)
 
 ## Contributors
 
 See github for full [contributors list](https://github.com/metarhia/common/graphs/contributors)
+
+[eventemitter]: https://nodejs.org/api/events.html#events_class_eventemitter
+[object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+[date]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+[function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
+[regexp]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+[array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+[error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[typeerror]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+[boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
+[null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
+[number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
+[string]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type

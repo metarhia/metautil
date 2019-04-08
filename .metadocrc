@@ -1,0 +1,11 @@
+{
+  "headerFile": "doc/header.md",
+  "footerFile": "doc/footer.md",
+  "minHeaderLevel": 2,
+  "removeInterface": true,
+  "files": ["common.js"],
+  "customLinks": {
+    "EventEmitter": "https://nodejs.org/api/events.html#events_class_eventemitter"
+  },
+  "outputFile": "README.md"
+}
