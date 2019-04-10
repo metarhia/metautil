@@ -10,43 +10,10 @@ const characters =
 const secret = 'secret';
 const length = 64;
 
-const config = {
-  characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-  secret: 'secret',
-  length: 64,
-};
-
 metatests.case(
   'Common / id',
   { common },
   {
-    'common.validateSID': [
-      [
-        config,
-        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bc',
-        true,
-      ],
-      [
-        config,
-        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bK',
-        false,
-      ],
-      [
-        config,
-        '2XpU8oAewXwKJJSQeY0MByY403AyXprFdhB96zPFbpJxlBqHA3GfBYeLxgHxBhhZ',
-        false,
-      ],
-      [config, 'WRONG-STRING', false],
-      [config, '', false],
-    ],
-    'common.generateSID': [[config, result => result.length === 64]],
-    'common.crcSID': [
-      [
-        config,
-        common.generateKey(config.length - 4, config.characters),
-        result => result.length === 4,
-      ],
-    ],
     'common.validateToken': [
       [
         secret,

@@ -181,8 +181,6 @@ Create Cache, enhanced Map
 
 ### class Cache
 
-#### Cache.super\_()
-
 #### Cache.prototype.constructor()
 
 #### Cache.prototype.add(key, val)
@@ -246,8 +244,6 @@ _Returns:_ [`<Function>`][function] function(...args) wrapped callback
 
 Wrap function: call once, not null
 
-### cb(...args)
-
 ### unsafeCallback(args)
 
 - `args`: [`<Array>`][array] arguments
@@ -258,10 +254,6 @@ Extract callback function
 
 It's unsafe: may return null, allows multiple calls
 
-### extractCallback(...args)
-
-### cbUnsafe(...args)
-
 ### safeCallback(args)
 
 - `args`: [`<Array>`][array] arguments
@@ -270,8 +262,6 @@ _Returns:_ [`<Function>`][function] callback or common.emptiness if there is no
 callback
 
 Extract callback
-
-### cbExtract(...args)
 
 ### requiredCallback(args)
 
@@ -455,9 +445,7 @@ with wildcard and forward method
 
 ### class EnhancedEmitter
 
-#### EnhancedEmitter.super\_()
-
-#### EnhancedEmitter.prototype.constructor()
+#### EnhancedEmitter.prototype.constructor(...args)
 
 #### EnhancedEmitter.prototype.emit(...args)
 
@@ -645,41 +633,6 @@ Generate random key
 _Returns:_ [`<string>`][string] GUID
 
 Generate an RFC4122-compliant GUID (UUID v4)
-
-### generateSID(config)
-
-- `config`: [`<Object>`][object] { length, characters, secret }
-
-_Returns:_ [`<string>`][string] SID
-
-Generate random SID
-
-_Deprecated:_ this method will be removed in the next major versions. Use
-`generateToken()` instead.
-
-### crcSID(config, key)
-
-- `config`: [`<Object>`][object] { secret }
-- `key`: [`<string>`][string] SID key
-
-_Returns:_ [`<string>`][string] CRC
-
-Calculate SID CRC
-
-_Deprecated:_ this method will be removed in the next major versions. Use
-`crcToken()` instead.
-
-### validateSID(config, sid)
-
-- `config`: [`<Object>`][object] { secret }
-- `sid`: [`<string>`][string] session id
-
-_Returns:_ [`<boolean>`][boolean]
-
-Validate SID
-
-_Deprecated:_ this method will be removed in the next major versions. Use
-`validateToken()` instead.
 
 ### generateToken(secret, characters, length)
 
@@ -938,8 +891,6 @@ _Returns:_ [`<string[]>`][string] property names
 
 List property names
 
-### ip2int(...args)
-
 ### ipToInt(\[ip\])
 
 - `ip`: [`<string>`][string] (optional), default: '127.0.0.1', IP address
@@ -961,8 +912,6 @@ Get local network interfaces
 _Returns:_ [`<string>`][string] host without port but not empty
 
 Parse host string
-
-### inherits(child, base)
 
 ### override(obj, fn)
 
