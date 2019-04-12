@@ -38,6 +38,9 @@ and this project adheres to
   - `common.crcSID()` - replace with `common.crcToken()`
   - `common.generateSID()` - replace with `common.generateToken()`
   - `common.validateSID()` - replace with `common.validateToken()`
+- Functions that can be replaced with `util.deprecate()` available in Node.js:
+  - `common.deprecate()`
+  - `common.alias()`
 
 ## [1.5.0][] - 2019-04-12
 

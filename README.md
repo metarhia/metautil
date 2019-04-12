@@ -1389,26 +1389,6 @@ _Returns:_ [`<number>`][number]
 
 Convert string with data size to integer
 
-### deprecate(fn)
-
-- `fn`: [`<Function>`][function]
-
-_Returns:_ [`<Function>`][function] wrapped with deprecation warning
-
-- `args`: [`<Array>`][array] arguments to be passed to wrapped function
-
-Wrap method to mark it as deprecated
-
-### alias(fn)
-
-- `fn`: [`<Function>`][function]
-
-_Returns:_ [`<Function>`][function] wrapped with deprecation warning
-
-- `args`: [`<Array>`][array] arguments to be passed to wrapped function
-
-Wrap new method to mark old alias as deprecated
-
 ### safe(fn)
 
 - `fn`: [`<Function>`][function]
