@@ -512,3 +512,28 @@ metatests.testSync('RangeIterator empty range with start > stop', test => {
   const actual = Iterator.range(1, 0).toArray();
   test.strictSame(actual, []);
 });
+
+metatests.testSync('Iterator.toObject simple', test => {
+  const actual = iter([['a', 1], ['b', 2], ['c', 3]]).toObject();
+  test.strictSame(actual, { a: 1, b: 2, c: 3 });
+});
+
+metatests.testSync('Iterator.toObject empty', test => {
+  const actual = iter([]).toObject();
+  test.strictSame(actual, {});
+});
+
+metatests.testSync('Iterator.toObject with map', test => {
+  const actual = Iterator.range(0, 3)
+    .map(i => [String.fromCharCode(97 + i), i])
+    .toObject();
+  test.strictSame(actual, { a: 0, b: 1, c: 2 });
+});
+
+metatests.testSync("Iterator.toObject with '0', '1' properties", test => {
+  // According to spec https://tc39.github.io/ecma262/#sec-add-entries-from-iterable
+  const actual = Iterator.range(0, 3)
+    .map(i => ({ 0: String.fromCharCode(97 + i), 1: i }))
+    .toObject();
+  test.strictSame(actual, { a: 0, b: 1, c: 2 });
+});

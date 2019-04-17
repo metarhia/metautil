@@ -12,6 +12,8 @@ and this project adheres to
 
 - This CHANGELOG.md file.
 - `Iterator#collectWith()` now returns the provided object.
+- `Iterator#toObject()` to collect iterable into an Object similar to
+  [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries).
 
 ### Changed
 

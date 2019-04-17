@@ -824,6 +824,12 @@ Create iterator iterating over the range
 
 #### Iterator.prototype.toArray()
 
+#### Iterator.prototype.toObject()
+
+Transforms an iterator of key-value pairs into an object.
+
+This is similar to what `Object.fromEntries()` would offer.
+
 #### Iterator.prototype.map(mapper, thisArg)
 
 #### Iterator.prototype.filter(predicate, thisArg)
