@@ -425,6 +425,14 @@ metatests.test(
   }
 );
 
+metatests.test('Iterator.collectWith must return provided object', test => {
+  const set = iter(array).collectWith(new Set(), (obj, element) => {
+    obj.add(element);
+  });
+  test.strictSame([...set.values()], array);
+  test.end();
+});
+
 metatests.testSync('Iterator.enumerate must return tuples', test => {
   let i = 0;
   iter(array)

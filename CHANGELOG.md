@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - This CHANGELOG.md file.
+- `Iterator#collectWith()` now returns the provided object.
 
 ### Changed
 
