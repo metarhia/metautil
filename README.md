@@ -854,6 +854,12 @@ This is similar to what `Object.fromEntries()` would offer.
 
 ### iter(base)
 
+### iterEntries(Object.entries(obj)
+
+### iterKeys(Object.keys(obj)
+
+### iterValues(Object.values(obj)
+
 ### cryptoPrefetcher(bufSize, valueSize)
 
 - `bufSize`: [`<number>`][number] size in bytes of the buffer to preallocate

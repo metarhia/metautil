@@ -1,7 +1,7 @@
 'use strict';
 
 const metatests = require('metatests');
-const { Iterator, iter } = require('..');
+const { Iterator, iter, iterEntries, iterKeys, iterValues } = require('..');
 
 const array = [1, 2, 3, 4];
 
@@ -536,4 +536,19 @@ metatests.testSync("Iterator.toObject with '0', '1' properties", test => {
     .map(i => ({ 0: String.fromCharCode(97 + i), 1: i }))
     .toObject();
   test.strictSame(actual, { a: 0, b: 1, c: 2 });
+});
+
+metatests.testSync('iterEntries must iterate over object entries', test => {
+  const source = { a: 13, b: 42, c: 'hello' };
+  test.strictSame(iterEntries(source).toArray(), Object.entries(source));
+});
+
+metatests.testSync('iterKeys must iterate over object keys', test => {
+  const source = { a: 13, b: 42, c: 'hello' };
+  test.strictSame(iterKeys(source).toArray(), Object.keys(source));
+});
+
+metatests.testSync('iterValues must iterate over object values', test => {
+  const source = { a: 13, b: 42, c: 'hello' };
+  test.strictSame(iterValues(source).toArray(), Object.values(source));
 });

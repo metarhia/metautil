@@ -14,6 +14,8 @@ and this project adheres to
 - `Iterator#collectWith()` now returns the provided object.
 - `Iterator#toObject()` to collect iterable into an Object similar to
   [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries).
+- `common.iterEntries()`, `common.iterKeys()`, `common.iterValues()` utility
+  methods.
 
 ### Changed
 
