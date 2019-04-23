@@ -21,7 +21,7 @@ and this project adheres to
 
 - Expose `AuthenticationStrength`'s `compliance` number property instead of
   `strength` string.
-- Replaced ES5-style classes and iheritance with ES6 classes for `Cache` and
+- Replaced ES5-style classes and inheritance with ES6 classes for `Cache` and
   `EnhancedEmitter`.
 
 ### Removed
