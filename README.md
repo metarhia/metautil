@@ -179,7 +179,7 @@ _Returns:_ `<Cache>`
 
 Create Cache, enhanced Map
 
-### class Cache
+### class Cache extends [Map][map]
 
 #### Cache.prototype.constructor()
 
@@ -398,9 +398,11 @@ Merge multiple objects with merger
 
 ### class Enum
 
-#### Enum.from(...args)
+#### Enum.NaE
 
-#### Enum.NaE()
+- `<Symbol>` Not an Enum
+
+#### Enum.from(...args)
 
 #### Enum.prototype.constructor(...args)
 
@@ -445,7 +447,7 @@ Create EnhancedEmitter, enhanced EventEmitter
 
 with wildcard and forward method
 
-### class EnhancedEmitter
+### class EnhancedEmitter extends [EventEmitter][eventemitter]
 
 #### EnhancedEmitter.prototype.constructor(...args)
 
@@ -830,7 +832,8 @@ Create iterator iterating over the range
 
 Transforms an iterator of key-value pairs into an object.
 
-This is similar to what `Object.fromEntries()` would offer.
+This is similar to what [`Object.fromEntries()`][object.fromentries()] would
+offer.
 
 #### Iterator.prototype.map(mapper, thisArg)
 
@@ -856,11 +859,11 @@ This is similar to what `Object.fromEntries()` would offer.
 
 ### iter(base)
 
-### iterEntries(Object.entries(obj)
+### iterEntries(obj)
 
-### iterKeys(Object.keys(obj)
+### iterKeys(obj)
 
-### iterValues(Object.values(obj)
+### iterValues(obj)
 
 ### cryptoPrefetcher(bufSize, valueSize)
 
@@ -1410,11 +1413,13 @@ Make function raise-safe
 
 See github for full [contributors list](https://github.com/metarhia/common/graphs/contributors)
 
+[object.fromentries()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
 [eventemitter]: https://nodejs.org/api/events.html#events_class_eventemitter
 [object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [date]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 [function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [regexp]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+[map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
 [array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 [typeerror]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError

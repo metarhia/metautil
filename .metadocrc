@@ -5,6 +5,7 @@
   "removeInterface": true,
   "files": ["common.js"],
   "customLinks": {
+    "Object.fromEntries()": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries",
     "EventEmitter": "https://nodejs.org/api/events.html#events_class_eventemitter"
   },
   "outputFile": "README.md"
