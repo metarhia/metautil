@@ -43,6 +43,11 @@ and this project adheres to
   - `common.deprecate()`
   - `common.alias()`
 
+### Fixed
+
+- Functions `common.clone()`, `common.deleteByPath()`, and
+  `common.mergeObjects()` throwing when used on objects without prototype.
+
 ## [1.5.0][] - 2019-04-12
 
 ### Added

@@ -34,6 +34,10 @@ metatests.case(
       [{ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 3 }],
       [{ a: { b: 2, c: 3 } }, { a: { b: 2, c: 3 } }],
       [{ a: new Date('2000-01-01') }, { a: {} }],
+      [
+        Object.assign(Object.create(null), { a: 1, b: 2, c: 3 }),
+        { a: 1, b: 2, c: 3 },
+      ],
     ],
     'common.duplicate': [
       [{}, {}],
@@ -125,6 +129,13 @@ metatests.case(
       [{ item: { surname: 'Gagarin', name: 'Yuri' } }, 'item.noname', false],
       [{ item: { surname: 'Gagarin', name: 'Yuri' } }, 'item', true],
       [{ item: { surname: 'Gagarin', name: 'Yuri' } }, 'unknown', false],
+      [
+        Object.assign(Object.create(null), {
+          item: { surname: 'Gagarin', name: 'Yuri' },
+        }),
+        'item',
+        true,
+      ],
     ],
     'common.merge': [
       [['a', 'b'], ['a', 'c'], ['a', 'b', 'c']],
@@ -148,6 +159,7 @@ metatests.case(
         { a: 1, b: 2 },
         { a: 2, b: 4, c: 3 },
       ],
+      [key => key, Object.assign(Object.create(null), { 1: 'a' }), { 1: '1' }],
     ],
   }
 );
