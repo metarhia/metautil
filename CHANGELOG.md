@@ -23,6 +23,7 @@ and this project adheres to
   `strength` string.
 - Replaced ES5-style classes and inheritance with ES6 classes for `Cache` and
   `EnhancedEmitter`.
+- Signature of `merger()` in `mergeObjects()` to also contain the merging key.
 
 ### Removed
 

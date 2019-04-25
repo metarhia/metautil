@@ -136,14 +136,14 @@ metatests.case(
     ],
     'common.mergeObjects': [
       [
-        (a, b) => a + b,
+        (_, a, b) => a + b,
         { a: 'a', b: 'b' },
         { a: 'a', b: 'c' },
         { a: 'aa', b: 'bc' },
       ],
-      [(a, b) => a || b, { a: 'a' }, { d: 'd', a: 'c' }, { a: 'a', d: 'd' }],
+      [(_, a, b) => a || b, { a: 'a' }, { d: 'd', a: 'c' }, { a: 'a', d: 'd' }],
       [
-        (a, b) => (a || 0) + (b || 0),
+        (_, a, b) => (a || 0) + (b || 0),
         { a: 1, b: 2, c: 3 },
         { a: 1, b: 2 },
         { a: 2, b: 4, c: 3 },
@@ -221,6 +221,19 @@ metatests.test('clone handling only object own properties', test => {
 
 metatests.testSync('mergeObjects correctly handles ownProperties', test => {
   const bufs = [Buffer.from([1, 2, 3]), Buffer.from([4, 5, 6])];
-  const actual = common.mergeObjects((a, b) => a + b, ...bufs);
+  const actual = common.mergeObjects((_, a, b) => a + b, ...bufs);
   test.strictSame(actual, Buffer.from([5, 7, 9]));
+});
+
+metatests.testSync('mergeObjects passes correct arguments to merger', test => {
+  const objs = [{ a: 13 }, { a: 42 }, { a: 99 }];
+  const actual = common.mergeObjects(
+    test.mustCall((key, ...args) => {
+      test.strictSame(key, 'a');
+      test.strictSame(args, [13, 42, 99]);
+      return Math.max(...args);
+    }),
+    ...objs
+  );
+  test.strictSame(actual, { a: 99 });
 });

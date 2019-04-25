@@ -388,6 +388,8 @@ Distinctly merge multiple arrays
 ### mergeObjects(merger, ...objs)
 
 - `merger`: [`<Function>`][function]
+  - `key`: [`<string>`][string] current merging key
+  - `...values`: `<any[]>` values under key
 - `objs`: [`<Object[]>`][object] objects to be merged
 
 _Returns:_ [`<Object>`][object]
