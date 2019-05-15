@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased][unreleased]
 
+### Added
+
+- `rmRecursive()` and `rmRecursivePromise()` functions.
+
 ## [2.0.0][] - 2019-04-26
 
 ### Added

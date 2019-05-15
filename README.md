@@ -623,6 +623,21 @@ Rest left, transform function
 
 ### rmdirp(dir, cb)
 
+### rmRecursive(path, callback)
+
+- `path`: [`<string>`][string] path to a file or directory to be removed
+- `callback`: [`<Function>`][function] callback
+
+Recursively remove directory
+
+### async rmRecursivePromise(path)
+
+- `path`: [`<string>`][string] path to a file or directory to be removed
+
+_Returns:_ [`<Promise>`][promise]
+
+Recursively remove directory
+
 ### generateKey(length, possible)
 
 - `length`: [`<number>`][number] key length
@@ -1419,6 +1434,7 @@ See github for full [contributors list](https://github.com/metarhia/common/graph
 [date]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 [function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [regexp]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp
+[promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
 [array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
