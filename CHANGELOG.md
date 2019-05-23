@@ -15,6 +15,7 @@ and this project adheres to
   return values from mapper function that do not match the passed
   filterValue (`undefined` by default).
 - `Iterator#skipWhile()` to enable skipping elements while predicate holds.
+- `MemoryWritable` stream implementation.
 
 ### Fixed
 

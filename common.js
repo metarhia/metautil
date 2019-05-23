@@ -21,6 +21,7 @@ const submodules = [
   'oop', // Object-oriented programming
   'pool', // Object pool
   'sort', // Sort compare functions
+  'stream', // Stream utilities
   'strings', // Strings utilities
   'time', // Date and Time functions
   'uint64', // Uint64

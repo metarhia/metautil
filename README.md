@@ -1025,6 +1025,21 @@ _Example:_
 files.sort(sortCompareByName);
 ```
 
+### class MemoryWritable extends [Writable][writable]
+
+#### MemoryWritable.prototype.constructor()
+
+#### async MemoryWritable.prototype.getData(\[encoding\])
+
+- `encoding`: [`<string>`][string] encoding to convert the resulting data to,
+  must be a valid [`<Buffer>`][buffer] encoding
+
+_Returns:_ [`<Promise>`][promise]
+
+Return a Promise that will be resolved with all the written data once it
+
+becomes available.
+
 ### subst(tpl, data, dataPath, escapeHtml)
 
 - `tpl`: [`<string>`][string] template body
@@ -1437,7 +1452,9 @@ Make function raise-safe
 See github for full [contributors list](https://github.com/metarhia/common/graphs/contributors)
 
 [object.fromentries()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
+[buffer]: https://nodejs.org/api/buffer.html#buffer_class_buffer
 [eventemitter]: https://nodejs.org/api/events.html#events_class_eventemitter
+[writable]: https://nodejs.org/api/stream.html#stream_class_stream_writable
 [object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [date]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 [function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function

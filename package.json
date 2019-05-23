@@ -20,7 +20,8 @@
   "browser": {
     "common.js": "./dist/common.js",
     "dist/lib/fs.js": false,
-    "dist/lib/network.js": false
+    "dist/lib/network.js": false,
+    "dist/lib/stream.js": false
   },
   "readmeFilename": "README.md",
   "files": [
