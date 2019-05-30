@@ -322,6 +322,41 @@ metatests.test('Iterator.skip', test => {
   test.end();
 });
 
+metatests.test('Iterator.skipWhile', test => {
+  const it = iter(array).skipWhile(v => v < 3);
+  test.strictSame(it.next().value, 3);
+  test.strictSame(it.next().value, 4);
+  test.assert(it.next().done);
+  test.end();
+});
+
+metatests.test(
+  'Iterator.skipWhile must stop skipping after first predicate failure',
+  test => {
+    const it = iter([1, 2, 3, 2, 1]).skipWhile(v => v < 3);
+    test.strictSame(it.next().value, 3);
+    test.strictSame(it.next().value, 2);
+    test.strictSame(it.next().value, 1);
+    test.assert(it.next().done);
+    test.end();
+  }
+);
+
+metatests.test('Iterator.skipWhile with thisArg', test => {
+  const obj = {
+    start: 3,
+    predicate(value) {
+      return value < this.start;
+    },
+  };
+
+  const it = iter(array).skipWhile(obj.predicate, obj);
+  test.strictSame(it.next().value, 3);
+  test.strictSame(it.next().value, 4);
+  test.assert(it.next().done);
+  test.end();
+});
+
 metatests.test('Iterator.every that must return true', test => {
   test.assert(iter(array).every(element => element > 0));
   test.end();

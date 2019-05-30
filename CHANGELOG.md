@@ -14,6 +14,7 @@ and this project adheres to
 - `Iterator#filterMap()` to enable more efficient filter+map. It will only
   return values from mapper function that do not match the passed
   filterValue (`undefined` by default).
+- `Iterator#skipWhile()` to enable skipping elements while predicate holds.
 
 ### Fixed
 

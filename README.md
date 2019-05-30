@@ -861,6 +861,8 @@ This iterator will call `mapper` on each element and if mapper returns NOT
 
 #### Iterator.prototype.skip(amount)
 
+#### Iterator.prototype.skipWhile(predicate, thisArg)
+
 #### Iterator.prototype.some(predicate, thisArg)
 
 #### Iterator.prototype.someCount(predicate, count, thisArg)
