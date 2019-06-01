@@ -166,6 +166,43 @@ metatests.test('Iterator.filter with thisArg', test => {
   test.end();
 });
 
+metatests.test('Iterator.filterMap', test => {
+  test.strictSame(
+    iter(array)
+      .filterMap(value => (value > 2 ? value * 2 : undefined))
+      .toArray(),
+    [6, 8]
+  );
+  test.end();
+});
+
+metatests.test('Iterator.filterMap with thisArg', test => {
+  const obj = {
+    divider: 2,
+    predicate(value) {
+      return value % this.divider === 0 ? value * 2 : undefined;
+    },
+  };
+
+  test.strictSame(
+    iter(array)
+      .filterMap(obj.predicate, obj)
+      .toArray(),
+    [4, 8]
+  );
+  test.end();
+});
+
+metatests.test('Iterator.filterMap with filterValue', test => {
+  test.strictSame(
+    iter(array)
+      .filterMap(value => (value > 2 ? value * 2 : 42), null, 42)
+      .toArray(),
+    [6, 8]
+  );
+  test.end();
+});
+
 metatests.test('Iterator.flat', test => {
   const array = [[[[1], 2], 3], 4];
   const flatArray = [1, 2, 3, 4];

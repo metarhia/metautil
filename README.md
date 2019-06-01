@@ -827,6 +827,20 @@ Create iterator iterating over the range
 
 #### Iterator.prototype.filter(predicate, thisArg)
 
+#### Iterator.prototype.filterMap(mapper\[, thisArg\[, filterValue\]\])
+
+- `mapper`: [`<Function>`][function] function that maps values and returns
+  either new value that will be the next value of the new iterator or
+  `filterValue` that will be ignored.
+  - `value`: `<any>` iterator element
+- `thisArg`: `<any>` value to be used as `this` when calling `mapper`
+- `filterValue`: `<any>` value to filter out `mapper` results.
+
+Creates an iterator that both filters and maps with the passed `mapper`.
+
+This iterator will call `mapper` on each element and if mapper returns NOT
+`filterValue` it will be returned, otherwise it is ignored.
+
 #### Iterator.prototype.find(predicate, thisArg)
 
 #### Iterator.prototype.flat(depth = 1)

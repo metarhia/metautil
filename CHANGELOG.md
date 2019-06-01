@@ -11,6 +11,9 @@ and this project adheres to
 ### Added
 
 - `rmRecursive()` and `rmRecursivePromise()` functions.
+- `Iterator#filterMap()` to enable more efficient filter+map. It will only
+  return values from mapper function that do not match the passed
+  filterValue (`undefined` by default).
 
 ### Fixed
 
