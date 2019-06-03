@@ -12,6 +12,12 @@ and this project adheres to
 
 - `rmRecursive()` and `rmRecursivePromise()` functions.
 
+### Fixed
+
+- Documentation by marking some methods as private and regenerating with a newer
+  version of `@metarhia/doc`
+  ([changelog](https://github.com/metarhia/metadoc/blob/master/CHANGELOG.md#056---2019-05-31)).
+
 ## [2.0.0][] - 2019-04-26
 
 ### Added

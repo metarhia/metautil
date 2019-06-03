@@ -167,11 +167,11 @@ Function that tests the login with password
 
 #### BTree.prototype.get(key)
 
-#### BTree.prototype.set(key, data)
-
 #### BTree.prototype.iterator(start, finish)
 
 #### BTree.prototype.remove(key)
+
+#### BTree.prototype.set(key, data)
 
 ### cache()
 
@@ -190,12 +190,6 @@ Create Cache, enhanced Map
 
 Add key-value pair to cache
 
-#### Cache.prototype.del(key)
-
-- `key`: [`<string>`][string] key
-
-Delete cache element
-
 #### Cache.prototype.clr(prefix\[, fn\])
 
 - `prefix`: [`<string>`][string] to compare with beginning of the key
@@ -204,6 +198,12 @@ Delete cache element
   - `val`: `<any>` associative value to be called on each key
 
 Clear cache elements that start with prefix
+
+#### Cache.prototype.del(key)
+
+- `key`: [`<string>`][string] key
+
+Delete cache element
 
 ### falseness()
 
@@ -404,7 +404,7 @@ Merge multiple objects with merger
 
 #### Enum.from(...args)
 
-#### Enum.prototype.constructor(...args)
+#### Enum.prototype.constructor()
 
 ### forwardEvents(from, to\[, events\])
 
@@ -449,7 +449,7 @@ with wildcard and forward method
 
 ### class EnhancedEmitter extends [EventEmitter][eventemitter]
 
-#### EnhancedEmitter.prototype.constructor(...args)
+#### EnhancedEmitter.prototype.constructor()
 
 #### EnhancedEmitter.prototype.emit(...args)
 
@@ -733,21 +733,11 @@ Convert file path to id
 
 ### class Int64
 
-#### Int64.zero()
-
-#### Int64.one()
-
-#### Int64.\_conversion(value)
-
-Convert signed to 2's complement representation and vise versa
-
 #### Int64.add(a, b)
 
-#### Int64.sub(a, b)
+#### Int64.and(a, b)
 
 #### Int64.cmp(a, b)
-
-#### Int64.\_division(n, d)
 
 #### Int64.div(a, b)
 
@@ -755,53 +745,57 @@ Convert signed to 2's complement representation and vise versa
 
 #### Int64.mult(a, b)
 
-#### Int64.and(a, b)
+#### Int64.not(a)
+
+#### Int64.one()
 
 #### Int64.or(a, b)
 
-#### Int64.not(a)
-
-#### Int64.xor(a, b)
+#### Int64.shiftLeft(a, b)
 
 #### Int64.shiftRight(a, b)
 
-#### Int64.shiftLeft(a, b)
+#### Int64.sub(a, b)
+
+#### Int64.xor(a, b)
+
+#### Int64.zero()
 
 #### Int64.prototype.constructor(value)
 
-#### Int64.prototype.toInt32()
-
-#### Int64.prototype.toUint32()
-
 #### Int64.prototype.add(b)
-
-#### Int64.prototype.sub(b)
 
 #### Int64.prototype.and(b)
 
-#### Int64.prototype.or(b)
-
-#### Int64.prototype.not()
-
-#### Int64.prototype.xor(b)
-
-#### Int64.prototype.shiftRightLogical(b)
-
-#### Int64.prototype.shiftRightArithmetic(b)
-
-#### Int64.prototype.shiftRight(b)
-
-#### Int64.prototype.shiftLeft(b)
+#### Int64.prototype.dec()
 
 #### Int64.prototype.inc()
 
-#### Int64.prototype.dec()
+#### Int64.prototype.not()
 
-#### Int64.prototype.toString(radix = 10)
+#### Int64.prototype.or(b)
+
+#### Int64.prototype.shiftLeft(b)
+
+#### Int64.prototype.shiftRight(b)
+
+#### Int64.prototype.shiftRightArithmetic(b)
+
+#### Int64.prototype.shiftRightLogical(b)
+
+#### Int64.prototype.sub(b)
+
+#### Int64.prototype.toInt32()
 
 #### Int64.prototype.toJSON()
 
 #### Int64.prototype.toPostgres()
+
+#### Int64.prototype.toString(radix = 10)
+
+#### Int64.prototype.toUint32()
+
+#### Int64.prototype.xor(b)
 
 ### class Iterator
 
@@ -817,29 +811,49 @@ Create iterator iterating over the range
 
 #### Iterator.prototype.constructor(base)
 
-#### Iterator.prototype.next()
+#### Iterator.prototype.chain(...iterators)
+
+#### Iterator.prototype.collectTo(CollectionClass)
+
+#### Iterator.prototype.collectWith(obj, collector)
 
 #### Iterator.prototype.count()
 
 #### Iterator.prototype.each(fn, thisArg)
 
-#### Iterator.prototype.forEach(fn, thisArg)
+#### Iterator.prototype.enumerate()
 
 #### Iterator.prototype.every(predicate, thisArg)
 
+#### Iterator.prototype.filter(predicate, thisArg)
+
 #### Iterator.prototype.find(predicate, thisArg)
+
+#### Iterator.prototype.flat(depth = 1)
+
+#### Iterator.prototype.flatMap(mapper, thisArg)
+
+#### Iterator.prototype.forEach(fn, thisArg)
 
 #### Iterator.prototype.includes(element)
 
+#### Iterator.prototype.join(sep = ', ', prefix = '', suffix = '')
+
+#### Iterator.prototype.map(mapper, thisArg)
+
+#### Iterator.prototype.next()
+
 #### Iterator.prototype.reduce(reducer, initialValue)
+
+#### Iterator.prototype.skip(amount)
 
 #### Iterator.prototype.some(predicate, thisArg)
 
 #### Iterator.prototype.someCount(predicate, count, thisArg)
 
-#### Iterator.prototype.collectTo(CollectionClass)
+#### Iterator.prototype.take(amount)
 
-#### Iterator.prototype.collectWith(obj, collector)
+#### Iterator.prototype.takeWhile(predicate, thisArg)
 
 #### Iterator.prototype.toArray()
 
@@ -850,27 +864,7 @@ Transforms an iterator of key-value pairs into an object.
 This is similar to what [`Object.fromEntries()`][object.fromentries()] would
 offer.
 
-#### Iterator.prototype.map(mapper, thisArg)
-
-#### Iterator.prototype.filter(predicate, thisArg)
-
-#### Iterator.prototype.flat(depth = 1)
-
-#### Iterator.prototype.flatMap(mapper, thisArg)
-
 #### Iterator.prototype.zip(...iterators)
-
-#### Iterator.prototype.chain(...iterators)
-
-#### Iterator.prototype.take(amount)
-
-#### Iterator.prototype.takeWhile(predicate, thisArg)
-
-#### Iterator.prototype.skip(amount)
-
-#### Iterator.prototype.enumerate()
-
-#### Iterator.prototype.join(sep = ', ', prefix = '', suffix = '')
 
 ### iter(base)
 
@@ -965,9 +959,9 @@ Mixin for ES6 classes without overriding existing methods
 
 #### Pool.prototype.constructor(factory = null)
 
-#### Pool.prototype.put(value)
-
 #### Pool.prototype.get()
+
+#### Pool.prototype.put(value)
 
 ### sortComparePriority(priority, s1, s2)
 
@@ -1317,59 +1311,57 @@ Get current date in YYYY-MM-DD hh:mm format
 
 #### Uint64.add(a, b)
 
-#### Uint64.sub(a, b)
-
-#### Uint64.mult(a, b)
+#### Uint64.and(a, b)
 
 #### Uint64.cmp(a, b)
-
-#### Uint64.\_division(n, d)
 
 #### Uint64.div(a, b)
 
 #### Uint64.mod(a, b)
 
-#### Uint64.and(a, b)
-
-#### Uint64.or(a, b)
+#### Uint64.mult(a, b)
 
 #### Uint64.not(a)
 
-#### Uint64.xor(a, b)
-
-#### Uint64.shiftRight(a, b)
+#### Uint64.or(a, b)
 
 #### Uint64.shiftLeft(a, b)
 
-#### Uint64.prototype.constructor(value)
+#### Uint64.shiftRight(a, b)
 
-#### Uint64.prototype.toUint32()
+#### Uint64.sub(a, b)
+
+#### Uint64.xor(a, b)
+
+#### Uint64.prototype.constructor(value)
 
 #### Uint64.prototype.add(b)
 
-#### Uint64.prototype.sub(b)
-
 #### Uint64.prototype.and(b)
-
-#### Uint64.prototype.or(b)
-
-#### Uint64.prototype.not()
-
-#### Uint64.prototype.xor(b)
-
-#### Uint64.prototype.shiftRight(b)
-
-#### Uint64.prototype.shiftLeft(b)
-
-#### Uint64.prototype.inc()
 
 #### Uint64.prototype.dec()
 
-#### Uint64.prototype.toString(radix = 10)
+#### Uint64.prototype.inc()
+
+#### Uint64.prototype.not()
+
+#### Uint64.prototype.or(b)
+
+#### Uint64.prototype.shiftLeft(b)
+
+#### Uint64.prototype.shiftRight(b)
+
+#### Uint64.prototype.sub(b)
 
 #### Uint64.prototype.toJSON()
 
 #### Uint64.prototype.toPostgres()
+
+#### Uint64.prototype.toString(radix = 10)
+
+#### Uint64.prototype.toUint32()
+
+#### Uint64.prototype.xor(b)
 
 ### duration(s)
 
