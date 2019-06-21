@@ -621,6 +621,8 @@ Rest left, transform function
 
 ### mkdirp(dir, mode, cb)
 
+### mkdirpPromise(dir, mode = MKDIRP\_DEFAULT\_MODE)
+
 ### rmdirp(dir, cb)
 
 ### rmRecursive(path, callback)

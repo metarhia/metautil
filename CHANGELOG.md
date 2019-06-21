@@ -11,6 +11,7 @@ and this project adheres to
 ### Added
 
 - A way to limit the internal buffer size of `MemoryWritable` stream.
+- `common.mkdirpPromise()` function.
 
 ### Changed
 

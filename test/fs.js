@@ -3,7 +3,13 @@
 const metatests = require('metatests');
 const fs = require('fs');
 const path = require('path');
-const { mkdirp, rmdirp, rmRecursive, rmRecursivePromise } = require('..');
+const {
+  mkdirp,
+  mkdirpPromise,
+  rmdirp,
+  rmRecursive,
+  rmRecursivePromise,
+} = require('..');
 
 const testMkdirp = metatests.test('mkdir');
 const mkdirpTestDir = 'test/ex1/ex2';
@@ -36,6 +42,14 @@ testMkdirp.test('create 2 directories without mode', test => {
     test.end();
   });
 });
+
+testMkdirp.test('mkdirpPromise with mode', () =>
+  mkdirpPromise(mkdirpTestDir, 0o777)
+);
+
+testMkdirp.test('mkdirpPromise without mode', () =>
+  mkdirpPromise(mkdirpTestDir)
+);
 
 metatests.test('rmdirp test', test =>
   fs.mkdir(RMDIRP_TEST_DIR, err => {
