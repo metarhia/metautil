@@ -813,7 +813,39 @@ Create iterator iterating over the range
 
 #### Iterator.prototype.constructor(base)
 
+#### Iterator.prototype.apply(fn)
+
+- `fn`: [`<Function>`][function]
+  - `this`: `<Iterator>`
+
+_Returns:_ the result of `fn(this)` call.
+
+Call a function with `this`. Will be equivalent to calling `fn(it)`.
+
 #### Iterator.prototype.chain(...iterators)
+
+#### Iterator.prototype.chainApply(fn)
+
+- `fn`: [`<Function>`][function]
+  - `this`: `<Iterator>`
+
+_Returns:_ `<Iterator>` result of `fn(this)` wrapped in an Iterator.
+
+Call a function with `this` and wrap the result in an Iterator.
+
+_Example:_
+
+```js
+iter([1, 2])
+  .chainApply(([a, b]) => [a + b, a - b])
+  .join(', ');
+```
+
+_Result:_
+
+```js
+'3, -1';
+```
 
 #### Iterator.prototype.collectTo(CollectionClass)
 

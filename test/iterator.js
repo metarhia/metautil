@@ -610,6 +610,39 @@ metatests.testSync("Iterator.toObject with '0', '1' properties", test => {
   test.strictSame(actual, { a: 0, b: 1, c: 2 });
 });
 
+metatests.testSync('Iterator.apply', test => {
+  const actual = Iterator.range(1, 3).apply(([a, b]) => a + b);
+  test.strictSame(actual, 3);
+});
+
+metatests.testSync('Iterator.chainApply', test => {
+  const actual = Iterator.range(1, 3)
+    .chainApply(([a, b]) => [a + b, a - b])
+    .join();
+  test.strictSame(actual, '3,-1');
+});
+
+metatests.testSync('Iterator.chainApply on false result', test => {
+  const actual = Iterator.range(1, 3)
+    .chainApply(() => false)
+    .toArray();
+  test.strictSame(actual, [false]);
+});
+
+metatests.testSync('Iterator.chainApply on non-iterable result', test => {
+  const actual = Iterator.range(1, 3)
+    .chainApply(() => ({ a: 42 }))
+    .toArray();
+  test.strictSame(actual, [{ a: 42 }]);
+});
+
+metatests.testSync('Iterator.chainApply on string', test => {
+  const actual = iter([])
+    .chainApply(() => 'hello')
+    .join(' ');
+  test.strictSame(actual, 'h e l l o');
+});
+
 metatests.testSync('iterEntries must iterate over object entries', test => {
   const source = { a: 13, b: 42, c: 'hello' };
   test.strictSame(iterEntries(source).toArray(), Object.entries(source));

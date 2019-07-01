@@ -12,6 +12,8 @@ and this project adheres to
 
 - A way to limit the internal buffer size of `MemoryWritable` stream.
 - `common.mkdirpPromise()` function.
+- `Iterator#apply()` and `Iterator#chainApply()` to improve iterator
+  interaction with chained calls.
 
 ### Changed
 
