@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased][unreleased]
 
+### Changed
+
+- `cryptoPrefetcher()` to throw when `bufSize` is not a multiple of
+  `valueSize`.
+
 ## [2.1.0][] - 2019-06-18
 
 ### Added

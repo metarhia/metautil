@@ -19,3 +19,11 @@ metatests.case(
     'common.cryptoRandom': [[result => result >= 0 && result <= 1]],
   }
 );
+
+metatests.test('cryptoPrefetcher with invalid arguments', test => {
+  test.throws(
+    () => common.cryptoPrefetcher(10, 8),
+    new RangeError('buffer size must be a multiple of value size')
+  );
+  test.end();
+});
