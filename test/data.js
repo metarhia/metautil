@@ -212,7 +212,7 @@ metatests.test('duplicate correctly handling object prototypes', test => {
   const objects = [{}, new Date(), Object.create(null)];
   objects.forEach(obj => {
     const res = common.duplicate(obj);
-    test.strictSame(obj.constructor, res.constructor);
+    test.strictSame(res.constructor, obj.constructor);
   });
   test.end();
 });
@@ -220,14 +220,22 @@ metatests.test('duplicate correctly handling object prototypes', test => {
 metatests.test('duplicate handling only object own properties', test => {
   const buf = Buffer.from('test data');
   const res = common.duplicate(buf);
-  test.strictSame(buf, res);
+  test.strictSame(res, buf);
+  test.end();
+});
+
+metatests.test('duplicate correctly handles circular references', test => {
+  const obj = { a: {} };
+  obj.a.obj = obj;
+  const res = common.duplicate(obj);
+  test.sameTopology(res, obj);
   test.end();
 });
 
 metatests.test('clone handling only object own properties', test => {
   const buf = Buffer.from('test data');
   const res = common.clone(buf);
-  test.strictSame(buf, res);
+  test.strictSame(res, buf);
   test.end();
 });
 

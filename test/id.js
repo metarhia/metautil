@@ -104,3 +104,13 @@ metatests.test('common.hash() with common.validateHash()', test => {
   test.assert(common.validateHash(hashValue, password, salt));
   test.end();
 });
+
+metatests.test('generateGUID', test => {
+  const guidRegExp = new RegExp(
+    '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
+    'i'
+  );
+  const guid = common.generateGUID();
+  test.assert(guidRegExp.test(guid));
+  test.end();
+});

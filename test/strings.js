@@ -20,6 +20,14 @@ metatests.case(
       ],
       ['Hello, @n@', { name: 'Ali' }, '', true, 'Hello, [undefined]'],
       ['Hello, @name@', { name: null }, '', true, 'Hello, [null]'],
+      [
+        'Hello, @name@',
+        { name: { first: 'Ali' } },
+        '',
+        true,
+        'Hello, [object]',
+      ],
+      ['Hello, @name@', { name: ['Ali'] }, '', true, 'Hello, [array]'],
       ['Hello, @name@', { name: 'Ali' }, '', true, 'Hello, Ali'],
       [
         'Hello, @.name@',
@@ -36,6 +44,9 @@ metatests.case(
         'Hello, Ali',
       ],
       ['Hello, @.value@', { name: 'Ali' }, 'name', true, 'Hello, Ali'],
+      ['Hello, @username', {}, '', true, 'Hello, @username'],
+      ['Hello, @name@', { name: '<Ali>' }, '', true, 'Hello, &lt;Ali&gt;'],
+      ['Hello, @name@', { name: '<Ali>' }, '', false, 'Hello, <Ali>'],
     ],
     'common.section': [
       ['All you need is JavaScript', 'is', ['All you need ', ' JavaScript']],
@@ -43,6 +54,13 @@ metatests.case(
       ['All you need is JavaScript', 'JavaScript', ['All you need is ', '']],
       ['All you need is JavaScript', 'All', ['', ' you need is JavaScript']],
       ['All you need is JavaScript', 'a', ['All you need is J', 'vaScript']],
+    ],
+    'common.rsection': [
+      ['All you need is JavaScript', 'is', ['All you need ', ' JavaScript']],
+      ['All you need is JavaScript', 'no', ['All you need is JavaScript', '']],
+      ['All you need is JavaScript', 'JavaScript', ['All you need is ', '']],
+      ['All you need is JavaScript', 'All', ['', ' you need is JavaScript']],
+      ['All you need is JavaScript', 'a', ['All you need is Jav', 'Script']],
     ],
     'common.split': [
       ['a,b,c,d', ',', 2, ['a', 'b']],
@@ -78,6 +96,15 @@ metatests.case(
       ['.', ''],
       ['', ''],
     ],
+    'common.removeExt': [
+      ['/dir/dir/file.txt', '/dir/dir/file'],
+      ['\\dir\\file.txt', '\\dir\\file'],
+      ['//file.txt', '//file'],
+      ['file.txt', 'file'],
+      ['/dir.ext/', '/dir'],
+      ['/dir.ext/file.txt', '/dir.ext/file'],
+      ['.', ''],
+    ],
     'common.spinalToCamel': [
       ['hello-world', 'helloWorld'],
       ['hello_world', 'helloWorld'],
@@ -112,6 +139,7 @@ metatests.case(
       ['field="value"', '=', '=', ''],
       ['field[value]', '{', '}', ''],
       ['{a:"b",c:"d"}', '"', '"', 'b'],
+      ['abcdefghijk', 'cd', 'efghijk'],
     ],
     'common.escapeRegExp': [
       [
@@ -125,6 +153,16 @@ metatests.case(
       ['/path/to/res?search', '\\/path\\/to\\/res\\?search'],
       ['/path/to/res', '\\/path\\/to\\/res'],
       ['/path', '\\/path'],
+    ],
+    'common.newEscapedRegExp': [
+      [
+        '/path/to/res?search=this.that&a=b',
+        /\/path\/to\/res\?search=this\.that&a=b/g,
+      ],
+      ['/path/to/res?search=this.that', /\/path\/to\/res\?search=this\.that/g],
+      ['/path/to/res?search', /\/path\/to\/res\?search/g],
+      ['/path/to/res', /\/path\/to\/res/g],
+      ['/path', /\/path/g],
     ],
     'common.addTrailingSlash': [
       ['/path', '/path/'],
@@ -154,6 +192,7 @@ metatests.case(
       ['\uFEFF', ''],
       ['\uBBBF', ''],
       ['abc', 'abc'],
+      [42, 42],
     ],
     'common.arrayRegExp': [
       [['*'], /^.*$/],
@@ -161,6 +200,7 @@ metatests.case(
       [['/', '/js/*'], /^((\/)|(\/js\/.*))$/],
       [['/css/*.css'], /^\/css\/.*\.css$/],
       [['*/css/*'], /^.*\/css\/.*$/],
+      [[], null],
     ],
     'common.normalizeEmail': [
       ['testemail@example.com', 'testemail@example.com'],

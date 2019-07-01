@@ -33,6 +33,7 @@ metatests.case(
       [CONFIG_FILES_PRIORITY, 'sandbox.js', 'sandbox.js', 0],
       [CONFIG_FILES_PRIORITY, 'log.js', 'log.js', 0],
       [CONFIG_FILES_PRIORITY, 'tasks.js', 'application.js', -1],
+      [CONFIG_FILES_PRIORITY, 'tasks.js', 'missing_file', -1],
     ],
     'common.sortCompareDirectories': [
       [{ name: '/abc' }, { name: 'abc.ext' }, -1],

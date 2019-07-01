@@ -3,6 +3,20 @@
 const metatests = require('metatests');
 const common = require('..');
 
+metatests.test('override', test => {
+  const fn = test.mustNotCall();
+  const obj = {
+    fn,
+    a: 1,
+  };
+  common.override(obj, function fn() {
+    return this.a;
+  });
+  test.strictSame(obj.fn(), 1);
+  test.strictSame(obj.fn.inherited, fn);
+  test.end();
+});
+
 class Parent {
   constructor() {
     this.property0 = 'from Parent.constructor';

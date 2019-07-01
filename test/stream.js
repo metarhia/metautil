@@ -39,6 +39,12 @@ metatests.test(
   }
 );
 
+metatests.test('MemoryWritable rejects invalid encoding', async test => {
+  const memoryStream = new common.MemoryWritable();
+  memoryStream.end('hello');
+  await test.rejects(memoryStream.getData('invalid encoding'));
+});
+
 metatests.test('MemoryWritable handles custom sizeLimit', async test => {
   const totalSize = 60;
   const limitSize = 40;

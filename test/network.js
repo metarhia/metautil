@@ -3,6 +3,9 @@
 const metatests = require('metatests');
 const common = require('..');
 
+const net = require('net');
+const os = require('os');
+
 metatests.case(
   'Common / network',
   { common },
@@ -25,6 +28,18 @@ metatests.case(
       ['domain.com:8080', 'domain.com'],
       ['localhost:8080', 'localhost'],
     ],
-    'common.localIPs': [[[], value => Array.isArray(value)]],
   }
 );
+
+metatests.test('localIPs', test => {
+  const ips = common.localIPs();
+  test.assert(Array.isArray(ips));
+  test.assert(ips.every(ip => net.isIPv4(ip)));
+
+  // caching:
+  const networkInterfacesOriginal = os.networkInterfaces;
+  os.networkInterfaces = test.mustNotCall(() => {}, 'networkInterfaces');
+  test.strictSame(common.localIPs(), ips);
+  os.networkInterfaces = networkInterfacesOriginal;
+  test.end();
+});

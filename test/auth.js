@@ -134,9 +134,13 @@ metatests.test('test checkPassword / FOUND_TOPOLOGY', test => {
   const failedResult = common.checkPassword('Ukk1111&', [
     { name: 'FOUND_TOPOLOGY', topologies },
   ]);
+  const failedWithCustomChars = common.checkPassword('Ā𝚔𝚔1111%', [
+    { name: 'FOUND_TOPOLOGY', topologies },
+  ]);
 
   test.strictSame(passedResult.valid, true);
   test.strictSame(failedResult.valid, false);
+  test.strictSame(failedWithCustomChars.valid, false);
   test.end();
 });
 
@@ -175,6 +179,15 @@ metatests.test('test checkPassword / MIN_SPECIAL_CHARS', test => {
   test.end();
 });
 
+metatests.test('test checkPassword / Default', test => {
+  const passedResult = common.checkPassword('abcdefghij');
+  const failedResult = common.checkPassword('p');
+
+  test.strictSame(passedResult.valid, true);
+  test.strictSame(failedResult.valid, false);
+  test.end();
+});
+
 metatests.test('test checkLogin / MIN_LENGTH', test => {
   const login = 'login';
   const passedResult = common.checkLogin(login, [
@@ -200,6 +213,17 @@ metatests.test('test checkLogin / MAX_LENGTH', test => {
 
   test.strictSame(passedResult.valid, true);
   test.strictSame(failedResult.valid, false);
+  test.end();
+});
+
+metatests.test('test checkLogin / Default', test => {
+  const passedResult = common.checkLogin('login1');
+  const failedResultShort = common.checkLogin('short');
+  const failedResultLong = common.checkLogin('too' + 'long'.repeat(30));
+
+  test.strictSame(passedResult.valid, true);
+  test.strictSame(failedResultShort.valid, false);
+  test.strictSame(failedResultLong.valid, false);
   test.end();
 });
 
@@ -248,6 +272,17 @@ metatests.test('test checkLoginPassword / PASSWORD_INCLUDES_LOGIN', test => {
 
   test.strictSame(passedResult.valid, true);
   test.strictSame(failedResult.valid, false);
+  test.end();
+});
+
+metatests.test('test checkLoginPassword / Default', test => {
+  const passedResult = common.checkLoginPassword('login', 'password');
+  const failedResult1 = common.checkLoginPassword('loginpassword', 'password');
+  const failedResult2 = common.checkLoginPassword('login', 'loginpassword');
+
+  test.strictSame(passedResult.valid, true);
+  test.strictSame(failedResult1.valid, false);
+  test.strictSame(failedResult2.valid, false);
   test.end();
 });
 

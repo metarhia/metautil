@@ -29,7 +29,7 @@
     "dist/"
   ],
   "scripts": {
-    "test": "npm run -s lint && metatests test/",
+    "test": "npm run -s lint && metatests test/ && for test in ./sequential-test/*.js; do metatests \"$test\"; done",
     "lint": "eslint . && prettier -c \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "doc": "metadoc",
