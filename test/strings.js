@@ -35,6 +35,7 @@ metatests.case(
         true,
         'Hello, Ali',
       ],
+      ['Hello, @.value@', { name: 'Ali' }, 'name', true, 'Hello, Ali'],
     ],
     'common.section': [
       ['All you need is JavaScript', 'is', ['All you need ', ' JavaScript']],

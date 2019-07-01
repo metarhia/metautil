@@ -13,6 +13,10 @@ and this project adheres to
 - `cryptoPrefetcher()` to throw when `bufSize` is not a multiple of
   `valueSize`.
 
+### Fixed
+
+- `common.subst()` behavior for @.value@ variables.
+
 ## [2.1.0][] - 2019-06-18
 
 ### Added
