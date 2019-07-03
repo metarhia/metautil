@@ -8,10 +8,15 @@ and this project adheres to
 
 ## [Unreleased][unreleased]
 
+### Added
+
+- A way to limit the internal buffer size of `MemoryWritable` stream.
+
 ### Changed
 
 - `cryptoPrefetcher()` to throw when `bufSize` is not a multiple of
   `valueSize`.
+- `MemoryWritable` internal buffer size is now limited to 8 MB by default.
 
 ### Fixed
 

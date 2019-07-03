@@ -1027,7 +1027,11 @@ files.sort(sortCompareByName);
 
 ### class MemoryWritable extends [Writable][writable]
 
-#### MemoryWritable.prototype.constructor()
+#### MemoryWritable.prototype.constructor(\[sizeLimit\])
+
+- `sizeLimit`: [`<number>`][number]|[`<string>`][string] limit of the internal
+  buffer size specified as number in bytes or as string in format supported by
+  `common.bytesToSize()`. Defaults to 8 MB
 
 #### async MemoryWritable.prototype.getData(\[encoding\])
 
