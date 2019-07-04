@@ -40,18 +40,12 @@ metatests.test(
 );
 
 metatests.test('MemoryWritable handles custom sizeLimit', async test => {
-  for (const path of fixturesPaths) {
-    const originalReadable = fs.createReadStream(path);
-    const memoryStream = new common.MemoryWritable(40);
-    originalReadable.pipe(memoryStream);
+  const totalSize = 60;
+  const limitSize = 40;
+  const memoryStream = new common.MemoryWritable(limitSize);
+  test.rejects(() => {
     const result = memoryStream.getData();
-    if (path.includes('empty')) {
-      await test.resolves(result, await readFile(path));
-    } else {
-      await test.rejects(
-        result,
-        new RangeError('size limit exceeded by 20 bytes')
-      );
-    }
-  }
+    memoryStream.write(Buffer.alloc(totalSize));
+    return result;
+  }, new RangeError(`size limit exceeded by ${totalSize - limitSize} bytes`));
 });
