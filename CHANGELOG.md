@@ -24,6 +24,7 @@ and this project adheres to
 ### Fixed
 
 - `common.subst()` behavior for @.value@ variables.
+- `common.callerFilepath()` working incorrectly on paths with colon in them.
 
 ## [2.1.0][] - 2019-06-18
 
