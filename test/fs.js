@@ -12,9 +12,9 @@ const {
 } = require('..');
 
 const testMkdirp = metatests.test('mkdir');
-const mkdirpTestDir = 'test/ex1/ex2';
+const mkdirpTestDir = path.join('test', 'ex1', 'ex2');
 const RMDIRP_TEST_DIR = 'testDir';
-const RMRECURSIVE_TEST_DIR = 'test/rmRecursiveTest';
+const RMRECURSIVE_TEST_DIR = path.join('test', 'rmRecursiveTest');
 
 const removeUsedDirs = (test, cb) => {
   fs.rmdir(mkdirpTestDir, err => {
@@ -79,14 +79,9 @@ const createHierarchy = (hierarchy, cb) => {
     return;
   }
 
-  let data = '';
-  let file = hierarchy[0];
-  if (Array.isArray(file)) {
-    data = file[1] || '';
-    file = file[0];
-  }
+  const { path: file, data } = hierarchy[0];
 
-  if (file.endsWith('/')) {
+  if (file.endsWith(path.sep)) {
     fs.mkdir(file, err => {
       if (err) cb(err);
       else createHierarchy(hierarchy.slice(1), cb);
@@ -100,20 +95,17 @@ const createHierarchy = (hierarchy, cb) => {
 };
 
 const hierarchy = [
-  './',
-  '1/',
-  '2/',
-  ['2/3', 'data'],
-  '2/4.file',
-  '2/5/',
-  '2/6/',
-  '2/6/7',
+  { path: ['.', path.sep] },
+  { path: ['1', path.sep] },
+  { path: ['2', path.sep] },
+  { path: ['2', '3'], data: 'data' },
+  { path: ['2', '4.file'] },
+  { path: ['2', '5', path.sep] },
+  { path: ['2', '6', path.sep] },
+  { path: ['2', '6', '7', path.sep] },
 ].map(f => {
-  if (Array.isArray(f)) {
-    return [path.join(RMRECURSIVE_TEST_DIR, f[0]), f[1]];
-  } else {
-    return path.join(RMRECURSIVE_TEST_DIR, f);
-  }
+  f.path = path.join(RMRECURSIVE_TEST_DIR, ...f.path);
+  return f;
 });
 
 const rmRecursiveTest = metatests.test('recursively remove folder hierarchy');
