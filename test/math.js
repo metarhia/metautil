@@ -38,3 +38,43 @@ metatests.test('cryptoPrefetcher', test => {
   }
   test.end();
 });
+
+metatests.testSync('cryptoPrefetcher for of', test => {
+  const valueSize = 8;
+  const cryptoPrefetcher = common.cryptoPrefetcher(valueSize * 5, valueSize);
+  let i = 0;
+  for (const buf of cryptoPrefetcher) {
+    test.assert(Buffer.isBuffer(buf));
+    test.strictSame(buf.length, valueSize);
+    if (++i === 10) break;
+  }
+  test.strictSame(i, 10);
+});
+
+metatests.testSync(
+  'cryptoPrefetcher [Symbol.iterator] must be iterator',
+  test => {
+    const valueSize = 8;
+    const cryptoPrefetcher = common.cryptoPrefetcher(valueSize * 5, valueSize);
+    const it = cryptoPrefetcher[Symbol.iterator]();
+    let i = 0;
+    for (const buf of it) {
+      test.assert(Buffer.isBuffer(buf));
+      test.strictSame(buf.length, valueSize);
+      if (++i === 10) break;
+    }
+    test.strictSame(i, 10);
+  }
+);
+
+metatests.testSync('cryptoPrefetcher for of wrapped', test => {
+  const valueSize = 8;
+  const cryptoPrefetcher = common.cryptoPrefetcher(valueSize * 5, valueSize);
+  let i = 0;
+  for (const buf of common.iter(cryptoPrefetcher).take(10)) {
+    i++;
+    test.assert(Buffer.isBuffer(buf));
+    test.strictSame(buf.length, valueSize);
+  }
+  test.strictSame(i, 10);
+});
