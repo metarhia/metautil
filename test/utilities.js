@@ -22,3 +22,9 @@ function child(test, depth) {
   );
   test.strictSame(common.callerFilename(depth), 'utilities.js');
 }
+
+metatests.testSync('Check captureMaxStack', test => {
+  const stack = common.captureMaxStack();
+  test.log(stack);
+  test.assert(stack.match(/Error[: \w]*\n/), 'stack must match a regexp');
+});

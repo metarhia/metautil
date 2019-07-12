@@ -1481,6 +1481,8 @@ interception
 
 Make function raise-safe
 
+### captureMaxStack()
+
 ### callerFilename(depth = 0, stack = null)
 
 ### callerFilepath(depth = 0, stack = null)
