@@ -21,6 +21,8 @@ and this project adheres to
 - `cryptoPrefetcher()` to throw when `bufSize` is not a multiple of
   `valueSize`.
 - `MemoryWritable` internal buffer size is now limited to 8 MB by default.
+- Signature of `callerFilepath()` to allow passing `RegExp` as depth to be used
+  for filtering of stack frames.
 
 ### Fixed
 

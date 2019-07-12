@@ -1487,6 +1487,12 @@ Make function raise-safe
 
 ### callerFilepath(depth = 0, stack = null)
 
+- `depth`: [`<number>`][number]|[`<RegExp>`][regexp] initial stack slice or
+  filter regular expression, 0 by default.
+- `stack`: [`<string>`][string] stack string, optional
+
+Try to detect the filepath of a caller of this function.
+
 ## Contributors
 
 See github for full [contributors list](https://github.com/metarhia/common/graphs/contributors)
