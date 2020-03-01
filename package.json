@@ -17,6 +17,10 @@
     "url": "https://github.com/metarhia/common"
   },
   "main": "common.js",
+  "exports": {
+    ".": "./common.js",
+    "./module": "./common.mjs"
+  },
   "browser": {
     "common.js": "./dist/common.js",
     "dist/lib/fs.js": false,
@@ -25,6 +29,7 @@
   },
   "readmeFilename": "README.md",
   "files": [
+    "common.mjs",
     "lib/",
     "dist/"
   ],
@@ -33,7 +38,7 @@
     "lint": "eslint . && prettier -c \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \".*rc\" \"**/*.yml\"",
     "doc": "metadoc",
-    "build": "babel common.js -d dist && babel lib -d dist/lib",
+    "build": "babel common.js -d dist && babel lib -d dist/lib && node tools/esmodules-export-gen.js",
     "prepublish": "npm run -s build"
   },
   "engines": {
