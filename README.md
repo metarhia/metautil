@@ -18,6 +18,7 @@ $ npm install @metarhia/common
 
 - [splitAt](#splitatindex-array)
 - [shuffle](#shufflearr)
+- [sample](#samplearr)
 - [range](#rangefrom-to)
 - [sequence](#sequenceseq-max)
 - [last](#lastarr)
@@ -267,6 +268,14 @@ Split array into two parts
 _Returns:_ [`<Array>`][array]
 
 Shuffle an array
+
+### sample(arr)
+
+- `arr`: [`<Array>`][array]
+
+_Returns:_ `<any>`
+
+Random element from array
 
 ### range(from, to)
 

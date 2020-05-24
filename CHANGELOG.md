@@ -16,6 +16,7 @@ and this project adheres to
   interaction with chained calls.
 - `captureMaxStack()` utility to get maximum available stack trace.
 - Table of contents to documentation.
+- Get random element from array: `sample(array)`.
 
 ### Changed
 

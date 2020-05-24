@@ -42,6 +42,10 @@ metatests.case(
       [[1, 'a', 3], result => JSON.stringify(result.sort()) === '[1,3,"a"]'],
       [[], result => JSON.stringify(result.sort()) === '[]'],
     ],
+    'common.sample': [
+      [[1, 2, 3], result => [1, 2, 3].includes(result)],
+      [['a', 'b', 'c'], result => ['a', 'b', 'c'].includes(result)],
+    ],
   }
 );
 
