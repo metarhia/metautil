@@ -11,10 +11,7 @@ const COMMON_MJS_FILEPATH = './common.mjs';
 
 const header = indexPath =>
   `// This is an automaticaly generated file. DO NOT MODIFY MANUALLY.
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const common = require('./${indexPath}');
+import common from './${indexPath}';
 
 export default common;
 

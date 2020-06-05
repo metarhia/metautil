@@ -1,8 +1,5 @@
 // This is an automaticaly generated file. DO NOT MODIFY MANUALLY.
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const common = require('./common.js');
+import common from './common.js';
 
 export default common;
 
