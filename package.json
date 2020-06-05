@@ -18,8 +18,13 @@
   },
   "main": "common.js",
   "exports": {
-    ".": "./common.js",
-    "./module": "./common.mjs"
+    ".": {
+      "require": "./common.js",
+      "import": "./common.mjs"
+    },
+    "./lib/": {
+      "require": "./lib/"
+    }
   },
   "browser": {
     "common.js": "./dist/common.js",
