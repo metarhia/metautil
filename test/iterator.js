@@ -90,12 +90,18 @@ metatests.test('Iterator.forEach with thisArg ', test => {
 });
 
 metatests.test('Iterator.reduce', test => {
-  test.strictSame(iter(array).reduce((acc, current) => acc + current, 0), 10);
+  test.strictSame(
+    iter(array).reduce((acc, current) => acc + current, 0),
+    10
+  );
   test.end();
 });
 
 metatests.test('Iterator.reduce with no initialValue', test => {
-  test.strictSame(iter(array).reduce((acc, current) => acc + current), 10);
+  test.strictSame(
+    iter(array).reduce((acc, current) => acc + current),
+    10
+  );
   test.end();
 });
 
@@ -284,7 +290,10 @@ metatests.test('Iterator.zip with multiple iterators', test => {
   const it = iter(array);
   const itr = iter(array).take(3);
   const iterator = iter(array).take(2);
-  test.strictSame(it.zip(itr, iterator).toArray(), [[1, 1, 1], [2, 2, 2]]);
+  test.strictSame(it.zip(itr, iterator).toArray(), [
+    [1, 1, 1],
+    [2, 2, 2],
+  ]);
   test.end();
 });
 
@@ -422,12 +431,18 @@ metatests.testSync('Iterator.someCount with thisArg', test => {
 });
 
 metatests.test('Iterator.find that must find an element', test => {
-  test.strictSame(iter(array).find(element => element % 2 === 0), 2);
+  test.strictSame(
+    iter(array).find(element => element % 2 === 0),
+    2
+  );
   test.end();
 });
 
 metatests.test('Iterator.find that must not find an element', test => {
-  test.strictSame(iter(array).find(element => element > 4), undefined);
+  test.strictSame(
+    iter(array).find(element => element > 4),
+    undefined
+  );
   test.end();
 });
 
@@ -586,7 +601,11 @@ metatests.testSync('RangeIterator empty range with start > stop', test => {
 });
 
 metatests.testSync('Iterator.toObject simple', test => {
-  const actual = iter([['a', 1], ['b', 2], ['c', 3]]).toObject();
+  const actual = iter([
+    ['a', 1],
+    ['b', 2],
+    ['c', 3],
+  ]).toObject();
   test.strictSame(actual, { a: 1, b: 2, c: 3 });
 });
 

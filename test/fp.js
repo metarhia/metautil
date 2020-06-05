@@ -39,11 +39,7 @@ metatests.test('compose', test => {
   const fn2 = x => x * 3;
   const fn3 = x => x - 2;
 
-  const composedFunction = common.compose(
-    fn1,
-    fn2,
-    fn3
-  );
+  const composedFunction = common.compose(fn1, fn2, fn3);
   test.strictSame(composedFunction(4), 13);
   test.strictSame(composedFunction(10), 31);
 
@@ -73,8 +69,16 @@ metatests.test('maybe', test => {
 });
 
 metatests.test('zip', test => {
-  const data = [[1, 2, 3], ['one', 'two', 'three'], ['один', 'два', 'три']];
-  const expected = [[1, 'one', 'один'], [2, 'two', 'два'], [3, 'three', 'три']];
+  const data = [
+    [1, 2, 3],
+    ['one', 'two', 'three'],
+    ['один', 'два', 'три'],
+  ];
+  const expected = [
+    [1, 'one', 'один'],
+    [2, 'two', 'два'],
+    [3, 'three', 'три'],
+  ];
   const res = common.zip(...data);
   test.strictSame(res, expected);
   test.end();
@@ -94,7 +98,11 @@ metatests.test('replicate', test => {
 });
 
 metatests.test('zipWith', test => {
-  const data = [[1, 2, 3], ['one', 'two', 'three'], ['один', 'два', 'три']];
+  const data = [
+    [1, 2, 3],
+    ['one', 'two', 'three'],
+    ['один', 'два', 'три'],
+  ];
   const makeDict = (num, eng, rus) => ({ num, eng, rus });
   const expected = [
     { num: 1, eng: 'one', rus: 'один' },
