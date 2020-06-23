@@ -662,6 +662,111 @@ metatests.testSync('Iterator.chainApply on string', test => {
   test.strictSame(actual, 'h e l l o');
 });
 
+metatests.testSync('Iterator.max no values', test => {
+  const actual = iter([]).max();
+  test.strictSame(actual, undefined);
+});
+
+metatests.testSync('Iterator.max simple', test => {
+  const actual = iter([1, 2, 3, 4, 5]).max();
+  test.strictSame(actual, 5);
+});
+
+metatests.testSync('Iterator.max accessor', test => {
+  const arr = [{ val: 5 }, { val: 4 }, { val: 3 }, { val: 9 }, { val: 4 }];
+  const actual = iter(arr).max(v => v.val);
+  test.strictSame(actual, arr[3]);
+});
+
+metatests.testSync('Iterator.max accessor this', test => {
+  class Arr extends Array {
+    constructor(offset, val) {
+      super(...val);
+      this.offset = offset;
+    }
+
+    getVal(val) {
+      return this.offset * val;
+    }
+  }
+  const arr = new Arr(-1, [5, 4, 3, 2, 1]);
+  const actual = iter(arr).max(arr.getVal, arr);
+  test.strictSame(actual, 1);
+});
+
+metatests.testSync('Iterator.min no values', test => {
+  const actual = iter([]).min();
+  test.strictSame(actual, undefined);
+});
+
+metatests.testSync('Iterator.min simple', test => {
+  const actual = iter([1, 2, 3, 4, 5]).min();
+  test.strictSame(actual, 1);
+});
+
+metatests.testSync('Iterator.min accessor', test => {
+  const arr = [{ val: 5 }, { val: 4 }, { val: 3 }, { val: 9 }, { val: 4 }];
+  const actual = iter(arr).min(v => v.val);
+  test.strictSame(actual, arr[2]);
+});
+
+metatests.testSync('Iterator.min accessor this', test => {
+  class Arr extends Array {
+    constructor(offset, val) {
+      super(...val);
+      this.offset = offset;
+    }
+
+    getVal(val) {
+      return this.offset * val;
+    }
+  }
+  const arr = new Arr(-1, [1, 2, 3, 4, 5]);
+  const actual = iter(arr).min(arr.getVal, arr);
+  test.strictSame(actual, 5);
+});
+
+metatests.testSync('Iterator.findCompare no values', test => {
+  const actual = iter([]).findCompare();
+  test.strictSame(actual, undefined);
+});
+
+metatests.testSync('Iterator.findCompare simple', test => {
+  const actual = iter([1, 2, 3, 4, 5]).findCompare(
+    (curr, next) => curr === undefined || next < 3
+  );
+  test.strictSame(actual, 2);
+});
+
+metatests.testSync('Iterator.findCompare accessor', test => {
+  const arr = [{ val: 5 }, { val: 4 }, { val: 3 }, { val: 9 }, { val: 4 }];
+  const actual = iter(arr).findCompare(
+    (curr, next) => curr === undefined || Math.abs(curr - next) < 2,
+    v => v.val
+  );
+  test.strictSame(actual, arr[4]);
+});
+
+metatests.testSync('Iterator.findCompare accessor this', test => {
+  class Arr extends Array {
+    constructor(offset, val) {
+      super(...val);
+      this.offset = offset;
+    }
+
+    getVal(val) {
+      return this.offset * val;
+    }
+  }
+  const arr = new Arr(-1, [1, 2, 3, 4, 5]);
+  const actual = iter(arr).findCompare(
+    (curr, next) => curr === undefined || next < 0,
+    arr.getVal,
+    arr
+  );
+  test.strictSame(actual, 5);
+});
+
 metatests.testSync('iterEntries must iterate over object entries', test => {
   const source = { a: 13, b: 42, c: 'hello' };
   test.strictSame(iterEntries(source).toArray(), Object.entries(source));

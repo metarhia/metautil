@@ -151,12 +151,15 @@ $ npm install @metarhia/common
   - [Iterator.prototype.filter](#iteratorprototypefilterpredicate-thisarg)
   - [Iterator.prototype.filterMap](#iteratorprototypefiltermapmapper-thisarg-filtervalue)
   - [Iterator.prototype.find](#iteratorprototypefindpredicate-thisarg)
+  - [Iterator.prototype.findCompare](#iteratorprototypefindcomparecomparator-accessor-thisarg)
   - [Iterator.prototype.flat](#iteratorprototypeflatdepth--1)
   - [Iterator.prototype.flatMap](#iteratorprototypeflatmapmapper-thisarg)
   - [Iterator.prototype.forEach](#iteratorprototypeforeachfn-thisarg)
   - [Iterator.prototype.includes](#iteratorprototypeincludeselement)
   - [Iterator.prototype.join](#iteratorprototypejoinsep----prefix---suffix--)
   - [Iterator.prototype.map](#iteratorprototypemapmapper-thisarg)
+  - [Iterator.prototype.max](#iteratorprototypemaxaccessor-thisarg)
+  - [Iterator.prototype.min](#iteratorprototypeminaccessor-thisarg)
   - [Iterator.prototype.next](#iteratorprototypenext)
   - [Iterator.prototype.reduce](#iteratorprototypereducereducer-initialvalue)
   - [Iterator.prototype.skip](#iteratorprototypeskipamount)
@@ -1120,6 +1123,27 @@ This iterator will call `mapper` on each element and if mapper returns NOT
 
 #### Iterator.prototype.find(predicate, thisArg)
 
+#### Iterator.prototype.findCompare(comparator\[, accessor\[, thisArg\]\])
+
+- `comparator`: [`<Function>`][function] returns `true` if new value should be
+  accepted
+  - `currValue`: `<any>` current value, starts with undefined
+  - `nextValue`: `<any>` next value
+  - _Returns:_ [`<boolean>`][boolean] `true` if next value should be accepted
+- `accessor`: [`<Function>`][function] gets value to compare by, current
+  iterator value is used by default
+  - `value`: `<any>` current iterator value
+  - _Returns:_ `<any>` value to compare by
+- `thisArg`: `<any>` value to be used as `this` when calling `accessor` and
+  `comparator`
+
+_Returns:_ last iterator value where `comparator` returned `true`,
+[`<undefined>`][undefined] by default
+
+Find value in this iterator by comparing every value with
+
+the found one using `comparator`
+
 #### Iterator.prototype.flat(depth = 1)
 
 #### Iterator.prototype.flatMap(mapper, thisArg)
@@ -1131,6 +1155,32 @@ This iterator will call `mapper` on each element and if mapper returns NOT
 #### Iterator.prototype.join(sep = ', ', prefix = '', suffix = '')
 
 #### Iterator.prototype.map(mapper, thisArg)
+
+#### Iterator.prototype.max(\[accessor\[, thisArg\]\])
+
+- `accessor`: [`<Function>`][function] gets value to compare by, current
+  iterator value is used by default
+  - `value`: `<any>` current iterator value
+  - _Returns:_ `<any>` value to compare by
+- `thisArg`: `<any>` value to be used as `this` when calling `accessor`
+
+_Returns:_ element with maximum value or [`<undefined>`][undefined] if iterator
+is empty
+
+Find the maximum value in this iterator
+
+#### Iterator.prototype.min(\[accessor\[, thisArg\]\])
+
+- `accessor`: [`<Function>`][function] gets value to compare by, current
+  iterator value is used by default
+  - `value`: `<any>` current iterator value
+  - _Returns:_ `<any>` value to compare by
+- `thisArg`: `<any>` value to be used as `this` when calling `accessor`
+
+_Returns:_ element with minimum value or [`<undefined>`][undefined] if iterator
+is empty
+
+Find the minimum value in this iterator
 
 #### Iterator.prototype.next()
 
@@ -1751,6 +1801,7 @@ See github for full [contributors list](https://github.com/metarhia/common/graph
 [typeerror]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
 [boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
+[undefined]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Undefined_type
 [number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
 [string]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [object.fromentries()]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries

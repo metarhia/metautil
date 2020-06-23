@@ -18,6 +18,9 @@ and this project adheres to
 - Table of contents to documentation.
 - Get random element from array: `sample(array)`.
 - ECMAScript Modules support via importing '@metarhia/common/module'.
+- `Iterator#min()`, `Iterator#max()`, and `Iterator#findCompare()` to
+  simplify consumption of iterator in common use-cases
+  (finding minimum, maximum, or using a custom condition appropriately).
 
 ### Changed
 
