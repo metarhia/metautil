@@ -366,6 +366,55 @@ metatests.test('Iterator.skipWhile with thisArg', test => {
   test.end();
 });
 
+metatests.testSync('Iterator.partition empty', test => {
+  const p = iter([]).partition();
+  test.strictSame(p, [[], []]);
+});
+
+metatests.testSync('Iterator.partition boolean fn', test => {
+  const p = iter([1, 2, 3, 4, 5]).partition(v => v % 2 === 0);
+  test.strictSame(p, [
+    [1, 3, 5],
+    [2, 4],
+  ]);
+});
+
+metatests.testSync('Iterator.partition number fn', test => {
+  const p = iter([1, 2, 3, 4, 5]).partition(v => v % 2);
+  test.strictSame(p, [
+    [2, 4],
+    [1, 3, 5],
+  ]);
+});
+
+metatests.testSync('Iterator.partition number fn multiple', test => {
+  const p = iter([1, 2, 3, 4, 5]).partition(v => v % 3);
+  test.strictSame(p, [[3], [1, 4], [2, 5]]);
+});
+
+metatests.testSync('Iterator.partition boolean fn thisArg', test => {
+  const p = iter([1, 2, 3, 4, 5]).partition(
+    function(v) {
+      return v % 2 === this.res;
+    },
+    { res: 1 }
+  );
+  test.strictSame(p, [
+    [2, 4],
+    [1, 3, 5],
+  ]);
+});
+
+metatests.testSync('Iterator.partition number fn thisArg', test => {
+  const p = iter([1, 2, 3, 4, 5]).partition(
+    function(v) {
+      return v % 2 === 0 ? this.part : 0;
+    },
+    { part: 4 }
+  );
+  test.strictSame(p, [[1, 3, 5], [], [], [], [2, 4]]);
+});
+
 metatests.test('Iterator.every that must return true', test => {
   test.assert(iter(array).every(element => element > 0));
   test.end();

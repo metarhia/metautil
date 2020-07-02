@@ -161,6 +161,7 @@ $ npm install @metarhia/common
   - [Iterator.prototype.max](#iteratorprototypemaxaccessor-thisarg)
   - [Iterator.prototype.min](#iteratorprototypeminaccessor-thisarg)
   - [Iterator.prototype.next](#iteratorprototypenext)
+  - [Iterator.prototype.partition](#iteratorprototypepartitionpredicate-thisarg)
   - [Iterator.prototype.reduce](#iteratorprototypereducereducer-initialvalue)
   - [Iterator.prototype.skip](#iteratorprototypeskipamount)
   - [Iterator.prototype.skipWhile](#iteratorprototypeskipwhilepredicate-thisarg)
@@ -1183,6 +1184,20 @@ is empty
 Find the minimum value in this iterator
 
 #### Iterator.prototype.next()
+
+#### Iterator.prototype.partition(predicate\[, thisArg\])
+
+- `predicate`: [`<Function>`][function] function returns a value to partition
+  this iterator
+  - `value`: `<any>` current iterator element
+  - _Returns:_ [`<boolean>`][boolean]|[`<number>`][number] key denoting
+    resulting partition this value will be assigned to. Number denotes index in
+    the resulting array. Boolean will be cast to number
+- `thisArg`: `<any>` value to be used as `this` when calling `predicate`
+- _Returns:_ [`<Array>`][array] array of partitions (arrays), will always have
+  at least 2 arrays in it
+
+Consumes an iterator, partitioning it into Arrays
 
 #### Iterator.prototype.reduce(reducer, initialValue)
 

@@ -21,6 +21,8 @@ and this project adheres to
 - `Iterator#min()`, `Iterator#max()`, and `Iterator#findCompare()` to
   simplify consumption of iterator in common use-cases
   (finding minimum, maximum, or using a custom condition appropriately).
+- `Iterator#partition()` to allow splitting iterator values into
+  multiple arrays.
 
 ### Changed
 
