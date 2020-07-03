@@ -156,6 +156,7 @@ $ npm install @metarhia/common
   - [Iterator.prototype.flat](#iteratorprototypeflatdepth--1)
   - [Iterator.prototype.flatMap](#iteratorprototypeflatmapmapper-thisarg)
   - [Iterator.prototype.forEach](#iteratorprototypeforeachfn-thisarg)
+  - [Iterator.prototype.groupBy](#iteratorprototypegroupbyclassifier-thisarg)
   - [Iterator.prototype.includes](#iteratorprototypeincludeselement)
   - [Iterator.prototype.join](#iteratorprototypejoinsep----prefix---suffix--)
   - [Iterator.prototype.map](#iteratorprototypemapmapper-thisarg)
@@ -1159,6 +1160,17 @@ the found one using `comparator`
 #### Iterator.prototype.flatMap(mapper, thisArg)
 
 #### Iterator.prototype.forEach(fn, thisArg)
+
+#### Iterator.prototype.groupBy(classifier\[, thisArg\])
+
+- `classifier`: [`<Function>`][function] gets value to group by
+  - `value`: `<any>` current iterator value
+  - _Returns:_ `<any>` value to group by
+- `thisArg`: `<any>` value to be used as `this` when calling `classifier`
+- _Returns:_ [`<Map>`][map] map with arrays of iterator values grouped by keys
+  returned by `classifier`
+
+Consumes an iterator grouping values by keys
 
 #### Iterator.prototype.includes(element)
 

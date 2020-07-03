@@ -834,6 +834,75 @@ metatests.testSync('Iterator.findCompare accessor this', test => {
   test.strictSame(actual, 5);
 });
 
+metatests.testSync('Iterator.groupBy empty', test => {
+  const actual = iter([]).groupBy(v => v % 2);
+  test.type(actual, 'Map');
+  test.strictSame(Array.from(actual), Array.from(new Map()));
+});
+
+metatests.testSync('Iterator.groupBy numbers', test => {
+  const actual = iter([1, 2, 3, 4, 5]).groupBy(v => v % 2);
+  test.type(actual, 'Map');
+  test.strictSame(
+    Array.from(actual),
+    Array.from(
+      new Map([
+        [1, [1, 3, 5]],
+        [0, [2, 4]],
+      ])
+    )
+  );
+});
+
+metatests.testSync('Iterator.groupBy strings', test => {
+  const actual = iter([1, 2, 3, 4, 5]).groupBy(v => (v % 2).toString());
+  test.type(actual, 'Map');
+  test.strictSame(
+    Array.from(actual),
+    Array.from(
+      new Map([
+        ['1', [1, 3, 5]],
+        ['0', [2, 4]],
+      ])
+    )
+  );
+});
+
+metatests.testSync('Iterator.groupBy objects', test => {
+  const even = { type: 'even' };
+  const odd = { type: 'odd' };
+  const actual = iter([1, 2, 3, 4, 5]).groupBy(v => (v % 2 === 0 ? even : odd));
+  test.type(actual, 'Map');
+  test.strictSame(
+    Array.from(actual),
+    Array.from(
+      new Map([
+        [odd, [1, 3, 5]],
+        [even, [2, 4]],
+      ])
+    )
+  );
+});
+
+metatests.testSync('Iterator.groupBy thisArg', test => {
+  const actual = iter([1, 2, 3, 4, 5]).groupBy(
+    function(v) {
+      return v % this.radix;
+    },
+    { radix: 2 }
+  );
+  test.type(actual, 'Map');
+  test.strictSame(
+    Array.from(actual),
+    Array.from(
+      new Map([
+        [1, [1, 3, 5]],
+        [0, [2, 4]],
+      ])
+    )
+  );
+});
+
 metatests.testSync('iterEntries must iterate over object entries', test => {
   const source = { a: 13, b: 42, c: 'hello' };
   test.strictSame(iterEntries(source).toArray(), Object.entries(source));

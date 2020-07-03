@@ -24,6 +24,8 @@ and this project adheres to
 - `Iterator#partition()` to allow splitting iterator values into
   multiple arrays.
 - `Iterator.zip()` - static method for zipping iterators.
+- `Iterator#groupBy()` to group iterator value into Map by
+  specific keys.
 
 ### Changed
 
