@@ -279,18 +279,36 @@ metatests.test('Iterator.flatMap with thisArg', test => {
   test.end();
 });
 
-metatests.test('Iterator.zip with single iterator', test => {
+metatests.test('Iterator#zip with single iterator', test => {
   const it = iter(array).take(1);
   const toZip = iter(array).skip(2);
   test.strictSame(it.zip(toZip).toArray(), [[1, 3]]);
   test.end();
 });
 
-metatests.test('Iterator.zip with multiple iterators', test => {
+metatests.test('Iterator#zip with multiple iterators', test => {
   const it = iter(array);
   const itr = iter(array).take(3);
   const iterator = iter(array).take(2);
   test.strictSame(it.zip(itr, iterator).toArray(), [
+    [1, 1, 1],
+    [2, 2, 2],
+  ]);
+  test.end();
+});
+
+metatests.test('Iterator.zip with single iterator', test => {
+  const it1 = iter(array).take(1);
+  const it2 = iter(array).skip(2);
+  test.strictSame(Iterator.zip(it1, it2).toArray(), [[1, 3]]);
+  test.end();
+});
+
+metatests.test('Iterator.zip with multiple iterators', test => {
+  const it1 = iter(array);
+  const it2 = iter(array).take(3);
+  const it3 = iter(array).take(2);
+  test.strictSame(Iterator.zip(it1, it2, it3).toArray(), [
     [1, 1, 1],
     [2, 2, 2],
   ]);

@@ -138,6 +138,7 @@ $ npm install @metarhia/common
   - [Int64.prototype.xor](#int64prototypexorb)
 - [Iterator](#class-iterator)
   - [Iterator.range](#iteratorrangestart-stop-step)
+  - [Iterator.zip](#iteratorzipiterators)
   - [Iterator.prototype.constructor](#iteratorprototypeconstructorbase)
   - [Iterator.prototype.apply](#iteratorprototypeapplyfn)
   - [Iterator.prototype.chain](#iteratorprototypechainiterators)
@@ -1057,6 +1058,14 @@ Convert file path to id
 _Returns:_ `<Iterator>`
 
 Create iterator iterating over the range
+
+#### Iterator.zip(...iterators)
+
+- `iterators`: [`<Array>`][array]
+
+_Returns:_ `<Iterator>`
+
+Create iterator by zipping multiple provided iterators into one
 
 #### Iterator.prototype.constructor(base)
 

@@ -23,6 +23,7 @@ and this project adheres to
   (finding minimum, maximum, or using a custom condition appropriately).
 - `Iterator#partition()` to allow splitting iterator values into
   multiple arrays.
+- `Iterator.zip()` - static method for zipping iterators.
 
 ### Changed
 
