@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased][unreleased]
 
+## [2.2.0][] - 2020-07-10
+
 ### Added
 
 - A way to limit the internal buffer size of `MemoryWritable` stream.
@@ -195,7 +197,8 @@ and this project adheres to
 
 - The first stable version of the `@metarhia/common` package.
 
-[unreleased]: https://github.com/metarhia/common/compare/v2.1.0...HEAD
+[unreleased]: https://github.com/metarhia/common/compare/v2.2.0...HEAD
+[2.2.0]: https://github.com/metarhia/common/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/metarhia/common/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/metarhia/common/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/metarhia/common/compare/v1.4.2...v1.5.0
