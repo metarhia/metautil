@@ -11,6 +11,8 @@ and this project adheres to
 ### Added
 
 - `Iterator.indices()` to simplify iterating over indices of an array.
+- `Iterator.last()` to return last value of this iterator or provided
+  `defaultValue`.
 
 ## [2.2.0][] - 2020-07-10
 
