@@ -903,6 +903,21 @@ metatests.testSync('Iterator.groupBy thisArg', test => {
   );
 });
 
+metatests.testSync('Iterator.indices on empty array', test => {
+  const actual = Iterator.indices([]).toArray();
+  test.strictSame(actual, []);
+});
+
+metatests.testSync('Iterator.indices on array', test => {
+  const actual = Iterator.indices([1, 2, 3]).toArray();
+  test.strictSame(actual, [0, 1, 2]);
+});
+
+metatests.testSync('Iterator.indices on object with length', test => {
+  const actual = Iterator.indices({ length: 4 }).toArray();
+  test.strictSame(actual, [0, 1, 2, 3]);
+});
+
 metatests.testSync('iterEntries must iterate over object entries', test => {
   const source = { a: 13, b: 42, c: 'hello' };
   test.strictSame(iterEntries(source).toArray(), Object.entries(source));

@@ -137,6 +137,7 @@ $ npm install @metarhia/common
   - [Int64.prototype.toUint32](#int64prototypetouint32)
   - [Int64.prototype.xor](#int64prototypexorb)
 - [Iterator](#class-iterator)
+  - [Iterator.indices](#iteratorindicesarr)
   - [Iterator.range](#iteratorrangestart-stop-step)
   - [Iterator.zip](#iteratorzipiterators)
   - [Iterator.prototype.constructor](#iteratorprototypeconstructorbase)
@@ -1049,6 +1050,14 @@ Convert file path to id
 #### Int64.prototype.xor(b)
 
 ### class Iterator
+
+#### Iterator.indices(arr)
+
+- `arr`: [`<Array>`][array] array-like object to create indices from
+
+_Returns:_ `<Iterator>`
+
+Create iterator over indices of an array
 
 #### Iterator.range(start, stop\[, step\])
 

@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased][unreleased]
 
+### Added
+
+- `Iterator.indices()` to simplify iterating over indices of an array.
+
 ## [2.2.0][] - 2020-07-10
 
 ### Added
