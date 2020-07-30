@@ -154,6 +154,7 @@ $ npm install @metarhia/common
   - [Iterator.prototype.filterMap](#iteratorprototypefiltermapmapper-thisarg-filtervalue)
   - [Iterator.prototype.find](#iteratorprototypefindpredicate-thisarg)
   - [Iterator.prototype.findCompare](#iteratorprototypefindcomparecomparator-accessor-thisarg)
+  - [Iterator.prototype.firstNonNullable](#iteratorprototypefirstnonnullabledefaultvalue)
   - [Iterator.prototype.flat](#iteratorprototypeflatdepth--1)
   - [Iterator.prototype.flatMap](#iteratorprototypeflatmapmapper-thisarg)
   - [Iterator.prototype.forEach](#iteratorprototypeforeachfn-thisarg)
@@ -1164,6 +1165,14 @@ _Returns:_ last iterator value where `comparator` returned `true`,
 Find value in this iterator by comparing every value with
 
 the found one using `comparator`
+
+#### Iterator.prototype.firstNonNullable(\[defaultValue\])
+
+- `defaultValue`: `<any>` value to return if this iterator doesn't have
+  non-nullable values
+- _Returns:_ first non-nullable value or `<defaultValue>`
+
+Finds first non-nullable value in this iterator
 
 #### Iterator.prototype.flat(depth = 1)
 

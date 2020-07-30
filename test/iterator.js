@@ -938,6 +938,26 @@ metatests.testSync('Iterator.last with default', test => {
   test.strictSame(actual, 42);
 });
 
+metatests.testSync('Iterator.firstNonNullable empty', test => {
+  const actual = iter([]).firstNonNullable();
+  test.strictSame(actual, undefined);
+});
+
+metatests.testSync('Iterator.firstNonNullable empty with default', test => {
+  const actual = iter([]).firstNonNullable(42);
+  test.strictSame(actual, 42);
+});
+
+metatests.testSync('Iterator.firstNonNullable simple', test => {
+  const actual = iter([null, 1, undefined, 2, 3]).firstNonNullable();
+  test.strictSame(actual, 1);
+});
+
+metatests.testSync('Iterator.firstNonNullable none', test => {
+  const actual = iter([null, undefined, null]).firstNonNullable('42');
+  test.strictSame(actual, '42');
+});
+
 metatests.testSync('iterEntries must iterate over object entries', test => {
   const source = { a: 13, b: 42, c: 'hello' };
   test.strictSame(iterEntries(source).toArray(), Object.entries(source));

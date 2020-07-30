@@ -13,6 +13,8 @@ and this project adheres to
 - `Iterator.indices()` to simplify iterating over indices of an array.
 - `Iterator.last()` to return last value of this iterator or provided
   `defaultValue`.
+- `Iterator.firstNonNullable()` to find first non-nullable value or
+  provided `defaultValue`.
 
 ### Fixed
 
