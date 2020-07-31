@@ -80,3 +80,26 @@ metatests.test('array / pushSame', test => {
   test.strictSame(array, [1, 2, 3, 0, 0, 0, 0, 0]);
   test.end();
 });
+
+metatests.test('array / shuffle uniform distribution', test => {
+  const N = 1e7;
+  const dist = {
+    abc: 0,
+    acb: 0,
+    bac: 0,
+    bca: 0,
+    cab: 0,
+    cba: 0,
+  };
+  for (let i = 0; i < N; i++) {
+    const arr = ['a', 'b', 'c'];
+    const key = common.shuffle(arr).join('');
+    dist[key]++;
+  }
+  test.assert(
+    Object.values(dist)
+      .map(c => Math.round((c / N) * 100))
+      .every((c, i, arr) => c === arr[0])
+  );
+  test.end();
+});

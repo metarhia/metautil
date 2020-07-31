@@ -14,6 +14,10 @@ and this project adheres to
 - `Iterator.last()` to return last value of this iterator or provided
   `defaultValue`.
 
+### Fixed
+
+- `common.shuffle()` having non-uniform distribution.
+
 ## [2.2.0][] - 2020-07-10
 
 ### Added
