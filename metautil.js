@@ -1,14 +1,189 @@
 'use strict';
 
-const submodules = [
-  'array', // Arrays manipulations
-  'fs', // File System
-  'id', // Keys and identifiers
-  'math', // Math common function
-  'network', // Network utilities
-  'strings', // Strings utilities
-  'time', // Date and Time functions
-  'units', // Units conversion
-].map((path) => require('./lib/' + path));
+const path = require('path');
+const crypto = require('crypto');
 
-module.exports = Object.assign({}, ...submodules);
+class CryptoRandomPrefetcher {
+  constructor(bufSize, valueSize) {
+    if (bufSize % valueSize !== 0) {
+      throw new RangeError('buffer size must be a multiple of value size');
+    }
+    this.buf = crypto.randomBytes(bufSize);
+    this.pos = 0;
+    this.vsz = valueSize;
+  }
+
+  // Return Buffer with next `valueSize` random bytes.
+  next() {
+    if (this.pos === this.buf.length) {
+      this.pos = 0;
+      crypto.randomFillSync(this.buf);
+    }
+    const end = this.pos + this.vsz;
+    const buf = this.buf.slice(this.pos, end);
+    this.pos = end;
+    return buf;
+  }
+
+  [Symbol.iterator]() {
+    return {
+      [Symbol.iterator]() {
+        return this;
+      },
+      next: () => ({ value: this.next(), done: false }),
+    };
+  }
+}
+
+const cryptoPrefetcher = (bufSize, valueSize) =>
+  new CryptoRandomPrefetcher(bufSize, valueSize);
+
+const random = (min, max) => {
+  if (max === undefined) {
+    max = min;
+    min = 0;
+  }
+  return min + Math.floor(Math.random() * (max - min + 1));
+};
+
+const randPrefetcher = cryptoPrefetcher(4096, 4);
+const UINT32_MAX = 0xffffffff;
+
+const cryptoRandom = () =>
+  randPrefetcher.next().readUInt32LE(0, true) / (UINT32_MAX + 1);
+
+const sample = (arr) => {
+  const index = Math.floor(Math.random() * arr.length);
+  return arr[index];
+};
+
+const ipToInt = (ip = '127.0.0.1') => {
+  if (ip === '') return 0;
+  const bytes = ip.split('.');
+  let res = 0;
+  for (const byte of bytes) {
+    res = (res << 8) + parseInt(byte, 10);
+  }
+  return res;
+};
+
+const parseHost = (host) => {
+  if (!host) {
+    return 'no-host-name-in-http-headers';
+  }
+  const portOffset = host.indexOf(':');
+  if (portOffset > -1) host = host.substr(0, portOffset);
+  return host;
+};
+
+const replace = (str, substr, newstr) => {
+  if (substr === '') return str;
+  let src = str;
+  let res = '';
+  do {
+    const index = src.indexOf(substr);
+    if (index === -1) return res + src;
+    const start = src.substring(0, index);
+    src = src.substring(index + substr.length, src.length);
+    res += start + newstr;
+  } while (true);
+};
+
+const fileExt = (fileName) => {
+  const ext = path.extname(fileName).toLowerCase();
+  return replace(ext, '.', '');
+};
+
+const between = (s, prefix, suffix) => {
+  let i = s.indexOf(prefix);
+  if (i === -1) return '';
+  s = s.substring(i + prefix.length);
+  if (suffix) {
+    i = s.indexOf(suffix);
+    if (i === -1) return '';
+    s = s.substring(0, i);
+  }
+  return s;
+};
+
+const twoDigit = (n) => {
+  const s = n.toString();
+  if (n < 10) return '0' + s;
+  return s;
+};
+
+const nowDate = (date) => {
+  if (!date) date = new Date();
+  const yyyy = date.getUTCFullYear().toString();
+  const mm = twoDigit(date.getUTCMonth() + 1);
+  const dd = twoDigit(date.getUTCDate());
+  return `${yyyy}-${mm}-${dd}`;
+};
+
+const DURATION_UNITS = {
+  d: 86400, // days
+  h: 3600, // hours
+  m: 60, // minutes
+  s: 1, // seconds
+};
+
+const duration = (s) => {
+  if (typeof s === 'number') return s;
+  if (typeof s !== 'string') return 0;
+  let result = 0;
+  const parts = s.split(' ');
+  for (const part of parts) {
+    const unit = part.slice(-1);
+    const value = parseInt(part.slice(0, -1));
+    const mult = DURATION_UNITS[unit];
+    if (!isNaN(value) && mult) result += value * mult;
+  }
+  return result * 1000;
+};
+
+const generateKey = (length, possible) => {
+  const base = possible.length;
+  let key = '';
+  for (let i = 0; i < length; i++) {
+    const index = Math.floor(cryptoRandom() * base);
+    key += possible[index];
+  }
+  return key;
+};
+
+const crcToken = (secret, key) =>
+  crypto
+    .createHash('md5')
+    .update(key + secret)
+    .digest('hex')
+    .substring(0, 4);
+
+const generateToken = (secret, characters, length) => {
+  const key = generateKey(length - 4, characters);
+  return key + crcToken(secret, key);
+};
+
+const validateToken = (secret, token) => {
+  if (!token) return false;
+  const len = token.length;
+  const crc = token.slice(len - 4);
+  const key = token.slice(0, -4);
+  return crcToken(secret, key) === crc;
+};
+
+module.exports = {
+  sample,
+  ipToInt,
+  parseHost,
+  replace,
+  fileExt,
+  between,
+  nowDate,
+  duration,
+  generateKey,
+  generateToken,
+  crcToken,
+  validateToken,
+  random,
+  cryptoRandom,
+};
