@@ -1,7 +1,5 @@
 'use strict';
 
-/*eslint max-len: ["error", { "code": 120 }]*/
-
 const metatests = require('metatests');
 const common = require('..');
 
@@ -38,14 +36,14 @@ metatests.case(
         secret,
         characters,
         length,
-        token => common.validateToken(secret, token),
+        (token) => common.validateToken(secret, token),
       ],
     ],
     'common.crcToken': [
       [
         secret,
         common.generateKey(length - 4, characters),
-        crc => crc.length === 4,
+        (crc) => crc.length === 4,
       ],
     ],
     'common.idToChunks': [
@@ -85,7 +83,7 @@ metatests.case(
   }
 );
 
-metatests.test('generateStorageKey', test => {
+metatests.test('generateStorageKey', (test) => {
   const key = common.generateStorageKey();
   test.strictSame(Array.isArray(key), true);
   test.strictSame(key.length, 3);
@@ -97,7 +95,7 @@ metatests.test('generateStorageKey', test => {
   test.end();
 });
 
-metatests.test('common.hash() with common.validateHash()', test => {
+metatests.test('common.hash() with common.validateHash()', (test) => {
   const password = 'password';
   const salt = 'salt';
   const hashValue = common.hash(password, salt);
@@ -105,7 +103,7 @@ metatests.test('common.hash() with common.validateHash()', test => {
   test.end();
 });
 
-metatests.test('generateGUID', test => {
+metatests.test('generateGUID', (test) => {
   const guidRegExp = new RegExp(
     '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
     'i'

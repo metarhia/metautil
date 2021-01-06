@@ -17,9 +17,9 @@ const RMDIRP_TEST_DIR = 'testDir';
 const RMRECURSIVE_TEST_DIR = path.join('test', 'rmRecursiveTest');
 
 const removeUsedDirs = (test, cb) => {
-  fs.rmdir(mkdirpTestDir, err => {
+  fs.rmdir(mkdirpTestDir, (err) => {
     if (err && err.code !== 'ENOENT') test.error(err);
-    fs.rmdir(path.dirname(mkdirpTestDir), err => {
+    fs.rmdir(path.dirname(mkdirpTestDir), (err) => {
       if (err && err.code !== 'ENOENT') test.error(err);
       cb();
     });
@@ -29,15 +29,15 @@ const removeUsedDirs = (test, cb) => {
 testMkdirp.beforeEach(removeUsedDirs);
 testMkdirp.afterEach(removeUsedDirs);
 
-testMkdirp.test('create 2 directories using mode', test => {
-  mkdirp(mkdirpTestDir, 0o777, err => {
+testMkdirp.test('create 2 directories using mode', (test) => {
+  mkdirp(mkdirpTestDir, 0o777, (err) => {
     test.error(err, 'Cannot create directory');
     test.end();
   });
 });
 
-testMkdirp.test('create 2 directories without mode', test => {
-  mkdirp(mkdirpTestDir, err => {
+testMkdirp.test('create 2 directories without mode', (test) => {
+  mkdirp(mkdirpTestDir, (err) => {
     test.error(err, 'Cannot create directory');
     test.end();
   });
@@ -51,20 +51,20 @@ testMkdirp.test('mkdirpPromise without mode', () =>
   mkdirpPromise(mkdirpTestDir)
 );
 
-metatests.test('rmdirp test', test =>
-  fs.mkdir(RMDIRP_TEST_DIR, err => {
+metatests.test('rmdirp test', (test) =>
+  fs.mkdir(RMDIRP_TEST_DIR, (err) => {
     if (err && err.code !== 'EEXISTS') {
       test.bailout(err);
     }
-    fs.mkdir(path.join(RMDIRP_TEST_DIR, 'subdir1'), err => {
+    fs.mkdir(path.join(RMDIRP_TEST_DIR, 'subdir1'), (err) => {
       if (err && err.code !== 'EEXISTS') {
         test.bailout(err);
       }
-      rmdirp(path.join(RMDIRP_TEST_DIR, 'subdir1'), err => {
+      rmdirp(path.join(RMDIRP_TEST_DIR, 'subdir1'), (err) => {
         if (err) {
           test.bailout(err);
         }
-        fs.access(RMDIRP_TEST_DIR, err => {
+        fs.access(RMDIRP_TEST_DIR, (err) => {
           test.isError(err);
           test.end();
         });
@@ -82,12 +82,12 @@ const createHierarchy = (hierarchy, cb) => {
   const { path: file, data } = hierarchy[0];
 
   if (file.endsWith(path.sep)) {
-    fs.mkdir(file, err => {
+    fs.mkdir(file, (err) => {
       if (err) cb(err);
       else createHierarchy(hierarchy.slice(1), cb);
     });
   } else {
-    fs.writeFile(file, data, err => {
+    fs.writeFile(file, data, (err) => {
       if (err) cb(err);
       else createHierarchy(hierarchy.slice(1), cb);
     });
@@ -103,7 +103,7 @@ const hierarchy = [
   { path: ['2', '5', path.sep] },
   { path: ['2', '6', path.sep] },
   { path: ['2', '6', '7', path.sep] },
-].map(f => {
+].map((f) => {
   f.path = path.join(RMRECURSIVE_TEST_DIR, ...f.path);
   return f;
 });
@@ -112,14 +112,14 @@ const rmRecursiveTest = metatests.test('recursively remove folder hierarchy');
 rmRecursiveTest.endAfterSubtests();
 
 rmRecursiveTest.beforeEach((test, cb) => {
-  createHierarchy(hierarchy, err => {
+  createHierarchy(hierarchy, (err) => {
     if (err) {
       test.fail('Cannot create folder hierarchy', err);
       test.end();
       cb();
       return;
     }
-    fs.access(RMRECURSIVE_TEST_DIR, err => {
+    fs.access(RMRECURSIVE_TEST_DIR, (err) => {
       if (err) {
         test.fail('Cannot access created folder hierarchy', err);
         test.end();
@@ -130,13 +130,13 @@ rmRecursiveTest.beforeEach((test, cb) => {
 });
 
 rmRecursiveTest.afterEach((test, cb) => {
-  fs.access(RMRECURSIVE_TEST_DIR, err => {
+  fs.access(RMRECURSIVE_TEST_DIR, (err) => {
     if (!err) test.fail('Created folder hierarchy was not removed', err);
     cb();
   });
 });
 
-rmRecursiveTest.test('rmRecursive', test => {
+rmRecursiveTest.test('rmRecursive', (test) => {
   rmRecursive(
     RMRECURSIVE_TEST_DIR,
     test.cbFail('Cannot remove folder hierarchy with callbacks', () =>
