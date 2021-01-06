@@ -151,12 +151,10 @@ const generateKey = (length, possible) => {
   return key;
 };
 
-const crcToken = (secret, key) =>
-  crypto
-    .createHash('md5')
-    .update(key + secret)
-    .digest('hex')
-    .substring(0, 4);
+const crcToken = (secret, key) => {
+  const md5 = crypto.createHash('md5').update(key + secret);
+  return md5.digest('hex').substring(0, 4);
+};
 
 const generateToken = (secret, characters, length) => {
   const key = generateKey(length - 4, characters);
