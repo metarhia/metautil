@@ -3,41 +3,6 @@
 const path = require('path');
 const crypto = require('crypto');
 
-class CryptoRandomPrefetcher {
-  constructor(bufSize, valueSize) {
-    if (bufSize % valueSize !== 0) {
-      throw new RangeError('buffer size must be a multiple of value size');
-    }
-    this.buf = crypto.randomBytes(bufSize);
-    this.pos = 0;
-    this.vsz = valueSize;
-  }
-
-  // Return Buffer with next `valueSize` random bytes.
-  next() {
-    if (this.pos === this.buf.length) {
-      this.pos = 0;
-      crypto.randomFillSync(this.buf);
-    }
-    const end = this.pos + this.vsz;
-    const buf = this.buf.slice(this.pos, end);
-    this.pos = end;
-    return buf;
-  }
-
-  [Symbol.iterator]() {
-    return {
-      [Symbol.iterator]() {
-        return this;
-      },
-      next: () => ({ value: this.next(), done: false }),
-    };
-  }
-}
-
-const cryptoPrefetcher = (bufSize, valueSize) =>
-  new CryptoRandomPrefetcher(bufSize, valueSize);
-
 const random = (min, max) => {
   if (max === undefined) {
     max = min;
@@ -46,11 +11,24 @@ const random = (min, max) => {
   return min + Math.floor(Math.random() * (max - min + 1));
 };
 
-const randPrefetcher = cryptoPrefetcher(4096, 4);
 const UINT32_MAX = 0xffffffff;
+const BUF_LEN = 1024;
+const BUF_SIZE = BUF_LEN * Uint32Array.BYTES_PER_ELEMENT;
 
-const cryptoRandom = () =>
-  randPrefetcher.next().readUInt32LE(0, true) / (UINT32_MAX + 1);
+const randomPrefetcher = {
+  buf: crypto.randomBytes(BUF_SIZE),
+  pos: 0,
+};
+
+const cryptoRandom = () => {
+  if (randomPrefetcher.pos === randomPrefetcher.buf.length) {
+    randomPrefetcher.pos = 0;
+    crypto.randomFillSync(randomPrefetcher.buf);
+  }
+  const val = randomPrefetcher.buf.readUInt32LE(randomPrefetcher.pos);
+  randomPrefetcher.pos += Uint32Array.BYTES_PER_ELEMENT;
+  return val / (UINT32_MAX + 1);
+};
 
 const sample = (arr) => {
   const index = Math.floor(Math.random() * arr.length);
