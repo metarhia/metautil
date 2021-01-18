@@ -14,13 +14,18 @@
   "engines": {
     "node": "^12.9 || 14 || 15"
   },
-  "homepage": "https://github.com/metarhia/metautil#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/metarhia/metautil.git"
   },
   "bugs": {
-    "url": "https://github.com/metarhia/metautil/issues"
+    "url": "https://github.com/metarhia/metautil/issues",
+    "email": "timur.shemsedinov@gmail.com"
+  },
+  "homepage": "https://metarhia.com",
+  "funding": {
+    "type": "patreon",
+    "url": "https://www.patreon.com/tshemsedinov"
   },
   "scripts": {
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\"",
