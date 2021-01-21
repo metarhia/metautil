@@ -1,13 +1,13 @@
 'use strict';
 
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 metatests.case(
-  'Common / array',
-  { common },
+  'Array functions',
+  { metautil },
   {
-    'common.sample': [
+    'metautil.sample': [
       [[1, 2, 3], (result) => [1, 2, 3].includes(result)],
       [['a', 'b', 'c'], (result) => ['a', 'b', 'c'].includes(result)],
     ],

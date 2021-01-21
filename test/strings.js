@@ -1,15 +1,13 @@
 'use strict';
 
-/*eslint max-len: ["error", { "code": 120 }]*/
-
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 metatests.case(
-  'Metarhia common library',
-  { common },
+  'String functions',
+  { metautil },
   {
-    'common.replace': [
+    'metautil.replace': [
       ['a2a2a2', 'a2', 'z', 'zzz'],
       ['k2k2k2', 'a2', 'z', 'k2k2k2'],
       ['', 'a2', 'z', ''],
@@ -19,7 +17,7 @@ metatests.case(
       ['a2a2a2', 'a2', 'a2', 'a2a2a2'],
       ['a20w10z2a22aa0', 'a2', '', '0w10z22aa0'],
     ],
-    'common.fileExt': [
+    'metautil.fileExt': [
       ['/dir/dir/file.txt', 'txt'],
       ['/dir/dir/file.txt', 'txt'],
       ['\\dir\\file.txt', 'txt'],
@@ -34,7 +32,7 @@ metatests.case(
       ['.', ''],
       ['', ''],
     ],
-    'common.between': [
+    'metautil.between': [
       ['abcdefghijk', 'cd', 'h', 'efg'],
       ['field="value"', '"', '"', 'value'],
       ['field:"value"', '"', '"', 'value'],
@@ -46,7 +44,7 @@ metatests.case(
       ['{a:"b",c:"d"}', '"', '"', 'b'],
       ['abcdefghijk', 'cd', 'efghijk'],
     ],
-    'common.isFirstUpper': [
+    'metautil.isFirstUpper': [
       ['Abcd', true],
       ['abcd', false],
       ['aBCD', false],
