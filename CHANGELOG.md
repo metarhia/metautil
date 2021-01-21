@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Added isFirstUpper to check is first char an upper case letter
+
 ## [3.0.1][] - 2021-01-18
 
 - Optimize buffering crypto random generator

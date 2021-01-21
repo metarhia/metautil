@@ -46,5 +46,11 @@ metatests.case(
       ['{a:"b",c:"d"}', '"', '"', 'b'],
       ['abcdefghijk', 'cd', 'efghijk'],
     ],
+    'common.isFirstUpper': [
+      ['Abcd', true],
+      ['abcd', false],
+      ['aBCD', false],
+      ['', false],
+    ],
   }
 );
