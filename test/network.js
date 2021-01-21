@@ -1,13 +1,13 @@
 'use strict';
 
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 metatests.case(
-  'Common / network',
-  { common },
+  'Network utilities',
+  { metautil },
   {
-    'common.ipToInt': [
+    'metautil.ipToInt': [
       ['127.0.0.1', 2130706433],
       ['10.0.0.1', 167772161],
       ['192.168.1.10', -1062731510],
@@ -18,7 +18,7 @@ metatests.case(
       ['8.8.8.8', 0x08080808],
       [undefined, 0x7f000001],
     ],
-    'common.parseHost': [
+    'metautil.parseHost': [
       ['', 'no-host-name-in-http-headers'],
       ['domain.com', 'domain.com'],
       ['localhost', 'localhost'],

@@ -1,13 +1,13 @@
 'use strict';
 
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 metatests.case(
-  'Common / units',
-  { common },
+  'Units utilities',
+  { metautil },
   {
-    'common.duration': [
+    'metautil.duration': [
       ['1d', 86400000],
       ['2d', 172800000],
       ['10h', 36000000],

@@ -1,7 +1,7 @@
 'use strict';
 
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 const characters =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -9,10 +9,10 @@ const secret = 'secret';
 const length = 64;
 
 metatests.case(
-  'Common / id',
-  { common },
+  'Identification utilities',
+  { metautil },
   {
-    'common.validateToken': [
+    'metautil.validateToken': [
       [
         secret,
         'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bc',
@@ -31,18 +31,18 @@ metatests.case(
       [secret, 'WRONG-STRING', false],
       [secret, '', false],
     ],
-    'common.generateToken': [
+    'metautil.generateToken': [
       [
         secret,
         characters,
         length,
-        (token) => common.validateToken(secret, token),
+        (token) => metautil.validateToken(secret, token),
       ],
     ],
-    'common.crcToken': [
+    'metautil.crcToken': [
       [
         secret,
-        common.generateKey(length - 4, characters),
+        metautil.generateKey(length - 4, characters),
         (crc) => crc.length === 4,
       ],
     ],

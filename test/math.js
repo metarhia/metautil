@@ -1,13 +1,13 @@
 'use strict';
 
 const metatests = require('metatests');
-const common = require('..');
+const metautil = require('..');
 
 metatests.case(
-  'Common / math',
-  { common },
+  'Math functions',
+  { metautil },
   {
-    'common.random': [
+    'metautil.random': [
       [0, 10, (result) => result >= 0 && result <= 10],
       [1, 10, (result) => result >= 1 && result <= 10],
       [-1, 10, (result) => result >= -1 && result <= 10],
@@ -16,6 +16,6 @@ metatests.case(
       [20, (result) => result >= 0 && result <= 20],
       [10, 10, 10],
     ],
-    'common.cryptoRandom': [[(result) => result >= 0 && result <= 1]],
+    'metautil.cryptoRandom': [[(result) => result >= 0 && result <= 1]],
   }
 );
