@@ -4,6 +4,7 @@
 
 - Added isFirstUpper to check is first char an upper case letter
 - Added isConstant to check is string UPPER_SNAKE case
+- Added makePrivate to emulate protected fields for objects
 
 ## [3.0.1][] - 2021-01-18
 
