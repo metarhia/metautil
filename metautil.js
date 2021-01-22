@@ -86,6 +86,8 @@ const between = (s, prefix, suffix) => {
 
 const isFirstUpper = (s) => !!s && s[0] === s[0].toUpperCase();
 
+const isConstant = (s) => s === s.toUpperCase();
+
 const twoDigit = (n) => {
   const s = n.toString();
   if (n < 10) return '0' + s;
@@ -157,6 +159,7 @@ module.exports = {
   fileExt,
   between,
   isFirstUpper,
+  isConstant,
   nowDate,
   duration,
   generateKey,

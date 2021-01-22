@@ -50,5 +50,13 @@ metatests.case(
       ['aBCD', false],
       ['', false],
     ],
+    'metautil.isConstant': [
+      ['UPPER', true],
+      ['UPPER_SNAKE', true],
+      ['lowercase', false],
+      ['camelCase', false],
+      ['PascalCase', false],
+      ['snake_case', false],
+    ],
   }
 );
