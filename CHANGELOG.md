@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Added isFirstUpper to check is first char an upper case letter
+- Added isConstant to check is string UPPER_SNAKE case
 
 ## [3.0.1][] - 2021-01-18
 
