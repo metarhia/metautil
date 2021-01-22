@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.1.0][] - 2021-01-22
+
 - Added isFirstUpper to check is first char an upper case letter
 - Added isConstant to check is string UPPER_SNAKE case
 - Added makePrivate to emulate protected fields for objects
@@ -21,7 +23,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.0.1...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/metarhia/metautil/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/metarhia/metautil/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/metarhia/metautil/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/metarhia/common/releases/tag/v2.2.0
