@@ -167,6 +167,16 @@ const makePrivate = (instance) => {
   return iface;
 };
 
+const protect = (allowMixins, ...namespaces) => {
+  for (const namespace of namespaces) {
+    const names = Object.keys(namespace);
+    for (const name of names) {
+      const target = namespace[name];
+      if (!allowMixins.includes(name)) Object.freeze(target);
+    }
+  }
+};
+
 module.exports = {
   sample,
   ipToInt,
@@ -185,4 +195,5 @@ module.exports = {
   random,
   cryptoRandom,
   makePrivate,
+  protect,
 };
