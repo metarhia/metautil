@@ -189,13 +189,14 @@ const parseCookies = (cookie) => {
   return values;
 };
 
-const serializeHash = (hash, salt, params) => {
-  const paramString = Object.entries(params)
-    .map(([key, value]) => `${key}=${value}`)
-    .join(',');
+// Only change these if you know what you're doing
+const SCRYPT_PARAMS = { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
+const SCRYPT_PREFIX = '$scrypt$N=32768,r=8,p=1,maxmem=67108864$';
+
+const serializeHash = (hash, salt) => {
   const saltString = salt.toString('base64').split('=')[0];
   const hashString = hash.toString('base64').split('=')[0];
-  return `$scrypt$${paramString}$${saltString}$${hashString}`;
+  return `${SCRYPT_PREFIX}${saltString}$${hashString}`;
 };
 
 const deserializeHash = (phcString) => {
@@ -219,14 +220,6 @@ const deserializeHash = (phcString) => {
 const SALT_LEN = 32;
 const KEY_LEN = 64;
 
-// Only change these if you know what you're doing
-const SCRYPT_PARAMS = {
-  N: 32768,
-  r: 8,
-  p: 1,
-  maxmem: 64 * 1024 * 1024,
-};
-
 const hashPassword = (password) =>
   new Promise((resolve, reject) => {
     crypto.randomBytes(SALT_LEN, (err, salt) => {
@@ -239,7 +232,7 @@ const hashPassword = (password) =>
           reject(err);
           return;
         }
-        resolve(serializeHash(hash, salt, SCRYPT_PARAMS));
+        resolve(serializeHash(hash, salt));
       });
     });
   });
@@ -249,24 +242,19 @@ hashPassword('').then((hash) => {
   defaultHash = hash;
 });
 
-const validatePassword = (password, hash = defaultHash) =>
-  new Promise((resolve, reject) => {
-    const parsedHash = deserializeHash(hash);
-    const len = parsedHash.hash.length;
-    crypto.scrypt(
-      password,
-      parsedHash.salt,
-      len,
-      parsedHash.params,
-      (err, hashedPassword) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(crypto.timingSafeEqual(hashedPassword, parsedHash.hash));
+const validatePassword = (password, serHash = defaultHash) => {
+  const { params, salt, hash } = deserializeHash(serHash);
+  return new Promise((resolve, reject) => {
+    const callback = (err, hashedPassword) => {
+      if (err) {
+        reject(err);
+        return;
       }
-    );
+      resolve(crypto.timingSafeEqual(hashedPassword, hash));
+    };
+    crypto.scrypt(password, salt, hash.length, params, callback);
   });
+};
 
 module.exports = {
   sample,
