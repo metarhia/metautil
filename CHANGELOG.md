@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Add parseCookies (moved from impress/auth)
+- Add hashPassword, validatePassword (moved from impress/security)
 
 ## [3.1.0][] - 2021-01-22
 
