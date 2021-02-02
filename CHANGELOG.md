@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add parseCookies (moved from impress/auth)
+
 ## [3.1.0][] - 2021-01-22
 
 - Added isFirstUpper to check is first char an upper case letter

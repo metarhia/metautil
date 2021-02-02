@@ -58,5 +58,11 @@ metatests.case(
       ['PascalCase', false],
       ['snake_case', false],
     ],
+    'metautil.parseCookies': [
+      ['a=1;b=2', { a: '1', b: '2' }],
+      ['a=1 ;b= 2', { a: '1', b: '2' }],
+      ['a=1; b = 2 ', { a: '1', b: '2' }],
+      ['a=1', { a: '1' }],
+    ],
   }
 );
