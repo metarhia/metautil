@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.2.0][] - 2021-02-03
+
 - Add parseCookies (moved from impress/auth)
 - Add hashPassword, validatePassword (moved from impress/security)
 
@@ -26,7 +28,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.1.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/metarhia/metautil/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/metarhia/metautil/compare/v3.0.1...v3.1.0
 [3.0.1]: https://github.com/metarhia/metautil/compare/v3.0.0...v3.0.1
 [3.0.0]: https://github.com/metarhia/metautil/compare/v2.2.0...v3.0.0
