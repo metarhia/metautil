@@ -177,6 +177,18 @@ const protect = (allowMixins, ...namespaces) => {
   }
 };
 
+const parseCookies = (cookie) => {
+  const values = {};
+  const items = cookie.split(';');
+  for (const item of items) {
+    const parts = item.split('=');
+    const key = parts[0].trim();
+    const val = parts[1] || '';
+    values[key] = val.trim();
+  }
+  return values;
+};
+
 module.exports = {
   sample,
   ipToInt,
@@ -196,4 +208,5 @@ module.exports = {
   cryptoRandom,
   makePrivate,
   protect,
+  parseCookies,
 };
