@@ -1,6 +1,6 @@
 {
   "name": "metautil",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "license": "MIT",
   "description": "Metarhia utilities",
@@ -35,7 +35,7 @@
     "test": "eslint . && metatests test/"
   },
   "devDependencies": {
-    "eslint": "^7.19.0",
+    "eslint": "^7.20.0",
     "eslint-config-metarhia": "^7.0.1",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
