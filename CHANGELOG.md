@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Move Semaphore from metacom with fixes
+- Move timeout function from metacom
 
 ## [3.2.0][] - 2021-02-03
 
