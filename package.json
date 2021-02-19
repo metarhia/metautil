@@ -10,7 +10,9 @@
     "util"
   ],
   "main": "metautil.js",
-  "files": [],
+  "files": [
+    "lib/"
+  ],
   "engines": {
     "node": "^12.9 || 14 || 15"
   },

@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Change library file structure
 - Move Semaphore from metacom with fixes
 - Move timeout function from metacom
 
