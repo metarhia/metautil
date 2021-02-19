@@ -258,6 +258,11 @@ const validatePassword = (password, serHash = defaultHash) => {
   });
 };
 
+const timeout = (msec) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, msec);
+  });
+
 module.exports = {
   sample,
   ipToInt,
@@ -281,4 +286,5 @@ module.exports = {
   hashPassword,
   validatePassword,
   Semaphore,
+  timeout,
 };
