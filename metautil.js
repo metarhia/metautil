@@ -3,6 +3,8 @@
 const path = require('path');
 const crypto = require('crypto');
 
+const { Semaphore } = require('./semaphore.js');
+
 const random = (min, max) => {
   if (max === undefined) {
     max = min;
@@ -278,4 +280,5 @@ module.exports = {
   parseCookies,
   hashPassword,
   validatePassword,
+  Semaphore,
 };

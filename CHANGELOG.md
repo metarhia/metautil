@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Move Semaphore from metacom with fixes
+
 ## [3.2.0][] - 2021-02-03
 
 - Add parseCookies (moved from impress/auth)
