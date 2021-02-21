@@ -2,6 +2,9 @@
 
 ## [Unreleased][unreleased]
 
+- Implement simple polyfill for AbortController
+- Support AbortController in `await timeout`
+
 ## [3.3.0][] - 2021-02-19
 
 - Change library file structure
