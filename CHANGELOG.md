@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.4.0][] - 2021-02-21
+
 - Implement simple polyfill for AbortController
 - Support AbortController in `await timeout`
 
@@ -37,7 +39,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.3.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/metarhia/metautil/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/metarhia/metautil/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/metarhia/metautil/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/metarhia/metautil/compare/v3.0.1...v3.1.0
