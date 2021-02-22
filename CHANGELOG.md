@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.0][] - 2021-02-22
+
 - Implemented `await delay(msec, signal)`
 - Fix timeout behaviour to reject promise (throw)
 - Generate errors on timeout and on abort timeout
@@ -43,7 +45,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.4.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.0...HEAD
+[3.5.0]: https://github.com/metarhia/metautil/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/metarhia/metautil/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/metarhia/metautil/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/metarhia/metautil/compare/v3.1.0...v3.2.0
