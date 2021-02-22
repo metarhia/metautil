@@ -2,6 +2,9 @@
 
 ## [Unreleased][unreleased]
 
+- Fix timeout behaviour to reject promise (throw)
+- Generate errors on timeout and on abort timeout
+
 ## [3.4.0][] - 2021-02-21
 
 - Implement simple polyfill for AbortController
