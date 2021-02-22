@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Implemented `await delay(msec, signal)`
 - Fix timeout behaviour to reject promise (throw)
 - Generate errors on timeout and on abort timeout
 
