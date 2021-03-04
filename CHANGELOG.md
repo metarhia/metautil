@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.1][] - 2021-03-04
+
+- Add typings
+
 ## [3.5.0][] - 2021-02-22
 
 - Implemented `await delay(msec, signal)`
@@ -45,7 +49,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.1...HEAD
+[3.5.1]: https://github.com/metarhia/metautil/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/metarhia/metautil/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/metarhia/metautil/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/metarhia/metautil/compare/v3.2.0...v3.3.0
