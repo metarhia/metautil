@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Semaphore bug: remove promise from queue on timeout
+
 ## [3.5.1][] - 2021-03-04
 
 - Add typings
