@@ -7,9 +7,8 @@ const CONCURRENCY = 3;
 const QUEUE_SIZE = 10;
 const TIMEOUT = 100;
 
-const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
-
 metatests.test('Semaphore', async (test) => {
+  const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
   await semaphore.enter();
   test.strictSame(semaphore.counter, CONCURRENCY - 1);
   await semaphore.enter();
@@ -28,5 +27,21 @@ metatests.test('Semaphore', async (test) => {
   test.strictSame(semaphore.counter, CONCURRENCY - 1);
   semaphore.leave();
   test.strictSame(semaphore.counter, CONCURRENCY);
+  test.end();
+});
+
+metatests.test('Semaphore timeout', async (test) => {
+  const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
+  await semaphore.enter();
+  await semaphore.enter();
+  await semaphore.enter();
+  test.strictSame(semaphore.counter, 0);
+  try {
+    await semaphore.enter();
+  } catch (err) {
+    test.assert(err);
+  }
+  test.strictSame(semaphore.counter, 0);
+  test.strictSame(semaphore.queue.length, 0);
   test.end();
 });
