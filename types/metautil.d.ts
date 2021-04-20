@@ -1,4 +1,4 @@
-import EventEmitter = require('events');
+import { EventEmitter } from 'events';
 
 export function cryptoRandom(): number;
 export function generateKey(length: number, possible: string): string;
