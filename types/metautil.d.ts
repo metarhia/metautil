@@ -1,9 +1,5 @@
 import EventEmitter = require('events');
 
-interface Dictionary<T> {
-  [key: string]: T;
-}
-
 export function cryptoRandom(): number;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
@@ -33,16 +29,16 @@ export function isFirstUpper(s: string): boolean;
 export function isConstant(s: string): boolean;
 export function nowDate(date?: Date): string;
 export function duration(s: string | number): number;
-export function makePrivate(instance: Dictionary<any>): Dictionary<any>;
+export function makePrivate(instance: object): object;
 
 export function protect(
   allowMixins: Array<string>,
-  ...namespaces: Array<Dictionary<any>>
+  ...namespaces: Array<object>
 ): void;
 
-export function parseCookies(cookie: string): Dictionary<string>;
+export function parseCookies(cookie: string): object;
 
-interface AbortController {
+export interface AbortController {
   abort: Function;
   signal: EventEmitter;
 }
@@ -51,7 +47,7 @@ export function createAbortController(): AbortController;
 export function timeout(msec: number, signal?: EventEmitter): Promise<void>;
 export function delay(msec: number, signal?: EventEmitter): Promise<void>;
 
-interface QueueElement {
+export interface QueueElement {
   resolve: Function;
   timer: NodeJS.Timer;
 }

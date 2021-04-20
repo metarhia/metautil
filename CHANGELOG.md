@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Semaphore bug: remove promise from queue on timeout
+- Improve typings: use object as dictionary
 
 ## [3.5.1][] - 2021-03-04
 
