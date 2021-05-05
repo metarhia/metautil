@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Implement 'toLowerCamel' and 'toUpperCamel'
+
 ## [3.5.2][] - 2021-04-20
 
 - Semaphore bug: remove promise from queue on timeout

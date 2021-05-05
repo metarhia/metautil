@@ -26,6 +26,8 @@ export function replace(str: string, substr: string, newstr: string): string;
 export function fileExt(fileName: string): string;
 export function between(s: string, prefix: string, suffix: string): string;
 export function isFirstUpper(s: string): boolean;
+export function toLowerCamel(s: string): string;
+export function toUpperCamel(s: string): string;
 export function isConstant(s: string): boolean;
 export function nowDate(date?: Date): string;
 export function duration(s: string | number): number;
