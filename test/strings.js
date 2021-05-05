@@ -50,6 +50,22 @@ metatests.case(
       ['aBCD', false],
       ['', false],
     ],
+    'metautil.toLowerCamel': [
+      ['Abcd', 'abcd'],
+      ['abcd', 'abcd'],
+      ['aBCD', 'aBCD'],
+      ['AbCd', 'abCd'],
+      ['aBcD', 'aBcD'],
+      ['', ''],
+    ],
+    'metautil.toUpperCamel': [
+      ['Abcd', 'Abcd'],
+      ['abcd', 'Abcd'],
+      ['aBCD', 'ABCD'],
+      ['AbCd', 'AbCd'],
+      ['aBcD', 'ABcD'],
+      ['', ''],
+    ],
     'metautil.isConstant': [
       ['UPPER', true],
       ['UPPER_SNAKE', true],
