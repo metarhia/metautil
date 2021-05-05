@@ -2,7 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.3][] - 2021-05-05
+
 - Implement 'toLowerCamel' and 'toUpperCamel'
+- Package maintenance and update dependencies
 
 ## [3.5.2][] - 2021-04-20
 
@@ -56,7 +59,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.2...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.3...HEAD
+[3.5.3]: https://github.com/metarhia/metautil/compare/v3.5.2...v3.5.3
 [3.5.2]: https://github.com/metarhia/metautil/compare/v3.5.1...v3.5.2
 [3.5.1]: https://github.com/metarhia/metautil/compare/v3.5.0...v3.5.1
 [3.5.0]: https://github.com/metarhia/metautil/compare/v3.4.0...v3.5.0
