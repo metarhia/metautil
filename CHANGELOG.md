@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Semaphore default parameters
+
 ## [3.5.3][] - 2021-05-05
 
 - Implement 'toLowerCamel' and 'toUpperCamel'

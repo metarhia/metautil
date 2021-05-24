@@ -55,7 +55,7 @@ export interface QueueElement {
 }
 
 export class Semaphore {
-  constructor(concurrency: number, size: number, timeout: number);
+  constructor(concurrency: number, size?: number, timeout?: number);
   counter: number;
   timeout: number;
   size: number;
