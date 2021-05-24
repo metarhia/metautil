@@ -16,7 +16,7 @@
     "types/"
   ],
   "engines": {
-    "node": "^12.9 || 14 || 15"
+    "node": "^12.9 || 14 || 16"
   },
   "repository": {
     "type": "git",
