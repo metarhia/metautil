@@ -7,6 +7,23 @@ metatests.case(
   'String functions',
   { metautil },
   {
+    'metautil.split': [
+      ['abc.def', '.', ['abc', 'def']],
+      ['abc.', '.', ['abc', '']],
+      ['abc', '.', ['abc', '']],
+      ['.abc', '.', ['', 'abc']],
+      ['.', '.', ['', '']],
+      ['', '.', ['', '']],
+      ['abc', '', ['', 'abc']],
+    ],
+    'metautil.parseParams': [
+      ['a=1&b=2', { a: '1', b: '2' }],
+      ['a=1b=2', { a: '1b=2' }],
+      ['a=1', { a: '1' }],
+      ['a=1&', { a: '1' }],
+      ['a=', { a: '' }],
+      ['a', { a: '' }],
+    ],
     'metautil.replace': [
       ['a2a2a2', 'a2', 'z', 'zzz'],
       ['k2k2k2', 'a2', 'z', 'k2k2k2'],
