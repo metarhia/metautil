@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add split and parseParams
+
 ## [3.5.4][] - 2021-05-24
 
 - Semaphore default parameters
