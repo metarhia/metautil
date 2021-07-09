@@ -2,7 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.5][] - 2021-07-09
+
 - Add split and parseParams
+- Update dependencies
 
 ## [3.5.4][] - 2021-05-24
 
@@ -66,7 +69,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.4...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.5...HEAD
+[3.5.5]: https://github.com/metarhia/metautil/compare/v3.5.4...v3.5.5
 [3.5.4]: https://github.com/metarhia/metautil/compare/v3.5.3...v3.5.4
 [3.5.3]: https://github.com/metarhia/metautil/compare/v3.5.2...v3.5.3
 [3.5.2]: https://github.com/metarhia/metautil/compare/v3.5.1...v3.5.2
