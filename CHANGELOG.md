@@ -2,7 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.6][] - 2021-07-18
+
 - Move types to package root
+- Publish signatures in README.md
 
 ## [3.5.5][] - 2021-07-09
 
@@ -71,7 +74,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.5...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.6...HEAD
+[3.5.6]: https://github.com/metarhia/metautil/compare/v3.5.5...v3.5.6
 [3.5.5]: https://github.com/metarhia/metautil/compare/v3.5.4...v3.5.5
 [3.5.4]: https://github.com/metarhia/metautil/compare/v3.5.3...v3.5.4
 [3.5.3]: https://github.com/metarhia/metautil/compare/v3.5.2...v3.5.3
