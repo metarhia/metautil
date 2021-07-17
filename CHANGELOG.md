@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Move types to package root
+
 ## [3.5.5][] - 2021-07-09
 
 - Add split and parseParams

@@ -10,10 +10,10 @@
     "util"
   ],
   "main": "metautil.js",
-  "types": "types/metautil.d.ts",
+  "types": "metautil.d.ts",
   "files": [
     "lib/",
-    "types/"
+    "metautil.d.ts"
   ],
   "engines": {
     "node": "^12.9 || 14 || 16"
@@ -33,7 +33,7 @@
   },
   "scripts": {
     "test": "npm run lint && npm run types && metatests test/",
-    "types": "tsc -p types/tsconfig.json",
+    "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\"",
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\""
   },
