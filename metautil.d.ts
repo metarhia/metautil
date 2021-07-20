@@ -33,6 +33,19 @@ export function toUpperCamel(s: string): string;
 export function isConstant(s: string): boolean;
 export function nowDate(date?: Date): string;
 export function duration(s: string | number): number;
+
+type Every = {
+  month: number;
+  day: number;
+  dd: number;
+  hh: number;
+  mm: number;
+  interval: number;
+};
+
+export type { Every };
+
+export function parseEvery(s: string): Every;
 export function makePrivate(instance: object): object;
 
 export function protect(

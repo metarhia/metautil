@@ -25,5 +25,19 @@ metatests.case(
       [null, 0],
       [undefined, 0],
     ],
+    'metautil.parseEvery': [
+      ['', { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 0 }],
+      [':30', { month: -1, day: -1, dd: -1, hh: -1, mm: 30, interval: 0 }],
+      ['17:', { month: -1, day: -1, dd: -1, hh: 17, mm: 0, interval: 0 }],
+      ['17:30', { month: -1, day: -1, dd: -1, hh: 17, mm: 30, interval: 0 }],
+      ['1st :30', { month: -1, day: -1, dd: 1, hh: -1, mm: 30, interval: 0 }],
+      ['2nd 17:', { month: -1, day: -1, dd: 2, hh: 17, mm: 0, interval: 0 }],
+      ['Apr 3rd', { month: 3, day: -1, dd: 3, hh: -1, mm: -1, interval: 0 }],
+      ['Sun 4th', { month: -1, day: 0, dd: 4, hh: -1, mm: -1, interval: 0 }],
+      [
+        'Sun 3s',
+        { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 3000 },
+      ],
+    ],
   }
 );
