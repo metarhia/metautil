@@ -2,7 +2,8 @@
 
 ## [Unreleased][unreleased]
 
-- Initial implementation for `parseEvery`
+- Initial implementation of `parseEvery`
+- Initial implementation of `nextEvent`
 
 ## [3.5.6][] - 2021-07-18
 

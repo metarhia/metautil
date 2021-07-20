@@ -46,6 +46,7 @@ type Every = {
 export type { Every };
 
 export function parseEvery(s: string): Every;
+export function nextEvent(every: Every, date?: Date): number;
 export function makePrivate(instance: object): object;
 
 export function protect(
