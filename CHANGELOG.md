@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Initial implementation for `parseEvery`
+
 ## [3.5.6][] - 2021-07-18
 
 - Move types to package root
