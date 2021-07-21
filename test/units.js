@@ -48,7 +48,7 @@ metatests.case(
       [
         { month: 2, day: 3, dd: 4, hh: 5, mm: 6, interval: 100 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
-        0,
+        -1,
       ],
       [
         { month: 6, day: -1, dd: -1, hh: -1, mm: -1, interval: 5000 },
@@ -74,6 +74,16 @@ metatests.case(
         { month: 6, day: 2, dd: 20, hh: -1, mm: -1, interval: 12600000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         12600000,
+      ],
+      [
+        { month: 6, day: 2, dd: 20, hh: 11, mm: 30, interval: 0 },
+        new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
+        -1,
+      ],
+      [
+        { month: 6, day: 2, dd: 20, hh: 13, mm: 30, interval: 0 },
+        new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
+        5400000,
       ],
     ],
   }
