@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Return `-1` if past events detected by `nextEvent`
+
 ## [3.5.7][] - 2021-07-21
 
 - Initial implementation of `parseEvery`
