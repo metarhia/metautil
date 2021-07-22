@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.8][] - 2021-07-22
+
 - Return `-1` if past events detected by `nextEvent`
 
 ## [3.5.7][] - 2021-07-21
@@ -81,7 +83,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.7...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.8...HEAD
+[3.5.8]: https://github.com/metarhia/metautil/compare/v3.5.7...v3.5.8
 [3.5.7]: https://github.com/metarhia/metautil/compare/v3.5.6...v3.5.7
 [3.5.6]: https://github.com/metarhia/metautil/compare/v3.5.5...v3.5.6
 [3.5.5]: https://github.com/metarhia/metautil/compare/v3.5.4...v3.5.5
