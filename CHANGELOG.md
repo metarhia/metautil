@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add Semaphore properties: `concurrency: number` add `empty: boolean`
+
 ## [3.5.8][] - 2021-07-22
 
 - Return `-1` if past events detected by `nextEvent`
