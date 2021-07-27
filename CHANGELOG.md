@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Optimize Semaphore
 - Add Semaphore properties: `concurrency: number` add `empty: boolean`
 
 ## [3.5.8][] - 2021-07-22
