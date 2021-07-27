@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.9][] - 2021-07-27
+
 - Optimize Semaphore
 - Add Semaphore properties: `concurrency: number` add `empty: boolean`
 
@@ -86,7 +88,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.8...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.9...HEAD
+[3.5.9]: https://github.com/metarhia/metautil/compare/v3.5.8...v3.5.9
 [3.5.8]: https://github.com/metarhia/metautil/compare/v3.5.7...v3.5.8
 [3.5.7]: https://github.com/metarhia/metautil/compare/v3.5.6...v3.5.7
 [3.5.6]: https://github.com/metarhia/metautil/compare/v3.5.5...v3.5.6
