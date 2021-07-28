@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add and optimize `bytesToSize` and `sizeToBytes` from metarhia/common
+
 ## [3.5.9][] - 2021-07-27
 
 - Optimize Semaphore

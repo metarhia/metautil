@@ -33,6 +33,8 @@ export function toUpperCamel(s: string): string;
 export function isConstant(s: string): boolean;
 export function nowDate(date?: Date): string;
 export function duration(s: string | number): number;
+export function bytesToSize(bytes: number): string;
+export function sizeToBytes(size: string): number;
 
 type Every = {
   month: number;
