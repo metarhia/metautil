@@ -29,6 +29,8 @@
 - `isConstant(s: string): boolean`
 - `nowDate(date?: Date): string`
 - `duration(s: string | number): number`
+- `bytesToSize(bytes: number): string`
+- `sizeToBytes(size: string): number`
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Array<string>, ...namespaces: Array<object>): void`
 - `parseCookies(cookie: string): object`
