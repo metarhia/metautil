@@ -1,6 +1,6 @@
 {
   "name": "metautil",
-  "version": "3.5.9",
+  "version": "3.5.10",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "license": "MIT",
   "description": "Metarhia utilities",
@@ -38,11 +38,11 @@
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\""
   },
   "devDependencies": {
-    "@types/node": "^16.3.3",
-    "eslint": "^7.31.0",
+    "@types/node": "^16.6.2",
+    "eslint": "^7.32.0",
     "eslint-config-metarhia": "^7.0.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-prettier": "^3.4.0",
     "metatests": "^0.7.2",
     "prettier": "^2.3.2",
