@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 export function cryptoRandom(): number;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
+export function md5(fileName: string): Promise<string>;
 
 export function generateToken(
   secret: string,

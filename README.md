@@ -47,6 +47,7 @@
 - `validateToken(secret: string, token: string): boolean`
 - `hashPassword(password: string): Promise<string>`
 - `validatePassword(password: string, serHash: string): Promise<boolean>`
+- `md5(fileName: string): Promise<string>`
 
 ## Async abstractions
 
