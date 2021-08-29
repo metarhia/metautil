@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add `md5(fileName: string): Promise<string>`
+
 ## [3.5.10][] - 2021-08-25
 
 - Add and optimize `bytesToSize` and `sizeToBytes` from metarhia/common
