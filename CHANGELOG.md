@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Add `namespaceByPath(namespace: object, path: string): object | null`
 - Add `md5(fileName: string): Promise<string>`
 
 ## [3.5.10][] - 2021-08-25
