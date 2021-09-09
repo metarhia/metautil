@@ -31,6 +31,7 @@
 - `duration(s: string | number): number`
 - `bytesToSize(bytes: number): string`
 - `sizeToBytes(size: string): number`
+- `namespaceByPath(namespace: object, path: string): object | null`
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Array<string>, ...namespaces: Array<object>): void`
 - `parseCookies(cookie: string): object`

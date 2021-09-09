@@ -36,6 +36,7 @@ export function nowDate(date?: Date): string;
 export function duration(s: string | number): number;
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
+export function namespaceByPath(namespace: object, path: string): object | null;
 
 type Every = {
   month: number;
