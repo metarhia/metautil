@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.11][] - 2021-09-09
+
 - Add `namespaceByPath(namespace: object, path: string): object | null`
 - Add `md5(fileName: string): Promise<string>`
 
@@ -96,7 +98,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.10....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.11....HEAD
+[3.5.11]: https://github.com/metarhia/metautil/compare/v3.5.10...v3.5.11
 [3.5.10]: https://github.com/metarhia/metautil/compare/v3.5.9...v3.5.10
 [3.5.9]: https://github.com/metarhia/metautil/compare/v3.5.8...v3.5.9
 [3.5.8]: https://github.com/metarhia/metautil/compare/v3.5.7...v3.5.8
