@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Pool implementation with round-robian and exclusive item capture/release
+- Move parsePath from impress
 
 ## [3.5.11][] - 2021-09-09
 
