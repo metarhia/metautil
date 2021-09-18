@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Initial Pool implementation
+
 ## [3.5.11][] - 2021-09-09
 
 - Add `namespaceByPath(namespace: object, path: string): object | null`
