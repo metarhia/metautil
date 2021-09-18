@@ -85,3 +85,12 @@ export class Semaphore {
   enter(): Promise<void>;
   leave(): void;
 }
+
+export class Pool {
+  concurrency: number;
+  items: Array<object>;
+  current: number;
+  size: number;
+  next(): object | null;
+  add(item: object): void;
+}
