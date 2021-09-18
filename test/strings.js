@@ -49,6 +49,12 @@ metatests.case(
       ['.', ''],
       ['', ''],
     ],
+    'metautil.parsePath': [
+      ['example/stop.js', ['example', 'stop']],
+      ['example/doSomething.js', ['example', 'doSomething']],
+      ['example/submodule2/method2.js', ['example', 'submodule2', 'method2']],
+      ['file.js', ['file']],
+    ],
     'metautil.between': [
       ['abcdefghijk', 'cd', 'h', 'efg'],
       ['field="value"', '"', '"', 'value'],
