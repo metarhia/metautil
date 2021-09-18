@@ -2,7 +2,7 @@
 
 ## [Unreleased][unreleased]
 
-- Initial Pool implementation
+- Pool implementation with round-robian and exclusive item capture/release
 
 ## [3.5.11][] - 2021-09-09
 
