@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Wait for available (released) item in Pool with waiting timeout
+
 ## [3.5.12][] - 2021-09-18
 
 - Pool implementation with round-robian and exclusive item capture/release
