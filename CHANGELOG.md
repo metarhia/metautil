@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Wait for available (released) item in Pool with waiting timeout
+- Pool: prevent to add duplicates and to release not captured items
 
 ## [3.5.12][] - 2021-09-18
 
