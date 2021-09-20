@@ -87,14 +87,21 @@ export class Semaphore {
   leave(): void;
 }
 
+//interface PoolOptions {
+//  timeout?: number;
+//}
+
 export class Pool {
+  constructor(options: { timeout?: number });
   items: Array<object>;
-  free: Array<object>;
+  free: Array<boolean>;
+  queue: Array<object>;
   current: number;
   size: number;
   available: number;
-  next(): object | null;
+  timeout: number;
+  next(): Promise<object | null>;
   add(item: object): void;
-  capture(): object | null;
+  capture(): Promise<object | null>;
   release(item: object): void;
 }
