@@ -2,8 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.13][] - 2021-09-20
+
 - Wait for available (released) item in Pool with waiting timeout
 - Pool: prevent to add duplicates and to release not captured items
+- Regrouped utilities into modules and tests
 
 ## [3.5.12][] - 2021-09-18
 
@@ -106,7 +109,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.12....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.13....HEAD
+[3.5.13]: https://github.com/metarhia/metautil/compare/v3.5.12...v3.5.13
 [3.5.12]: https://github.com/metarhia/metautil/compare/v3.5.11...v3.5.12
 [3.5.11]: https://github.com/metarhia/metautil/compare/v3.5.10...v3.5.11
 [3.5.10]: https://github.com/metarhia/metautil/compare/v3.5.9...v3.5.10
