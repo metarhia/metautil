@@ -38,6 +38,11 @@ metatests.test('Pool: capture/release', async (test) => {
   test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj2);
   pool.release(item);
+  try {
+    pool.release(item);
+  } catch (err) {
+    test.strictSame(err.message, 'Pool: release not captured');
+  }
   test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj1);
   test.end();
