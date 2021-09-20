@@ -2,6 +2,7 @@
 
 const metatests = require('metatests');
 const metautil = require('..');
+const path = require('path');
 
 metatests.case(
   'String functions',
@@ -50,10 +51,12 @@ metatests.case(
       ['', ''],
     ],
     'metautil.parsePath': [
+      ['', ['']],
+      ['file', ['file']],
       ['file.js', ['file']],
-      ['example/stop', ['example', 'stop']],
-      ['example/stop.js', ['example', 'stop']],
-      ['example/sub2/do.js', ['example', 'sub2', 'do']],
+      [`example${path.sep}stop`, ['example', 'stop']],
+      [`example${path.sep}stop.js`, ['example', 'stop']],
+      [`example${path.sep}sub2${path.sep}do.js`, ['example', 'sub2', 'do']],
     ],
     'metautil.between': [
       ['abcdefghijk', 'cd', 'h', 'efg'],
