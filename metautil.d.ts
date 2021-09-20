@@ -88,7 +88,6 @@ export class Semaphore {
 }
 
 export class Pool {
-  concurrency: number;
   items: Array<object>;
   free: Array<object>;
   current: number;
