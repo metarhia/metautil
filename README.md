@@ -22,6 +22,7 @@
 - `replace(str: string, substr: string, newstr: string): string`
 - `split(s: string, separator: string): [string, string]`
 - `fileExt(fileName: string): string`
+- `parsePath(relPath: string): Array<string>`
 - `between(s: string, prefix: string, suffix: string): string`
 - `isFirstUpper(s: string): boolean`
 - `toLowerCamel(s: string): string`
@@ -52,7 +53,19 @@
 
 ## Async abstractions
 
-- `new Semaphore(concurrency: number, size?: number, timeout?: number)`
+- Semaphore for limit concurrency accessing limited resource
+  - `new Semaphore(concurrency: number, size?: number, timeout?: number)`
+  - `empty: boolean`
+  - `enter(): Promise<void>`
+  - `leave(): void`
+- Pool with round-robin and exclusive item capture
+  - `new Pool()`
+  - `size: number`
+  - `available: number`
+  - `next(): object | null`
+  - `add(item: object): void`
+  - `capture(): object | null`
+  - `release(item: object): void`
 
 ## License & Contributors
 
