@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.14][] - 2021-09-21
+
+- Fix bugs in Pool and add tests for important cases
+
 ## [3.5.13][] - 2021-09-20
 
 - Wait for available (released) item in Pool with waiting timeout
@@ -109,7 +113,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.13....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.14....HEAD
+[3.5.14]: https://github.com/metarhia/metautil/compare/v3.5.13...v3.5.14
 [3.5.13]: https://github.com/metarhia/metautil/compare/v3.5.12...v3.5.13
 [3.5.12]: https://github.com/metarhia/metautil/compare/v3.5.11...v3.5.12
 [3.5.11]: https://github.com/metarhia/metautil/compare/v3.5.10...v3.5.11
