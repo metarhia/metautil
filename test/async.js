@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const { timeout, delay, createAbortController } = require('..');
 
-metatests.test('Abortable timeout', async (test) => {
+metatests.test('Async: Abortable timeout', async (test) => {
   try {
     await timeout(10);
     test.error(new Error('Should not be executed'));
@@ -23,7 +23,7 @@ metatests.test('Abortable timeout', async (test) => {
   }
 });
 
-metatests.test('Abortable delay', async (test) => {
+metatests.test('Async: Abortable delay', async (test) => {
   try {
     const res = await delay(10);
     test.strictSame(res, undefined);
