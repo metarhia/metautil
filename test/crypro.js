@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const metautil = require('..');
 
-metatests.test('Security: hashPassword', async (test) => {
+metatests.test('Crypto: hashPassword', async (test) => {
   const password = 'password';
   const hash = await metautil.hashPassword(password);
   test.strictSame(typeof hash, 'string');
@@ -11,7 +11,7 @@ metatests.test('Security: hashPassword', async (test) => {
   test.end();
 });
 
-metatests.test('Security: validatePassword', async (test) => {
+metatests.test('Crypto: validatePassword', async (test) => {
   const password = 'password';
   const hash = await metautil.hashPassword(password);
   const valid = await metautil.validatePassword(password, hash);
@@ -19,7 +19,7 @@ metatests.test('Security: validatePassword', async (test) => {
   test.end();
 });
 
-metatests.test('Hash: md5', async (test) => {
+metatests.test('Crypto: md5', async (test) => {
   const hash = await metautil.md5('./.npmignore');
   test.strictSame(hash, 'aeaef7191e38bcaa361fd13b83aacf2e');
   test.end();
@@ -31,7 +31,7 @@ const secret = 'secret';
 const length = 64;
 
 metatests.case(
-  'Identification utilities',
+  'Crypto: Identification utilities',
   { metautil },
   {
     'metautil.validateToken': [
