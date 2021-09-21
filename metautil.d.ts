@@ -87,10 +87,6 @@ export class Semaphore {
   leave(): void;
 }
 
-//interface PoolOptions {
-//  timeout?: number;
-//}
-
 export class Pool {
   constructor(options: { timeout?: number });
   items: Array<object>;
