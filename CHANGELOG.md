@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Fixed Pool infinite loop case
+
 ## [3.5.14][] - 2021-09-21
 
 - Fix bugs in Pool and add tests for important cases
