@@ -122,3 +122,21 @@ metatests.test('Pool: wait timeout', async (test) => {
   pool.release(obj2);
   test.end();
 });
+
+metatests.test('Pool: prevent infinite loop', async (test) => {
+  const pool = new metautil.Pool();
+
+  const obj1 = { a: 1 };
+  pool.add(obj1);
+  const obj2 = { a: 2 };
+  pool.add(obj2);
+
+  await pool.next();
+  const item1 = await pool.capture();
+  test.strictSame(item1, obj2);
+  await pool.next();
+  const item2 = await pool.capture();
+  test.strictSame(item2, obj1);
+
+  test.end();
+});
