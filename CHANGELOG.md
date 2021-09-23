@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.15][] - 2021-09-23
+
 - Fixed Pool infinite loop case
 - Add simple `fetch` API implementation
 
@@ -116,7 +118,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.14....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.15....HEAD
+[3.5.15]: https://github.com/metarhia/metautil/compare/v3.5.14...v3.5.15
 [3.5.14]: https://github.com/metarhia/metautil/compare/v3.5.13...v3.5.14
 [3.5.13]: https://github.com/metarhia/metautil/compare/v3.5.12...v3.5.13
 [3.5.12]: https://github.com/metarhia/metautil/compare/v3.5.11...v3.5.12
