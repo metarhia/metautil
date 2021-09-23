@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Fixed Pool infinite loop case
+- Add simple `fetch` API implementation
 
 ## [3.5.14][] - 2021-09-21
 

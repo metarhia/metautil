@@ -101,3 +101,5 @@ export class Pool {
   capture(): Promise<object | null>;
   release(item: object): void;
 }
+
+export function fetch(url: string): Promise<string>;
