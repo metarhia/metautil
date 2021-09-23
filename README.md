@@ -16,8 +16,6 @@
 
 - `random(min: number, max?: number): number`
 - `sample(arr: Array<any>): any`
-- `ipToInt(ip?: string): number`
-- `parseHost(host?: string): string`
 - `parseParams(params: string): object`
 - `replace(str: string, substr: string, newstr: string): string`
 - `split(s: string, separator: string): [string, string]`
@@ -35,10 +33,16 @@
 - `namespaceByPath(namespace: object, path: string): object | null`
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Array<string>, ...namespaces: Array<object>): void`
-- `parseCookies(cookie: string): object`
 - `createAbortController(): AbortController`
 - `timeout(msec: number, signal?: EventEmitter): Promise<void>`
 - `delay(msec: number, signal?: EventEmitter): Promise<void>`
+
+## Network utilities
+
+- `ipToInt(ip?: string): number`
+- `parseHost(host?: string): string`
+- `parseCookies(cookie: string): object`
+- `fetch(url: string): Promise<string>`
 
 ## Crypto utilities
 
