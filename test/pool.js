@@ -36,13 +36,19 @@ metatests.test('Pool: capture/next', async (test) => {
   const obj3 = { a: 3 };
   pool.add(obj3);
 
+  test.strictSame(pool.isFree(obj1), true);
+  test.strictSame(pool.isFree(obj2), true);
+  test.strictSame(pool.isFree(obj3), true);
+
   const item = await pool.capture();
   test.strictSame(item, obj1);
+  test.strictSame(pool.isFree(item), false);
   test.strictSame(await pool.next(), obj2);
   test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj2);
 
   pool.release(item);
+  test.strictSame(pool.isFree(item), true);
   try {
     pool.release(item);
   } catch (err) {

@@ -100,6 +100,7 @@ export class Pool {
   add(item: object): void;
   capture(): Promise<object | null>;
   release(item: object): void;
+  isFree(item: object): boolean;
 }
 
 export function fetch(url: string): Promise<string>;

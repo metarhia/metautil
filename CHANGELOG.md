@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add `Pool` method `isFree(item: object): boolean`
+
 ## [3.5.15][] - 2021-09-23
 
 - Fixed Pool infinite loop case
