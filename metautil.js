@@ -6,5 +6,5 @@ module.exports = {
   ...require('./lib/semaphore.js'),
   ...require('./lib/pool.js'),
   ...require('./lib/async.js'),
-  ...require('./lib/fetch.js'),
+  ...require('./lib/network.js'),
 };
