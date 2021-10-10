@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.16][] - 2021-10-10
+
 - Add `Pool` method `isFree(item: object): boolean`
 - Add function `jsonParse(buffer: Buffer): object | null`
 - Add function `receiveBody(req: IncomingMessage): Promise<string | null>`
@@ -122,7 +124,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.15....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.16....HEAD
+[3.5.16]: https://github.com/metarhia/metautil/compare/v3.5.15...v3.5.16
 [3.5.15]: https://github.com/metarhia/metautil/compare/v3.5.14...v3.5.15
 [3.5.14]: https://github.com/metarhia/metautil/compare/v3.5.13...v3.5.14
 [3.5.13]: https://github.com/metarhia/metautil/compare/v3.5.12...v3.5.13
