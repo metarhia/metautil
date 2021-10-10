@@ -289,6 +289,12 @@ metatests.case(
       ['domain.com:8080', 'domain.com'],
       ['localhost:8080', 'localhost'],
     ],
+    'metautil.jsonParse': [
+      ['{}', {}],
+      ['{ "a": 5 }', { a: 5 }],
+      ['{', null],
+      ['', null],
+    ],
   }
 );
 
