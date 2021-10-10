@@ -22,3 +22,22 @@ metatests.test('Fetch', async (test) => {
   test.strictSame(rate, 1);
   test.end();
 });
+
+metatests.test('receiveBody', async (test) => {
+  const value = Buffer.from('{ "a": 5 }');
+  let done = false;
+  const body = {
+    [Symbol.asyncIterator]() {
+      return {
+        async next() {
+          const res = { value, done };
+          done = true;
+          return res;
+        },
+      };
+    },
+  };
+  const data = await metautil.receiveBody(body);
+  test.strictSame(data.toString(), '{ "a": 5 }');
+  test.end();
+});

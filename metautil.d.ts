@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { IncomingMessage } from 'http';
 
 export function cryptoRandom(): number;
 export function generateKey(length: number, possible: string): string;
@@ -104,3 +105,5 @@ export class Pool {
 }
 
 export function fetch(url: string): Promise<string>;
+export function jsonParse(buffer: Buffer): object | null;
+export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;

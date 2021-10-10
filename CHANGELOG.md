@@ -3,6 +3,8 @@
 ## [Unreleased][unreleased]
 
 - Add `Pool` method `isFree(item: object): boolean`
+- Add function `jsonParse(buffer: Buffer): object | null`
+- Add function `receiveBody(req: IncomingMessage): Promise<string | null>`
 
 ## [3.5.15][] - 2021-09-23
 

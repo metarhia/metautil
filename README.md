@@ -43,6 +43,8 @@
 - `parseHost(host?: string): string`
 - `parseCookies(cookie: string): object`
 - `fetch(url: string): Promise<string>`
+- `jsonParse(buffer: Buffer): object | null`
+- `receiveBody(req: IncomingMessage): Promise<Buffer | null>`
 
 ## Crypto utilities
 
