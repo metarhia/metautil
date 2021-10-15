@@ -8,15 +8,21 @@ metatests.test('Pool: add/next', async (test) => {
 
   const obj1 = { a: 1 };
   pool.add(obj1);
+  pool.setFactor(obj1, 0.5);
   const obj2 = { a: 2 };
   pool.add(obj2);
+  pool.setFactor(obj2, 0.2);
   const obj3 = { a: 3 };
   pool.add(obj3);
+  pool.setFactor(obj3, 0.7);
 
-  test.strictSame(await pool.next(), obj1);
   test.strictSame(await pool.next(), obj2);
-  test.strictSame(await pool.next(), obj3);
+  pool.setFactor(obj2, 0.9);
   test.strictSame(await pool.next(), obj1);
+  pool.setFactor(obj1, 0.2);
+  test.strictSame(await pool.next(), obj1);
+  pool.setFactor(obj1, 0.8);
+  test.strictSame(await pool.next(), obj3);
   test.end();
 });
 
@@ -41,10 +47,9 @@ metatests.test('Pool: capture/next', async (test) => {
   test.strictSame(pool.isFree(obj3), true);
 
   const item = await pool.capture();
-  test.strictSame(item, obj1);
+  test.strictSame(item, obj3);
   test.strictSame(pool.isFree(item), false);
   test.strictSame(await pool.next(), obj2);
-  test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj2);
 
   pool.release(item);
@@ -55,7 +60,7 @@ metatests.test('Pool: capture/next', async (test) => {
     test.strictSame(err.message, 'Pool: release not captured');
   }
   test.strictSame(await pool.next(), obj3);
-  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj3);
   test.end();
 });
 
@@ -70,11 +75,11 @@ metatests.test('Pool: capture/release', async (test) => {
   pool.add(obj3);
 
   const item1 = await pool.capture();
-  test.strictSame(item1, obj1);
+  test.strictSame(item1, obj3);
   const item2 = await pool.capture();
   test.strictSame(item2, obj2);
   const item3 = await pool.capture();
-  test.strictSame(item3, obj3);
+  test.strictSame(item3, obj1);
 
   pool.release(obj3);
   const item4 = await pool.capture();
@@ -114,9 +119,9 @@ metatests.test('Pool: wait timeout', async (test) => {
   pool.add(obj2);
 
   const item1 = await pool.capture();
-  test.strictSame(item1, obj1);
+  test.strictSame(item1, obj2);
   const item2 = await pool.capture();
-  test.strictSame(item2, obj2);
+  test.strictSame(item2, obj1);
 
   pool.capture().then((item3) => {
     test.strictSame(item3, obj2);

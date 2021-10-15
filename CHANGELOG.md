@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Use `factor` for Pool item selection
+
 ## [3.5.16][] - 2021-10-10
 
 - Add `Pool` method `isFree(item: object): boolean`
