@@ -1,5 +1,5 @@
 export class Pool {
-  constructor(options: { timeout?: number });
+  constructor(options?: { timeout?: number });
   items: Array<object>;
   free: Array<boolean>;
   queue: Array<object>;

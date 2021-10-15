@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Typings improvements and fixes
+
 ## [3.5.16][] - 2021-10-10
 
 - Add `Pool` method `isFree(item: object): boolean`

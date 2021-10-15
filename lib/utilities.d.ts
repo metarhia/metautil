@@ -1,4 +1,6 @@
+export function random(max: number): number;
 export function random(min: number, max?: number): number;
+
 export function sample(arr: Array<any>): any;
 export function ipToInt(ip?: string): number;
 export function parseHost(host?: string): string;
@@ -31,7 +33,7 @@ export type { Every };
 
 export function parseEvery(s: string): Every;
 export function nextEvent(every: Every, date?: Date): number;
-export function makePrivate(instance: object): object;
+export function makePrivate<T extends object>(instance: T): Partial<T>;
 
 export function protect(
   allowMixins: Array<string>,
