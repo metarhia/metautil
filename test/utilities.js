@@ -264,6 +264,18 @@ metatests.case(
         5400000,
       ],
     ],
+    'metautil.nowDateTimeUTC': [
+      [undefined, new Date().toISOString().split('.')[0]],
+      [new Date('2021-10-15T20:54:18.713Z'), '2021-10-15T20:54:18'],
+      [new Date('2020-12-01T01:15:30+03:00'), '2020-11-30T22:15:30'],
+      [
+        undefined,
+        '-',
+        new Date().toISOString().replace(/:/g, '-').split('.')[0],
+      ],
+      [new Date('2021-10-15T20:54:18.713Z'), '-', '2021-10-15T20-54-18'],
+      [new Date('2020-12-01T01:15:30+03:00'), '-', '2020-11-30T22-15-30'],
+    ],
   }
 );
 
