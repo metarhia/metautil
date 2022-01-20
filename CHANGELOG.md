@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Add function `nowDateTimeUTC(date?: Date, timeSep?: string): string`
+- Add case functions: `toLower`, `toCamel`, `spinalToCamel`, and `snakeToCamel`
 
 ## [3.5.16][] - 2021-10-10
 
