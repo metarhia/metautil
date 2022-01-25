@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Fix semaphore bug with counter and queue
+
 ## [3.5.17][] - 2022-01-26
 
 - Add function `nowDateTimeUTC(date?: Date, timeSep?: string): string`
