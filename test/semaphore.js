@@ -1,11 +1,11 @@
 'use strict';
 
 const metatests = require('metatests');
-const { Semaphore } = require('..');
+const { Semaphore, delay } = require('..');
 
 const CONCURRENCY = 3;
-const QUEUE_SIZE = 10;
-const TIMEOUT = 100;
+const QUEUE_SIZE = 3;
+const TIMEOUT = 1500;
 
 metatests.test('Semaphore', async (test) => {
   const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
@@ -88,4 +88,37 @@ metatests.test('Semaphore timeout', async (test) => {
   test.strictSame(semaphore.queue.length, 0);
   test.strictSame(semaphore.empty, false);
   test.end();
+});
+
+metatests.test('Semaphore real life usage', (test) => {
+  const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
+
+  const useSemaphore = async () => {
+    try {
+      await semaphore.enter();
+    } catch (e) {
+      return;
+    }
+    try {
+      await delay(1000);
+      return;
+    } catch (e) {
+      return;
+    } finally {
+      semaphore.leave();
+    }
+  };
+
+  for (let index = 1; index <= 20; index++) {
+    (async () => {
+      await useSemaphore();
+    })();
+  }
+
+  setTimeout(() => {
+    test.strictSame(semaphore.empty, true);
+    test.strictSame(semaphore.queue.length, 0);
+    test.strictSame(semaphore.counter, CONCURRENCY);
+    test.end();
+  }, 3000);
 });
