@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.17][] - 2022-01-26
+
 - Add function `nowDateTimeUTC(date?: Date, timeSep?: string): string`
 - Add case functions: `toLower`, `toCamel`, `spinalToCamel`, and `snakeToCamel`
 - Fixed floating bug in tests for `nowDateTimeUTC`
@@ -128,7 +130,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.16....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.17....HEAD
+[3.5.17]: https://github.com/metarhia/metautil/compare/v3.5.16...v3.5.17
 [3.5.16]: https://github.com/metarhia/metautil/compare/v3.5.15...v3.5.16
 [3.5.15]: https://github.com/metarhia/metautil/compare/v3.5.14...v3.5.15
 [3.5.14]: https://github.com/metarhia/metautil/compare/v3.5.13...v3.5.14
