@@ -4,7 +4,7 @@ const metatests = require('metatests');
 const { Semaphore, delay } = require('..');
 
 const CONCURRENCY = 3;
-const QUEUE_SIZE = 3;
+const QUEUE_SIZE = 4;
 const TIMEOUT = 1500;
 
 metatests.test('Semaphore', async (test) => {
@@ -110,9 +110,7 @@ metatests.test('Semaphore real life usage', (test) => {
   };
 
   for (let index = 1; index <= 20; index++) {
-    (async () => {
-      await useSemaphore();
-    })();
+    useSemaphore();
   }
 
   setTimeout(() => {
@@ -120,5 +118,52 @@ metatests.test('Semaphore real life usage', (test) => {
     test.strictSame(semaphore.queue.length, 0);
     test.strictSame(semaphore.counter, CONCURRENCY);
     test.end();
-  }, 3000);
+  }, TIMEOUT + 1000);
+});
+
+metatests.test('Semaphore detailed counter fix test', async (test) => {
+  const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
+  // Enter semaphore 3 times to have concurrency = 0
+  await semaphore.enter();
+  await semaphore.enter();
+  await semaphore.enter();
+  // See current state of a Semaphore
+  test.strictSame(semaphore.counter, 0);
+
+  // Enter semaphore 4 times for queue to be full
+  semaphore.enter().then(() => {
+    // Entered successfully from queue
+    test.assert(true);
+  });
+  semaphore.enter().catch((err) => {
+    // expect timeout error to occur after TIMEOUT
+    test.strictSame(err.message, 'Semaphore timeout');
+  });
+  semaphore.enter().catch((err) => {
+    // expect timeout error to occur after TIMEOUT
+    test.strictSame(err.message, 'Semaphore timeout');
+  });
+  semaphore.enter().catch((err) => {
+    // expect timeout error to occur after TIMEOUT
+    test.strictSame(err.message, 'Semaphore timeout');
+  });
+  // See current state of a Semaphore
+  test.strictSame(semaphore.queue.length, QUEUE_SIZE);
+
+  // Error semaphore is full
+  await semaphore
+    .enter()
+    .catch((err) => test.strictSame(err.message, 'Semaphore queue is full'));
+
+  // leave semaphore 1 time to free 1 operation from queue
+  semaphore.leave();
+
+  setTimeout(() => {
+    // See current state of a Semaphore
+    test.strictSame(semaphore.counter, 0);
+    // we have concurrency = 0, because we left only One time
+    // This is proper behaviour with fix, because we tried to enter 7 times
+    // made only 4 successful enters. 3 times - number of concurrency
+    // 1 time - after we leave 1 time and first enter from queue succeed
+  }, TIMEOUT + 200);
 });
