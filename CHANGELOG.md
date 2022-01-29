@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.18][] - 2022-01-29
+
 - Fix semaphore bug with counter and queue
 
 ## [3.5.17][] - 2022-01-26
@@ -132,7 +134,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.17....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.18....HEAD
+[3.5.18]: https://github.com/metarhia/metautil/compare/v3.5.17...v3.5.18
 [3.5.17]: https://github.com/metarhia/metautil/compare/v3.5.16...v3.5.17
 [3.5.16]: https://github.com/metarhia/metautil/compare/v3.5.15...v3.5.16
 [3.5.15]: https://github.com/metarhia/metautil/compare/v3.5.14...v3.5.15
