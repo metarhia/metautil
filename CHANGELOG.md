@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Support POST requests with body and custom headers in `fetch()`
+
 ## [3.5.18][] - 2022-01-29
 
 - Fix semaphore bug with counter and queue
