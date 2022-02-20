@@ -109,6 +109,12 @@ export class Pool {
   isFree(item: object): boolean;
 }
 
-export function fetch(url: string): Promise<string>;
+export type FetchOptions = {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  headers?: object;
+  body?: object;
+};
+
+export function fetch(url: string, options?: FetchOptions): Promise<object>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
