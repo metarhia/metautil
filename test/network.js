@@ -9,6 +9,11 @@ const API_EXCHANGE = {
   key: '1f43ea96b1e343fe94333dd2b97a109d',
 };
 
+const POST_TEST = {
+  host: 'httpbin.org',
+  path: '/anything',
+};
+
 const getRate = async (currency) => {
   const { host, path, key } = API_EXCHANGE;
   const url = `https://${host}/${path}${key}`;
@@ -20,6 +25,14 @@ const getRate = async (currency) => {
 metatests.test('Fetch', async (test) => {
   const rate = await getRate('USD');
   test.strictSame(rate, 1);
+
+  const method = 'POST';
+  const body = { name: 'Aurelia', age: 43 };
+  const headers = { Authorization: 'Bearer sometoken' };
+  const res = await getRequestInfo({ headers, body, method });
+  test.strictSame(res.method, method);
+  test.strictSame(res.headers.Authorization, headers.Authorization);
+  test.strictEqual(res.json, body);
   test.end();
 });
 
