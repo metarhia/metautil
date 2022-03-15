@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add nodejs 17 to CI
+
 ## [3.5.18][] - 2022-01-29
 
 - Fix semaphore bug with counter and queue
