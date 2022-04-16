@@ -2,6 +2,9 @@
 
 ## [Unreleased][unreleased]
 
+- Fix isFirstUpper bug with special characters
+- Add isFirstLower and isFirstLetter functions
+
 ## [3.5.19][] - 2022-03-15
 
 - Add nodejs 17 to CI
