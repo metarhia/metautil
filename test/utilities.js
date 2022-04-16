@@ -75,6 +75,20 @@ metatests.case(
       ['abcd', false],
       ['aBCD', false],
       ['', false],
+      ['?string', false],
+    ],
+    'metautil.isFirstLower': [
+      ['Abcd', false],
+      ['abcd', true],
+      ['aBCD', true],
+      ['', false],
+      ['?string', false],
+    ],
+    'metautil.isFirstLetter': [
+      ['Abcd', true],
+      ['abcd', true],
+      ['', false],
+      ['?string', false],
     ],
     'metautil.toLowerCamel': [
       ['Abcd', 'abcd'],
