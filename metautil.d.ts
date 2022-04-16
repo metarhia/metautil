@@ -31,6 +31,8 @@ export function fileExt(fileName: string): string;
 export function parsePath(relPath: string): Array<string>;
 export function between(s: string, prefix: string, suffix: string): string;
 export function isFirstUpper(s: string): boolean;
+export function isFirstLower(s: string): boolean;
+export function isFirstLetter(s: string): boolean;
 export function toLowerCamel(s: string): string;
 export function toUpperCamel(s: string): string;
 export function toLower(s: string): string;
