@@ -90,7 +90,7 @@ metatests.test('Semaphore timeout', async (test) => {
   test.end();
 });
 
-metatests.test('Semaphore real life usage', (test) => {
+metatests.test('Semaphore real life usage', async (test) => {
   const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
 
   const useSemaphore = async () => {
@@ -108,17 +108,15 @@ metatests.test('Semaphore real life usage', (test) => {
       semaphore.leave();
     }
   };
-
+  const promises = [];
   for (let index = 1; index <= 20; index++) {
-    useSemaphore();
+    promises.push(useSemaphore());
   }
-
-  setTimeout(() => {
-    test.strictSame(semaphore.empty, true);
-    test.strictSame(semaphore.queue.length, 0);
-    test.strictSame(semaphore.counter, CONCURRENCY);
-    test.end();
-  }, TIMEOUT + 1000);
+  await Promise.all(promises);
+  test.strictSame(semaphore.empty, true);
+  test.strictSame(semaphore.queue.length, 0);
+  test.strictSame(semaphore.counter, CONCURRENCY);
+  test.end();
 });
 
 metatests.test('Semaphore detailed counter fix test', async (test) => {
