@@ -68,5 +68,5 @@ metatests.case(
         (crc) => crc.length === 4,
       ],
     ],
-  }
+  },
 );

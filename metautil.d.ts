@@ -9,7 +9,7 @@ export function md5(fileName: string): Promise<string>;
 export function generateToken(
   secret: string,
   characters: string,
-  length: number
+  length: number,
 ): string;
 
 export function validateToken(secret: string, token: string): boolean;
@@ -17,7 +17,7 @@ export function hashPassword(password: string): Promise<string>;
 
 export function validatePassword(
   password: string,
-  serHash: string
+  serHash: string,
 ): Promise<boolean>;
 
 export function random(min: number, max?: number): number;
