@@ -7,8 +7,5 @@
   },
   "parserOptions": {
     "ecmaVersion": "latest"
-  },
-  "rules": {
-    "comma-dangle": "off"
   }
 }

@@ -148,7 +148,7 @@ metatests.case(
       ['a=1; b = 2 ', { a: '1', b: '2' }],
       ['a=1', { a: '1' }],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -159,7 +159,7 @@ metatests.case(
       [[1, 2, 3], (result) => [1, 2, 3].includes(result)],
       [['a', 'b', 'c'], (result) => ['a', 'b', 'c'].includes(result)],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -176,7 +176,7 @@ metatests.case(
       [10, 10, 10],
     ],
     'metautil.cryptoRandom': [[(result) => result >= 0 && result <= 1]],
-  }
+  },
 );
 
 metatests.case(
@@ -314,7 +314,7 @@ metatests.case(
       [new Date('2021-10-15T20:54:18.713Z'), '-', '2021-10-15T20-54-18'],
       [new Date('2020-12-01T01:15:30+03:00'), '-', '2020-11-30T22-15-30'],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -345,7 +345,7 @@ metatests.case(
       ['{', null],
       ['', null],
     ],
-  }
+  },
 );
 
 metatests.test('Object: makePrivate', (test) => {
