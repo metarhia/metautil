@@ -21,7 +21,7 @@ metatests.test('Crypto: validatePassword', async (test) => {
 
 metatests.test('Crypto: md5', async (test) => {
   const hash = await metautil.md5('./.npmignore');
-  test.strictSame(hash, 'aeaef7191e38bcaa361fd13b83aacf2e');
+  test.strictSame(hash, '8278a9c6e40823bd7fde51d4ce8ac3f8');
   test.end();
 });
 
