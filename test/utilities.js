@@ -475,3 +475,20 @@ metatests.test('Object: flatFields with key names', (test) => {
   test.strictSame(result, expected);
   test.end();
 });
+
+metatests.test('Object: flatFields duplicate key', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    nameFirst: 'Andrew',
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  try {
+    metautil.flatObject(source);
+  } catch (err) {
+    test.strictSame(err.message, 'flatObject: duplicate key');
+  }
+
+  test.end();
+});
