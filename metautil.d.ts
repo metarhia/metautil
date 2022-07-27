@@ -114,3 +114,4 @@ export class Pool {
 export function fetch(url: string): Promise<string>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
+export function flatObject(object: object): object;
