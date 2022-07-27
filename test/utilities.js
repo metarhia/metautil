@@ -442,7 +442,7 @@ metatests.test('Object: flatFields', (test) => {
   };
   const expected = {
     nameFirst: 'Andrew',
-    nameSecond: ' Johnson',
+    nameSecond: 'Johnson',
     old: true,
     avoid: [1, 2, 3],
     parentMother: 'Eva',
@@ -451,7 +451,6 @@ metatests.test('Object: flatFields', (test) => {
 
   const result = metautil.flatObject(source);
 
-  console.log(result);
   test.strictSame(result, expected);
   test.end();
 });
@@ -464,14 +463,13 @@ metatests.test('Object: flatFields with key names', (test) => {
   };
   const expected = {
     nameFirst: 'Andrew',
-    nameSecond: ' Johnson',
+    nameSecond: 'Johnson',
     old: true,
     parent: { mother: 'Eva', father: 'Adam' },
   };
 
   const result = metautil.flatObject(source, 'name');
 
-  console.log(result);
   test.strictSame(result, expected);
   test.end();
 });
