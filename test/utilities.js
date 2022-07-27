@@ -432,3 +432,46 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.strictSame(ent7, null);
   test.end();
 });
+
+metatests.test('Object: flatFields', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: ' Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  console.log(result);
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields with key names', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: ' Johnson',
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  const result = metautil.flatObject(source, 'name');
+
+  console.log(result);
+  test.strictSame(result, expected);
+  test.end();
+});
