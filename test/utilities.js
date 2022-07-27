@@ -431,4 +431,62 @@ metatests.test('Object: namespaceByPath', (test) => {
   const ent7 = metautil.namespaceByPath(ns, '');
   test.strictSame(ent7, null);
   test.end();
+
+  metatests.test('Object: flatFields', (test) => {
+    const source = {
+      name: { first: 'Andrew', second: 'Johnson' },
+      old: true,
+      avoid: [1, 2, 3],
+      parent: { mother: 'Eva', father: 'Adam' },
+    };
+    const expected = {
+      nameFirst: 'Andrew',
+      nameSecond: 'Johnson',
+      old: true,
+      avoid: [1, 2, 3],
+      parentMother: 'Eva',
+      parentFather: 'Adam',
+    };
+
+    const result = metautil.flatObject(source);
+
+    test.strictSame(result, expected);
+    test.end();
+  });
+
+  metatests.test('Object: flatFields with key names', (test) => {
+    const source = {
+      name: { first: 'Andrew', second: 'Johnson' },
+      old: true,
+      parent: { mother: 'Eva', father: 'Adam' },
+    };
+    const expected = {
+      nameFirst: 'Andrew',
+      nameSecond: 'Johnson',
+      old: true,
+      parent: { mother: 'Eva', father: 'Adam' },
+    };
+
+    const result = metautil.flatObject(source, { name: 'name' });
+
+    test.strictSame(result, expected);
+    test.end();
+  });
+
+  metatests.test(
+    'Object: throw an error if conflict with property name',
+    (test) => {
+      const source = {
+        name: { first: 'Andrew', second: 'Johnson' },
+        nameFirst: 'John',
+        old: true,
+      };
+      try {
+        metautil.flatObject(source);
+      } catch (err) {
+        test.err(err);
+      }
+      test.end();
+    },
+  );
 });
