@@ -459,13 +459,13 @@ metatests.test('Object: flatFields with key names', (test) => {
   const source = {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
-    parent: { mother: 'Eva', father: 'Adam' },
+    parent: { mother: { name: 'Eva' }, father: { name: 'Adam' } },
   };
   const expected = {
     nameFirst: 'Andrew',
     nameSecond: 'Johnson',
     old: true,
-    parent: { mother: 'Eva', father: 'Adam' },
+    parent: { mother: { name: 'Eva' }, father: { name: 'Adam' } },
   };
 
   const result = metautil.flatObject(source, 'name');
@@ -488,5 +488,27 @@ metatests.test('Object: flatFields duplicate key', (test) => {
     test.strictSame(err.message, 'flatObject: duplicate key');
   }
 
+  test.end();
+});
+
+metatests.test('Object: flatFields multiple nested objects', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: { name: 'Eva' }, father: { name: 'Adam' } },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMotherName: 'Eva',
+    parentFatherName: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  test.strictSame(result, expected);
   test.end();
 });
