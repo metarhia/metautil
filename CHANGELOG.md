@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add function `deflatObject(source: object, fieldName: string): object`
+
 ## [3.5.21][] - 2022-06-27
 
 - Update dependencies, eslint, and optimize package

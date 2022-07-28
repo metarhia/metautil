@@ -432,3 +432,47 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.strictSame(ent7, null);
   test.end();
 });
+
+metatests.test('Object: deflatFields', (test) => {
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+  const expected = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  const result = metautil.deflatObject(source);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: deflatFields with key names', (test) => {
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.deflatObject(source, 'name');
+
+  test.strictSame(result, expected);
+  test.end();
+});
