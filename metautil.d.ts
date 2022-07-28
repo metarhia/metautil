@@ -40,6 +40,7 @@ export function toCamel(separator: string): (s: string) => string;
 export function spinalToCamel(s: string): string;
 export function snakeToCamel(s: string): string;
 export function isConstant(s: string): boolean;
+export function isObject(o: string | number | boolean | object): boolean;
 export function nowDate(date?: Date): string;
 export function nowDateTimeUTC(date?: Date, timeSep?: string): string;
 export function duration(s: string | number): number;

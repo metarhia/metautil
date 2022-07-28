@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Add function `flatObject(sourceObject: object, fieldNames: Array<string>): object`
+- Add function `isObject(o: string | number | boolean | object ): boolean`
 
 ## [3.5.21][] - 2022-06-27
 
