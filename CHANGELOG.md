@@ -2,7 +2,7 @@
 
 ## [Unreleased][unreleased]
 
-- Add function `flatObject(sourceObj: object, nameField?: string): object`
+- Add function `flatObject(sourceObject: object, fieldNames: Array<string>): object`
 
 ## [3.5.21][] - 2022-06-27
 

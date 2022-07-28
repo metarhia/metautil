@@ -460,15 +460,18 @@ metatests.test('Object: flatFields with keys names', (test) => {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
     parent: { mother: 'Eva', father: 'Adam' },
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
   };
   const expected = {
     nameFirst: 'Andrew',
     nameSecond: 'Johnson',
     old: true,
-    parent: { mother: 'Eva', father: 'Adam' },
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
   };
 
-  const result = metautil.flatObject(source, ['name']);
+  const result = metautil.flatObject(source, ['name', 'parent']);
 
   test.strictSame(result, expected);
   test.end();
