@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- New functions: `parseDay` and `parseMonth`
+- Fixed and `parseEvery` and `nextEvent`, more tests cases
 - Add function `flatObject(sourceObject: object, fieldNames: Array<string>): object`
 - Add function `isObject(o: string | number | boolean | object ): boolean`
 
