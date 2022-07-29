@@ -273,6 +273,7 @@ metatests.case(
       ['2nd 17:', { YY: -1, MM: -1, DD: 2, wd: -1, hh: 17, mm: 0, ms: -1 }],
       ['Sun 4th', { YY: -1, MM: -1, DD: 4, wd: 1, hh: -1, mm: -1, ms: -1 }],
       ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
     ],
     'metautil.nextEvent': [
