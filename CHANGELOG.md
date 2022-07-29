@@ -4,6 +4,7 @@
 
 - New functions: `parseDay` and `parseMonth`
 - Fixed and `parseEvery` and `nextEvent`, more tests cases
+- Add year support to `Every` format
 
 ## [3.5.21][] - 2022-06-27
 
