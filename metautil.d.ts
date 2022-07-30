@@ -49,16 +49,20 @@ export function namespaceByPath(namespace: object, path: string): object | null;
 export function unflatObject(source: object, fieldNames: Array<string>): object;
 
 type Every = {
-  month: number;
-  day: number;
+  YY: number;
+  MM: number;
+  DD: number;
+  wd: number;
   dd: number;
   hh: number;
   mm: number;
-  interval: number;
+  ms: number;
 };
 
 export type { Every };
 
+export function parseDay(s: string): number;
+export function parseMonth(s: string): number;
 export function parseEvery(s: string): Every;
 export function nextEvent(every: Every, date?: Date): number;
 export function makePrivate(instance: object): object;

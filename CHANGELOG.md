@@ -4,6 +4,12 @@
 
 - Add function `unflatObject(source: object, fieldNames: Array<string>): object`
 
+## [3.5.22][] - 2022-07-29
+
+- New functions: `parseDay` and `parseMonth`
+- Fixed and `parseEvery` and `nextEvent`, more tests cases
+- Add year support to `Every` format
+
 ## [3.5.21][] - 2022-06-27
 
 - Update dependencies, eslint, and optimize package
@@ -150,7 +156,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.21....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.22....HEAD
+[3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
 [3.5.21]: https://github.com/metarhia/metautil/compare/v3.5.20...v3.5.21
 [3.5.20]: https://github.com/metarhia/metautil/compare/v3.5.19...v3.5.20
 [3.5.19]: https://github.com/metarhia/metautil/compare/v3.5.18...v3.5.19
