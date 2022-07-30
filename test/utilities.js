@@ -433,7 +433,9 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.end();
 });
 
-metatests.test('Object: deflatFields', (test) => {
+metatests.test('Object: unflatFields with key names', (test) => {
+  const fieldNames = ['name', 'parent'];
+
   const source = {
     nameFirst: 'Andrew',
     nameSecond: 'Johnson',
@@ -442,6 +444,7 @@ metatests.test('Object: deflatFields', (test) => {
     parentMother: 'Eva',
     parentFather: 'Adam',
   };
+
   const expected = {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
@@ -449,13 +452,15 @@ metatests.test('Object: deflatFields', (test) => {
     parent: { mother: 'Eva', father: 'Adam' },
   };
 
-  const result = metautil.deflatObject(source);
+  const result = metautil.unflatObject(source, fieldNames);
 
   test.strictSame(result, expected);
   test.end();
 });
 
-metatests.test('Object: deflatFields with key names', (test) => {
+metatests.test('Object: unflatFields with key name', (test) => {
+  const fieldNames = ['name'];
+
   const source = {
     nameFirst: 'Andrew',
     nameSecond: 'Johnson',
@@ -463,6 +468,7 @@ metatests.test('Object: deflatFields with key names', (test) => {
     avoid: [1, 2, 3],
     parent: { mother: 'Eva', father: 'Adam' },
   };
+
   const expected = {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
@@ -471,8 +477,29 @@ metatests.test('Object: deflatFields with key names', (test) => {
     parentFather: 'Adam',
   };
 
-  const result = metautil.deflatObject(source, 'name');
+  const result = metautil.unflatObject(source, fieldNames);
 
   test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: unflatFields exception', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    name: 'John',
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  test.throws(
+    () => metautil.unflatObject(source, fieldNames),
+    new Error('Can not combine keys: key "name" already exists'),
+  );
+
   test.end();
 });
