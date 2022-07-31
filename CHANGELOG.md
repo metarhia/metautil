@@ -2,8 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.22][] - 2022-07-29
+
 - New functions: `parseDay` and `parseMonth`
 - Fixed and `parseEvery` and `nextEvent`, more tests cases
+- Add year support to `Every` format
 - Add function `flatObject(sourceObject: object, fieldNames: Array<string>): object`
 - Add function `isObject(o: string | number | boolean | object ): boolean`
 
@@ -153,7 +156,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.21....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.22....HEAD
+[3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
 [3.5.21]: https://github.com/metarhia/metautil/compare/v3.5.20...v3.5.21
 [3.5.20]: https://github.com/metarhia/metautil/compare/v3.5.19...v3.5.20
 [3.5.19]: https://github.com/metarhia/metautil/compare/v3.5.18...v3.5.19
