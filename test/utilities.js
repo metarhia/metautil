@@ -464,7 +464,7 @@ metatests.test('Object: flatFields', (test) => {
     parentFather: 'Adam',
   };
 
-  const result = metautil.flatObject(source, []);
+  const result = metautil.flatObject(source);
 
   test.strictSame(result, expected);
   test.end();
@@ -500,11 +500,10 @@ metatests.test('Object: flatFields duplicate key', (test) => {
     parent: { mother: 'Eva', father: 'Adam' },
   };
 
-  try {
-    metautil.flatObject(source, []);
-  } catch (err) {
-    test.strictSame(err.message, 'flatObject: duplicate key');
-  }
+  test.throws(
+    () => metautil.flatObject(source),
+    new Error('Can not combine keys: key "nameFirst" already exists'),
+  );
 
   test.end();
 });
