@@ -40,6 +40,7 @@ export function toCamel(separator: string): (s: string) => string;
 export function spinalToCamel(s: string): string;
 export function snakeToCamel(s: string): string;
 export function isConstant(s: string): boolean;
+export function isHashObject(o: string | number | boolean | object): boolean;
 export function nowDate(date?: Date): string;
 export function nowDateTimeUTC(date?: Date, timeSep?: string): string;
 export function duration(s: string | number): number;
@@ -118,3 +119,7 @@ export class Pool {
 export function fetch(url: string): Promise<string>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
+export function flatObject(
+  sourceObject: object,
+  fieldNames: Array<string>,
+): object;
