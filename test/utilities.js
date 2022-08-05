@@ -275,6 +275,30 @@ metatests.case(
       ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      [
+        '2022 Aug 5th',
+        { YY: 2022, MM: 8, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri :30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30 15s',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: 15000 },
+      ],
     ],
     'metautil.nextEvent': [
       [
