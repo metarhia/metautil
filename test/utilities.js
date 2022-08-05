@@ -275,9 +275,35 @@ metatests.case(
       ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 5th', { YY: 2022, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 Fri', { YY: 2022, MM: -1, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 }],
+      [
+        '2022 Aug Fri',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
       [
         '2022 Aug 5th',
         { YY: 2022, MM: 8, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri 21:',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: 21, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri :60',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: 60, ms: -1 },
+      ],
+      [
+        '2022 15th 01:30 25s',
+        { YY: 2022, MM: -1, DD: 15, wd: -1, hh: 1, mm: 30, ms: 25000 },
+      ],
+      [
+        '5th Fri 01:30 5s',
+        { YY: -1, MM: -1, DD: 5, wd: 6, hh: 1, mm: 30, ms: 5000 },
+      ],
+      [
+        'Aug 1th Fri 01:30 5s',
+        { YY: -1, MM: 8, DD: 1, wd: 6, hh: 1, mm: 30, ms: 5000 },
       ],
       [
         '2022 Aug 5th Fri',
