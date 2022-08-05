@@ -2,7 +2,7 @@
 
 ## [Unreleased][unreleased]
 
-- Add function `unflatObject(source: object, fieldNames: Array<string>): object`
+- Add function `unflatObject(sourceObject: object, fieldNames: Array<string>): object`
 
 ## [3.5.22][] - 2022-07-29
 

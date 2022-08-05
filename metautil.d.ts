@@ -47,7 +47,6 @@ export function duration(s: string | number): number;
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
 export function namespaceByPath(namespace: object, path: string): object | null;
-export function unflatObject(source: object, fieldNames: Array<string>): object;
 
 type Every = {
   YY: number;
@@ -121,6 +120,10 @@ export function fetch(url: string): Promise<string>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
 export function flatObject(
+  sourceObject: object,
+  fieldNames: Array<string>,
+): object;
+export function unflatObject(
   sourceObject: object,
   fieldNames: Array<string>,
 ): object;
