@@ -455,6 +455,66 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.end();
 });
 
+metatests.test('Object: flatFields', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields with keys names', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+
+  const result = metautil.flatObject(source, ['name', 'parent']);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields duplicate key', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    nameFirst: 'Andrew',
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  test.throws(
+    () => metautil.flatObject(source),
+    new Error('Can not combine keys: key "nameFirst" already exists'),
+  );
+
+  test.end();
+});
+
 metatests.test('Object: unflatFields with key names', (test) => {
   const fieldNames = ['name', 'parent'];
 
