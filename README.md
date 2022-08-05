@@ -31,6 +31,10 @@
 - `bytesToSize(bytes: number): string`
 - `sizeToBytes(size: string): number`
 - `namespaceByPath(namespace: object, path: string): object | null`
+- `parseDay(s: string): number`
+- `parseMonth(s: string): number`
+- `parseEvery(s: string): Every`
+- `nextEvent(every: Every, date?: Date): number`
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Array<string>, ...namespaces: Array<object>): void`
 - `createAbortController(): AbortController`

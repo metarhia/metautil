@@ -245,63 +245,85 @@ metatests.case(
       ['10 ZB', 10000000000000000000000],
       ['1 YB', 1000000000000000000000000],
     ],
+    'metautil.parseDay': [
+      ['Sun', 1],
+      ['Sunday', 1],
+      ['', -1],
+      ['Abc', -1],
+    ],
+    'metautil.parseMonth': [
+      ['Apr', 4],
+      ['April', 4],
+      ['', -1],
+      ['Abc', -1],
+    ],
     'metautil.parseEvery': [
-      ['', { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 0 }],
-      [':30', { month: -1, day: -1, dd: -1, hh: -1, mm: 30, interval: 0 }],
-      ['17:', { month: -1, day: -1, dd: -1, hh: 17, mm: 0, interval: 0 }],
-      ['17:30', { month: -1, day: -1, dd: -1, hh: 17, mm: 30, interval: 0 }],
-      ['1st :30', { month: -1, day: -1, dd: 1, hh: -1, mm: 30, interval: 0 }],
-      ['2nd 17:', { month: -1, day: -1, dd: 2, hh: 17, mm: 0, interval: 0 }],
-      ['Apr 3rd', { month: 3, day: -1, dd: 3, hh: -1, mm: -1, interval: 0 }],
-      ['Sun 4th', { month: -1, day: 0, dd: 4, hh: -1, mm: -1, interval: 0 }],
-      [
-        'Sun 3s',
-        { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 3000 },
-      ],
+      ['', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['3s', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      [':30', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: 30, ms: -1 }],
+      ['17:', { YY: -1, MM: -1, DD: -1, wd: -1, hh: 17, mm: 0, ms: -1 }],
+      ['Apr', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['5th', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['Sun', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['Apr 3s', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      ['5th 3s', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      ['Sun 3s', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: 3000 }],
+      ['17:30', { YY: -1, MM: -1, DD: -1, wd: -1, hh: 17, mm: 30, ms: -1 }],
+      ['1st :30', { YY: -1, MM: -1, DD: 1, wd: -1, hh: -1, mm: 30, ms: -1 }],
+      ['2nd 17:', { YY: -1, MM: -1, DD: 2, wd: -1, hh: 17, mm: 0, ms: -1 }],
+      ['Sun 4th', { YY: -1, MM: -1, DD: 4, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
     ],
     'metautil.nextEvent': [
       [
-        { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 0 },
+        { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         0,
       ],
       [
-        { month: 2, day: 3, dd: 4, hh: 5, mm: 6, interval: 100 },
+        { YY: 2021, MM: 2, DD: 4, wd: 4, hh: 5, mm: 6, ms: 100 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         -1,
       ],
       [
-        { month: 6, day: -1, dd: -1, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 7, DD: -1, wd: -1, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: -1, dd: 20, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 7, DD: 20, wd: -1, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 8, DD: 1, wd: -1, hh: -1, mm: -1, ms: 5000 },
+        new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 15, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 15, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         12600000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: -1, mm: -1, interval: 12600000 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: -1, mm: -1, ms: 12600000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         12600000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 11, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 11, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         -1,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 13, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 13, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5400000,
       ],
@@ -430,5 +452,65 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.strictSame(ent6, null);
   const ent7 = metautil.namespaceByPath(ns, '');
   test.strictSame(ent7, null);
+  test.end();
+});
+
+metatests.test('Object: flatFields', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields with keys names', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+
+  const result = metautil.flatObject(source, ['name', 'parent']);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields duplicate key', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    nameFirst: 'Andrew',
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  test.throws(
+    () => metautil.flatObject(source),
+    new Error('Can not combine keys: key "nameFirst" already exists'),
+  );
+
   test.end();
 });
