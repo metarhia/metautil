@@ -540,32 +540,7 @@ metatests.test('Object: unflatFields with key names', (test) => {
   test.end();
 });
 
-metatests.test('Object: unflatFields with key name', (test) => {
-  const fieldNames = ['name'];
-
-  const source = {
-    nameFirst: 'Andrew',
-    nameSecond: 'Johnson',
-    old: true,
-    avoid: [1, 2, 3],
-    parent: { mother: 'Eva', father: 'Adam' },
-  };
-
-  const expected = {
-    name: { first: 'Andrew', second: 'Johnson' },
-    old: true,
-    avoid: [1, 2, 3],
-    parentMother: 'Eva',
-    parentFather: 'Adam',
-  };
-
-  const result = metautil.unflatObject(source, fieldNames);
-
-  test.strictSame(result, expected);
-  test.end();
-});
-
-metatests.test('Object: unflatFields exception', (test) => {
+metatests.test('Object: unflatFields naming collision', (test) => {
   const fieldNames = ['name', 'parent'];
 
   const source = {
