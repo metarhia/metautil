@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add function `unflatObject(sourceObject: object, fieldNames: Array<string>): object`
+
 ## [3.5.22][] - 2022-07-29
 
 - New functions: `parseDay` and `parseMonth`

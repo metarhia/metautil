@@ -514,3 +514,49 @@ metatests.test('Object: flatFields duplicate key', (test) => {
 
   test.end();
 });
+
+metatests.test('Object: unflatFields with key names', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const expected = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  const result = metautil.unflatObject(source, fieldNames);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: unflatFields naming collision', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    name: 'John',
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  test.throws(
+    () => metautil.unflatObject(source, fieldNames),
+    new Error('Can not combine keys: key "name" already exists'),
+  );
+
+  test.end();
+});
