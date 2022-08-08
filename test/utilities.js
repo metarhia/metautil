@@ -265,6 +265,7 @@ metatests.case(
       ['Apr', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['5th', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['Sun', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['2022', { YY: 2022, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['Apr 3s', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
       ['5th 3s', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: 3000 }],
       ['Sun 3s', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: 3000 }],
@@ -331,6 +332,36 @@ metatests.case(
         { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         0,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: 13, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        3600000,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 2, wd: 3, hh: 22, mm: 30, ms: 8000 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: -1, MM: 8, DD: 1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2023, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        -1,
       ],
       [
         { YY: 2021, MM: 2, DD: 4, wd: 4, hh: 5, mm: 6, ms: 100 },
