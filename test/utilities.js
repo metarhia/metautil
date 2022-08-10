@@ -265,6 +265,7 @@ metatests.case(
       ['Apr', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['5th', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['Sun', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['2022', { YY: 2022, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['Apr 3s', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
       ['5th 3s', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: 3000 }],
       ['Sun 3s', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: 3000 }],
@@ -275,12 +276,92 @@ metatests.case(
       ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
       ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 5th', { YY: 2022, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 Fri', { YY: 2022, MM: -1, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 }],
+      [
+        '2022 Aug Fri',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th',
+        { YY: 2022, MM: 8, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri 21:',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: 21, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri :60',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: 60, ms: -1 },
+      ],
+      [
+        '2022 15th 01:30 25s',
+        { YY: 2022, MM: -1, DD: 15, wd: -1, hh: 1, mm: 30, ms: 25000 },
+      ],
+      [
+        '5th Fri 01:30 5s',
+        { YY: -1, MM: -1, DD: 5, wd: 6, hh: 1, mm: 30, ms: 5000 },
+      ],
+      [
+        'Aug 1th Fri 01:30 5s',
+        { YY: -1, MM: 8, DD: 1, wd: 6, hh: 1, mm: 30, ms: 5000 },
+      ],
+      [
+        '2022 Aug 5th Fri',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri :30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30 15s',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: 15000 },
+      ],
     ],
     'metautil.nextEvent': [
       [
         { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         0,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: 13, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        3600000,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 2, wd: 3, hh: 22, mm: 30, ms: 8000 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: -1, MM: 8, DD: 1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2023, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        -1,
       ],
       [
         { YY: 2021, MM: 2, DD: 4, wd: 4, hh: 5, mm: 6, ms: 100 },
@@ -510,6 +591,52 @@ metatests.test('Object: flatFields duplicate key', (test) => {
   test.throws(
     () => metautil.flatObject(source),
     new Error('Can not combine keys: key "nameFirst" already exists'),
+  );
+
+  test.end();
+});
+
+metatests.test('Object: unflatFields with key names', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const expected = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  const result = metautil.unflatObject(source, fieldNames);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: unflatFields naming collision', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    name: 'John',
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  test.throws(
+    () => metautil.unflatObject(source, fieldNames),
+    new Error('Can not combine keys: key "name" already exists'),
   );
 
   test.end();

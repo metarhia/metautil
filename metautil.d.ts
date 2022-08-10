@@ -123,3 +123,7 @@ export function flatObject(
   sourceObject: object,
   fieldNames: Array<string>,
 ): object;
+export function unflatObject(
+  sourceObject: object,
+  fieldNames: Array<string>,
+): object;
