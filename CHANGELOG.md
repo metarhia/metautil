@@ -2,7 +2,10 @@
 
 ## [Unreleased][unreleased]
 
-- Add function `unflatObject(sourceObject: object, fieldNames: Array<string>): object`
+## [3.5.23][] - 2022-08-12
+
+- Add `flatObject(sourceObject: object, fieldNames: Array<string>): object`
+- Add `unflatObject(sourceObject: object, fieldNames: Array<string>): object;`
 
 ## [3.5.22][] - 2022-07-29
 
@@ -158,7 +161,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.22....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.23....HEAD
+[3.5.23]: https://github.com/metarhia/metautil/compare/v3.5.22...v3.5.23
 [3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
 [3.5.21]: https://github.com/metarhia/metautil/compare/v3.5.20...v3.5.21
 [3.5.20]: https://github.com/metarhia/metautil/compare/v3.5.19...v3.5.20
