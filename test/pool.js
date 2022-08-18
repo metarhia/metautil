@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const metautil = require('..');
 
-metatests.test('Pool: add/next', async (test) => {
+metatests.test('Pool: add/next factor', async (test) => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -23,6 +23,50 @@ metatests.test('Pool: add/next', async (test) => {
   test.strictSame(await pool.next(), obj3);
   pool.setFactor(obj2, 0.1);
   test.strictSame(await pool.next(), obj2);
+  test.end();
+});
+
+metatests.test('Pool: add/next robin', async (test) => {
+  const pool = new metautil.Pool();
+
+  const obj1 = { a: 1 };
+  pool.add(obj1);
+  const obj2 = { a: 2 };
+  pool.add(obj2);
+  const obj3 = { a: 3 };
+  pool.add(obj3);
+
+  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj2);
+  test.strictSame(await pool.next(), obj3);
+  test.end();
+});
+
+metatests.test('Pool: add/next mix', async (test) => {
+  const pool = new metautil.Pool();
+
+  const obj1 = { a: 1 };
+  pool.add(obj1);
+  const obj2 = { a: 2 };
+  pool.add(obj2);
+  pool.setFactor(obj2, 0.5);
+  const obj3 = { a: 3 };
+  pool.add(obj3);
+
+  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj3);
+  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj3);
+  pool.setFactor(obj1, 0.6);
+  test.strictSame(await pool.next(), obj3);
+  pool.setFactor(obj3, 0.9);
+  test.strictSame(await pool.next(), obj2);
+  pool.setFactor(obj1, 0);
+  test.strictSame(await pool.next(), obj1);
+  pool.setFactor(obj3, 0);
+  test.strictSame(await pool.next(), obj3);
+  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj3);
   test.end();
 });
 
@@ -50,6 +94,7 @@ metatests.test('Pool: capture/next', async (test) => {
   test.strictSame(item, obj1);
   test.strictSame(pool.isFree(item), false);
   test.strictSame(await pool.next(), obj2);
+  test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj2);
 
   pool.release(item);
@@ -59,7 +104,7 @@ metatests.test('Pool: capture/next', async (test) => {
   } catch (err) {
     test.strictSame(err.message, 'Pool: release not captured');
   }
-  test.strictSame(await pool.next(), obj1);
+  test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj1);
   test.end();
 });
@@ -144,16 +189,10 @@ metatests.test('Pool: prevent infinite loop', async (test) => {
 
   await pool.next();
   const item1 = await pool.capture();
-  test.strictSame(item1, obj1);
+  test.strictSame(item1, obj2);
   await pool.next();
   const item2 = await pool.capture();
-  test.strictSame(item2, obj2);
-
-  try {
-    await pool.capture();
-  } catch (err) {
-    test.strictSame(err.message, 'Pool next item timeout');
-  }
+  test.strictSame(item2, obj1);
 
   test.end();
 });
