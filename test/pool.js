@@ -46,17 +46,18 @@ metatests.test('Pool: add/next mix', async (test) => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
-  pool.add(obj1);
+  pool.add(obj1, 0.2);
   const obj2 = { a: 2 };
   pool.add(obj2);
   pool.setFactor(obj2, 0.5);
   const obj3 = { a: 3 };
   pool.add(obj3);
 
+  test.strictSame(await pool.next(), obj3);
+  pool.setFactor(obj1, 0);
   test.strictSame(await pool.next(), obj1);
   test.strictSame(await pool.next(), obj3);
   test.strictSame(await pool.next(), obj1);
-  test.strictSame(await pool.next(), obj3);
   pool.setFactor(obj1, 0.6);
   test.strictSame(await pool.next(), obj3);
   pool.setFactor(obj3, 0.9);
