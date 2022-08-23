@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Use `factor` for Pool item selection
+
 ## [3.5.23][] - 2022-08-12
 
 - Add `flatObject(sourceObject: object, fieldNames: Array<string>): object`
