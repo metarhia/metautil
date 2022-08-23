@@ -9,7 +9,7 @@ export function md5(fileName: string): Promise<string>;
 export function generateToken(
   secret: string,
   characters: string,
-  length: number
+  length: number,
 ): string;
 
 export function validateToken(secret: string, token: string): boolean;
@@ -17,7 +17,7 @@ export function hashPassword(password: string): Promise<string>;
 
 export function validatePassword(
   password: string,
-  serHash: string
+  serHash: string,
 ): Promise<boolean>;
 
 export function random(min: number, max?: number): number;
@@ -31,26 +31,38 @@ export function fileExt(fileName: string): string;
 export function parsePath(relPath: string): Array<string>;
 export function between(s: string, prefix: string, suffix: string): string;
 export function isFirstUpper(s: string): boolean;
+export function isFirstLower(s: string): boolean;
+export function isFirstLetter(s: string): boolean;
 export function toLowerCamel(s: string): string;
 export function toUpperCamel(s: string): string;
+export function toLower(s: string): string;
+export function toCamel(separator: string): (s: string) => string;
+export function spinalToCamel(s: string): string;
+export function snakeToCamel(s: string): string;
 export function isConstant(s: string): boolean;
+export function isHashObject(o: string | number | boolean | object): boolean;
 export function nowDate(date?: Date): string;
+export function nowDateTimeUTC(date?: Date, timeSep?: string): string;
 export function duration(s: string | number): number;
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
 export function namespaceByPath(namespace: object, path: string): object | null;
 
 type Every = {
-  month: number;
-  day: number;
+  YY: number;
+  MM: number;
+  DD: number;
+  wd: number;
   dd: number;
   hh: number;
   mm: number;
-  interval: number;
+  ms: number;
 };
 
 export type { Every };
 
+export function parseDay(s: string): number;
+export function parseMonth(s: string): number;
 export function parseEvery(s: string): Every;
 export function nextEvent(every: Every, date?: Date): number;
 export function makePrivate(instance: object): object;
@@ -107,3 +119,11 @@ export class Pool {
 export function fetch(url: string): Promise<string>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
+export function flatObject(
+  sourceObject: object,
+  fieldNames: Array<string>,
+): object;
+export function unflatObject(
+  sourceObject: object,
+  fieldNames: Array<string>,
+): object;

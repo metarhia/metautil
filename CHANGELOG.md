@@ -4,6 +4,43 @@
 
 - Use `factor` for Pool item selection
 
+## [3.5.23][] - 2022-08-12
+
+- Add `flatObject(sourceObject: object, fieldNames: Array<string>): object`
+- Add `unflatObject(sourceObject: object, fieldNames: Array<string>): object;`
+
+## [3.5.22][] - 2022-07-29
+
+- New functions: `parseDay` and `parseMonth`
+- Fixed and `parseEvery` and `nextEvent`, more tests cases
+- Add year support to `Every` format
+- Add function `flatObject(sourceObject: object, fieldNames: Array<string>): object`
+- Add function `isHashObject(o: string | number | boolean | object): boolean`
+
+## [3.5.21][] - 2022-06-27
+
+- Update dependencies, eslint, and optimize package
+
+## [3.5.20][] - 2022-05-09
+
+- Fix isFirstUpper bug with special characters
+- Add isFirstLower and isFirstLetter functions
+
+## [3.5.19][] - 2022-03-15
+
+- Add nodejs 17 to CI
+- Update dependencies
+
+## [3.5.18][] - 2022-01-29
+
+- Fix semaphore bug with counter and queue
+
+## [3.5.17][] - 2022-01-26
+
+- Add function `nowDateTimeUTC(date?: Date, timeSep?: string): string`
+- Add case functions: `toLower`, `toCamel`, `spinalToCamel`, and `snakeToCamel`
+- Fixed floating bug in tests for `nowDateTimeUTC`
+
 ## [3.5.16][] - 2021-10-10
 
 - Add `Pool` method `isFree(item: object): boolean`
@@ -126,7 +163,14 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.16....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.23....HEAD
+[3.5.23]: https://github.com/metarhia/metautil/compare/v3.5.22...v3.5.23
+[3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
+[3.5.21]: https://github.com/metarhia/metautil/compare/v3.5.20...v3.5.21
+[3.5.20]: https://github.com/metarhia/metautil/compare/v3.5.19...v3.5.20
+[3.5.19]: https://github.com/metarhia/metautil/compare/v3.5.18...v3.5.19
+[3.5.18]: https://github.com/metarhia/metautil/compare/v3.5.17...v3.5.18
+[3.5.17]: https://github.com/metarhia/metautil/compare/v3.5.16...v3.5.17
 [3.5.16]: https://github.com/metarhia/metautil/compare/v3.5.15...v3.5.16
 [3.5.15]: https://github.com/metarhia/metautil/compare/v3.5.14...v3.5.15
 [3.5.14]: https://github.com/metarhia/metautil/compare/v3.5.13...v3.5.14
