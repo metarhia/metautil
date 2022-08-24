@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Support POST requests with body and custom headers in `fetch()`
+
 ## [3.5.23][] - 2022-08-12
 
 - Add `flatObject(sourceObject: object, fieldNames: Array<string>): object`
