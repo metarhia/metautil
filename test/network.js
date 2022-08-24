@@ -28,36 +28,6 @@ const getRequestInfo = async (options) => {
   const data = await metautil.fetch(url, options);
   return data;
 };
-
-metatests.test('makeRequestOptions', async (test) => {
-  const googleSearchURL = 'https://google.com/search?q=metautil';
-  const googleRequestOptions = metautil.makeRequestOptions(googleSearchURL);
-  test.strictEqual(googleRequestOptions, {
-    hostname: 'google.com',
-    port: '',
-    path: '/search?q=metautil',
-    method: 'GET',
-    headers: {},
-  });
-
-  const postURL = 'http://example.com/json?lang=ru';
-  const options = { method: 'POST', body: { a: 1 }, headers: { Test: 'test' } };
-  const postRequestOptions = metautil.makeRequestOptions(postURL, options);
-  test.strictEqual(postRequestOptions, {
-    hostname: 'example.com',
-    port: '',
-    path: '/json?lang=ru',
-    method: 'POST',
-    body: '{"a":1}',
-    headers: {
-      Test: 'test',
-      'Content-Type': 'application/json',
-      'Content-Length': 7,
-    },
-  });
-  test.end();
-});
-
 metatests.test('Fetch', async (test) => {
   const rate = await getRate('USD');
   test.strictSame(rate, 1);
