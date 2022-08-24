@@ -75,6 +75,20 @@ metatests.case(
       ['abcd', false],
       ['aBCD', false],
       ['', false],
+      ['?string', false],
+    ],
+    'metautil.isFirstLower': [
+      ['Abcd', false],
+      ['abcd', true],
+      ['aBCD', true],
+      ['', false],
+      ['?string', false],
+    ],
+    'metautil.isFirstLetter': [
+      ['Abcd', true],
+      ['abcd', true],
+      ['', false],
+      ['?string', false],
     ],
     'metautil.toLowerCamel': [
       ['Abcd', 'abcd'],
@@ -134,7 +148,7 @@ metatests.case(
       ['a=1; b = 2 ', { a: '1', b: '2' }],
       ['a=1', { a: '1' }],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -145,7 +159,7 @@ metatests.case(
       [[1, 2, 3], (result) => [1, 2, 3].includes(result)],
       [['a', 'b', 'c'], (result) => ['a', 'b', 'c'].includes(result)],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -162,7 +176,7 @@ metatests.case(
       [10, 10, 10],
     ],
     'metautil.cryptoRandom': [[(result) => result >= 0 && result <= 1]],
-  }
+  },
 );
 
 metatests.case(
@@ -231,63 +245,166 @@ metatests.case(
       ['10 ZB', 10000000000000000000000],
       ['1 YB', 1000000000000000000000000],
     ],
+    'metautil.parseDay': [
+      ['Sun', 1],
+      ['Sunday', 1],
+      ['', -1],
+      ['Abc', -1],
+    ],
+    'metautil.parseMonth': [
+      ['Apr', 4],
+      ['April', 4],
+      ['', -1],
+      ['Abc', -1],
+    ],
     'metautil.parseEvery': [
-      ['', { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 0 }],
-      [':30', { month: -1, day: -1, dd: -1, hh: -1, mm: 30, interval: 0 }],
-      ['17:', { month: -1, day: -1, dd: -1, hh: 17, mm: 0, interval: 0 }],
-      ['17:30', { month: -1, day: -1, dd: -1, hh: 17, mm: 30, interval: 0 }],
-      ['1st :30', { month: -1, day: -1, dd: 1, hh: -1, mm: 30, interval: 0 }],
-      ['2nd 17:', { month: -1, day: -1, dd: 2, hh: 17, mm: 0, interval: 0 }],
-      ['Apr 3rd', { month: 3, day: -1, dd: 3, hh: -1, mm: -1, interval: 0 }],
-      ['Sun 4th', { month: -1, day: 0, dd: 4, hh: -1, mm: -1, interval: 0 }],
+      ['', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['3s', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      [':30', { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: 30, ms: -1 }],
+      ['17:', { YY: -1, MM: -1, DD: -1, wd: -1, hh: 17, mm: 0, ms: -1 }],
+      ['Apr', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['5th', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['Sun', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['2022', { YY: 2022, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['Apr 3s', { YY: -1, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      ['5th 3s', { YY: -1, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: 3000 }],
+      ['Sun 3s', { YY: -1, MM: -1, DD: -1, wd: 1, hh: -1, mm: -1, ms: 3000 }],
+      ['17:30', { YY: -1, MM: -1, DD: -1, wd: -1, hh: 17, mm: 30, ms: -1 }],
+      ['1st :30', { YY: -1, MM: -1, DD: 1, wd: -1, hh: -1, mm: 30, ms: -1 }],
+      ['2nd 17:', { YY: -1, MM: -1, DD: 2, wd: -1, hh: 17, mm: 0, ms: -1 }],
+      ['Sun 4th', { YY: -1, MM: -1, DD: 4, wd: 1, hh: -1, mm: -1, ms: -1 }],
+      ['Apr 3rd', { YY: -1, MM: 4, DD: 3, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['10th Apr', { YY: -1, MM: 4, DD: 10, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 Apr', { YY: 2022, MM: 4, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 5th', { YY: 2022, MM: -1, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 }],
+      ['2022 Fri', { YY: 2022, MM: -1, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 }],
       [
-        'Sun 3s',
-        { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 3000 },
+        '2022 Aug Fri',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th',
+        { YY: 2022, MM: 8, DD: 5, wd: -1, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri 21:',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: 21, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug Fri :60',
+        { YY: 2022, MM: 8, DD: -1, wd: 6, hh: -1, mm: 60, ms: -1 },
+      ],
+      [
+        '2022 15th 01:30 25s',
+        { YY: 2022, MM: -1, DD: 15, wd: -1, hh: 1, mm: 30, ms: 25000 },
+      ],
+      [
+        '5th Fri 01:30 5s',
+        { YY: -1, MM: -1, DD: 5, wd: 6, hh: 1, mm: 30, ms: 5000 },
+      ],
+      [
+        'Aug 1th Fri 01:30 5s',
+        { YY: -1, MM: 8, DD: 1, wd: 6, hh: 1, mm: 30, ms: 5000 },
+      ],
+      [
+        '2022 Aug 5th Fri',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: -1, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 0, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri :30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: -1, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: -1 },
+      ],
+      [
+        '2022 Aug 5th Fri 23:30 15s',
+        { YY: 2022, MM: 8, DD: 5, wd: 6, hh: 23, mm: 30, ms: 15000 },
       ],
     ],
     'metautil.nextEvent': [
       [
-        { month: -1, day: -1, dd: -1, hh: -1, mm: -1, interval: 0 },
+        { YY: -1, MM: -1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         0,
       ],
       [
-        { month: 2, day: 3, dd: 4, hh: 5, mm: 6, interval: 100 },
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 1, wd: 2, hh: 13, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        3600000,
+      ],
+      [
+        { YY: 2022, MM: 8, DD: 2, wd: 3, hh: 22, mm: 30, ms: 8000 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: -1, MM: 8, DD: 1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2023, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2022, MM: 1, DD: -1, wd: -1, hh: -1, mm: -1, ms: -1 },
+        new Date('Mon, 01 Aug 2022 12:00:00 GMT'),
+        -1,
+      ],
+      [
+        { YY: 2021, MM: 2, DD: 4, wd: 4, hh: 5, mm: 6, ms: 100 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         -1,
       ],
       [
-        { month: 6, day: -1, dd: -1, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 7, DD: -1, wd: -1, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: -1, dd: 20, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 7, DD: 20, wd: -1, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: -1, mm: -1, interval: 5000 },
+        { YY: 2021, MM: 8, DD: 1, wd: -1, hh: -1, mm: -1, ms: 5000 },
+        new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
+        0,
+      ],
+      [
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: -1, mm: -1, ms: 5000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 15, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 15, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         12600000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: -1, mm: -1, interval: 12600000 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: -1, mm: -1, ms: 12600000 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         12600000,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 11, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 11, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         -1,
       ],
       [
-        { month: 6, day: 2, dd: 20, hh: 13, mm: 30, interval: 0 },
+        { YY: 2021, MM: 7, DD: 20, wd: 3, hh: 13, mm: 30, ms: -1 },
         new Date('Tue, 20 Jul 2021 12:00:00 GMT'),
         5400000,
       ],
@@ -300,7 +417,7 @@ metatests.case(
       [new Date('2021-10-15T20:54:18.713Z'), '-', '2021-10-15T20-54-18'],
       [new Date('2020-12-01T01:15:30+03:00'), '-', '2020-11-30T22-15-30'],
     ],
-  }
+  },
 );
 
 metatests.case(
@@ -331,7 +448,7 @@ metatests.case(
       ['{', null],
       ['', null],
     ],
-  }
+  },
 );
 
 metatests.test('Object: makePrivate', (test) => {
@@ -416,5 +533,111 @@ metatests.test('Object: namespaceByPath', (test) => {
   test.strictSame(ent6, null);
   const ent7 = metautil.namespaceByPath(ns, '');
   test.strictSame(ent7, null);
+  test.end();
+});
+
+metatests.test('Object: flatFields', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields with keys names', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+    grandParent: { grandmother: 'Kate', grandfather: 'Fill' },
+  };
+
+  const result = metautil.flatObject(source, ['name', 'parent']);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: flatFields duplicate key', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    nameFirst: 'Andrew',
+    old: true,
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  test.throws(
+    () => metautil.flatObject(source),
+    new Error('Can not combine keys: key "nameFirst" already exists'),
+  );
+
+  test.end();
+});
+
+metatests.test('Object: unflatFields with key names', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const expected = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+
+  const result = metautil.unflatObject(source, fieldNames);
+
+  test.strictSame(result, expected);
+  test.end();
+});
+
+metatests.test('Object: unflatFields naming collision', (test) => {
+  const fieldNames = ['name', 'parent'];
+
+  const source = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    name: 'John',
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  test.throws(
+    () => metautil.unflatObject(source, fieldNames),
+    new Error('Can not combine keys: key "name" already exists'),
+  );
+
   test.end();
 });
