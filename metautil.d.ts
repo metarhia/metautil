@@ -127,3 +127,5 @@ export function unflatObject(
   sourceObject: object,
   fieldNames: Array<string>,
 ): object;
+
+export function isError(instance: object): boolean;

@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add `isError(instance): boolean`
+
 ## [3.5.23][] - 2022-08-12
 
 - Add `flatObject(sourceObject: object, fieldNames: Array<string>): object`

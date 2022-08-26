@@ -40,6 +40,7 @@
 - `createAbortController(): AbortController`
 - `timeout(msec: number, signal?: EventEmitter): Promise<void>`
 - `delay(msec: number, signal?: EventEmitter): Promise<void>`
+- `isError(instance): boolean`
 
 ## Network utilities
 
