@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.5.24][] - 2022-08-30
+
 - Add `isError(instance): boolean`
 - Support POST requests with body and custom headers in `fetch()`
 
@@ -164,7 +166,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.23....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.24....HEAD
+[3.5.24]: https://github.com/metarhia/metautil/compare/v3.5.23...v3.5.24
 [3.5.23]: https://github.com/metarhia/metautil/compare/v3.5.22...v3.5.23
 [3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
 [3.5.21]: https://github.com/metarhia/metautil/compare/v3.5.20...v3.5.21
