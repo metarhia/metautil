@@ -21,7 +21,7 @@ export function validatePassword(
 ): Promise<boolean>;
 
 export function random(min: number, max?: number): number;
-export function sample(arr: Array<any>): any;
+export function sample<T>(arr: Array<T>): T;
 export function ipToInt(ip?: string): number;
 export function parseHost(host?: string): string;
 export function parseParams(params: string): object;
