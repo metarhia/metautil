@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Optimize `fileExt`
+
 ## [3.5.24][] - 2022-08-30
 
 - Add `isError(instance): boolean`
