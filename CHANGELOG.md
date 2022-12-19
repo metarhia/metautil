@@ -4,6 +4,7 @@
 
 - Optimize `fileExt`
 - Fix `fetch` polyfill to be compatible with node.js `fetch` implementation
+- Use `receiveBody` in `fetch` polyfill
 
 ## [3.5.24][] - 2022-08-30
 

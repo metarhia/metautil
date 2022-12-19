@@ -128,7 +128,7 @@ export interface Response {
 
 export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export function jsonParse(buffer: Buffer): object | null;
-export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
+export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
 export function flatObject(
   sourceObject: object,
   fieldNames: Array<string>,
