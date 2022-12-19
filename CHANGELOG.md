@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Optimize `fileExt`
+- Fix `fetch` polyfill to be compatible with node.js `fetch` implementation
 
 ## [3.5.24][] - 2022-08-30
 

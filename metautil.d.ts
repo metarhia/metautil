@@ -122,7 +122,11 @@ export type FetchOptions = {
   body?: object;
 };
 
-export function fetch(url: string, options?: FetchOptions): Promise<object>;
+export interface Response {
+  json(): Promise<object>;
+}
+
+export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export function jsonParse(buffer: Buffer): object | null;
 export function receiveBody(req: IncomingMessage): Promise<Buffer | null>;
 export function flatObject(
