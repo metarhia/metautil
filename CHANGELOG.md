@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Optimize `fileExt`
+- Use native `fetch` from node.js if available
 - Fix `fetch` polyfill to be compatible with node.js `fetch` implementation
 - Use `receiveBody` in `fetch` polyfill
 
