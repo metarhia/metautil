@@ -2,10 +2,17 @@
 
 ## [Unreleased][unreleased]
 
-- Optimize `fileExt`
+## [3.6.0][] - 2022-12-19
+
 - Use native `fetch` from node.js if available
 - Fix `fetch` polyfill to be compatible with node.js `fetch` implementation
 - Use `receiveBody` in `fetch` polyfill
+- Optimize `fileExt`
+
+## [3.5.25][] - 2022-08-30
+
+- Optimize `parseCookies`
+- Improve code style, apply optimizations, update dependencies
 
 ## [3.5.24][] - 2022-08-30
 
@@ -171,7 +178,9 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.5.24....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.6.0....HEAD
+[3.6.0]: https://github.com/metarhia/metautil/compare/v3.5.25...v3.6.0
+[3.5.25]: https://github.com/metarhia/metautil/compare/v3.5.24...v3.5.25
 [3.5.24]: https://github.com/metarhia/metautil/compare/v3.5.23...v3.5.24
 [3.5.23]: https://github.com/metarhia/metautil/compare/v3.5.22...v3.5.23
 [3.5.22]: https://github.com/metarhia/metautil/compare/v3.5.21...v3.5.22
