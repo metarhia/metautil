@@ -77,7 +77,7 @@
   - `add(item: object): void`
   - `capture(): object | null`
   - `release(item: object): void`
-  -  `isFree(item: object): boolean`
+  - `isFree(item: object): boolean`
 
 ## License & Contributors
 
