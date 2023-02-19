@@ -2,7 +2,7 @@
 
 const metatests = require('metatests');
 const metautil = require('..');
-const path = require('path');
+const path = require('node:path');
 
 metatests.case(
   'String functions',
