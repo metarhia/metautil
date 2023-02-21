@@ -9,7 +9,7 @@
   "types": "metautil.d.ts",
   "files": ["lib/", "metautil.d.ts"],
   "engines": {
-    "node": "14 || 16 || 18 || 19"
+    "node": "^14.18 || 16 || 18 || 19"
   },
   "repository": {
     "type": "git",
