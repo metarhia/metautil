@@ -1,5 +1,5 @@
-import { EventEmitter } from 'events';
-import { IncomingMessage } from 'http';
+import { EventEmitter } from 'node:events';
+import { IncomingMessage } from 'node:http';
 
 export function cryptoRandom(): number;
 export function generateKey(length: number, possible: string): string;
