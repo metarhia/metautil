@@ -2,6 +2,7 @@ import { EventEmitter } from 'node:events';
 import { IncomingMessage } from 'node:http';
 
 export function cryptoRandom(): number;
+export function generateUUID(): string;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
 export function md5(fileName: string): Promise<string>;
