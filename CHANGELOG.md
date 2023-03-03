@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Add `generateUUID` implementation
+
 ## [3.6.0][] - 2022-12-19
 
 - Use native `fetch` from node.js if available
