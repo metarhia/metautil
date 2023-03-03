@@ -54,6 +54,7 @@
 ## Crypto utilities
 
 - `cryptoRandom(): number`
+- `generateUUID(): string`
 - `generateKey(length: number, possible: string): string`
 - `crcToken(secret: string, key: string): string`
 - `generateToken(secret: string, characters: string, length: number): string`
