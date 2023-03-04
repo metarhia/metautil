@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Add `generateUUID` implementation
+- Improve `AbortController` polyfill and use native if available
 
 ## [3.6.0][] - 2022-12-19
 
