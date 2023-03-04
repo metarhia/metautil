@@ -12,7 +12,8 @@
 | 3.3.x   | :x:                |
 | 3.4.x   | :x:                |
 | 3.5.x   | :x:                |
-| 3.6.x   | :white_check_mark: |
+| 3.6.x   | :x:                |
+| 3.7.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
