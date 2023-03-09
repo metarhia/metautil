@@ -25,16 +25,6 @@ metatests.test('Crypto: md5', async (test) => {
   test.end();
 });
 
-metatests.test('Crypto: generateUUID', async (test) => {
-  const guidRegExp = new RegExp(
-    '^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
-    'i',
-  );
-  const guid = metautil.generateUUID();
-  test.assert(guidRegExp.test(guid));
-  test.end();
-});
-
 const characters =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const secret = 'secret';
