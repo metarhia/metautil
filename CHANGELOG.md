@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Use native UUID from `node:crypto`
+- Remove `defaultHash` (empty string) in crypto module
 
 ## [3.7.0][] - 2023-03-04
 
