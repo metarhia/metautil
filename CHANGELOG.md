@@ -4,6 +4,7 @@
 
 - Use native UUID from `node:crypto`
 - Remove `defaultHash` (empty string) in crypto module
+- Use `crypto.randomInt` for `generateKey`
 
 ## [3.7.0][] - 2023-03-04
 
