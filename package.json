@@ -1,13 +1,20 @@
 {
   "name": "metautil",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "license": "MIT",
   "description": "Metarhia utilities",
-  "keywords": ["node.js", "metarhia", "util"],
+  "keywords": [
+    "node.js",
+    "metarhia",
+    "util"
+  ],
   "main": "metautil.js",
   "types": "metautil.d.ts",
-  "files": ["lib/", "metautil.d.ts"],
+  "files": [
+    "lib/",
+    "metautil.d.ts"
+  ],
   "engines": {
     "node": "^14.18 || 16 || 18 || 19"
   },

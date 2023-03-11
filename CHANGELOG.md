@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+## [3.7.1][] - 2023-03-12
+
 - Use native UUID from `node:crypto`
 - Remove `defaultHash` (empty string) in crypto module
 - Use `crypto.randomInt` for `generateKey`
@@ -188,7 +190,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.1....HEAD
+[3.7.1]: https://github.com/metarhia/metautil/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/metarhia/metautil/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/metarhia/metautil/compare/v3.5.25...v3.6.0
 [3.5.25]: https://github.com/metarhia/metautil/compare/v3.5.24...v3.5.25
