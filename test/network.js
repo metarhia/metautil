@@ -18,7 +18,7 @@ metatests.test('Fetch', async (test) => {
   const rate = await getRate('USD');
   test.strictSame(rate, 1);
   const method = 'POST';
-  const body = { name: 'Aurelia', age: 43 };
+  const body = JSON.stringify({ name: 'Aurelia', age: 43 });
   const headers = { Authorization: 'Bearer sometoken' };
   const url = 'https://httpbin.org/anything';
   const res = await metautil.fetch(url, { headers, body, method });

@@ -120,7 +120,7 @@ export class Pool {
 export type FetchOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: object;
-  body?: object;
+  body?: ArrayBuffer | Buffer | string;
 };
 
 export interface Response {
