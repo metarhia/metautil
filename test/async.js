@@ -1,7 +1,7 @@
 'use strict';
 
 const metatests = require('metatests');
-const { timeout, delay, createAbortController } = require('..');
+const { timeout, delay } = require('..');
 
 metatests.test('Async: Abortable timeout', async (test) => {
   try {
@@ -10,7 +10,7 @@ metatests.test('Async: Abortable timeout', async (test) => {
   } catch (err) {
     test.strictSame(err.message, 'Timeout reached');
   }
-  const ac = createAbortController();
+  const ac = new AbortController();
   setTimeout(() => {
     ac.abort();
   }, 10);
@@ -30,7 +30,7 @@ metatests.test('Async: Abortable delay', async (test) => {
   } catch (err) {
     test.error(new Error('Should not be executed'));
   }
-  const ac = createAbortController();
+  const ac = new AbortController();
   setTimeout(() => {
     ac.abort();
   }, 10);
