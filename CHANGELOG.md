@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [3.7.2][] - 2023-04-29
+
+- Drop node.js 14 support, add node.js 20
+- Convert package_lock.json to lockfileVersion 2
+- Update dependencies
+
 ## [3.7.1][] - 2023-03-12
 
 - Use native UUID from `node:crypto`
@@ -190,7 +196,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.1....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.2....HEAD
+[3.7.2]: https://github.com/metarhia/metautil/compare/v3.7.1...v3.7.2
 [3.7.1]: https://github.com/metarhia/metautil/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/metarhia/metautil/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/metarhia/metautil/compare/v3.5.25...v3.6.0
