@@ -2,6 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [3.7.3][] - 2023-06-05
+
+- Fix fileExt to support dotfiles
+- Update dependencies
+
 ## [3.7.2][] - 2023-04-29
 
 - Drop node.js 14 support, add node.js 20
@@ -196,7 +201,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.2....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.7.3....HEAD
+[3.7.3]: https://github.com/metarhia/metautil/compare/v3.7.2...v3.7.3
 [3.7.2]: https://github.com/metarhia/metautil/compare/v3.7.1...v3.7.2
 [3.7.1]: https://github.com/metarhia/metautil/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/metarhia/metautil/compare/v3.6.0...v3.7.0
