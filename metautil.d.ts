@@ -6,6 +6,10 @@ export function generateUUID(): string;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
 export function md5(fileName: string): Promise<string>;
+export function getX509(cert: {
+  subject: string;
+  subjectAltName: string;
+}): Array<string>;
 
 export function generateToken(
   secret: string,
