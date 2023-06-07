@@ -12,3 +12,24 @@ metatests.test('Error', async (test) => {
   test.strictSame(error.code, 1001);
   test.end();
 });
+
+class ExampleError {}
+
+class ExtendedError extends Error {}
+
+metatests.case(
+  'Error utilities',
+  { metautil },
+  {
+    'metautil.isError': [
+      [new Error('Simple'), true],
+      [new SyntaxError('Bug is here'), true],
+      [new ExampleError('Example'), true],
+      [new ExtendedError('Extended'), true],
+      [{}, false],
+      [[], false],
+      [null, false],
+      [undefined, false],
+    ],
+  },
+);
