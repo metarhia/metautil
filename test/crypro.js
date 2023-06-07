@@ -25,6 +25,26 @@ metatests.test('Crypto: md5', async (test) => {
   test.end();
 });
 
+metatests.test('Crypto: md5', async (test) => {
+  const cert = {
+    subject: 'CN=localhost',
+    subjectAltName:
+      'DNS:example.com, DNS:hello.example.com, DNS:hello1.example.com, ' +
+      'DNS:hello2.example.com, ' +
+      'IP Address:127.0.0.1, IP Address:0:0:0:0:0:0:0:1',
+  };
+  const names = metautil.getX509names(cert);
+  const expected = [
+    'localhost',
+    'example.com',
+    'hello.example.com',
+    'hello1.example.com',
+    'hello2.example.com',
+  ];
+  test.strictSame(names, expected);
+  test.end();
+});
+
 const characters =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const secret = 'secret';

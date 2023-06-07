@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Implement `getX509names(cert): Array<string>`
+
 ## [3.7.3][] - 2023-06-05
 
 - Fix fileExt to support dotfiles
