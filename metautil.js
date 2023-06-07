@@ -7,4 +7,5 @@ module.exports = {
   ...require('./lib/pool.js'),
   ...require('./lib/async.js'),
   ...require('./lib/network.js'),
+  ...require('./lib/error.js'),
 };
