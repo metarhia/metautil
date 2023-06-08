@@ -11,6 +11,12 @@ export function getX509(cert: {
   subjectAltName: string;
 }): Array<string>;
 
+export function getSignature(method: Function): Array<string>;
+
+export class Error extends global.Error {
+  constructor(message: string, code: number);
+}
+
 export function generateToken(
   secret: string,
   characters: string,
