@@ -30,6 +30,16 @@ metatests.case(
     ],
     'metautil.parseRange': [
       ['bytes=1000-2000', { start: 1000, end: 2000 }],
+      ['bytes=0-0', { start: 0, end: 0 }],
+      ['bytes=1000-', { start: 1000 }],
+      ['bytes=-1000', { tail: 1000 }],
+      ['bytes=1000 2000', {}],
+      ['bytes=10002000', {}],
+      ['bytes1000-2000', {}],
+      ['1000-2000', {}],
+      ['bytes', {}],
+      ['=-', {}],
+      ['', {}],
     ],
   },
 );
