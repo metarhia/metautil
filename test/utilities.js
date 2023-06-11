@@ -17,14 +17,6 @@ metatests.case(
       ['', '.', ['', '']],
       ['abc', '', ['', 'abc']],
     ],
-    'metautil.parseParams': [
-      ['a=1&b=2', { a: '1', b: '2' }],
-      ['a=1b=2', { a: '1b=2' }],
-      ['a=1', { a: '1' }],
-      ['a=1&', { a: '1' }],
-      ['a=', { a: '' }],
-      ['a', { a: '' }],
-    ],
     'metautil.replace': [
       ['a2a2a2', 'a2', 'z', 'zzz'],
       ['k2k2k2', 'a2', 'z', 'k2k2k2'],
@@ -144,12 +136,6 @@ metatests.case(
       ['camelCase', false],
       ['PascalCase', false],
       ['snake_case', false],
-    ],
-    'metautil.parseCookies': [
-      ['a=1;b=2', { a: '1', b: '2' }],
-      ['a=1 ;b= 2', { a: '1', b: '2' }],
-      ['a=1; b = 2 ', { a: '1', b: '2' }],
-      ['a=1', { a: '1' }],
     ],
   },
 );
@@ -437,13 +423,6 @@ metatests.case(
       ['', 0],
       ['8.8.8.8', 0x08080808],
       [undefined, 0x7f000001],
-    ],
-    'metautil.parseHost': [
-      ['', 'no-host-name-in-http-headers'],
-      ['domain.com', 'domain.com'],
-      ['localhost', 'localhost'],
-      ['domain.com:8080', 'domain.com'],
-      ['localhost:8080', 'localhost'],
     ],
   },
 );
