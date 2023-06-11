@@ -9,4 +9,5 @@ module.exports = {
   ...require('./lib/network.js'),
   ...require('./lib/error.js'),
   ...require('./lib/oop.js'),
+  ...require('./lib/http.js'),
 };
