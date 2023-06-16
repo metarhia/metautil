@@ -2,6 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [3.9.0][] - 2023-06-16
+
+- Implement `parseRange` for HTTP headers
+- Restructure submodules
+
 ## [3.8.0][] - 2023-06-08
 
 - Moved from impress: `getSignature` and `Error`
@@ -207,7 +212,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.8.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.9.0....HEAD
+[3.9.0]: https://github.com/metarhia/metautil/compare/v3.8.0...v3.9.0
 [3.8.0]: https://github.com/metarhia/metautil/compare/v3.7.3...v3.8.0
 [3.7.3]: https://github.com/metarhia/metautil/compare/v3.7.2...v3.7.3
 [3.7.2]: https://github.com/metarhia/metautil/compare/v3.7.1...v3.7.2
