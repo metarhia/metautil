@@ -161,3 +161,55 @@ metatests.test('Object: unflatFields naming collision', (test) => {
 
   test.end();
 });
+
+metatests.test('Object: namespaceByPath', (test) => {
+  const ns = {
+    module1: {
+      method(a, b) {
+        return a + b;
+      },
+    },
+    module2: {
+      method(a, b) {
+        return a + b;
+      },
+    },
+  };
+  const ent1 = metautil.namespaceByPath(ns, 'module2.method');
+  test.strictSame(ent1, ns.module2.method);
+  const ent2 = metautil.namespaceByPath(ns, 'module1.unknown');
+  test.strictSame(ent2, null);
+  const ent3 = metautil.namespaceByPath(ns, 'module3.method');
+  test.strictSame(ent3, null);
+  const ent4 = metautil.namespaceByPath(ns, 'unknown.unknown');
+  test.strictSame(ent4, null);
+  const ent5 = metautil.namespaceByPath(ns, 'module1');
+  test.strictSame(ent5, ns.module1);
+  const ent6 = metautil.namespaceByPath(ns, 'module3');
+  test.strictSame(ent6, null);
+  const ent7 = metautil.namespaceByPath(ns, '');
+  test.strictSame(ent7, null);
+  test.end();
+});
+
+metatests.test('Object: flatFields', (test) => {
+  const source = {
+    name: { first: 'Andrew', second: 'Johnson' },
+    old: true,
+    avoid: [1, 2, 3],
+    parent: { mother: 'Eva', father: 'Adam' },
+  };
+  const expected = {
+    nameFirst: 'Andrew',
+    nameSecond: 'Johnson',
+    old: true,
+    avoid: [1, 2, 3],
+    parentMother: 'Eva',
+    parentFather: 'Adam',
+  };
+
+  const result = metautil.flatObject(source);
+
+  test.strictSame(result, expected);
+  test.end();
+});
