@@ -90,3 +90,13 @@ metatests.case(
     ],
   },
 );
+
+metatests.test('Crypto: cryptoRandom', async (test) => {
+  for (let i = 0; i < 1000; i++) {
+    const value = await metautil.cryptoRandom();
+    test.strictSame(typeof value, 'number');
+    test.strictSame(value >= 0, true);
+    test.strictSame(value <= 1, true);
+  }
+  test.end();
+});
