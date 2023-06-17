@@ -8,7 +8,7 @@ metatests.test('Async: Abortable timeout', async (test) => {
     await timeout(10);
     test.error(new Error('Should not be executed'));
   } catch (err) {
-    test.strictSame(err.message, 'Timeout reached');
+    test.strictSame(err.message, 'Timeout of 10ms reached');
   }
   const ac = new AbortController();
   setTimeout(() => {
