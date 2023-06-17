@@ -3,19 +3,89 @@
 const metatests = require('metatests');
 const metautil = require('..');
 
-metatests.test('Crypto: hashPassword', async (test) => {
-  const password = 'password';
-  const hash = await metautil.hashPassword(password);
-  test.strictSame(typeof hash, 'string');
-  test.strictSame(hash.length, 170);
+metatests.test('Crypto: cryptoRandom', async (test) => {
+  for (let i = 0; i < 1000; i++) {
+    const value = await metautil.cryptoRandom();
+    test.strictSame(typeof value, 'number');
+    test.strictSame(value >= 0, true);
+    test.strictSame(value <= 1, true);
+  }
   test.end();
 });
 
-metatests.test('Crypto: validatePassword', async (test) => {
+const CHARS = 'ABCD';
+
+metatests.case(
+  'Crypto: identification utilities',
+  { metautil },
+  {
+    'metautil.generateKey': [
+      [5, CHARS, (s) => s.split('').every((c) => CHARS.includes(c))],
+      [5, CHARS, (s) => s.length === 5],
+      [5, 'AAA', 'AAAAA'],
+      [5, 'A', 'AAAAA'],
+      [0, CHARS, ''],
+      [-1, CHARS, ''],
+    ],
+    'metautil.crcToken': [
+      ['secret', '123456', '992f'],
+      ['secret', '654321', 'ea2f'],
+      ['anothersecret', '123456', '71f1'],
+      ['', '123456', 'e10a'],
+      ['secret', '', '5ebe'],
+    ],
+    'metautil.generateToken': [
+      ['secret', 'ABC', 10, (s) => s.length === 10],
+      ['secret', 'AAA', 10, (s) => s.length === 10],
+      ['secret', 'A', 10, (s) => s.length === 10],
+      ['secret', 'ABC', 0, ''],
+      ['secret', 'ABC', -1, ''],
+      ['secret', '', 10, ''],
+      ['', 'ABC', 10, ''],
+    ],
+    'metautil.validateToken': [
+      [
+        'secret',
+        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bc',
+        true,
+      ],
+      [
+        'secret',
+        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bK',
+        false,
+      ],
+      [
+        'secret',
+        '2XpU8oAewXwKJJSQeY0MByY403AyXprFdhB96zPFbpJxlBqHA3GfBYeLxgHxBhhZ',
+        false,
+      ],
+      ['secret', 'WRONG-STRING', false],
+      ['secret', '', false],
+    ],
+  },
+);
+
+metatests.test('Crypto: hashing passwords', async (test) => {
   const password = 'password';
+
   const hash = await metautil.hashPassword(password);
+  test.strictSame(typeof hash, 'string');
+  test.strictSame(hash.length, 170);
+
+  const res = metautil.deserializeHash(hash);
+  test.strictEqual(res.params.N, 32768);
+  test.strictEqual(res.params.r, 8);
+  test.strictEqual(res.params.p, 1);
+  test.strictEqual(res.params.maxmem, 67108864);
+  test.strictEqual(res.salt.length, 32);
+  test.strictEqual(res.hash.length, 64);
+
+  const serialized = metautil.serializeHash(res.hash, res.salt);
+  test.strictSame(serialized.length, 170);
+
   const valid = await metautil.validatePassword(password, hash);
   test.strictSame(valid, true);
+
   test.end();
 });
 
@@ -25,7 +95,7 @@ metatests.test('Crypto: md5', async (test) => {
   test.end();
 });
 
-metatests.test('Crypto: md5', async (test) => {
+metatests.test('Crypto: x509 names', async (test) => {
   const cert = {
     subject: 'CN=localhost',
     subjectAltName:
@@ -42,61 +112,5 @@ metatests.test('Crypto: md5', async (test) => {
     'hello2.example.com',
   ];
   test.strictSame(names, expected);
-  test.end();
-});
-
-const characters =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-const secret = 'secret';
-const length = 64;
-
-metatests.case(
-  'Crypto: Identification utilities',
-  { metautil },
-  {
-    'metautil.validateToken': [
-      [
-        secret,
-        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bc',
-        true,
-      ],
-      [
-        secret,
-        'XFHczfaqXaaUmIcKfHNF9YAY4BRaMX5Z4Bx99rsB5UA499mTjmewlrWTKTCp77bK',
-        false,
-      ],
-      [
-        secret,
-        '2XpU8oAewXwKJJSQeY0MByY403AyXprFdhB96zPFbpJxlBqHA3GfBYeLxgHxBhhZ',
-        false,
-      ],
-      [secret, 'WRONG-STRING', false],
-      [secret, '', false],
-    ],
-    'metautil.generateToken': [
-      [
-        secret,
-        characters,
-        length,
-        (token) => metautil.validateToken(secret, token),
-      ],
-    ],
-    'metautil.crcToken': [
-      [
-        secret,
-        metautil.generateKey(length - 4, characters),
-        (crc) => crc.length === 4,
-      ],
-    ],
-  },
-);
-
-metatests.test('Crypto: cryptoRandom', async (test) => {
-  for (let i = 0; i < 1000; i++) {
-    const value = await metautil.cryptoRandom();
-    test.strictSame(typeof value, 'number');
-    test.strictSame(value >= 0, true);
-    test.strictSame(value <= 1, true);
-  }
   test.end();
 });
