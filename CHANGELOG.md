@@ -2,6 +2,14 @@
 
 ## [Unreleased][unreleased]
 
+## [3.9.1][] - 2023-06-18
+
+- Actualize all .d.ts typings and update short docs in README.md
+- Optimize `nextEvent`, `sizeToBytes` (support `10kb` and `10 kB`)
+- More checks/validation and tests for crypto submodule
+- Refactor `generateKey` using `Uint8Array` for speed
+- Use constant-time algorithm to compare CRC for security
+
 ## [3.9.0][] - 2023-06-16
 
 - Implement `parseRange` for HTTP headers
@@ -212,7 +220,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.9.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.9.1....HEAD
+[3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.9.0
 [3.9.0]: https://github.com/metarhia/metautil/compare/v3.8.0...v3.9.0
 [3.8.0]: https://github.com/metarhia/metautil/compare/v3.7.3...v3.8.0
 [3.7.3]: https://github.com/metarhia/metautil/compare/v3.7.2...v3.7.3
