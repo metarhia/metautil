@@ -1,21 +1,23 @@
 import { EventEmitter } from 'node:events';
 import { IncomingMessage } from 'node:http';
+import { ScryptOptions, X509Certificate } from 'node:crypto';
+
+type Strings = Array<string>;
+type Dictionary = Record<string, unknown>;
+type Cookies = Record<string, string>;
+type Headers = Record<string, string>;
+
+// Submodule: async
+
+export function timeout(msec: number, signal?: AbortSignal): Promise<void>;
+export function delay(msec: number, signal?: AbortSignal): Promise<void>;
+
+// Submodule: crypto
 
 export function cryptoRandom(): number;
 export function generateUUID(): string;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
-export function md5(fileName: string): Promise<string>;
-export function getX509(cert: {
-  subject: string;
-  subjectAltName: string;
-}): Array<string>;
-
-export function getSignature(method: Function): Array<string>;
-
-export class Error extends global.Error {
-  constructor(message: string, code: number);
-}
 
 export function generateToken(
   secret: string,
@@ -24,40 +26,31 @@ export function generateToken(
 ): string;
 
 export function validateToken(secret: string, token: string): boolean;
-export function hashPassword(password: string): Promise<string>;
+export function serializeHash(hash: Buffer, salt: Buffer): string;
 
+export interface HashInfo {
+  params: ScryptOptions;
+  salt: Buffer;
+  hash: Buffer;
+}
+
+export function deserializeHash(phcString: string): HashInfo;
+export function hashPassword(password: string): Promise<string>;
 export function validatePassword(
   password: string,
   serHash: string,
 ): Promise<boolean>;
+export function md5(fileName: string): Promise<string>;
+export function getX509(cert: X509Certificate): Strings;
 
-export function random(min: number, max?: number): number;
-export function sample<T>(arr: Array<T>): T;
-export function ipToInt(ip?: string): number;
-export function parseHost(host?: string): string;
-export function parseParams(params: string): object;
-export function replace(str: string, substr: string, newstr: string): string;
-export function split(s: string, separator: string): [string, string];
-export function fileExt(fileName: string): string;
-export function parsePath(relPath: string): Array<string>;
-export function between(s: string, prefix: string, suffix: string): string;
-export function isFirstUpper(s: string): boolean;
-export function isFirstLower(s: string): boolean;
-export function isFirstLetter(s: string): boolean;
-export function toLowerCamel(s: string): string;
-export function toUpperCamel(s: string): string;
-export function toLower(s: string): string;
-export function toCamel(separator: string): (s: string) => string;
-export function spinalToCamel(s: string): string;
-export function snakeToCamel(s: string): string;
-export function isConstant(s: string): boolean;
-export function isHashObject(o: string | number | boolean | object): boolean;
+// Submodule: datetime
+
+export function duration(s: string | number): number;
 export function nowDate(date?: Date): string;
 export function nowDateTimeUTC(date?: Date, timeSep?: string): string;
-export function duration(s: string | number): number;
-export function bytesToSize(bytes: number): string;
-export function sizeToBytes(size: string): number;
-export function namespaceByPath(namespace: object, path: string): object | null;
+export function parseMonth(s: string): number;
+export function parseDay(s: string): number;
+export function parseEvery(s: string): Every;
 
 type Every = {
   YY: number;
@@ -72,32 +65,90 @@ type Every = {
 
 export type { Every };
 
-export function parseDay(s: string): number;
-export function parseMonth(s: string): number;
-export function parseEvery(s: string): Every;
 export function nextEvent(every: Every, date?: Date): number;
-export function makePrivate(instance: object): object;
 
-export function protect(
-  allowMixins: Array<string>,
-  ...namespaces: Array<object>
-): void;
+// Submodule: error
 
-export function parseCookies(cookie: string): object;
-
-export interface AbortController {
-  abort: Function;
-  signal: EventEmitter;
+export class Error extends global.Error {
+  constructor(message: string, code: number);
 }
 
-export function createAbortController(): AbortController;
-export function timeout(msec: number, signal?: EventEmitter): Promise<void>;
-export function delay(msec: number, signal?: EventEmitter): Promise<void>;
+export function isError(instance: object): boolean;
+
+// Submodule: http
+
+export interface StreamRange {
+  start?: number;
+  end?: number;
+  tail?: number;
+}
+
+export function parseHost(host?: string): string;
+export function parseParams(params: string): Cookies;
+export function parseCookies(cookie: string): Headers;
+export function parseRange(range: string): StreamRange;
+
+// Submodule: network
+
+export type FetchOptions = {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  headers?: Headers;
+  body?: ArrayBuffer | Buffer | string;
+};
+
+export interface Response {
+  json(): Promise<Dictionary>;
+}
+
+export function fetch(url: string, options?: FetchOptions): Promise<Response>;
+export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
+export function ipToInt(ip?: string): number;
+
+// Submodule: objects
+
+type Namespaces = Array<Dictionary>;
+
+export function makePrivate(instance: object): object;
+export function protect(allowMixins: Strings, ...namespaces: Namespaces): void;
+export function jsonParse(buffer: Buffer): Dictionary | null;
+export function isHashObject(o: string | number | boolean | object): boolean;
+export function flatObject(source: Dictionary, fields: Strings): Dictionary;
+export function unflatObject(source: Dictionary, fields: Strings): Dictionary;
+export function getSignature(method: Function): Strings;
+export function namespaceByPath(
+  namespace: Dictionary,
+  path: string,
+): Dictionary | null;
+
+// Submodule: pool
 
 export interface QueueElement {
   resolve: Function;
   timer: NodeJS.Timer;
 }
+
+export class Pool {
+  constructor(options: { timeout?: number });
+  items: Array<unknown>;
+  free: Array<boolean>;
+  queue: Array<unknown>;
+  current: number;
+  size: number;
+  available: number;
+  timeout: number;
+  next(): Promise<unknown>;
+  add(item: unknown): void;
+  capture(): Promise<unknown>;
+  release(item: unknown): void;
+  isFree(item: unknown): boolean;
+}
+
+// Submodule: random
+
+export function random(min: number, max?: number): number;
+export function sample(array: Array<unknown>): unknown;
+
+// Submodule: semaphore
 
 export class Semaphore {
   constructor(concurrency: number, size?: number, timeout?: number);
@@ -111,42 +162,25 @@ export class Semaphore {
   leave(): void;
 }
 
-export class Pool {
-  constructor(options: { timeout?: number });
-  items: Array<object>;
-  free: Array<boolean>;
-  queue: Array<object>;
-  current: number;
-  size: number;
-  available: number;
-  timeout: number;
-  next(): Promise<object | null>;
-  add(item: object): void;
-  capture(): Promise<object | null>;
-  release(item: object): void;
-  isFree(item: object): boolean;
-}
+// Submodule: strings
 
-export type FetchOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-  headers?: object;
-  body?: ArrayBuffer | Buffer | string;
-};
+export function replace(str: string, substr: string, newstr: string): string;
+export function between(s: string, prefix: string, suffix: string): string;
+export function split(s: string, separator: string): [string, string];
+export function isFirstUpper(s: string): boolean;
+export function isFirstLower(s: string): boolean;
+export function isFirstLetter(s: string): boolean;
+export function toLowerCamel(s: string): string;
+export function toUpperCamel(s: string): string;
+export function toLower(s: string): string;
+export function toCamel(separator: string): (s: string) => string;
+export function spinalToCamel(s: string): string;
+export function snakeToCamel(s: string): string;
+export function isConstant(s: string): boolean;
+export function fileExt(fileName: string): string;
+export function parsePath(relPath: string): Strings;
 
-export interface Response {
-  json(): Promise<object>;
-}
+// Submodule: units
 
-export function fetch(url: string, options?: FetchOptions): Promise<Response>;
-export function jsonParse(buffer: Buffer): object | null;
-export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
-export function flatObject(
-  sourceObject: object,
-  fieldNames: Array<string>,
-): object;
-export function unflatObject(
-  sourceObject: object,
-  fieldNames: Array<string>,
-): object;
-
-export function isError(instance: object): boolean;
+export function bytesToSize(bytes: number): string;
+export function sizeToBytes(size: string): number;
