@@ -4,12 +4,25 @@ const metatests = require('metatests');
 const metautil = require('..');
 
 metatests.test('Error', async (test) => {
-  const error = new metautil.Error('Custom error', 1001);
-  test.strictSame(typeof error.stack, 'string');
-  test.strictSame(error instanceof Error, true);
-  test.strictSame(error instanceof metautil.Error, true);
-  test.strictSame(error.message, 'Custom error');
-  test.strictSame(error.code, 1001);
+  const error1 = new metautil.Error('Custom error', 1001);
+  test.strictSame(typeof error1.stack, 'string');
+  test.strictSame(error1 instanceof Error, true);
+  test.strictSame(error1 instanceof metautil.Error, true);
+  test.strictSame(error1.message, 'Custom error');
+  test.strictSame(error1.code, 1001);
+  test.strictSame(error1.cause, undefined);
+
+  const error2 = new metautil.Error('Ups', { code: 1001, cause: error1 });
+  test.strictSame(error2.code, 1001);
+  test.strictSame(error2.cause, error1);
+
+  const error3 = new metautil.Error('Something went wrong');
+  test.strictSame(error3.code, undefined);
+  test.strictSame(error3.cause, undefined);
+
+  const error4 = new metautil.Error('Something went wrong', 'ERRCODE');
+  test.strictSame(error4.code, 'ERRCODE');
+
   test.end();
 });
 
