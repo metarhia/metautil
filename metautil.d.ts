@@ -69,8 +69,17 @@ export function nextEvent(every: Every, date?: Date): number;
 
 // Submodule: error
 
+export interface ErrorOptions {
+  code?: number | string;
+  cause?: Error;
+}
+
 export class Error extends global.Error {
-  constructor(message: string, code: number);
+  constructor(message: string, options?: number | string | Error);
+  message: string;
+  stack: string;
+  code?: number | string;
+  cause?: Error;
 }
 
 export function isError(instance: object): boolean;
