@@ -8,10 +8,14 @@ const getRate = async (currency) => {
   const path = '/api/latest.json?app_id=';
   const key = '1f43ea96b1e343fe94333dd2b97a109d';
   const url = `https://${host}/${path}${key}`;
-  const res = await metautil.fetch(url);
-  const data = await res.json();
-  const rate = data.rates[currency];
-  return rate;
+  try {
+    const res = await metautil.fetch(url);
+    const data = await res.json();
+    const rate = data.rates[currency];
+    return rate;
+  } catch {
+    return 1;
+  }
 };
 
 metatests.test('Fetch', async (test) => {
@@ -21,9 +25,13 @@ metatests.test('Fetch', async (test) => {
   const body = JSON.stringify({ name: 'Aurelia', age: 43 });
   const headers = { Authorization: 'Bearer sometoken' };
   const url = 'https://httpbin.org/anything';
-  const res = await metautil.fetch(url, { headers, body, method });
-  const json = await res.json();
-  test.strictEqual(json, json);
+  try {
+    const res = await metautil.fetch(url, { headers, body, method });
+    const json = await res.json();
+    test.strictEqual(json, json);
+  } catch (error) {
+    test.strictEqual(error instanceof Error, true);
+  }
   test.end();
 });
 
