@@ -75,7 +75,15 @@ export interface ErrorOptions {
 }
 
 export class Error extends global.Error {
-  constructor(message: string, options?: number | string | Error);
+  constructor(message: string, options?: number | string | ErrorOptions);
+  message: string;
+  stack: string;
+  code?: number | string;
+  cause?: Error;
+}
+
+export class DomainError extends Error {
+  constructor(code?: string, options?: number | string | ErrorOptions);
   message: string;
   stack: string;
   code?: number | string;

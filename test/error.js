@@ -4,24 +4,42 @@ const metatests = require('metatests');
 const metautil = require('..');
 
 metatests.test('Error', async (test) => {
-  const error1 = new metautil.Error('Custom error', 1001);
-  test.strictSame(typeof error1.stack, 'string');
-  test.strictSame(error1 instanceof Error, true);
-  test.strictSame(error1 instanceof metautil.Error, true);
-  test.strictSame(error1.message, 'Custom error');
-  test.strictSame(error1.code, 1001);
-  test.strictSame(error1.cause, undefined);
+  const e1 = new metautil.Error('Custom error', 1001);
+  test.strictSame(typeof e1.stack, 'string');
+  test.strictSame(e1 instanceof Error, true);
+  test.strictSame(e1 instanceof metautil.Error, true);
+  test.strictSame(e1.message, 'Custom error');
+  test.strictSame(e1.code, 1001);
+  test.strictSame(e1.cause, undefined);
 
-  const error2 = new metautil.Error('Ups', { code: 1001, cause: error1 });
-  test.strictSame(error2.code, 1001);
-  test.strictSame(error2.cause, error1);
+  const e2 = new metautil.Error('Ups', { code: 1001, cause: e1 });
+  test.strictSame(e2.code, 1001);
+  test.strictSame(e2.cause, e1);
 
-  const error3 = new metautil.Error('Something went wrong');
-  test.strictSame(error3.code, undefined);
-  test.strictSame(error3.cause, undefined);
+  const e3 = new metautil.Error('Something went wrong');
+  test.strictSame(e3.code, undefined);
+  test.strictSame(e3.cause, undefined);
 
-  const error4 = new metautil.Error('Something went wrong', 'ERRCODE');
-  test.strictSame(error4.code, 'ERRCODE');
+  const e4 = new metautil.Error('Something went wrong', 'ERRCODE');
+  test.strictSame(e4.code, 'ERRCODE');
+
+  const e5 = new metautil.DomainError('ERRCODE');
+  test.strictSame(e5.message, 'Domain error');
+  test.strictSame(e5.code, 'ERRCODE');
+
+  const e6 = new metautil.DomainError('ERR', { code: 'CODE' });
+  test.strictSame(e6.message, 'Domain error');
+  test.strictSame(e6.code, 'ERR');
+
+  const e7 = new metautil.DomainError('ERR', { code: 'CODE', cause: e1 });
+  test.strictSame(e7.message, 'Domain error');
+  test.strictSame(e7.code, 'ERR');
+  test.strictSame(e7.cause, e1);
+
+  const e8 = new metautil.DomainError({ code: 'CODE', cause: e1 });
+  test.strictSame(e8.message, 'Domain error');
+  test.strictSame(e8.code, 'CODE');
+  test.strictSame(e8.cause, e1);
 
   test.end();
 });
