@@ -82,12 +82,15 @@ export class Error extends global.Error {
   cause?: Error;
 }
 
+type Errors = Record<string, string>;
+
 export class DomainError extends Error {
   constructor(code?: string, options?: number | string | ErrorOptions);
   message: string;
   stack: string;
   code?: number | string;
   cause?: Error;
+  toError(errors: Errors): Error;
 }
 
 export function isError(instance: object): boolean;
