@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [3.10.0][] - 2023-06-30
+
+- Implement DomainError
+- Improve `Error` class, add `{ cause, code }`
+- Fix error handling in fetch
+
 ## [3.9.1][] - 2023-06-18
 
 - Actualize all .d.ts typings and update short docs in README.md
@@ -220,7 +226,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.9.1....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.10.0....HEAD
+[3.10.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.9.1
 [3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.9.0
 [3.9.0]: https://github.com/metarhia/metautil/compare/v3.8.0...v3.9.0
 [3.8.0]: https://github.com/metarhia/metautil/compare/v3.7.3...v3.8.0
