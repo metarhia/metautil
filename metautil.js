@@ -5,6 +5,7 @@ module.exports = {
   ...require('./lib/crypto.js'),
   ...require('./lib/datetime.js'),
   ...require('./lib/error.js'),
+  ...require('./lib/fs.js'),
   ...require('./lib/http.js'),
   ...require('./lib/network.js'),
   ...require('./lib/objects.js'),
