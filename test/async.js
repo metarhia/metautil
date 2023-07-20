@@ -1,7 +1,15 @@
 'use strict';
 
 const metatests = require('metatests');
-const { timeout, delay } = require('..');
+const { timeout, delay, toBool } = require('..');
+
+metatests.test('Async: toBool', async (test) => {
+  const success = await Promise.resolve('success').then(...toBool);
+  test.strictSame(success, true);
+  const rejected = await Promise.reject(new Error('Ups')).then(...toBool);
+  test.strictSame(rejected, false);
+  test.end();
+});
 
 metatests.test('Async: Abortable timeout', async (test) => {
   try {
