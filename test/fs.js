@@ -3,7 +3,7 @@
 const fsp = require('node:fs').promises;
 const metatests = require('metatests');
 const metautil = require('..');
-const { directoryExists, createDirectory } = metautil;
+const { directoryExists, ensureDirectory } = metautil;
 
 metatests.test('Fs: directoryExists', async (test) => {
   const exists1 = await directoryExists('./test');
@@ -13,13 +13,13 @@ metatests.test('Fs: directoryExists', async (test) => {
   test.end();
 });
 
-metatests.test('Fs: createDirectory', async (test) => {
-  const created1 = await createDirectory('./abc');
+metatests.test('Fs: ensureDirectory', async (test) => {
+  const created1 = await ensureDirectory('./abc');
   test.strictSame(created1, true);
-  const created2 = await createDirectory('./abc');
+  const created2 = await ensureDirectory('./abc');
   test.strictSame(created2, true);
   await fsp.rmdir('./abc');
-  const created3 = await createDirectory('./LICENSE');
+  const created3 = await ensureDirectory('./LICENSE');
   test.strictSame(created3, false);
   test.end();
 });
