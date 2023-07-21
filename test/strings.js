@@ -144,5 +144,13 @@ metatests.case(
       [`example${path.sep}stop.js`, ['example', 'stop']],
       [`example${path.sep}sub2${path.sep}do.js`, ['example', 'sub2', 'do']],
     ],
+    'metautil.trimLines': [
+      ['abc', 'abc'],
+      ['  abc', 'abc'],
+      ['abc  ', 'abc'],
+      ['   a   b   c   ', 'a   b   c'],
+      ['  \n  a  \n  b  \n  c  \n  ', 'a\nb\nc'],
+      ['', ''],
+    ],
   },
 );
