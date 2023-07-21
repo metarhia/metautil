@@ -213,3 +213,17 @@ metatests.test('Object: flatFields', (test) => {
   test.strictSame(result, expected);
   test.end();
 });
+
+metatests.case(
+  'Object: serializeArguments',
+  { metautil },
+  {
+    'metautil.serializeArguments': [
+      [['a', 'b'], { a: 1, b: 2 }, '{"a":1,"b":2}'],
+      [['a', 'b', 'c'], { a: 1, b: 2 }, '{"a":1,"b":2}'],
+      [['a', 'b'], { a: 1, b: 2, c: 3 }, '{"a":1,"b":2}'],
+      [[], { a: 1, b: 2 }, '{}'],
+      [['a', 'b'], {}, '{}'],
+    ],
+  },
+);
