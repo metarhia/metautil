@@ -9,6 +9,7 @@ type Headers = Record<string, string>;
 
 // Submodule: async
 
+export const toBool: [() => boolean, () => boolean];
 export function timeout(msec: number, signal?: AbortSignal): Promise<void>;
 export function delay(msec: number, signal?: AbortSignal): Promise<void>;
 
@@ -94,6 +95,11 @@ export class DomainError extends Error {
 }
 
 export function isError(instance: object): boolean;
+
+// Submodule: file system
+
+export function directoryExists(path: string): Promise<boolean>;
+export function ensureDirectory(path: string): Promise<boolean>;
 
 // Submodule: http
 
