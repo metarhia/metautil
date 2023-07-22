@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [3.11.0][] - 2023-07-22
+
+- New utilities: `serializeArguments`, `httpApiCall`, `trimLines`
+- New fs utilities: `directoryExists`, `ensureDirectory`
+- Added `toBool` for converting promises to boolean
+
 ## [3.10.0][] - 2023-06-30
 
 - Implement DomainError
@@ -226,7 +232,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.10.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.11.0....HEAD
+[3.11.0]: https://github.com/metarhia/metautil/compare/v3.11.0...v3.10.0
 [3.10.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.9.1
 [3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.9.0
 [3.9.0]: https://github.com/metarhia/metautil/compare/v3.8.0...v3.9.0
