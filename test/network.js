@@ -3,14 +3,16 @@
 const metatests = require('metatests');
 const metautil = require('..');
 
-const HOST = 'openexchangerates.org';
-const PATH = '/api/latest.json?app_id=';
-const API_KEY = '1f43ea96b1e343fe94333dd2b97a109d';
-const API_URL = `https://${HOST}/${PATH}${API_KEY}`;
+const RATES_HOST = 'openexchangerates.org';
+const RATES_PATH = '/api/latest.json?app_id=';
+const RATES_API_KEY = '1f43ea96b1e343fe94333dd2b97a109d';
+const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
+
+const MATH_API_URL = 'https://api.mathjs.org/v4';
 
 const getRate = async (currency) => {
   try {
-    const res = await metautil.fetch(API_URL);
+    const res = await metautil.fetch(RATES_API_URL);
     const data = await res.json();
     const rate = data.rates[currency];
     return rate;
@@ -74,12 +76,25 @@ metatests.case(
 );
 
 metatests.test('Newtork: httpApiCall', async (test) => {
-  const res = await metautil.httpApiCall(API_URL, { method: 'GET' });
-  test.strictSame(typeof res.disclaimer, 'string');
-  test.strictSame(typeof res.license, 'string');
-  test.strictSame(typeof res.timestamp, 'number');
-  test.strictSame(res.base, 'USD');
-  test.strictSame(typeof res.rates, 'object');
-  test.strictSame(typeof res.rates['UAH'], 'number');
+  const res1 = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
+  test.strictSame(typeof res1.disclaimer, 'string');
+  test.strictSame(typeof res1.license, 'string');
+  test.strictSame(typeof res1.timestamp, 'number');
+  test.strictSame(res1.base, 'USD');
+  test.strictSame(typeof res1.rates, 'object');
+  test.strictSame(typeof res1.rates['UAH'], 'number');
+
+  const body = '{"expr":"2+3*sqrt(4)","precision":3}';
+  const options = { method: 'POST', body };
+  const res2 = await metautil.httpApiCall(MATH_API_URL, options);
+  test.strictSame(Object.keys(res2), ['result', 'error']);
+  test.strictSame(res2.result, '8');
+  test.strictSame(res2.error, null);
+
+  const res3 = await metautil.httpApiCall(MATH_API_URL, { body });
+  test.strictSame(Object.keys(res3), ['result', 'error']);
+  test.strictSame(res3.result, '8');
+  test.strictSame(res3.error, null);
+
   test.end();
 });
