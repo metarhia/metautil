@@ -16,6 +16,8 @@
 
 - `timeout(msec: number, signal?: AbortSignal): Promise<void>`
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
+- `toBool = [() => true, () => false]`
+  - Example: `const created = await mkdir(path).then(...toBool);`
 
 ## Crypto utilities
 
@@ -48,6 +50,11 @@
   - `constructor(message: string, code: number)`
 - `isError(instance: object): boolean`
 
+## File system utilities
+
+- `directoryExists(path: string): Promise<boolean>`
+- `ensureDirectory(path: string): Promise<boolean>`
+
 ## HTTP utilities
 
 - `parseHost(host?: string): string`
@@ -60,6 +67,7 @@
 - `fetch(url: string, options?: FetchOptions): Promise<Response>`
 - `receiveBody(stream: IncomingMessage): Promise<Buffer | null>`
 - `ipToInt(ip?: string): number`
+- `httpApiCall(url: string, options: ApiOptions): Promise<object>`
 
 ## Objects utilities
 
@@ -71,6 +79,7 @@
 - `unflatObject(source: Dictionary, fields: Strings): Dictionary`
 - `getSignature(method: Function): Strings`
 - `namespaceByPath(namespace: Dictionary, path: string): Dictionary | null`
+- `serializeArguments(fields: Strings, args: Dictionary): string`
 
 ## Class Pool
 
@@ -122,6 +131,7 @@
 - `isConstant(s: string): boolean`
 - `fileExt(fileName: string): string`
 - `parsePath(relPath: string): Strings`
+- `trimLines(s: string): string`
 
 ## Units utilities
 
