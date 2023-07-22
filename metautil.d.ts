@@ -116,19 +116,28 @@ export function parseRange(range: string): StreamRange;
 
 // Submodule: network
 
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+type Body = ArrayBuffer | Buffer | string;
+
 export type FetchOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  method?: HttpMethod;
   headers?: Headers;
-  body?: ArrayBuffer | Buffer | string;
+  body?: Body;
 };
 
 export interface Response {
   json(): Promise<Dictionary>;
 }
 
+export type ApiOptions = {
+  method?: HttpMethod;
+  body?: Body;
+};
+
 export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
 export function ipToInt(ip?: string): number;
+export function httpApiCall(url: string, options: ApiOptions): Promise<object>;
 
 // Submodule: objects
 
@@ -145,6 +154,7 @@ export function namespaceByPath(
   namespace: Dictionary,
   path: string,
 ): Dictionary | null;
+export function serializeArguments(fields: Strings, args: Dictionary): string;
 
 // Submodule: pool
 
@@ -205,6 +215,7 @@ export function snakeToCamel(s: string): string;
 export function isConstant(s: string): boolean;
 export function fileExt(fileName: string): string;
 export function parsePath(relPath: string): Strings;
+export function trimLines(s: string): string;
 
 // Submodule: units
 
