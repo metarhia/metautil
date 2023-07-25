@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Make `ensureDirectory` atomic
+
 ## [3.11.0][] - 2023-07-22
 
 - New utilities: `serializeArguments`, `httpApiCall`, `trimLines`
