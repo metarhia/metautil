@@ -216,6 +216,7 @@ export function isConstant(s: string): boolean;
 export function fileExt(fileName: string): string;
 export function parsePath(relPath: string): Strings;
 export function trimLines(s: string): string;
+export function validateBracketBalance(s: string, brackets?: string): boolean;
 
 // Submodule: units
 
