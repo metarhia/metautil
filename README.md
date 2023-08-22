@@ -101,6 +101,7 @@
 
 - `random(min: number, max?: number): number`
 - `sample(array: Array<unknown>): unknown`
+- `shuffle(array: Array<unknown>): Array<unknown>`
 
 ## Class Semaphore
 
