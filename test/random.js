@@ -20,5 +20,11 @@ metatests.case(
       [20, (result) => result >= 0 && result <= 20],
       [10, 10, 10],
     ],
+    'metautil.shuffle': [
+      [[1, 2, 3], (result) => JSON.stringify(result.sort()) === '[1,2,3]'],
+      [['a', 'b'], (result) => JSON.stringify(result.sort()) === '["a","b"]'],
+      [[1, 'a', 3], (result) => JSON.stringify(result.sort()) === '[1,3,"a"]'],
+      [[], (result) => JSON.stringify(result.sort()) === '[]'],
+    ],
   },
 );
