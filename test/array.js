@@ -4,7 +4,7 @@ const metatests = require('metatests');
 const metautil = require('..');
 
 metatests.case(
-  'Random',
+  'Array',
   { metautil },
   {
     'metautil.sample': [
@@ -53,6 +53,14 @@ metatests.case(
         metautil.cryptoRandom,
         (result) => JSON.stringify(result.sort()) === '[]',
       ],
+    ],
+    'metautil.projection': [
+      [{ a: 1, b: 2, c: 3, d: 4, e: 5 }, ['a', 'b', 'c'], { a: 1, b: 2, c: 3 }],
+      [{ a: 1, b: 2, c: 3, d: 4, e: 5 }, ['a', 'f'], { a: 1 }],
+      [{ a: 1, b: 2, c: 3, d: 4, e: 5 }, ['f'], {}],
+      [{ a: 1, b: 2, c: 3, d: 4, e: 5 }, [], {}],
+      [{}, ['a', 'b', 'c'], {}],
+      [{}, [], {}],
     ],
   },
 );
