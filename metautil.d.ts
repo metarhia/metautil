@@ -187,6 +187,10 @@ export function shuffle(
   array: Array<unknown>,
   random?: Function,
 ): Array<unknown>;
+export function projection(
+  source: object,
+  fields: Array<string>,
+): Array<unknown>;
 
 // Submodule: semaphore
 

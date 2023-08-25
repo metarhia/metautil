@@ -102,6 +102,7 @@
 
 - `sample(array: Array<unknown>): unknown`
 - `shuffle(array: Array<unknown>): Array<unknown>`
+- `projection(source: object, fields: Array<string>): Array<unknown>`
 
 ## Class Semaphore
 
