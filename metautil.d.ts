@@ -16,7 +16,7 @@ export function delay(msec: number, signal?: AbortSignal): Promise<void>;
 // Submodule: crypto
 
 export function cryptoRandom(min?: number, max?: number): number;
-export function random(min: number, max?: number): number;
+export function random(min?: number, max?: number): number;
 export function generateUUID(): string;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
