@@ -183,7 +183,10 @@ export class Pool {
 
 export function random(min: number, max?: number): number;
 export function sample(array: Array<unknown>): unknown;
-export function shuffle(array: Array<unknown>): Array<unknown>;
+export function shuffle(
+  array: Array<unknown>,
+  random?: Function,
+): Array<unknown>;
 
 // Submodule: semaphore
 
