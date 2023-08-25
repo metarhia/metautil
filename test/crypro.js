@@ -3,25 +3,49 @@
 const metatests = require('metatests');
 const metautil = require('..');
 
-metatests.test('Crypto: cryptoRandom', async (test) => {
+const testRandom = (test, random) => {
+  {
+    const value = random(100, 100);
+    test.strictSame(typeof value, 'number');
+    test.strictSame(value, 100);
+  }
+  {
+    const value = random(-100, -100);
+    test.strictSame(typeof value, 'number');
+    test.strictSame(value, -100);
+  }
+  {
+    const value = random(0, 0);
+    test.strictSame(typeof value, 'number');
+    test.strictSame(value, 0);
+  }
   for (let i = 0; i < 200; i++) {
-    const value = await metautil.cryptoRandom();
+    const value = random();
     test.strictSame(typeof value, 'number');
     test.assert(value >= 0, true);
     test.assert(value <= 1, true);
   }
   for (let i = 0; i < 200; i++) {
-    const value = await metautil.cryptoRandom(100);
+    const value = random(100);
     test.strictSame(typeof value, 'number');
     test.assert(value >= 0, true);
     test.assert(value <= 100, true);
   }
   for (let i = 0; i < 200; i++) {
-    const value = await metautil.cryptoRandom(100, 200);
+    const value = random(100, 200);
     test.strictSame(typeof value, 'number');
     test.assert(value >= 100, true);
     test.assert(value <= 200, true);
   }
+};
+
+metatests.test('Crypto: cryptoRandom', async (test) => {
+  testRandom(test, metautil.cryptoRandom);
+  test.end();
+});
+
+metatests.test('Crypto: random', async (test) => {
+  testRandom(test, metautil.random);
   test.end();
 });
 
@@ -73,15 +97,6 @@ metatests.case(
       ],
       ['secret', 'WRONG-STRING', false],
       ['secret', '', false],
-    ],
-    'metautil.random': [
-      [0, 10, (result) => result >= 0 && result <= 10],
-      [1, 10, (result) => result >= 1 && result <= 10],
-      [-1, 10, (result) => result >= -1 && result <= 10],
-      [10, 20, (result) => result >= 10 && result <= 20],
-      [10, 0, (result) => result >= 0 && result <= 10],
-      [20, (result) => result >= 0 && result <= 20],
-      [10, 10, 10],
     ],
   },
 );
