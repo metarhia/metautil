@@ -182,7 +182,7 @@ export class Pool {
 // Submodule: random
 
 export function random(min: number, max?: number): number;
-export function sample(array: Array<unknown>): unknown;
+export function sample(array: Array<unknown>, random?: Function): unknown;
 export function shuffle(
   array: Array<unknown>,
   random?: Function,
