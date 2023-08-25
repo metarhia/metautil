@@ -4,11 +4,23 @@ const metatests = require('metatests');
 const metautil = require('..');
 
 metatests.test('Crypto: cryptoRandom', async (test) => {
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 200; i++) {
     const value = await metautil.cryptoRandom();
     test.strictSame(typeof value, 'number');
-    test.strictSame(value >= 0, true);
-    test.strictSame(value <= 1, true);
+    test.assert(value >= 0, true);
+    test.assert(value <= 1, true);
+  }
+  for (let i = 0; i < 200; i++) {
+    const value = await metautil.cryptoRandom(100);
+    test.strictSame(typeof value, 'number');
+    test.assert(value >= 0, true);
+    test.assert(value <= 100, true);
+  }
+  for (let i = 0; i < 200; i++) {
+    const value = await metautil.cryptoRandom(100, 200);
+    test.strictSame(typeof value, 'number');
+    test.assert(value >= 100, true);
+    test.assert(value <= 200, true);
   }
   test.end();
 });
