@@ -16,6 +16,7 @@ export function delay(msec: number, signal?: AbortSignal): Promise<void>;
 // Submodule: crypto
 
 export function cryptoRandom(): number;
+export function random(min: number, max?: number): number;
 export function generateUUID(): string;
 export function generateKey(length: number, possible: string): string;
 export function crcToken(secret: string, key: string): string;
@@ -179,9 +180,8 @@ export class Pool {
   isFree(item: unknown): boolean;
 }
 
-// Submodule: random
+// Submodule: array
 
-export function random(min: number, max?: number): number;
 export function sample(array: Array<unknown>, random?: Function): unknown;
 export function shuffle(
   array: Array<unknown>,

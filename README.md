@@ -22,6 +22,7 @@
 ## Crypto utilities
 
 - `cryptoRandom(): number`
+- `random(min: number, max?: number): number`
 - `generateUUID(): string`
 - `generateKey(length: number, possible: string): string`
 - `crcToken(secret: string, key: string): string`
@@ -97,9 +98,8 @@
 - `release(item: unknown): void`
 - `isFree(item: unknown): boolean`
 
-## Random utilities
+## Array utilities
 
-- `random(min: number, max?: number): number`
 - `sample(array: Array<unknown>): unknown`
 - `shuffle(array: Array<unknown>): Array<unknown>`
 
