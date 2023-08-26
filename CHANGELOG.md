@@ -2,6 +2,13 @@
 
 ## [Unreleased][unreleased]
 
+## [3.12.0][] - 2023-08-26
+
+- Add `projection` to copy subset of fields
+- Improve `random` and `cryptoRandom` contracts to `(min?, max?)`
+- Copy `shuffle` implementation from `metarhia/common`
+- Pass `random` function as parameter to `shuffle` and `sample`
+
 ## [3.11.0][] - 2023-07-22
 
 - New utilities: `serializeArguments`, `httpApiCall`, `trimLines`
@@ -232,7 +239,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.11.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.12.0....HEAD
+[3.12.0]: https://github.com/metarhia/metautil/compare/v3.12.0...v3.11.0
 [3.11.0]: https://github.com/metarhia/metautil/compare/v3.11.0...v3.10.0
 [3.10.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.9.1
 [3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.9.0
