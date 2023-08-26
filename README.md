@@ -21,8 +21,8 @@
 
 ## Crypto utilities
 
-- `cryptoRandom(): number`
-- `random(min: number, max?: number): number`
+- `cryptoRandom(min?: number, max?: number): number`
+- `random(min?: number, max?: number): number`
 - `generateUUID(): string`
 - `generateKey(length: number, possible: string): string`
 - `crcToken(secret: string, key: string): string`
@@ -100,9 +100,26 @@
 
 ## Array utilities
 
-- `sample(array: Array<unknown>): unknown`
-- `shuffle(array: Array<unknown>): Array<unknown>`
-- `projection(source: object, fields: Array<string>): Array<unknown>`
+### `sample(array: Array<unknown>): unknown`
+
+```js
+const cards = ['🂡', '🃒', '🂮', '🂷', '🃚'];
+const card = sample(cards);
+```
+
+### `shuffle(array: Array<unknown>): Array<unknown>`
+
+```js
+const players = [{ id: 10 }, { id: 12 }, { id: 15 }];
+const places = shuffle(players);
+```
+
+### `projection(source: object, fields: Array<string>): Array<unknown>`
+
+```js
+const player = { name: 'Marcus', score: 1500, socket };
+const playerState = projection(player, ['name', 'score']);
+```
 
 ## Class Semaphore
 
