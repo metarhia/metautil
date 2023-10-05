@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [3.13.0][] - 2023-10-06
+
+- Use buf.subarray instead of buf.slice
+- Drop node.js 16 and 19, update dependencies
+- Convert lockfileVersion 2 to 3
+
 ## [3.12.0][] - 2023-08-26
 
 - Add `projection` to copy subset of fields
@@ -239,11 +245,12 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.12.0....HEAD
-[3.12.0]: https://github.com/metarhia/metautil/compare/v3.12.0...v3.11.0
-[3.11.0]: https://github.com/metarhia/metautil/compare/v3.11.0...v3.10.0
-[3.10.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.9.1
-[3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.9.0
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.13.0....HEAD
+[3.13.0]: https://github.com/metarhia/metautil/compare/v3.12.0...v3.13.0
+[3.12.0]: https://github.com/metarhia/metautil/compare/v3.11.0...v3.12.0
+[3.11.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.11.0
+[3.10.0]: https://github.com/metarhia/metautil/compare/v3.9.1...v3.10.0
+[3.9.1]: https://github.com/metarhia/metautil/compare/v3.9.0...v3.9.1
 [3.9.0]: https://github.com/metarhia/metautil/compare/v3.8.0...v3.9.0
 [3.8.0]: https://github.com/metarhia/metautil/compare/v3.7.3...v3.8.0
 [3.7.3]: https://github.com/metarhia/metautil/compare/v3.7.2...v3.7.3
