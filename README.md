@@ -14,10 +14,11 @@
 
 ## Async utilities
 
-- `timeout(msec: number, signal?: AbortSignal): Promise<void>`
-- `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `toBool = [() => true, () => false]`
   - Example: `const created = await mkdir(path).then(...toBool);`
+- `timeout(msec: number, signal?: AbortSignal): Promise<void>`
+- `delay(msec: number, signal?: AbortSignal): Promise<void>`
+- `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
 
 ## Crypto utilities
 
