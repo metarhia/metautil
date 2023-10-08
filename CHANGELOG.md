@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [3.14.0][] - 2023-10-09
+
+- Implement titeoutify
+
 ## [3.13.0][] - 2023-10-06
 
 - Use buf.subarray instead of buf.slice
@@ -245,7 +249,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v3.13.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v3.14.0....HEAD
+[3.14.0]: https://github.com/metarhia/metautil/compare/v3.13.0...v3.14.0
 [3.13.0]: https://github.com/metarhia/metautil/compare/v3.12.0...v3.13.0
 [3.12.0]: https://github.com/metarhia/metautil/compare/v3.11.0...v3.12.0
 [3.11.0]: https://github.com/metarhia/metautil/compare/v3.10.0...v3.11.0
