@@ -12,6 +12,10 @@ type Headers = Record<string, string>;
 export const toBool: [() => boolean, () => boolean];
 export function timeout(msec: number, signal?: AbortSignal): Promise<void>;
 export function delay(msec: number, signal?: AbortSignal): Promise<void>;
+export function timeoutify(
+  promise: Promise<unknown>,
+  msec: number,
+): Promise<unknown>;
 
 // Submodule: crypto
 

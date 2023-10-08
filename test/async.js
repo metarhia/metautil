@@ -1,7 +1,7 @@
 'use strict';
 
 const metatests = require('metatests');
-const { timeout, delay, toBool } = require('..');
+const { toBool, timeout, delay, timeoutify } = require('..');
 
 metatests.test('Async: toBool', async (test) => {
   const success = await Promise.resolve('success').then(...toBool);
@@ -48,5 +48,23 @@ metatests.test('Async: Abortable delay', async (test) => {
   } catch (err) {
     test.strictSame(err.message, 'Delay aborted');
     test.end();
+  }
+});
+
+metatests.test('Async: timeoutify', async (test) => {
+  try {
+    const request = delay(1000);
+    await timeoutify(request, 10);
+    test.error(new Error('Should not be executed'));
+  } catch (err) {
+    test.strictSame(err.message, 'Timeout of 10ms reached');
+  }
+  try {
+    const request = delay(10);
+    const response = await timeoutify(request, 1000);
+    test.strictSame(response, undefined);
+    test.end();
+  } catch (err) {
+    test.error(new Error('Should not be executed'));
   }
 });
