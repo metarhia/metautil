@@ -16,7 +16,7 @@
     "metautil.d.ts"
   ],
   "engines": {
-    "node": "18 || 20"
+    "node": "18 || 20 || 21"
   },
   "repository": {
     "type": "git",
