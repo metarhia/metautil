@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
+  ...require('./lib/abortable.js'),
   ...require('./lib/array.js'),
   ...require('./lib/async.js'),
   ...require('./lib/crypto.js'),
