@@ -7,6 +7,22 @@ type Dictionary = Record<string, unknown>;
 type Cookies = Record<string, string>;
 type Headers = Record<string, string>;
 
+// Submodule abortable
+
+type taskFunc = (...args: Array<unknown>) => Promise<unknown>;
+
+export class Abortable {
+  constructor(delay?: number, throwOnAborted?: boolean);
+  delay: number;
+  throwOnAborted: boolean;
+  readonly aborted: boolean;
+  readonly reason: string;
+  run(task: taskFunc, ...args: Array<unknown>): Promise<unknown>;
+  abort(reason: string): void;
+  throwIfAborted(): void;
+  resetTimeout(delay: number): void;
+}
+
 // Submodule: async
 
 export const toBool: [() => boolean, () => boolean];
