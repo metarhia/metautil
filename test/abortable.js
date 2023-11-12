@@ -3,7 +3,7 @@
 const metatests = require('metatests');
 const { Abortable, delay } = require('..');
 
-const taskWithTimeout = async (test, taskDelay, timeout, abortable = null) => {
+const taskWithTimeout = async (test, taskDelay, timeout, abortable) => {
   if (!abortable) test.error(new Error('Should not be executed'));
   if (taskDelay <= timeout) test.error(new Error('Should not be executed'));
   await delay(taskDelay);
@@ -18,7 +18,7 @@ const taskWithTimeout = async (test, taskDelay, timeout, abortable = null) => {
   await delay(200);
 };
 
-const taskWithAbort = async (test, taskDelay, abortable = null) => {
+const taskWithAbort = async (test, taskDelay, abortable) => {
   if (!abortable) test.error(new Error('Should not be executed'));
   await delay(taskDelay);
   test.strictSame(abortable.aborted, false);
@@ -40,7 +40,7 @@ metatests.test('Abortable: simple timeout abort', async (test) => {
     test.strictSame(reason, abortable.reason);
   });
   try {
-    await abortable.run(delay, 10, null);
+    await abortable.run(delay, 10);
     test.error(new Error('Should not be executed'));
   } catch (err) {
     test.strictSame(err.message, 'Task aborted after 5ms');
@@ -63,10 +63,12 @@ metatests.test(
       const { message } = abortable.reason;
       test.strictSame(message, `Task aborted after ${timeout}ms`);
     });
-    abortable.run(taskWithTimeout, test, taskDelay, timeout).catch((err) => {
-      test.strictSame(err, abortable.reason);
-      test.strictSame(err.message, `Task aborted after ${timeout}ms`);
-    });
+    abortable
+      .run(taskWithTimeout, test, taskDelay, timeout, abortable)
+      .catch((err) => {
+        test.strictSame(err, abortable.reason);
+        test.strictSame(err.message, `Task aborted after ${timeout}ms`);
+      });
     abortable.resetTimeout(timeout);
     await delay(250);
     test.end();
@@ -87,9 +89,11 @@ metatests.test(
       const { message } = abortable.reason;
       test.strictSame(message, `Task aborted after ${timeout}ms`);
     });
-    abortable.run(taskWithTimeout, test, taskDelay, timeout).catch(() => {
-      test.error(new Error('Should not be executed'));
-    });
+    abortable
+      .run(taskWithTimeout, test, taskDelay, timeout, abortable)
+      .catch(() => {
+        test.error(new Error('Should not be executed'));
+      });
     abortable.resetTimeout(timeout);
     await delay(250);
     test.end();
@@ -109,7 +113,7 @@ metatests.test(
     abortable.on('timeout', () => {
       test.error(new Error('Should not be executed'));
     });
-    await abortable.run(taskWithAbort, test, taskDelay).catch(() => {
+    await abortable.run(taskWithAbort, test, taskDelay, abortable).catch(() => {
       test.error(new Error('Should not be executed'));
     });
     test.end();
