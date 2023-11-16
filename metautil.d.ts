@@ -142,6 +142,7 @@ export type ApiOptions = {
 export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
 export function ipToInt(ip?: string): number;
+export function intToIp(int: number): string;
 export function httpApiCall(url: string, options: ApiOptions): Promise<object>;
 
 // Submodule: objects

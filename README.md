@@ -69,6 +69,7 @@
 - `fetch(url: string, options?: FetchOptions): Promise<Response>`
 - `receiveBody(stream: IncomingMessage): Promise<Buffer | null>`
 - `ipToInt(ip?: string): number`
+- `intToIp(int: number): string`
 - `httpApiCall(url: string, options: ApiOptions): Promise<object>`
 
 ## Objects utilities
