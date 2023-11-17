@@ -10,6 +10,9 @@
     "util"
   ],
   "main": "metautil.js",
+  "browser": {
+    "./metautil.js": "./dist.js"
+  },
   "types": "metautil.d.ts",
   "files": [
     "lib/",
