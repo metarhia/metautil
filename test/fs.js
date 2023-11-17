@@ -1,6 +1,7 @@
 'use strict';
 
 const fsp = require('node:fs').promises;
+const path = require('node:path');
 const metatests = require('metatests');
 const metautil = require('..');
 const { directoryExists, ensureDirectory } = metautil;
@@ -23,3 +24,18 @@ metatests.test('Fs: ensureDirectory', async (test) => {
   test.strictSame(created3, false);
   test.end();
 });
+
+metatests.case(
+  'Path functions',
+  { metautil },
+  {
+    'metautil.parsePath': [
+      ['', ['']],
+      ['file', ['file']],
+      ['file.js', ['file']],
+      [`example${path.sep}stop`, ['example', 'stop']],
+      [`example${path.sep}stop.js`, ['example', 'stop']],
+      [`example${path.sep}sub2${path.sep}do.js`, ['example', 'sub2', 'do']],
+    ],
+  },
+);

@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('node:path');
 const metatests = require('metatests');
 const metautil = require('..');
 
@@ -135,14 +134,6 @@ metatests.case(
       ['/', ''],
       ['.', ''],
       ['', ''],
-    ],
-    'metautil.parsePath': [
-      ['', ['']],
-      ['file', ['file']],
-      ['file.js', ['file']],
-      [`example${path.sep}stop`, ['example', 'stop']],
-      [`example${path.sep}stop.js`, ['example', 'stop']],
-      [`example${path.sep}sub2${path.sep}do.js`, ['example', 'sub2', 'do']],
     ],
     'metautil.trimLines': [
       ['abc', 'abc'],
