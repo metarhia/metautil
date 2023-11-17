@@ -56,6 +56,7 @@
 
 - `directoryExists(path: string): Promise<boolean>`
 - `ensureDirectory(path: string): Promise<boolean>`
+- `parsePath(relPath: string): Strings`
 
 ## HTTP utilities
 
