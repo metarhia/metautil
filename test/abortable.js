@@ -54,7 +54,7 @@ metatests.test(
     const taskDelay = 10;
     const timeout = 5;
     const throwOnAborted = true;
-    const abortable = new Abortable(60000, throwOnAborted);
+    const abortable = new Abortable(0, throwOnAborted);
     abortable.on('aborted', (reason) => {
       test.strictSame(reason, abortable.reason);
       test.strictSame(reason?.message, `Task aborted after ${timeout}ms`);
@@ -104,8 +104,7 @@ metatests.test(
   'Abortable: manual task abort (!throwOnAborted)',
   async (test) => {
     const taskDelay = 10;
-    const throwOnAborted = false;
-    const abortable = new Abortable(60000, throwOnAborted);
+    const abortable = new Abortable();
     abortable.on('aborted', (reason) => {
       test.strictSame(reason, abortable.reason);
       test.strictSame(reason?.message, 'Manual abort');
@@ -119,3 +118,25 @@ metatests.test(
     test.end();
   },
 );
+
+metatests.test('Abortable: double run error test', async (test) => {
+  const abortable = new Abortable(5, true);
+  abortable.on('aborted', (reason) => {
+    test.strictSame(reason, abortable.reason);
+  });
+  try {
+    await abortable.run(delay, 10);
+    test.error(new Error('Should not be executed'));
+  } catch (err) {
+    test.strictSame(err.message, 'Task aborted after 5ms');
+  }
+  try {
+    await abortable.run(delay, 10);
+  } catch (err) {
+    test.strictSame(
+      err.message,
+      'Cannot run the task: task is already running or aborted',
+    );
+    test.end();
+  }
+});
