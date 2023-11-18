@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [4.0.1][] - 2023-11-18
+
+- Fix package: add `dist.js`
+- Fix browser support: change `global` to `globalThis`
+- Deprecate `fetch` polyfill
+
 ## [4.0.0][] - 2023-11-17
 
 - Add browser support
@@ -260,7 +266,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v4.0.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v4.0.1....HEAD
+[4.0.1]: https://github.com/metarhia/metautil/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/metarhia/metautil/compare/v3.15.0...v4.0.0
 [3.15.0]: https://github.com/metarhia/metautil/compare/v3.14.0...v3.15.0
 [3.14.0]: https://github.com/metarhia/metautil/compare/v3.13.0...v3.14.0
