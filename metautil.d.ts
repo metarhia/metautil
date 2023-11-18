@@ -124,22 +124,11 @@ export function parseRange(range: string): StreamRange;
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 type Body = ArrayBuffer | Buffer | string;
 
-export type FetchOptions = {
-  method?: HttpMethod;
-  headers?: Headers;
-  body?: Body;
-};
-
-export interface Response {
-  json(): Promise<Dictionary>;
-}
-
 export type ApiOptions = {
   method?: HttpMethod;
   body?: Body;
 };
 
-export function fetch(url: string, options?: FetchOptions): Promise<Response>;
 export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
 export function ipToInt(ip?: string): number;
 export function intToIp(int: number): string;
