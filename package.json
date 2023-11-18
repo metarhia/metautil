@@ -16,6 +16,7 @@
   "types": "metautil.d.ts",
   "files": [
     "lib/",
+    "dist.js",
     "metautil.d.ts"
   ],
   "engines": {
