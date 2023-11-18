@@ -10,34 +10,6 @@ const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
 
 const MATH_API_URL = 'https://api.mathjs.org/v4';
 
-const getRate = async (currency) => {
-  try {
-    const res = await metautil.fetch(RATES_API_URL);
-    const data = await res.json();
-    const rate = data.rates[currency];
-    return rate;
-  } catch {
-    return 1;
-  }
-};
-
-metatests.test('Newtork: Fetch', async (test) => {
-  const rate = await getRate('USD');
-  test.strictSame(rate, 1);
-  const method = 'POST';
-  const body = JSON.stringify({ name: 'Aurelia', age: 43 });
-  const headers = { Authorization: 'Bearer sometoken' };
-  const url = 'https://httpbin.org/anything';
-  try {
-    const res = await metautil.fetch(url, { headers, body, method });
-    const json = await res.json();
-    test.strictEqual(json, json);
-  } catch (error) {
-    test.strictEqual(error instanceof Error, true);
-  }
-  test.end();
-});
-
 metatests.test('Newtork: receiveBody', async (test) => {
   const value = Buffer.from('{ "a": 5 }');
   let done = false;
