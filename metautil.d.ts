@@ -167,7 +167,7 @@ export class Pool {
   size: number;
   available: number;
   timeout: number;
-  next(): Promise<unknown>;
+  next(): unknown | Promise<unknown>;
   add(item: unknown): void;
   capture(): Promise<unknown>;
   release(item: unknown): void;
