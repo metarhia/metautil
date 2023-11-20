@@ -122,11 +122,36 @@ metatests.test('Pool: wait timeout', async (test) => {
     test.strictSame(item3, obj2);
   });
   pool.capture().catch((err) => {
-    test.strictSame(err.message, 'Error: Pool next item timeout');
+    test.strictSame(err.message, 'Pool next item timeout');
   });
 
   pool.release(obj2);
-  test.end();
+});
+
+metatests.test('Pool: sync capture timeout', (test) => {
+  const pool = new metautil.Pool();
+
+  const obj1 = { a: 1 };
+  pool.add(obj1);
+  const obj2 = { a: 2 };
+  pool.add(obj2);
+
+  const p1 = pool.capture();
+  const p2 = pool.capture();
+  const p3 = pool.capture();
+
+  p1.then((item1) => {
+    test.strictSame(item1, obj1);
+  });
+
+  p2.then((item2) => {
+    test.strictSame(item2, obj2);
+  });
+
+  p3.catch((err) => {
+    test.strictSame(err.message, 'Pool next item timeout');
+    test.end();
+  });
 });
 
 metatests.test('Pool: prevent infinite loop', async (test) => {
