@@ -154,6 +154,18 @@ metatests.test('Pool: sync capture timeout', (test) => {
   });
 });
 
+metatests.test('Pool: async capture after sync exhaustion', async (test) => {
+  const pool = new metautil.Pool({ timeout: 100 });
+  const obj1 = { a: 1 };
+  pool.add(obj1);
+  pool.capture(obj1).then((item) => {
+    setTimeout(() => pool.release(item), 1);
+  });
+  await new Promise((r) => setTimeout(r, 0));
+  const item1 = await pool.capture();
+  test.strictEqual(pool.isFree(item1), false);
+});
+
 metatests.test('Pool: prevent infinite loop', async (test) => {
   const pool = new metautil.Pool();
 
