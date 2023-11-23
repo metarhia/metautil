@@ -154,7 +154,7 @@ metatests.test('Pool: sync capture timeout', (test) => {
   });
 });
 
-metatests.test('Pool: async capture after sync exhaustion', async (test) => {
+metatests.test('Pool: capture from the queue', async (test) => {
   const pool = new metautil.Pool({ timeout: 100 });
   const obj1 = { a: 1 };
   pool.add(obj1);
