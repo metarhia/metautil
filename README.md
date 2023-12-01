@@ -19,6 +19,52 @@
 - `timeout(msec: number, signal?: AbortSignal): Promise<void>`
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
+- `collect(keys: Array<string>, options?: CollectorOptions): Collector`
+
+## Class `Collector`
+
+Async collection is an utility to collect needed keys and signalize on done
+
+- `done: boolean`
+- `data: Dictionary`
+- `keys: Array<string>`
+- `count: number`
+- `exact: boolean`
+- `timeout: number`
+- `constructor(keys: Array<string>, options?: CollectorOptions)`
+- `on(name: string, callback: Function)`
+- `pick(key: string, value: unknown)`
+- `fail(error: Error)`
+- `then(fulfill: Function, reject?: Function)`
+
+```js
+const collector = collect(['user', 'file']);
+
+getFileSomehow().then((data) => data.pick('file', data));
+getUserSomehow().then((user) => data.pick('user', user));
+
+try {
+  const result = await dc;
+  console.log(result);
+} catch (error) {
+  console.error(error);
+}
+```
+
+```js
+const data = collect(['user', 'file'], { timeout: 2000, exact: false });
+
+getFileSomehow().then((data) => data.pick('file', data));
+getUserSomehow().then((user) => data.pick('user', user));
+
+data.on('done', (result) => {
+  console.log(result);
+});
+
+dc.on('error', (error) => {
+  console.error(error);
+});
+```
 
 ## Crypto utilities
 
