@@ -56,12 +56,12 @@ metatests.case(
   { metautil },
   {
     'metautil.generateKey': [
-      [5, CHARS, (s) => s.split('').every((c) => CHARS.includes(c))],
-      [5, CHARS, (s) => s.length === 5],
-      [5, 'AAA', 'AAAAA'],
-      [5, 'A', 'AAAAA'],
-      [0, CHARS, ''],
-      [-1, CHARS, ''],
+      [CHARS, 5, (s) => s.split('').every((c) => CHARS.includes(c))],
+      [CHARS, 5, (s) => s.length === 5],
+      ['AAA', 5, 'AAAAA'],
+      ['A', 5, 'AAAAA'],
+      [CHARS, 0, ''],
+      [CHARS, -1, ''],
     ],
     'metautil.crcToken': [
       ['secret', '123456', '992f'],
