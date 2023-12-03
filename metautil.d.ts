@@ -22,7 +22,7 @@ export function timeoutify(
 export function cryptoRandom(min?: number, max?: number): number;
 export function random(min?: number, max?: number): number;
 export function generateUUID(): string;
-export function generateKey(length: number, possible: string): string;
+export function generateKey(possible: string, length: number): string;
 export function crcToken(secret: string, key: string): string;
 
 export function generateToken(

@@ -25,7 +25,7 @@
 - `cryptoRandom(min?: number, max?: number): number`
 - `random(min?: number, max?: number): number`
 - `generateUUID(): string`
-- `generateKey(length: number, possible: string): string`
+- `generateKey(possible: string, length: number): string`
 - `crcToken(secret: string, key: string): string`
 - `generateToken(secret: string, characters: string, length: number): string`
 - `validateToken(secret: string, token: string): boolean`
