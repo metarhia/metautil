@@ -21,7 +21,7 @@ metatests.test('Collector: keys', async (test) => {
   test.end();
 });
 
-metatests.test('Collector: distinct', async (test) => {
+metatests.test('Collector: exact', async (test) => {
   const dc = collect(['key1', 'key2']);
 
   setTimeout(() => {
@@ -41,28 +41,9 @@ metatests.test('Collector: distinct', async (test) => {
   }
 });
 
-metatests.test('Collector: not distinct', async (test) => {
+metatests.test('Collector: not exact', async (test) => {
   const expectedResult = { key1: 1, wrongKey: 'someVal', key2: 2 };
-  const dc = collect(['key1', 'key2']).distinct(false);
-
-  setTimeout(() => {
-    dc.pick('key1', 1);
-    dc.pick('wrongKey', 'someVal');
-    dc.pick('key2', 2);
-  }, 100);
-
-  try {
-    const result = await dc;
-    test.strictSame(result, expectedResult);
-    test.end();
-  } catch (error) {
-    test.error(error);
-  }
-});
-
-metatests.test('Collector: not distinct options', async (test) => {
-  const expectedResult = { key1: 1, wrongKey: 'someVal', key2: 2 };
-  const dc = collect(['key1', 'key2'], { distinct: false });
+  const dc = collect(['key1', 'key2'], { exact: false });
 
   setTimeout(() => {
     dc.pick('key1', 1);
@@ -94,21 +75,6 @@ metatests.test('Collector: pick after done', async (test) => {
 });
 
 metatests.test('Collector: timeout', async (test) => {
-  const dc = collect(['key1']).timeout(50);
-
-  setTimeout(() => {
-    dc.pick('key1', 1);
-  }, 100);
-
-  try {
-    await dc;
-  } catch (error) {
-    test.strictSame(error.message, 'Collector timed out');
-    test.end();
-  }
-});
-
-metatests.test('Collector: timeout options', async (test) => {
   const dc = collect(['key1'], { timeout: 50 });
 
   setTimeout(() => {
