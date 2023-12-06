@@ -37,25 +37,47 @@ Async collection is an utility to collect needed keys and signalize on done
 - `fail(error: Error)`
 - `then(fulfill: Function, reject?: Function)`
 
-```js
-const collector = collect(['user', 'file']);
+Collect keys with `.pick` method:
 
-getFileSomehow().then((data) => data.pick('file', data));
-getUserSomehow().then((user) => data.pick('user', user));
+```js
+const ac = collect(['userName', 'fileName']);
+
+setTimeout(() => {
+  ac.pick('fileName', 'marcus.txt');
+  ac.pick('userName', 'Marcus');
+}, 100);
 
 try {
-  const result = await dc;
+  const result = await ac;
   console.log(result);
 } catch (error) {
   console.error(error);
 }
 ```
 
+Collect keys with `.wait` method from async or promise-returning function:
+
+```js
+const ac = collect(['user', 'file']);
+
+ac.wait('file', getFilePromisified, 'marcus.txt');
+ac.wait('user', getUserPromisified, 'Marcus');
+
+try {
+  const result = await ac;
+  console.log(result);
+} catch (error) {
+  console.error(error);
+}
+```
+
+Collect keys with `.take` method from callback-last-error-first function:
+
 ```js
 const data = collect(['user', 'file'], { timeout: 2000, exact: false });
 
-getFileSomehow().then((data) => data.pick('file', data));
-getUserSomehow().then((user) => data.pick('user', user));
+ac.take('file', getFileCallback, 'marcus.txt');
+ac.take('user', getUserCallback, 'Marcus');
 
 data.on('done', (result) => {
   console.log(result);
@@ -65,6 +87,20 @@ dc.on('error', (error) => {
   console.error(error);
 });
 ```
+
+- `done: boolean`
+- `data: Dictionary`
+- `keys: Array<string>`
+- `count: number`
+- `exact: boolean`
+- `timeout: number`
+- `constructor(keys: Array<string>, options?: CollectorOptions)`
+- `on(name: string, callback: Function)`
+- `pick(key: string, value: unknown)`
+- `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
+- `take(key: string, fn: Function, ...args?: Array<unknown>)`
+- `fail(error: Error)`
+- `then(fulfill: Function, reject?: Function)`
 
 ## Crypto utilities
 

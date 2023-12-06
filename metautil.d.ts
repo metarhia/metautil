@@ -231,6 +231,8 @@ export interface CollectorOptions {
   timeout?: number;
 }
 
+type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
+
 export class Collector {
   done: boolean;
   data: Dictionary;
@@ -241,6 +243,8 @@ export class Collector {
   constructor(keys: Array<string>, options?: CollectorOptions);
   on(name: string, callback: Function): void;
   pick(key: string, value: unknown): void;
+  wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
+  take(key: string, fn: Function, ...args: Array<unknown>): void;
   fail(error: Error): void;
   then(fulfill: Function, reject?: Function): void;
 }

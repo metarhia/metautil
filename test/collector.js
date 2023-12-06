@@ -103,3 +103,34 @@ metatests.test('Collector: fail', async (test) => {
     test.end();
   }
 });
+
+metatests.test('Collector: take', async (test) => {
+  const expectedResult = { key1: 'User: Marcus' };
+  const dc = collect(['key1']);
+
+  const fn = (name, callback) => {
+    setTimeout(() => {
+      callback(null, `User: ${name}`);
+    }, 100);
+  };
+  dc.take('key1', fn, 'Marcus');
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
+
+metatests.test('Collector: wait', async (test) => {
+  const expectedResult = { key1: 'User: Marcus' };
+  const dc = collect(['key1']);
+
+  const fn = async (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 100);
+    });
+  dc.wait('key1', fn, 'Marcus');
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
