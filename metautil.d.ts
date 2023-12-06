@@ -223,3 +223,29 @@ export function trimLines(s: string): string;
 
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
+
+// Submodule: collector
+
+export interface CollectorOptions {
+  exact?: boolean;
+  timeout?: number;
+}
+
+export class Collector {
+  done: boolean;
+  data: Dictionary;
+  keys: Array<string>;
+  count: number;
+  exact: boolean;
+  timeout: number;
+  constructor(keys: Array<string>, options?: CollectorOptions);
+  on(name: string, callback: Function): void;
+  pick(key: string, value: unknown): void;
+  fail(error: Error): void;
+  then(fulfill: Function, reject?: Function): void;
+}
+
+export function collect(
+  keys: Array<string>,
+  options?: CollectorOptions,
+): Collector;
