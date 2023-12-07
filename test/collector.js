@@ -30,6 +30,13 @@ metatests.test('Collector: exact', async (test) => {
     dc.set('wrongKey', 'someVal');
   }, 100);
 
+  dc.then(
+    () => {},
+    (error) => {
+      test.strictSame(error.message, 'Unexpected key: wrongKey');
+    },
+  );
+
   try {
     await dc;
   } catch (error) {
