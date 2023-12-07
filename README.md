@@ -76,6 +76,15 @@ ac.on('error', (error) => {
 });
 ```
 
+Compose collectors (collect subkeys from multiple sources):
+
+```js
+const dc = collect(['key1', 'key2', 'key3']);
+const key1 = collect(['sub1']);
+const key3 = collect(['sub3']);
+dc.collect({ key1, key3 });
+```
+
 - `done: boolean`
 - `data: Dictionary`
 - `keys: Array<string>`
@@ -87,6 +96,7 @@ ac.on('error', (error) => {
 - `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
+- `collect(sources: Record<string, Collector>)`
 - `fail(error: Error)`
 - `then(fulfill: Function, reject?: Function)`
 

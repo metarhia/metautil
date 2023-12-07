@@ -245,6 +245,7 @@ export class Collector {
   set(key: string, value: unknown): void;
   wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
+  collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;
   then(fulfill: Function, reject?: Function): void;
 }
