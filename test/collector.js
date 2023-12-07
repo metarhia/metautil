@@ -66,8 +66,11 @@ metatests.test('Collector: set after done', async (test) => {
 
   setTimeout(() => {
     dc.set('key1', 1);
-    dc.set('key2', 2);
   }, 100);
+
+  setTimeout(() => {
+    dc.set('key2', 2);
+  }, 200);
 
   const result = await dc;
   test.strictSame(result, expectedResult);
@@ -153,6 +156,22 @@ metatests.test('Collector: compose collect', async (test) => {
   setTimeout(() => {
     key3.set('sub3', 31);
   }, 150);
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
+
+metatests.test('Collector: after done', async (test) => {
+  const expectedResult = { key1: 1, key2: 2 };
+  const dc = collect(['key1', 'key2']);
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  dc.on('done', (result) => {
+    test.strictSame(result, expectedResult);
+  });
 
   const result = await dc;
   test.strictSame(result, expectedResult);
