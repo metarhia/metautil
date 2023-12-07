@@ -134,3 +134,27 @@ metatests.test('Collector: wait', async (test) => {
   test.strictSame(result, expectedResult);
   test.end();
 });
+
+metatests.test('Collector: compose collect', async (test) => {
+  const expectedResult = { key1: { sub1: 11 }, key2: 2, key3: { sub3: 31 } };
+  const dc = collect(['key1', 'key2', 'key3']);
+  const key1 = collect(['sub1']);
+  const key3 = collect(['sub3']);
+  dc.collect({ key1, key3 });
+
+  setTimeout(() => {
+    key1.set('sub1', 11);
+  }, 50);
+
+  setTimeout(() => {
+    dc.set('key2', 2);
+  }, 100);
+
+  setTimeout(() => {
+    key3.set('sub3', 31);
+  }, 150);
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
