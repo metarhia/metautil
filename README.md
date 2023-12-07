@@ -25,18 +25,6 @@
 
 Async collection is an utility to collect needed keys and signalize on done
 
-- `done: boolean`
-- `data: Dictionary`
-- `keys: Array<string>`
-- `count: number`
-- `exact: boolean`
-- `timeout: number`
-- `constructor(keys: Array<string>, options?: CollectorOptions)`
-- `on(name: string, callback: Function)`
-- `pick(key: string, value: unknown)`
-- `fail(error: Error)`
-- `then(fulfill: Function, reject?: Function)`
-
 Collect keys with `.pick` method:
 
 ```js
@@ -74,16 +62,16 @@ try {
 Collect keys with `.take` method from callback-last-error-first function:
 
 ```js
-const data = collect(['user', 'file'], { timeout: 2000, exact: false });
+const ac = collect(['user', 'file'], { timeout: 2000, exact: false });
 
 ac.take('file', getFileCallback, 'marcus.txt');
 ac.take('user', getUserCallback, 'Marcus');
 
-data.on('done', (result) => {
+ac.on('done', (result) => {
   console.log(result);
 });
 
-dc.on('error', (error) => {
+ac.on('error', (error) => {
   console.error(error);
 });
 ```
