@@ -129,7 +129,18 @@ dc.collect({ key1, key3 });
 ## Error utilities
 
 - Class `Error`
-  - `constructor(message: string, code: number)`
+  - `constructor(message: string, options?: number | string | ErrorOptions)`
+  - `message: string`
+  - `stack: string`
+  - `code?: number | string`
+  - `cause?: Error`
+- Class `DomainError`
+  - `constructor(code?: string, options?: number | string | ErrorOptions)`
+  - `message: string`
+  - `stack: string`
+  - `code?: number | string`
+  - `cause?: Error`
+  - `toError(errors: Errors): Error`
 - `isError(instance: object): boolean`
 
 ## File system utilities
