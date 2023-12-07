@@ -25,14 +25,14 @@
 
 Async collection is an utility to collect needed keys and signalize on done
 
-Collect keys with `.pick` method:
+Collect keys with `.set` method:
 
 ```js
 const ac = collect(['userName', 'fileName']);
 
 setTimeout(() => {
-  ac.pick('fileName', 'marcus.txt');
-  ac.pick('userName', 'Marcus');
+  ac.set('fileName', 'marcus.txt');
+  ac.set('userName', 'Marcus');
 }, 100);
 
 try {
@@ -84,7 +84,7 @@ ac.on('error', (error) => {
 - `timeout: number`
 - `constructor(keys: Array<string>, options?: CollectorOptions)`
 - `on(name: string, callback: Function)`
-- `pick(key: string, value: unknown)`
+- `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
 - `fail(error: Error)`

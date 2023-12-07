@@ -242,7 +242,7 @@ export class Collector {
   timeout: number;
   constructor(keys: Array<string>, options?: CollectorOptions);
   on(name: string, callback: Function): void;
-  pick(key: string, value: unknown): void;
+  set(key: string, value: unknown): void;
   wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
   fail(error: Error): void;

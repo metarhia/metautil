@@ -8,8 +8,8 @@ metatests.test('Collector: keys', async (test) => {
   const dc = collect(['key1', 'key2']);
 
   setTimeout(() => {
-    dc.pick('key1', 1);
-    dc.pick('key2', 2);
+    dc.set('key1', 1);
+    dc.set('key2', 2);
   }, 100);
 
   dc.on('done', (result) => {
@@ -25,8 +25,8 @@ metatests.test('Collector: exact', async (test) => {
   const dc = collect(['key1', 'key2']);
 
   setTimeout(() => {
-    dc.pick('key1', 1);
-    dc.pick('wrongKey', 'someVal');
+    dc.set('key1', 1);
+    dc.set('wrongKey', 'someVal');
   }, 100);
 
   dc.on('fail', (error) => {
@@ -46,9 +46,9 @@ metatests.test('Collector: not exact', async (test) => {
   const dc = collect(['key1', 'key2'], { exact: false });
 
   setTimeout(() => {
-    dc.pick('key1', 1);
-    dc.pick('wrongKey', 'someVal');
-    dc.pick('key2', 2);
+    dc.set('key1', 1);
+    dc.set('wrongKey', 'someVal');
+    dc.set('key2', 2);
   }, 100);
 
   try {
@@ -60,13 +60,13 @@ metatests.test('Collector: not exact', async (test) => {
   }
 });
 
-metatests.test('Collector: pick after done', async (test) => {
+metatests.test('Collector: set after done', async (test) => {
   const expectedResult = { key1: 1 };
   const dc = collect(['key1']);
 
   setTimeout(() => {
-    dc.pick('key1', 1);
-    dc.pick('key2', 2);
+    dc.set('key1', 1);
+    dc.set('key2', 2);
   }, 100);
 
   const result = await dc;
@@ -78,7 +78,7 @@ metatests.test('Collector: timeout', async (test) => {
   const dc = collect(['key1'], { timeout: 50 });
 
   setTimeout(() => {
-    dc.pick('key1', 1);
+    dc.set('key1', 1);
   }, 100);
 
   try {
