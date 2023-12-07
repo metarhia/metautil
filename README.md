@@ -178,6 +178,20 @@ dc.collect({ key1, key3 });
 
 ## Class Pool
 
+```js
+const pool = new metautil.Pool();
+pool.add({ a: 1 });
+pool.add({ a: 2 });
+pool.add({ a: 3 });
+
+if (pool.isFree(obj1)) console.log('1 is free');
+const item = await pool.capture();
+if (pool.isFree(obj1)) console.log('1 is captured');
+const obj = await pool.next();
+// obj is { a: 2 }
+pool.release(item);
+```
+
 - `constructor(options: { timeout?: number })`
 - `items: Array<unknown>`
 - `free: Array<boolean>`
@@ -216,6 +230,17 @@ const playerState = projection(player, ['name', 'score']);
 ```
 
 ## Class Semaphore
+
+```js
+const CONCURRENCY = 3;
+const QUEUE_SIZE = 4;
+const TIMEOUT = 1500;
+const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
+
+await semaphore.enter();
+// Do something
+semaphore.leave();
+```
 
 - `constructor(concurrency: number, size?: number, timeout?: number)`
 - `concurrency: number`
