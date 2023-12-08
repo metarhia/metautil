@@ -246,7 +246,7 @@ export class Collector {
   take(key: string, fn: Function, ...args: Array<unknown>): void;
   collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;
-  then(fulfill: Function, reject?: Function): void;
+  then(onFulfill: Function, onReject?: Function): Promise<unknown>;
 }
 
 export function collect(
