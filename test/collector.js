@@ -189,7 +189,6 @@ metatests.test('Collector: then chain', (test) => {
   dc.then((result) => ({ ...result, key3: 3 })).then((result) => {
     test.strictSame(result, expectedResult);
     test.end();
-    return result;
   });
 });
 
@@ -203,9 +202,7 @@ metatests.test('Collector: error in then chain', (test) => {
   dc.then(() => {
     throw new Error('expected error');
   }).then(
-    (result) => {
-      return result;
-    },
+    (result) => result,
     (error) => {
       test.strictSame(error.message, expectedResult.message);
       test.end();
