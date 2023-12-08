@@ -9,12 +9,11 @@ metatests.test('Collector: keys', async (test) => {
 
   setTimeout(() => {
     dc.set('key1', 1);
+  }, 50);
+
+  setTimeout(() => {
     dc.set('key2', 2);
   }, 100);
-
-  dc.on('done', (result) => {
-    test.strictSame(result, expectedResult);
-  });
 
   const result = await dc;
   test.strictSame(result, expectedResult);
@@ -25,13 +24,8 @@ metatests.test('Collector: exact', async (test) => {
   const dc = collect(['key1', 'key2']);
 
   setTimeout(() => {
-    dc.set('key1', 1);
     dc.set('wrongKey', 'someVal');
-  }, 100);
-
-  dc.on('fail', (error) => {
-    test.strictSame(error.message, 'Unexpected key: wrongKey');
-  });
+  }, 50);
 
   try {
     await dc;
@@ -47,7 +41,13 @@ metatests.test('Collector: not exact', async (test) => {
 
   setTimeout(() => {
     dc.set('key1', 1);
+  }, 50);
+
+  setTimeout(() => {
     dc.set('wrongKey', 'someVal');
+  }, 75);
+
+  setTimeout(() => {
     dc.set('key2', 2);
   }, 100);
 
@@ -66,14 +66,19 @@ metatests.test('Collector: set after done', async (test) => {
 
   setTimeout(() => {
     dc.set('key1', 1);
-  }, 100);
+  }, 50);
 
   setTimeout(() => {
     dc.set('key2', 2);
-  }, 200);
+  }, 75);
 
   const result = await dc;
   test.strictSame(result, expectedResult);
+
+  setTimeout(() => {
+    dc.set('key3', 3);
+  }, 100);
+
   test.end();
 });
 
@@ -168,10 +173,6 @@ metatests.test('Collector: after done', async (test) => {
 
   dc.set('key1', 1);
   dc.set('key2', 2);
-
-  dc.on('done', (result) => {
-    test.strictSame(result, expectedResult);
-  });
 
   const result = await dc;
   test.strictSame(result, expectedResult);

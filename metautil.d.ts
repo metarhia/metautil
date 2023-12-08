@@ -242,7 +242,6 @@ export class Collector {
   exact: boolean;
   timeout: number;
   constructor(keys: Array<string>, options?: CollectorOptions);
-  on(name: string, callback: Function): void;
   set(key: string, value: unknown): void;
   wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;

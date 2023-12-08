@@ -81,7 +81,6 @@ const result = await ac;
 - `exact: boolean`
 - `timeout: number`
 - `constructor(keys: Array<string>, options?: CollectorOptions)`
-- `on(name: string, callback: Function)`
 - `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
