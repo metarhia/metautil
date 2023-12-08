@@ -42,14 +42,14 @@
     "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\""
   },
   "devDependencies": {
-    "@types/node": "^20.9.1",
-    "eslint": "^8.53.0",
-    "eslint-config-metarhia": "^8.2.1",
-    "eslint-config-prettier": "^9.0.0",
+    "@types/node": "^20.10.4",
+    "eslint": "^8.55.0",
+    "eslint-config-metarhia": "^8.2.2",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.0",
     "metatests": "^0.8.2",
     "prettier": "^3.1.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   }
 }
