@@ -210,7 +210,7 @@ metatests.test('Collector: error in then chain', (test) => {
   );
 });
 
-metatests.test('Collector: wait mode "all" fullfilled', async (test) => {
+metatests.test('Collector: wait mode "all" fulfilled', async (test) => {
   const expectedResult = { key1: 'User: Marcus', key2: 'User: Caesar' };
   const dc = collect(['key1', 'key2']);
 
@@ -251,7 +251,7 @@ metatests.test('Collector: wait mode "all" rejected', async (test) => {
   test.end();
 });
 
-metatests.test('Collector: wait mode "allSettled" fullfilled', async (test) => {
+metatests.test('Collector: wait mode "allSettled" fulfilled', async (test) => {
   const expectedResult = {
     key1: { status: 'fulfilled', value: 'User: Marcus' },
     key2: { status: 'fulfilled', value: 'User: Caesar' },
