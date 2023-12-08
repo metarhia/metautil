@@ -278,7 +278,7 @@ console.log({ size, bytes });
 ```
 
 | Symbol | zeros | Unit      |
-|-------:|------:|-----------|
+| -----: | ----: | --------- |
 |     yb |    24 | yottabyte |
 |     zb |    21 | zettabyte |
 |     eb |    18 | exabyte   |
