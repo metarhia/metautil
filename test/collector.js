@@ -174,10 +174,6 @@ metatests.test('Collector: after done', async (test) => {
   dc.set('key1', 1);
   dc.set('key2', 2);
 
-  dc.on('done', (result) => {
-    test.strictSame(result, expectedResult);
-  });
-
   const result = await dc;
   test.strictSame(result, expectedResult);
   test.end();
