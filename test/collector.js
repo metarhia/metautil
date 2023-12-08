@@ -179,6 +179,37 @@ metatests.test('Collector: after done', async (test) => {
   test.end();
 });
 
+metatests.test('Collector: then chain', (test) => {
+  const expectedResult = { key1: 1, key2: 2, key3: 3 };
+  const dc = collect(['key1', 'key2']);
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  dc.then((result) => ({ ...result, key3: 3 })).then((result) => {
+    test.strictSame(result, expectedResult);
+    test.end();
+  });
+});
+
+metatests.test('Collector: error in then chain', (test) => {
+  const expectedResult = new Error('expected error');
+  const dc = collect(['key1', 'key2']);
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  dc.then(() => {
+    throw new Error('expected error');
+  }).then(
+    (result) => result,
+    (error) => {
+      test.strictSame(error.message, expectedResult.message);
+      test.end();
+    },
+  );
+});
+
 metatests.test('Collector: wait mode "all" fullfilled', async (test) => {
   const expectedResult = { key1: 'User: Marcus', key2: 'User: Caesar' };
   const dc = collect(['key1', 'key2']);
