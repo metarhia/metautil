@@ -30,17 +30,11 @@ Collect keys with `.set` method:
 ```js
 const ac = collect(['userName', 'fileName']);
 
-setTimeout(() => {
-  ac.set('fileName', 'marcus.txt');
-  ac.set('userName', 'Marcus');
-}, 100);
+setTimeout(() => ac.set('fileName', 'marcus.txt'), 100);
+setTimeout(() => ac.set('userName', 'Marcus'), 200);
 
-try {
-  const result = await ac;
-  console.log(result);
-} catch (error) {
-  console.error(error);
-}
+const result = await ac;
+console.log(result);
 ```
 
 Collect keys with `.wait` method from async or promise-returning function:
@@ -67,13 +61,7 @@ const ac = collect(['user', 'file'], { timeout: 2000, exact: false });
 ac.take('file', getFileCallback, 'marcus.txt');
 ac.take('user', getUserCallback, 'Marcus');
 
-ac.on('done', (result) => {
-  console.log(result);
-});
-
-ac.on('error', (error) => {
-  console.error(error);
-});
+const result = await ac;
 ```
 
 Compose collectors (collect subkeys from multiple sources):
@@ -83,6 +71,7 @@ const dc = collect(['key1', 'key2', 'key3']);
 const key1 = collect(['sub1']);
 const key3 = collect(['sub3']);
 dc.collect({ key1, key3 });
+const result = await ac;
 ```
 
 - `done: boolean`
