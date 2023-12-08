@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [4.0.2][] - 2023-12-08
+
+- Add new properties `mode` to Collector class: 'all' or 'allSettled': change behavior of `wait`, `take`, `collect` method in case of errors
+
 ## [4.0.1][] - 2023-11-18
 
 - Fix package: add `dist.js`

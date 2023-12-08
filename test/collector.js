@@ -178,3 +178,88 @@ metatests.test('Collector: after done', async (test) => {
   test.strictSame(result, expectedResult);
   test.end();
 });
+
+metatests.test('Collector: wait mode "all" fullfilled', async (test) => {
+  const expectedResult = { key1: 'User: Marcus', key2: 'User: Caesar' };
+  const dc = collect(['key1', 'key2']);
+
+  const fn = async (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 100);
+    });
+  dc.wait('key1', fn, 'Marcus');
+  dc.wait('key2', fn, 'Caesar');
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
+
+metatests.test('Collector: wait mode "all" rejected', async (test) => {
+  const expectedResult = 'Error: Caesar';
+  const dc = collect(['key1', 'key2']);
+
+  const fn = async (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 100);
+    });
+  const rejectFn = async (name) =>
+    new Promise((_, reject) => {
+      setTimeout(() => reject(`Error: ${name}`), 100);
+    });
+
+  dc.wait('key1', fn, 'Marcus');
+  dc.wait('key2', rejectFn, 'Caesar');
+
+  try {
+    await dc;
+    test.fail('Not rejected');
+  } catch (error) {
+    test.strictSame(error, expectedResult);
+  }
+  test.end();
+});
+
+metatests.test('Collector: wait mode "allSettled" fullfilled', async (test) => {
+  const expectedResult = {
+    key1: { status: 'fulfilled', value: 'User: Marcus' },
+    key2: { status: 'fulfilled', value: 'User: Caesar' },
+  };
+  const dc = collect(['key1', 'key2'], { mode: 'allSettled' });
+
+  const fn = async (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 100);
+    });
+
+  dc.wait('key1', fn, 'Marcus');
+  dc.wait('key2', fn, 'Caesar');
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
+
+metatests.test('Collector: wait mode "allSettled" rejected', async (test) => {
+  const expectedResult = {
+    key1: { status: 'fulfilled', value: 'User: Marcus' },
+    key2: { status: 'rejected', reason: 'Error: Caesar' },
+  };
+  const dc = collect(['key1', 'key2'], { mode: 'allSettled' });
+
+  const fn = async (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 100);
+    });
+  const rejectFn = async (name) =>
+    new Promise((_, reject) => {
+      setTimeout(() => reject(`Error: ${name}`), 100);
+    });
+
+  dc.wait('key1', fn, 'Marcus');
+  dc.wait('key2', rejectFn, 'Caesar');
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
