@@ -105,6 +105,11 @@ const result = await ac;
 - `md5(fileName: string): Promise<string>`
 - `getX509(cert: X509Certificate): Strings`
 
+```js
+const x509 = new crypto.X509Certificate(cert);
+const domains = metautil.getX509names(x509);
+```
+
 ## Datetime utilities
 
 - `duration(s: string | number): number`
@@ -264,6 +269,24 @@ semaphore.leave();
 
 - `bytesToSize(bytes: number): string`
 - `sizeToBytes(size: string): number`
+
+```js
+const size = bytesToSize(100000000);
+const bytes = sizeToBytes(size);
+console.log({ size, bytes });
+// { size: '100 MB', bytes: 100000000 }
+```
+
+| Symbol | zeros | Unit      |
+|-------:|------:|-----------|
+|     yb |    24 | yottabyte |
+|     zb |    21 | zettabyte |
+|     eb |    18 | exabyte   |
+|     pb |    15 | petabyte  |
+|     tb |    12 | terabyte  |
+|     gb |     9 | gigabyte  |
+|     mb |     6 | megabyte  |
+|     kb |     3 | kilobyte  |
 
 ## License & Contributors
 
