@@ -19,13 +19,81 @@
 - `timeout(msec: number, signal?: AbortSignal): Promise<void>`
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
+- `collect(keys: Array<string>, options?: CollectorOptions): Collector`
+
+## Class `Collector`
+
+Async collection is an utility to collect needed keys and signalize on done
+
+Collect keys with `.set` method:
+
+```js
+const ac = collect(['userName', 'fileName']);
+
+setTimeout(() => ac.set('fileName', 'marcus.txt'), 100);
+setTimeout(() => ac.set('userName', 'Marcus'), 200);
+
+const result = await ac;
+console.log(result);
+```
+
+Collect keys with `.wait` method from async or promise-returning function:
+
+```js
+const ac = collect(['user', 'file']);
+
+ac.wait('file', getFilePromisified, 'marcus.txt');
+ac.wait('user', getUserPromisified, 'Marcus');
+
+try {
+  const result = await ac;
+  console.log(result);
+} catch (error) {
+  console.error(error);
+}
+```
+
+Collect keys with `.take` method from callback-last-error-first function:
+
+```js
+const ac = collect(['user', 'file'], { timeout: 2000, exact: false });
+
+ac.take('file', getFileCallback, 'marcus.txt');
+ac.take('user', getUserCallback, 'Marcus');
+
+const result = await ac;
+```
+
+Compose collectors (collect subkeys from multiple sources):
+
+```js
+const dc = collect(['key1', 'key2', 'key3']);
+const key1 = collect(['sub1']);
+const key3 = collect(['sub3']);
+dc.collect({ key1, key3 });
+const result = await ac;
+```
+
+- `done: boolean`
+- `data: Dictionary`
+- `keys: Array<string>`
+- `count: number`
+- `exact: boolean`
+- `timeout: number`
+- `constructor(keys: Array<string>, options?: CollectorOptions)`
+- `set(key: string, value: unknown)`
+- `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
+- `take(key: string, fn: Function, ...args?: Array<unknown>)`
+- `collect(sources: Record<string, Collector>)`
+- `fail(error: Error)`
+- `then(fulfill: Function, reject?: Function)`
 
 ## Crypto utilities
 
 - `cryptoRandom(min?: number, max?: number): number`
 - `random(min?: number, max?: number): number`
 - `generateUUID(): string`
-- `generateKey(length: number, possible: string): string`
+- `generateKey(possible: string, length: number): string`
 - `crcToken(secret: string, key: string): string`
 - `generateToken(secret: string, characters: string, length: number): string`
 - `validateToken(secret: string, token: string): boolean`
@@ -35,6 +103,11 @@
 - `validatePassword(password: string, serHash: string): Promise<boolean>`
 - `md5(fileName: string): Promise<string>`
 - `getX509(cert: X509Certificate): Strings`
+
+```js
+const x509 = new crypto.X509Certificate(cert);
+const domains = metautil.getX509names(x509);
+```
 
 ## Datetime utilities
 
@@ -49,7 +122,18 @@
 ## Error utilities
 
 - Class `Error`
-  - `constructor(message: string, code: number)`
+  - `constructor(message: string, options?: number | string | ErrorOptions)`
+  - `message: string`
+  - `stack: string`
+  - `code?: number | string`
+  - `cause?: Error`
+- Class `DomainError`
+  - `constructor(code?: string, options?: number | string | ErrorOptions)`
+  - `message: string`
+  - `stack: string`
+  - `code?: number | string`
+  - `cause?: Error`
+  - `toError(errors: Errors): Error`
 - `isError(instance: object): boolean`
 
 ## File system utilities
@@ -86,6 +170,20 @@
 - `serializeArguments(fields: Strings, args: Dictionary): string`
 
 ## Class Pool
+
+```js
+const pool = new metautil.Pool();
+pool.add({ a: 1 });
+pool.add({ a: 2 });
+pool.add({ a: 3 });
+
+if (pool.isFree(obj1)) console.log('1 is free');
+const item = await pool.capture();
+if (pool.isFree(obj1)) console.log('1 is captured');
+const obj = await pool.next();
+// obj is { a: 2 }
+pool.release(item);
+```
 
 - `constructor(options: { timeout?: number })`
 - `items: Array<unknown>`
@@ -126,6 +224,17 @@ const playerState = projection(player, ['name', 'score']);
 
 ## Class Semaphore
 
+```js
+const CONCURRENCY = 3;
+const QUEUE_SIZE = 4;
+const TIMEOUT = 1500;
+const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
+
+await semaphore.enter();
+// Do something
+semaphore.leave();
+```
+
 - `constructor(concurrency: number, size?: number, timeout?: number)`
 - `concurrency: number`
 - `counter: number`
@@ -159,6 +268,24 @@ const playerState = projection(player, ['name', 'score']);
 
 - `bytesToSize(bytes: number): string`
 - `sizeToBytes(size: string): number`
+
+```js
+const size = bytesToSize(100000000);
+const bytes = sizeToBytes(size);
+console.log({ size, bytes });
+// { size: '100 MB', bytes: 100000000 }
+```
+
+| Symbol | zeros | Unit      |
+| -----: | ----: | --------- |
+|     yb |    24 | yottabyte |
+|     zb |    21 | zettabyte |
+|     eb |    18 | exabyte   |
+|     pb |    15 | petabyte  |
+|     tb |    12 | terabyte  |
+|     gb |     9 | gigabyte  |
+|     mb |     6 | megabyte  |
+|     kb |     3 | kilobyte  |
 
 ## License & Contributors
 

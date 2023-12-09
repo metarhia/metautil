@@ -22,7 +22,7 @@ export function timeoutify(
 export function cryptoRandom(min?: number, max?: number): number;
 export function random(min?: number, max?: number): number;
 export function generateUUID(): string;
-export function generateKey(length: number, possible: string): string;
+export function generateKey(possible: string, length: number): string;
 export function crcToken(secret: string, key: string): string;
 
 export function generateToken(
@@ -224,3 +224,33 @@ export function trimLines(s: string): string;
 
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
+
+// Submodule: collector
+
+export interface CollectorOptions {
+  exact?: boolean;
+  timeout?: number;
+}
+
+type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
+
+export class Collector {
+  done: boolean;
+  data: Dictionary;
+  keys: Array<string>;
+  count: number;
+  exact: boolean;
+  timeout: number;
+  constructor(keys: Array<string>, options?: CollectorOptions);
+  set(key: string, value: unknown): void;
+  wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
+  take(key: string, fn: Function, ...args: Array<unknown>): void;
+  collect(sources: Record<string, Collector>): void;
+  fail(error: Error): void;
+  then(onFulfill: Function, onReject?: Function): Promise<unknown>;
+}
+
+export function collect(
+  keys: Array<string>,
+  options?: CollectorOptions,
+): Collector;
