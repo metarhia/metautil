@@ -126,6 +126,7 @@ type Body = ArrayBuffer | Buffer | string;
 
 export type ApiOptions = {
   method?: HttpMethod;
+  headers?: object;
   body?: Body;
 };
 
