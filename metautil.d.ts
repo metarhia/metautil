@@ -189,8 +189,14 @@ export function projection(
 
 // Submodule: semaphore
 
+export interface SemaphoreOptions {
+  concurrency: number;
+  size?: number;
+  timeout?: number;
+}
+
 export class Semaphore {
-  constructor(concurrency: number, size?: number, timeout?: number);
+  constructor(options: SemaphoreOptions);
   concurrency: number;
   counter: number;
   timeout: number;
