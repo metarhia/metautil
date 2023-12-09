@@ -2,6 +2,16 @@
 
 ## [Unreleased][unreleased]
 
+## [5.0.0][] - 2023-12-10
+
+- Changed `Semaphore` signature, moved all parameters to `options`
+- Changed `generateKey` parameter order
+- Replaced `node:http/https` with node native `fetch` for `httpApiCall`
+- Move `EventEmitter` polyfill from metacom (with improvements)
+- Added customHeaders option for `httpApiCall`
+- Implemented async collection: `Collector`
+- Fixed sync capture in `Pool`
+
 ## [4.0.1][] - 2023-11-18
 
 - Fix package: add `dist.js`
@@ -266,7 +276,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v4.0.1....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.0.0....HEAD
+[5.0.0]: https://github.com/metarhia/metautil/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/metarhia/metautil/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/metarhia/metautil/compare/v3.15.0...v4.0.0
 [3.15.0]: https://github.com/metarhia/metautil/compare/v3.14.0...v3.15.0
