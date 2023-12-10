@@ -287,6 +287,26 @@ console.log({ size, bytes });
 |     mb |     6 | megabyte  |
 |     kb |     3 | kilobyte  |
 
+## Class `EnevtEmitter`
+
+- `getMaxListeners(): number`
+- `listenerCount(name: string): number`
+- `on(name: string, fn: Function)`
+- `once(name: string, fn: Function)`
+- `emit(name: string, ...args: Array<unknown>)`
+- `remove(name: string, fn: Function)`
+- `clear(name: string)`
+
+## `EnevtEmitter` utilities
+
+- `once(emitter: EventEmitter, name: string): Promise<unknown>`
+
+```js
+const ee = new metautil.EventEmitter();
+setTimeout(() => ee.emit('name3', 'value'), 100);
+const result = await metautil.once(ee, 'name3');
+```
+
 ## License & Contributors
 
 Copyright (c) 2017-2023 [Metarhia contributors](https://github.com/metarhia/metautil/graphs/contributors).
