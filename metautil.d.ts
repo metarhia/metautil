@@ -1,4 +1,3 @@
-import { EventEmitter } from 'node:events';
 import { IncomingMessage } from 'node:http';
 import { ScryptOptions, X509Certificate } from 'node:crypto';
 
@@ -260,3 +259,18 @@ export function collect(
   keys: Array<string>,
   options?: CollectorOptions,
 ): Collector;
+
+// Submodule: Events
+
+export class EventEmitter {
+  constructor();
+  getMaxListeners(): number;
+  listenerCount(name: string): number;
+  on(name: string, fn: Function): void;
+  once(name: string, fn: Function): void;
+  emit(name: string, ...args: Array<unknown>): void;
+  remove(name: string, fn: Function): void;
+  clear(name: string): void;
+}
+
+export function once(emitter: EventEmitter, name: string): Promise<unknown>;
