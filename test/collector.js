@@ -105,12 +105,9 @@ metatests.test('Collector: defaultValue', async (test) => {
     dc.set('key1', 2);
   }, 100);
 
-  try {
-    await dc;
-  } catch (error) {
-    test.strictSame(error.message, 'Custom error');
-    test.end();
-  }
+  const result = await dc;
+  test.strictSame(result, defaultValue);
+  test.end();
 });
 
 metatests.test('Collector: fail', async (test) => {
