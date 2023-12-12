@@ -99,14 +99,22 @@ metatests.test('Collector: timeout', async (test) => {
 
 metatests.test('Collector: defaultValue', async (test) => {
   const defaultValue = { key1: 1 };
-  const dc = collect(['key1'], { defaultValue, timeout: 50 });
+
+  const dc1 = collect(['key1'], { defaultValue, timeout: 50 });
+  const dc2 = collect(['key1'], { defaultValue: {}, timeout: 50 });
 
   setTimeout(() => {
-    dc.set('key1', 2);
+    dc1.set('key1', 2);
+    dc2.set('key1', 2);
   }, 100);
 
-  const result = await dc;
-  test.strictSame(result, defaultValue);
+  try {
+    const result = await dc1;
+    test.strictSame(result, defaultValue);
+    await dc2;
+  } catch (error) {
+    test.strictSame(error.message, 'Collector timed out');
+  }
   test.end();
 });
 
