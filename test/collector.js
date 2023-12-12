@@ -2,6 +2,7 @@
 
 const { collect } = require('..');
 const metatests = require('metatests');
+const { Schema } = require('metaschema');
 
 metatests.test('Collector: keys', async (test) => {
   const expectedResult = { key1: 1, key2: 2 };
@@ -209,3 +210,105 @@ metatests.test('Collector: error in then chain', (test) => {
     },
   );
 });
+
+metatests.test('Collector: collect with schema validation', async (test) => {
+  const schema = Schema.from({
+    firstname: 'string',
+    lastname: 'string',
+  });
+  const ac1 = collect(['firstname', 'lastname'], { schema });
+
+  ac1.set('firstname', undefined);
+  ac1.set('lastname', 1);
+
+  const expectedResult1 = new Error(
+    'Invalid keys type: Field "firstname" not of expected type: string; Field "lastname" not of expected type: string',
+  );
+
+  try {
+    await ac1;
+  } catch (error) {
+    test.strictSame(error.message, expectedResult1.message);
+  }
+
+  const ac2 = collect(['firstname', 'lastname'], {
+    schema,
+    exact: false,
+  });
+
+  ac2.set('fullName', 'Michael Jordan');
+  ac2.set('firstname', 'Michael');
+  ac2.set('lastname', 'Jordan');
+
+  const expectedResult2 = new Error(
+    'Invalid keys type: Field "fullName" is not expected',
+  );
+  try {
+    await ac2;
+  } catch (error) {
+    test.strictSame(error.message, expectedResult2.message);
+  }
+
+  test.end();
+});
+
+metatests.test(
+  'Collector: compose collect with schema validation',
+  async (test) => {
+    const schema = Schema.from({
+      id: 'number',
+      profile: {
+        firstname: 'string',
+        lastname: 'string',
+        fullName: { type: 'string', required: false },
+        age: 'number',
+      },
+    });
+
+    const ac1 = collect(['id', 'profile'], { schema });
+    const profile1 = collect(['firstname', 'lastname', 'fullName', 'age']);
+
+    ac1.collect({ profile: profile1 });
+    ac1.set('id', 1);
+    profile1.set('firstname', 'Michael');
+    profile1.set('lastname', 'Jordan');
+    profile1.set('fullName', undefined);
+    profile1.set('age', 60);
+
+    const expectedResult1 = {
+      id: 1,
+      profile: {
+        firstname: 'Michael',
+        lastname: 'Jordan',
+        fullName: undefined,
+        age: 60,
+      },
+    };
+
+    const result1 = await ac1;
+
+    test.strictSame(result1, expectedResult1);
+
+    const ac2 = collect(['id', 'profile'], { schema });
+    const profile2 = collect(['firstname', 'lastname', 'fullName', 'age']);
+
+    ac2.collect({ profile: profile2 });
+    ac2.set('id', 'string');
+    profile2.set('firstname', undefined);
+    profile2.set('lastname', 'Jordan');
+    profile2.set('fullName', undefined);
+    profile2.set('age', 'string');
+
+    const expectedResult2 = new Error(
+      'Invalid keys type: Field "id" not of expected type: number; Field "profile.firstname" not of expected type: string; Field "profile.age" not of expected type: number',
+    );
+
+    try {
+      await ac2;
+    } catch (error) {
+      test.strictSame(error.message, expectedResult2.message);
+    }
+
+    test.end();
+  },
+);

@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'node:http';
 import { ScryptOptions, X509Certificate } from 'node:crypto';
+import { Schema } from 'metaschema';
 
 type Strings = Array<string>;
 type Dictionary = Record<string, unknown>;
@@ -235,6 +236,7 @@ export function sizeToBytes(size: string): number;
 export interface CollectorOptions {
   exact?: boolean;
   timeout?: number;
+  schema?: Schema;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -245,6 +247,7 @@ export class Collector {
   keys: Array<string>;
   count: number;
   exact: boolean;
+  schema: Schema | null;
   timeout: number;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
