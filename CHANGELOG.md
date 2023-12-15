@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [5.0.1][] - 2023-12-15
+
+- Add new properties `isRejectable` to Collector class: change behavior of `wait`, `take`, `collect` method in case of errors
+
 ## [5.0.0][] - 2023-12-10
 
 - Changed `Semaphore` signature, moved all parameters to `options`

@@ -209,3 +209,100 @@ metatests.test('Collector: error in then chain', (test) => {
     },
   );
 });
+
+metatests.test(
+  'Collector: wait isRejectable = true, all fulfilled',
+  async (test) => {
+    const expectedResult = { key1: 'User: Marcus', key2: 'User: Caesar' };
+    const dc = collect(['key1', 'key2']);
+
+    const fn = async (name) =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(`User: ${name}`), 100);
+      });
+    dc.wait('key1', fn, 'Marcus');
+    dc.wait('key2', fn, 'Caesar');
+
+    const result = await dc;
+    test.strictSame(result, expectedResult);
+    test.end();
+  },
+);
+
+metatests.test(
+  'Collector: wait isRejectable = true, rejected',
+  async (test) => {
+    const expectedResult = 'Error: Caesar';
+    const dc = collect(['key1', 'key2']);
+
+    const fn = async (name) =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(`User: ${name}`), 100);
+      });
+    const rejectFn = async (name) =>
+      new Promise((_, reject) => {
+        setTimeout(() => reject(`Error: ${name}`), 100);
+      });
+
+    dc.wait('key1', fn, 'Marcus');
+    dc.wait('key2', rejectFn, 'Caesar');
+
+    try {
+      await dc;
+      test.fail('Not rejected');
+    } catch (error) {
+      test.strictSame(error, expectedResult);
+    }
+    test.end();
+  },
+);
+
+metatests.test(
+  'Collector: wait isRejectable = false, all fulfilled',
+  async (test) => {
+    const expectedResult = {
+      key1: { status: 'fulfilled', value: 'User: Marcus' },
+      key2: { status: 'fulfilled', value: 'User: Caesar' },
+    };
+    const dc = collect(['key1', 'key2'], { isRejectable: false });
+
+    const fn = async (name) =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(`User: ${name}`), 100);
+      });
+
+    dc.wait('key1', fn, 'Marcus');
+    dc.wait('key2', fn, 'Caesar');
+
+    const result = await dc;
+    test.strictSame(result, expectedResult);
+    test.end();
+  },
+);
+
+metatests.test(
+  'Collector: wait isRejectable = false rejected',
+  async (test) => {
+    const expectedResult = {
+      key1: { status: 'fulfilled', value: 'User: Marcus' },
+      key2: { status: 'rejected', reason: 'Error: Caesar' },
+    };
+    const dc = collect(['key1', 'key2'], { isRejectable: false });
+
+    const fn = async (name) =>
+      new Promise((resolve) => {
+        setTimeout(() => resolve(`User: ${name}`), 100);
+      });
+    const rejectFn = async (name) =>
+      new Promise((_, reject) => {
+        setTimeout(() => reject(`Error: ${name}`), 100);
+      });
+
+    dc.wait('key1', fn, 'Marcus');
+    dc.wait('key2', rejectFn, 'Caesar');
+
+    const result = await dc;
+    test.strictSame(result, expectedResult);
+    test.end();
+  },
+);

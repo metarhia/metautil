@@ -235,6 +235,7 @@ export function sizeToBytes(size: string): number;
 export interface CollectorOptions {
   exact?: boolean;
   timeout?: number;
+  isRejectable?: boolean;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
