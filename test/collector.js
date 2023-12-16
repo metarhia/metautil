@@ -223,3 +223,25 @@ metatests.test('Collector: error in then chain', (test) => {
     },
   );
 });
+
+metatests.test(
+  'Collector: error in strict mode on key reassignment',
+  async (test) => {
+    test.plan(1);
+
+    const expectedError = new Error(
+      'Collector was initiated in strict mode. Reassingnment of values is forbidden!',
+    );
+    const dc = collect(['key1', 'key2'], { allowReassignment: false });
+
+    dc.set('key1', 1);
+    dc.set('key1', 5);
+    dc.set('key2', 7);
+
+    try {
+      await dc;
+    } catch (error) {
+      test.strictSame(error.message, expectedError.message);
+    }
+  },
+);
