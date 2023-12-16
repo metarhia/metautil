@@ -232,7 +232,7 @@ metatests.test(
     const expectedError = new Error(
       'Collector was initiated in strict mode. Reassingnment of values is forbidden!',
     );
-    const dc = collect(['key1', 'key2'], { allowReassignment: false });
+    const dc = collect(['key1', 'key2'], { reassign: false });
 
     dc.set('key1', 1);
     dc.set('key1', 5);
