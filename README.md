@@ -20,6 +20,8 @@
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
 - `collect(keys: Array<string>, options?: CollectorOptions): Collector`
+  - `options.exact?: boolean`
+  - `options.timeout?: number`
 
 ## Class `Collector`
 
@@ -81,6 +83,8 @@ const result = await ac;
 - `exact: boolean`
 - `timeout: number`
 - `constructor(keys: Array<string>, options?: CollectorOptions)`
+  - `options.exact?: boolean`
+  - `options.timeout?: number`
 - `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
@@ -123,12 +127,16 @@ const domains = metautil.getX509names(x509);
 
 - Class `Error`
   - `constructor(message: string, options?: number | string | ErrorOptions)`
+    - `options.code?: number | string`
+    - `options.cause?: Error`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
   - `cause?: Error`
 - Class `DomainError`
   - `constructor(code?: string, options?: number | string | ErrorOptions)`
+    - `options.code?: number | string`
+    - `options.cause?: Error`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
@@ -156,6 +164,9 @@ const domains = metautil.getX509names(x509);
 - `ipToInt(ip?: string): number`
 - `intToIp(int: number): string`
 - `httpApiCall(url: string, options: ApiOptions): Promise<object>`
+  - `options.method?: HttpMethod`
+  - `options.headers?: object`
+  - `options.body?: Body`
 
 ## Objects utilities
 
@@ -185,7 +196,8 @@ const obj = await pool.next();
 pool.release(item);
 ```
 
-- `constructor(options: { timeout?: number })`
+- `constructor(options: PoolOptions)`
+  - `options.timeout?: number`
 - `items: Array<unknown>`
 - `free: Array<boolean>`
 - `queue: Array<unknown>`
@@ -233,9 +245,9 @@ semaphore.leave();
 ```
 
 - `constructor(options: SemaphoreOptions)`
-  - `concurrency: number`
-  - `size?: number`
-  - `timeout?: number`
+  - `options.concurrency: number`
+  - `options.size?: number`
+  - `options.timeout?: number`
 - `concurrency: number`
 - `counter: number`
 - `timeout: number`
