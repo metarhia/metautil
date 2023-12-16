@@ -248,7 +248,11 @@ export class Collector {
   timeout: number;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
-  wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
+  wait(
+    key: string,
+    fn: AsyncFunction | Promise<unknown>,
+    ...args: Array<unknown>
+  ): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
   collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;
