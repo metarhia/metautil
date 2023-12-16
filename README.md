@@ -225,17 +225,17 @@ const playerState = projection(player, ['name', 'score']);
 ## Class Semaphore
 
 ```js
-const CONCURRENCY = 3;
-const QUEUE_SIZE = 4;
-const TIMEOUT = 1500;
-const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
-
+const options = { concurrency: 3, size: 4, timeout: 1500 };
+const semaphore = new Semaphore(options);
 await semaphore.enter();
 // Do something
 semaphore.leave();
 ```
 
-- `constructor(concurrency: number, size?: number, timeout?: number)`
+- `constructor(options: SemaphoreOptions)`
+  - `concurrency: number`
+  - `size?: number`
+  - `timeout?: number`
 - `concurrency: number`
 - `counter: number`
 - `timeout: number`
