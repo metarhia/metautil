@@ -235,6 +235,7 @@ export function sizeToBytes(size: string): number;
 export interface CollectorOptions {
   exact?: boolean;
   timeout?: number;
+  allowReassignment?: boolean;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -246,6 +247,7 @@ export class Collector {
   count: number;
   exact: boolean;
   timeout: number;
+  allowReassignment: boolean;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
   wait(
