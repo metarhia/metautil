@@ -25,7 +25,23 @@
 
 ## Class `Collector`
 
-Async collection is an utility to collect needed keys and signalize on done
+Async collection is an utility to collect needed keys and signalize on done.
+
+- `constructor(keys: Array<string>, options?: CollectorOptions)`
+  - `options.exact?: boolean`
+  - `options.timeout?: number`
+- `set(key: string, value: unknown)`
+- `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
+- `take(key: string, fn: Function, ...args?: Array<unknown>)`
+- `collect(sources: Record<string, Collector>)`
+- `fail(error: Error)`
+- `then(fulfill: Function, reject?: Function)`
+- `done: boolean`
+- `data: Dictionary`
+- `keys: Array<string>`
+- `count: number`
+- `exact: boolean`
+- `timeout: number`
 
 Collect keys with `.set` method:
 
@@ -75,22 +91,6 @@ const key3 = collect(['sub3']);
 dc.collect({ key1, key3 });
 const result = await ac;
 ```
-
-- `done: boolean`
-- `data: Dictionary`
-- `keys: Array<string>`
-- `count: number`
-- `exact: boolean`
-- `timeout: number`
-- `constructor(keys: Array<string>, options?: CollectorOptions)`
-  - `options.exact?: boolean`
-  - `options.timeout?: number`
-- `set(key: string, value: unknown)`
-- `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
-- `take(key: string, fn: Function, ...args?: Array<unknown>)`
-- `collect(sources: Record<string, Collector>)`
-- `fail(error: Error)`
-- `then(fulfill: Function, reject?: Function)`
 
 ## Crypto utilities
 
@@ -182,20 +182,6 @@ const domains = metautil.getX509names(x509);
 
 ## Class Pool
 
-```js
-const pool = new metautil.Pool();
-pool.add({ a: 1 });
-pool.add({ a: 2 });
-pool.add({ a: 3 });
-
-if (pool.isFree(obj1)) console.log('1 is free');
-const item = await pool.capture();
-if (pool.isFree(obj1)) console.log('1 is captured');
-const obj = await pool.next();
-// obj is { a: 2 }
-pool.release(item);
-```
-
 - `constructor(options: PoolOptions)`
   - `options.timeout?: number`
 - `items: Array<unknown>`
@@ -210,6 +196,20 @@ pool.release(item);
 - `capture(): Promise<unknown>`
 - `release(item: unknown): void`
 - `isFree(item: unknown): boolean`
+
+```js
+const pool = new metautil.Pool();
+pool.add({ a: 1 });
+pool.add({ a: 2 });
+pool.add({ a: 3 });
+
+if (pool.isFree(obj1)) console.log('1 is free');
+const item = await pool.capture();
+if (pool.isFree(obj1)) console.log('1 is captured');
+const obj = await pool.next();
+// obj is { a: 2 }
+pool.release(item);
+```
 
 ## Array utilities
 
@@ -236,14 +236,6 @@ const playerState = projection(player, ['name', 'score']);
 
 ## Class Semaphore
 
-```js
-const options = { concurrency: 3, size: 4, timeout: 1500 };
-const semaphore = new Semaphore(options);
-await semaphore.enter();
-// Do something
-semaphore.leave();
-```
-
 - `constructor(options: SemaphoreOptions)`
   - `options.concurrency: number`
   - `options.size?: number`
@@ -256,6 +248,14 @@ semaphore.leave();
 - `queue: Array<QueueElement>`
 - `enter(): Promise<void>`
 - `leave(): void`
+
+```js
+const options = { concurrency: 3, size: 4, timeout: 1500 };
+const semaphore = new Semaphore(options);
+await semaphore.enter();
+// Do something
+semaphore.leave();
+```
 
 ## Strings utilities
 
