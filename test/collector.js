@@ -223,3 +223,20 @@ metatests.test('Collector: error in then chain', (test) => {
     },
   );
 });
+
+metatests.test('Collector: reassign is off', async (test) => {
+  test.plan(1);
+
+  const expectedError = new Error('Collector reassign mode is off');
+  const dc = collect(['key1', 'key2'], { reassign: false });
+
+  dc.set('key1', 1);
+  dc.set('key1', 5);
+  dc.set('key2', 7);
+
+  try {
+    await dc;
+  } catch (error) {
+    test.strictSame(error.message, expectedError.message);
+  }
+});
