@@ -22,6 +22,7 @@
 - `collect(keys: Array<string>, options?: CollectorOptions): Collector`
   - `options.exact?: boolean`
   - `options.timeout?: number`
+  - `options.reassign?: boolean`
 
 ## Class `Collector`
 
@@ -30,6 +31,7 @@ Async collection is an utility to collect needed keys and signalize on done.
 - `constructor(keys: Array<string>, options?: CollectorOptions)`
   - `options.exact?: boolean`
   - `options.timeout?: number`
+  - `options.reassign?: boolean`
 - `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
