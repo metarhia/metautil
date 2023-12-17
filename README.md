@@ -94,10 +94,10 @@ dc.collect({ key1, key3 });
 const result = await ac;
 ```
 
-Complex example: compare `Promise.all` and `Collector` in next two examples:
+Complex example: compare `Promise.allSettled` + `Promise.race` vs `Collector` in next two examples:
 
 ```js
-// Collect 4 keys from different contracts with Promise.all
+// Collect 4 keys from different contracts with Promise.allSettled + Promise.race
 
 const promise1 = new Promise((resolve, reject) => {
   fs.readFile('README.md', (err, data) => {
@@ -105,26 +105,24 @@ const promise1 = new Promise((resolve, reject) => {
     resolve(data);
   });
 });
-
 const promise2 = fs.promises.readFile('README.md');
 const url = 'http://worldtimeapi.org/api/timezone/Europe';
-
 const promise3 = fetch(url).then((data) => data.json());
-
 const promise4 = new Promise((resolve) => {
-  setTimeout(() => {
-    resolve('value4');
-  }, 50);
+  setTimeout(() => resolve('value4'), 50);
 });
-
-const [key1, key2, key3, key4] = await Promise.all([
-  promise1,
-  promise2,
-  promise3,
-  promise4,
-]);
-const result = { key1, key2, key3, key4 };
-console.log(result);
+const timeout = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error('Timed out')), 1000);
+});
+const data = Promise.allSettled([promise1, promise2, promise3, promise4]);
+try {
+  const keys = await Promise.race([data, timeout]);
+  const [key1, key2, key3, key4] = keys.map(({ value }) => value);
+  const result = { key1, key2, key3, key4 };
+  console.log(result);
+} catch (err) {
+  console.log(err);
+}
 ```
 
 Compare with:
@@ -132,22 +130,23 @@ Compare with:
 ```js
 // Collect 4 keys from different contracts with Collector
 
-const dc = collect(['key1', 'key2', 'key3', 'key4']);
+const dc = collect(['key1', 'key2', 'key3', 'key4'], { timeout: 1000 });
 
 dc.take('key1', fs.readFile, 'README.md');
-
 dc.wait('key2', fs.promises.readFile, 'README.md');
-
 const url = 'http://worldtimeapi.org/api/timezone/Europe';
 dc.wait(
   'key3',
   fetch(url).then((data) => data.json()),
 );
-
 setTimeout(() => dc.set('key4', 'value4'), 50);
 
-const result = await dc;
-console.log(result);
+try {
+  const result = await dc;
+  console.log(result);
+} catch (err) {
+  console.log(err);
+}
 ```
 
 ## Crypto utilities
