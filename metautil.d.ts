@@ -236,6 +236,7 @@ export interface CollectorOptions {
   exact?: boolean;
   defaultValue?: object;
   timeout?: number;
+  reassign?: boolean;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -248,9 +249,14 @@ export class Collector {
   exact: boolean;
   timeout: number;
   defaultValue: object;
+  reassign: boolean;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
-  wait(key: string, fn: AsyncFunction, ...args: Array<unknown>): void;
+  wait(
+    key: string,
+    fn: AsyncFunction | Promise<unknown>,
+    ...args: Array<unknown>
+  ): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
   collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;

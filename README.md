@@ -20,10 +20,30 @@
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
 - `collect(keys: Array<string>, options?: CollectorOptions): Collector`
+  - `options.exact?: boolean`
+  - `options.timeout?: number`
+  - `options.reassign?: boolean`
 
 ## Class `Collector`
 
-Async collection is an utility to collect needed keys and signalize on done
+Async collection is an utility to collect needed keys and signalize on done.
+
+- `constructor(keys: Array<string>, options?: CollectorOptions)`
+  - `options.exact?: boolean`
+  - `options.timeout?: number`
+  - `options.reassign?: boolean`
+- `set(key: string, value: unknown)`
+- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>)`
+- `take(key: string, fn: Function, ...args?: Array<unknown>)`
+- `collect(sources: Record<string, Collector>)`
+- `fail(error: Error)`
+- `then(fulfill: Function, reject?: Function)`
+- `done: boolean`
+- `data: Dictionary`
+- `keys: Array<string>`
+- `count: number`
+- `exact: boolean`
+- `timeout: number`
 
 Collect keys with `.set` method:
 
@@ -74,19 +94,61 @@ dc.collect({ key1, key3 });
 const result = await ac;
 ```
 
-- `done: boolean`
-- `data: Dictionary`
-- `keys: Array<string>`
-- `count: number`
-- `exact: boolean`
-- `timeout: number`
-- `constructor(keys: Array<string>, options?: CollectorOptions)`
-- `set(key: string, value: unknown)`
-- `wait(key: string, fn: AsyncFunction, ...args?: Array<unknown>)`
-- `take(key: string, fn: Function, ...args?: Array<unknown>)`
-- `collect(sources: Record<string, Collector>)`
-- `fail(error: Error)`
-- `then(fulfill: Function, reject?: Function)`
+Complex example: compare `Promise.all` and `Collector` in next two examples:
+
+```js
+// Collect 4 keys from different contracts with Promise.all
+
+const promise1 = new Promise((resolve, reject) => {
+  fs.readFile('README.md', (err, data) => {
+    if (err) return void reject(err);
+    resolve(data);
+  });
+});
+
+const promise2 = fs.promises.readFile('README.md');
+const url = 'http://worldtimeapi.org/api/timezone/Europe';
+
+const promise3 = fetch(url).then((data) => data.json());
+
+const promise4 = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve('value4');
+  }, 50);
+});
+
+const [key1, key2, key3, key4] = await Promise.all([
+  promise1,
+  promise2,
+  promise3,
+  promise4,
+]);
+const result = { key1, key2, key3, key4 };
+console.log(result);
+```
+
+Compare with:
+
+```js
+// Collect 4 keys from different contracts with Collector
+
+const dc = collect(['key1', 'key2', 'key3', 'key4']);
+
+dc.take('key1', fs.readFile, 'README.md');
+
+dc.wait('key2', fs.promises.readFile, 'README.md');
+
+const url = 'http://worldtimeapi.org/api/timezone/Europe';
+dc.wait(
+  'key3',
+  fetch(url).then((data) => data.json()),
+);
+
+setTimeout(() => dc.set('key4', 'value4'), 50);
+
+const result = await dc;
+console.log(result);
+```
 
 ## Crypto utilities
 
@@ -123,12 +185,16 @@ const domains = metautil.getX509names(x509);
 
 - Class `Error`
   - `constructor(message: string, options?: number | string | ErrorOptions)`
+    - `options.code?: number | string`
+    - `options.cause?: Error`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
   - `cause?: Error`
 - Class `DomainError`
   - `constructor(code?: string, options?: number | string | ErrorOptions)`
+    - `options.code?: number | string`
+    - `options.cause?: Error`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
@@ -156,6 +222,9 @@ const domains = metautil.getX509names(x509);
 - `ipToInt(ip?: string): number`
 - `intToIp(int: number): string`
 - `httpApiCall(url: string, options: ApiOptions): Promise<object>`
+  - `options.method?: HttpMethod`
+  - `options.headers?: object`
+  - `options.body?: Body`
 
 ## Objects utilities
 
@@ -171,6 +240,21 @@ const domains = metautil.getX509names(x509);
 
 ## Class Pool
 
+- `constructor(options: PoolOptions)`
+  - `options.timeout?: number`
+- `items: Array<unknown>`
+- `free: Array<boolean>`
+- `queue: Array<unknown>`
+- `current: number`
+- `size: number`
+- `available: number`
+- `timeout: number`
+- `next(): Promise<unknown>`
+- `add(item: unknown): void`
+- `capture(): Promise<unknown>`
+- `release(item: unknown): void`
+- `isFree(item: unknown): boolean`
+
 ```js
 const pool = new metautil.Pool();
 pool.add({ a: 1 });
@@ -184,20 +268,6 @@ const obj = await pool.next();
 // obj is { a: 2 }
 pool.release(item);
 ```
-
-- `constructor(options: { timeout?: number })`
-- `items: Array<unknown>`
-- `free: Array<boolean>`
-- `queue: Array<unknown>`
-- `current: number`
-- `size: number`
-- `available: number`
-- `timeout: number`
-- `next(): Promise<unknown>`
-- `add(item: unknown): void`
-- `capture(): Promise<unknown>`
-- `release(item: unknown): void`
-- `isFree(item: unknown): boolean`
 
 ## Array utilities
 
@@ -224,18 +294,10 @@ const playerState = projection(player, ['name', 'score']);
 
 ## Class Semaphore
 
-```js
-const CONCURRENCY = 3;
-const QUEUE_SIZE = 4;
-const TIMEOUT = 1500;
-const semaphore = new Semaphore(CONCURRENCY, QUEUE_SIZE, TIMEOUT);
-
-await semaphore.enter();
-// Do something
-semaphore.leave();
-```
-
-- `constructor(concurrency: number, size?: number, timeout?: number)`
+- `constructor(options: SemaphoreOptions)`
+  - `options.concurrency: number`
+  - `options.size?: number`
+  - `options.timeout?: number`
 - `concurrency: number`
 - `counter: number`
 - `timeout: number`
@@ -244,6 +306,14 @@ semaphore.leave();
 - `queue: Array<QueueElement>`
 - `enter(): Promise<void>`
 - `leave(): void`
+
+```js
+const options = { concurrency: 3, size: 4, timeout: 1500 };
+const semaphore = new Semaphore(options);
+await semaphore.enter();
+// Do something
+semaphore.leave();
+```
 
 ## Strings utilities
 

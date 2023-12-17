@@ -164,6 +164,20 @@ metatests.test('Collector: wait', async (test) => {
   test.end();
 });
 
+metatests.test('Collector: wait for promise', async (test) => {
+  const expectedResult = { key1: 'User: Marcus' };
+  const dc = collect(['key1']);
+
+  const promise = new Promise((resolve) => {
+    setTimeout(() => resolve('User: Marcus'), 100);
+  });
+  dc.wait('key1', promise);
+
+  const result = await dc;
+  test.strictSame(result, expectedResult);
+  test.end();
+});
+
 metatests.test('Collector: compose collect', async (test) => {
   const expectedResult = { key1: { sub1: 11 }, key2: 2, key3: { sub3: 31 } };
   const dc = collect(['key1', 'key2', 'key3']);
@@ -229,4 +243,21 @@ metatests.test('Collector: error in then chain', (test) => {
       test.end();
     },
   );
+});
+
+metatests.test('Collector: reassign is off', async (test) => {
+  test.plan(1);
+
+  const expectedError = new Error('Collector reassign mode is off');
+  const dc = collect(['key1', 'key2'], { reassign: false });
+
+  dc.set('key1', 1);
+  dc.set('key1', 5);
+  dc.set('key2', 7);
+
+  try {
+    await dc;
+  } catch (error) {
+    test.strictSame(error.message, expectedError.message);
+  }
 });
