@@ -6,6 +6,7 @@
 
 - Support waiting for promise in `Collector.wait`
 - Add `reassign: boolean` to `Collector` options
+- Add `default values` to `Collector` options
 
 ## [5.0.0][] - 2023-12-10
 
