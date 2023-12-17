@@ -2,6 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [5.1.0][] - 2023-12-17
+
+- Support waiting for promise in `Collector.wait`
+- Add `reassign: boolean` to `Collector` options
+
 ## [5.0.0][] - 2023-12-10
 
 - Changed `Semaphore` signature, moved all parameters to `options`
@@ -276,7 +281,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.0.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.1.0....HEAD
+[5.1.0]: https://github.com/metarhia/metautil/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/metarhia/metautil/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/metarhia/metautil/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/metarhia/metautil/compare/v3.15.0...v4.0.0
