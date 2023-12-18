@@ -29,6 +29,7 @@ metatests.test('Collector: exact', async (test) => {
 
   try {
     await dc;
+    test.error(new Error('Should not be executed'));
   } catch (error) {
     test.strictSame(error.message, 'Unexpected key: wrongKey');
     test.end();
@@ -91,6 +92,7 @@ metatests.test('Collector: timeout', async (test) => {
 
   try {
     await dc;
+    test.error(new Error('Should not be executed'));
   } catch (error) {
     test.strictSame(error.message, 'Collector timed out');
     test.end();
@@ -106,6 +108,7 @@ metatests.test('Collector: fail', async (test) => {
 
   try {
     await dc;
+    test.error(new Error('Should not be executed'));
   } catch (error) {
     test.strictSame(error.message, 'Custom error');
     test.end();
@@ -216,7 +219,9 @@ metatests.test('Collector: error in then chain', (test) => {
   dc.then(() => {
     throw new Error('expected error');
   }).then(
-    (result) => result,
+    () => {
+      test.error(new Error('Should not be executed'));
+    },
     (error) => {
       test.strictSame(error.message, expectedResult.message);
       test.end();
@@ -236,6 +241,7 @@ metatests.test('Collector: reassign is off', async (test) => {
 
   try {
     await dc;
+    test.error(new Error('Should not be executed'));
   } catch (error) {
     test.strictSame(error.message, expectedError.message);
   }
