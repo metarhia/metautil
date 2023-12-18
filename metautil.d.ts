@@ -250,6 +250,7 @@ export class Collector {
   timeout: number;
   defaultValue: object;
   reassign: boolean;
+  signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
   wait(
@@ -260,6 +261,7 @@ export class Collector {
   take(key: string, fn: Function, ...args: Array<unknown>): void;
   collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;
+  abort(): void;
   then(onFulfill: Function, onReject?: Function): Promise<unknown>;
 }
 
