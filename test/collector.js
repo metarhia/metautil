@@ -246,3 +246,29 @@ metatests.test('Collector: reassign is off', async (test) => {
     test.strictSame(error.message, expectedError.message);
   }
 });
+
+metatests.test('Collector: abort', async (test) => {
+  const dc = collect(['key1', 'key2']);
+
+  setTimeout(() => {
+    dc.set('key1', 1);
+  }, 50);
+
+  setTimeout(() => {
+    dc.abort();
+  }, 100);
+
+  dc.signal.addEventListener('abort', (event) => {
+    test.strictSame(event.type, 'abort');
+    test.assert(dc.signal.reason instanceof DOMException);
+    test.strictSame(dc.signal.reason.name, 'AbortError');
+  });
+
+  try {
+    await dc;
+    test.error(new Error('Should not be executed'));
+  } catch (error) {
+    test.strictSame(error.message, 'Collector aborted');
+    test.end();
+  }
+});
