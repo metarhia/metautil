@@ -101,11 +101,11 @@ metatests.test('Collector: timeout', async (test) => {
 });
 
 metatests.test('Collector: default values', async (test) => {
-  const defaultValue = { key1: 1 };
+  const defaults = { key1: 1 };
 
-  const dc1 = collect(['key1'], { defaultValue, timeout: 50 });
-  const dc2 = collect(['key1'], { defaultValue: {}, timeout: 50 });
-  const dc3 = collect(['key1', 'key2'], { defaultValue, timeout: 50 });
+  const dc1 = collect(['key1'], { defaults, timeout: 50 });
+  const dc2 = collect(['key1'], { defaults: {}, timeout: 50 });
+  const dc3 = collect(['key1', 'key2'], { defaults, timeout: 50 });
   dc3.set('key2', 1);
 
   setTimeout(() => {
@@ -115,14 +115,15 @@ metatests.test('Collector: default values', async (test) => {
   }, 100);
 
   const result1 = await dc1;
-  test.strictSame(result1, defaultValue);
+  test.strictSame(result1, defaults);
   const result3 = await dc3;
-  test.strictSame(result3, { ...defaultValue, key2: 1 });
+  test.strictSame(result3, { ...defaults, key2: 1 });
 
   try {
     await dc2;
+    test.error(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Collector timed out');
+    test.strictSame(error.message, 'The operation was aborted due to timeout');
   }
   test.end();
 });
