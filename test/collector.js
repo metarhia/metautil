@@ -88,13 +88,14 @@ metatests.test('Collector: timeout', async (test) => {
 
   setTimeout(() => {
     dc.set('key1', 1);
+    dc.abort();
   }, 100);
 
   try {
     await dc;
     test.error(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Collector timed out');
+    test.strictSame(error.message, 'The operation was aborted due to timeout');
     test.end();
   }
 });
@@ -248,7 +249,7 @@ metatests.test('Collector: reassign is off', async (test) => {
 });
 
 metatests.test('Collector: abort', async (test) => {
-  const dc = collect(['key1', 'key2']);
+  const dc = collect(['key1', 'key2'], { timeout: 200 });
 
   setTimeout(() => {
     dc.set('key1', 1);
