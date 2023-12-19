@@ -4,14 +4,12 @@
 
 ## [5.2.0][] - 2023-12-19
 
-- Using `Signal.timeout` with `AbortSignal` instead of `setTimeout`
 - Added `defaults` to `Collector` options
 
 ## [5.1.0][] - 2023-12-17
 
 - Support waiting for promise in `Collector.wait`
 - Add `reassign: boolean` to `Collector` options
-- Add `default values` to `Collector` options
 
 ## [5.0.0][] - 2023-12-10
 
@@ -279,13 +277,13 @@
 
 ## [3.0.0][] - 2021-01-06
 
-- Forked from <https://github.com/metarhia/common> after 2.2.0
+- Forked from https://github.com/metarhia/common after 2.2.0
 - Removed everything except what we need in impress and its dependencies
 
 ## [2.2.0][] - 2020-07-10
 
 See this link for 2.2.0 and all previous versions:
-<https://github.com/metarhia/common/blob/master/CHANGELOG.md>
+https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
 [unreleased]: https://github.com/metarhia/metautil/compare/v5.1.0....HEAD
 [5.1.0]: https://github.com/metarhia/metautil/compare/v5.0.0...v5.1.0
