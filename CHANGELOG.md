@@ -2,7 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.0][] - 2023-12-20
+
 - Added `defaults` to `Collector` options
+- Collector: fix signel getter
+- Collector: use `Signal.timeout` instead of `setTimeout`
+- Collector: add `.signal: AbortSignal` and `abort()`
 
 ## [5.1.0][] - 2023-12-17
 
@@ -283,7 +288,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.1.0....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.0....HEAD
+[5.2.0]: https://github.com/metarhia/metautil/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/metarhia/metautil/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/metarhia/metautil/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/metarhia/metautil/compare/v4.0.0...v4.0.1
