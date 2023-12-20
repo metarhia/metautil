@@ -234,6 +234,7 @@ export function sizeToBytes(size: string): number;
 
 export interface CollectorOptions {
   exact?: boolean;
+  defaults?: object;
   timeout?: number;
   reassign?: boolean;
 }
@@ -247,6 +248,7 @@ export class Collector {
   count: number;
   exact: boolean;
   timeout: number;
+  defaults: object;
   reassign: boolean;
   signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);

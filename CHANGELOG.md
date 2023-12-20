@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Added `defaults` to `Collector` options
+
 ## [5.1.0][] - 2023-12-17
 
 - Support waiting for promise in `Collector.wait`
