@@ -2,8 +2,6 @@
 
 ## [Unreleased][unreleased]
 
-## [5.2.0][] - 2023-12-19
-
 - Added `defaults` to `Collector` options
 
 ## [5.1.0][] - 2023-12-17
