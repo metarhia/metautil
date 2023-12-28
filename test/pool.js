@@ -175,17 +175,17 @@ metatests.test('Pool: prevent infinite loop', async (test) => {
 metatests.test('Pool: release to queue', async (test) => {
   const pool = new metautil.Pool();
 
-  const obj1 = { a: 1 };
-  pool.add(obj1);
+  const obj = { a: 1 };
+  pool.add(obj);
 
-  const item1 = await pool.capture();
+  const item = await pool.capture();
   pool.capture().then((item) => {
     test.assert(pool.available === 0);
     test.assert(!pool.isFree(item));
-    test.strictSame(item, obj1);
+    test.strictSame(item, obj);
   });
 
-  pool.release(item1);
+  pool.release(item);
 
   test.end();
 });
