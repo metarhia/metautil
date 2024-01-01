@@ -91,7 +91,7 @@ const dc = collect(['key1', 'key2', 'key3']);
 const key1 = collect(['sub1']);
 const key3 = collect(['sub3']);
 dc.collect({ key1, key3 });
-const result = await ac;
+const result = await dc;
 ```
 
 Complex example: compare `Promise.allSettled` + `Promise.race` vs `Collector` in next two examples:
