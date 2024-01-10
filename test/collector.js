@@ -301,3 +301,25 @@ metatests.test('Collector: abort', async (test) => {
     test.end();
   }
 });
+
+metatests.test('Collector: timeout', async (test) => {
+  const dc = collect(['key1'], { timeout: 200 });
+
+  setTimeout(() => {
+    dc.set('key1', 1);
+  }, 250);
+
+  dc.signal.addEventListener('abort', (event) => {
+    test.strictSame(event.type, 'abort');
+    test.assert(dc.signal.reason instanceof DOMException);
+    test.strictSame(dc.signal.reason.name, 'TimeoutError');
+  });
+
+  try {
+    await dc;
+    test.error(new Error('Should not be executed'));
+  } catch (error) {
+    test.strictSame(error.message, 'The operation was aborted due to timeout');
+    test.end();
+  }
+});
