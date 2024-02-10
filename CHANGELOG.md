@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.1][] - 2024-02-10
+
+- Fixed abort handling in `Collector`
+- Fixed `Pool`: release captured items to queue
+- Update dependencies
+
 ## [5.2.0][] - 2023-12-20
 
 - Added `defaults` to `Collector` options
