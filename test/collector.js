@@ -91,6 +91,12 @@ metatests.test('Collector: timeout', async (test) => {
     dc.abort();
   }, 100);
 
+  dc.signal.addEventListener('abort', (event) => {
+    test.strictSame(event.type, 'abort');
+    test.assert(dc.signal.reason instanceof DOMException);
+    test.strictSame(dc.signal.reason.name, 'TimeoutError');
+  });
+
   try {
     await dc;
     test.error(new Error('Should not be executed'));
