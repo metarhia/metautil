@@ -307,3 +307,57 @@ metatests.test('Collector: abort', async (test) => {
     test.end();
   }
 });
+
+metatests.test('Collector: validate scheme(valid)', async (test) => {
+  const from = (schema) => (data) => {
+    for (const [key, value] of Object.entries(data)) {
+      const type = schema[key];
+      if (type && typeof value === type) continue;
+      throw new Error('Schema validate error');
+    }
+  };
+
+  const schema = {
+    key1: 'number',
+    key2: 'number',
+  };
+
+  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  try {
+    await dc;
+  } catch {
+    test.error(new Error('Should not be executed'));
+    test.end();
+  }
+});
+
+metatests.test('Collector: validate scheme(invalid)', async (test) => {
+  const from = (schema) => (data) => {
+    for (const [key, value] of Object.entries(data)) {
+      const type = schema[key];
+      if (type && typeof value === type) continue;
+      throw new Error('Schema validate error');
+    }
+  };
+
+  const schema = {
+    key1: 'number',
+    key2: 'string',
+  };
+
+  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  try {
+    await dc;
+    test.error(new Error('Should not be executed'));
+  } catch (error) {
+    test.strictSame(error.message, 'Schema validate error');
+  }
+});
