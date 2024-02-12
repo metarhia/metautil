@@ -237,6 +237,7 @@ export interface CollectorOptions {
   defaults?: object;
   timeout?: number;
   reassign?: boolean;
+  validate?: (data: Record<string, unknown>) => unknown;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -250,6 +251,7 @@ export class Collector {
   timeout: number;
   defaults: object;
   reassign: boolean;
+  validate?: (data: Record<string, unknown>) => unknown;
   signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
