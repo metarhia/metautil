@@ -308,7 +308,7 @@ metatests.test('Collector: abort', async (test) => {
   }
 });
 
-metatests.test('Collector: validate scheme(valid)', async (test) => {
+metatests.test('Collector: validate schema(valid)', async (test) => {
   const from = (schema) => (data) => {
     for (const [key, value] of Object.entries(data)) {
       const type = schema[key];
@@ -335,7 +335,7 @@ metatests.test('Collector: validate scheme(valid)', async (test) => {
   }
 });
 
-metatests.test('Collector: validate scheme(invalid)', async (test) => {
+metatests.test('Collector: validate schema(invalid)', async (test) => {
   const from = (schema) => (data) => {
     for (const [key, value] of Object.entries(data)) {
       const type = schema[key];
@@ -359,5 +359,96 @@ metatests.test('Collector: validate scheme(invalid)', async (test) => {
     test.error(new Error('Should not be executed'));
   } catch (error) {
     test.strictSame(error.message, 'Schema validate error');
+  }
+});
+
+metatests.test('Collector: validate with async function', async (test) => {
+  const from = (schema) => (data) =>
+    new Promise((resolve, reject) => {
+      for (const [key, value] of Object.entries(data)) {
+        const type = schema[key];
+        if (type && typeof value === type) continue;
+        return void reject(new Error('Schema validate error'));
+      }
+      resolve(data);
+    });
+
+  const schema = {
+    key1: 'number',
+    key2: 'number',
+  };
+
+  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+
+  dc.set('key1', '1');
+  dc.set('key2', 2);
+
+  try {
+    await dc;
+    test.error(new Error('Should not be executed'));
+  } catch (error) {
+    test.strictSame(error.message, 'Schema validate error');
+  }
+});
+
+metatests.test('Collector: compare error message', async (test) => {
+  const from = (schema) => (data) => {
+    for (const [key, value] of Object.entries(data)) {
+      const type = schema[key];
+      if (type && typeof value === type) continue;
+      throw new Error('Schema validate error');
+    }
+  };
+
+  const schema = {
+    key1: 'number',
+    key2: 'number',
+  };
+
+  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+
+  dc.set('key1', '1');
+  dc.fail(new Error('Some error'));
+  dc.set('key2', 2);
+
+  try {
+    await dc;
+    test.error(new Error('Should not be executed'));
+  } catch (error) {
+    test.strictSame(error.message, 'Some error');
+  }
+});
+
+metatests.test('Collector: validate serialized data', async (test) => {
+  const expectedResult = ['key1:1', 'key2:2'];
+
+  const from = (schema) => (data) => {
+    const serializedData = [];
+    for (const [key, value] of Object.entries(data)) {
+      const type = schema[key];
+      if (type && typeof value === type) {
+        serializedData.push(`${key}:${value}`);
+        continue;
+      }
+      throw new Error('Schema validate error');
+    }
+    return serializedData;
+  };
+
+  const schema = {
+    key1: 'string',
+    key2: 'string',
+  };
+
+  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+
+  dc.set('key1', '1');
+  dc.set('key2', '2');
+
+  try {
+    const res = await dc;
+    test.strictEqual(res, expectedResult);
+  } catch {
+    test.error(new Error('Should not be executed'));
   }
 });
