@@ -96,3 +96,17 @@ metatests.test('Newtork: httpApiCall', async (test) => {
 
   test.end();
 });
+
+metatests.test('Network: customHeaders', (test) => {
+  const body = '{"key": "value"}';
+  const headers = { 'Custom-Header': 'custom-value' };
+
+  const custom = metautil.customHeaders({ headers, body });
+
+  test.strictSame(typeof custom, 'object');
+  test.strictSame(custom['Content-Type'], 'application/json');
+  test.strictSame(custom['Custom-Header'], 'custom-value');
+  test.strictSame(custom['Content-Length'], Buffer.byteLength(body));
+
+  test.end();
+});
