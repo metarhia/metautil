@@ -74,7 +74,7 @@ metatests.case(
   },
 );
 
-metatests.test('Newtork: httpApiCall', async (test) => {
+metatests.test('Network: httpApiCall', async (test) => {
   const res1 = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
   test.strictSame(typeof res1.disclaimer, 'string');
   test.strictSame(typeof res1.license, 'string');
