@@ -124,7 +124,7 @@ metatests.test('Network: httpApiCall (POST)', async (test) => {
 
   const url = `http://localhost:${server.address().port}`;
   const headers = { 'Custom-Header': 'custom-value' };
-  const body = '{"key": "value"}';
+  const body = '{"key":"value"}';
   const method = 'POST';
 
   try {
