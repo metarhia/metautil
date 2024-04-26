@@ -2,6 +2,13 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.2][] - 2024-04-26
+
+- Fix Content-length on httpApiCall
+- Fix memory-leak on fetch
+- Validate collected data
+- Update dependencies
+
 ## [5.2.1][] - 2024-02-10
 
 - Fixed abort handling in `Collector`
@@ -294,7 +301,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.1....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.2....HEAD
+[5.2.2]: https://github.com/metarhia/metautil/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/metarhia/metautil/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/metarhia/metautil/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/metarhia/metautil/compare/v5.0.0...v5.1.0
