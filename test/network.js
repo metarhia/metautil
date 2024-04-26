@@ -100,7 +100,7 @@ metatests.test('Network: httpApiCall', async (test) => {
 });
 
 metatests.test('Network: httpApiCall (POST)', async (test) => {
-  const expectedBody = '{"key": "value"}';
+  const expectedBody = '{"key":"value"}';
   const expectedLength = Buffer.byteLength(expectedBody).toString();
 
   const server = http.createServer();
@@ -115,7 +115,7 @@ metatests.test('Network: httpApiCall (POST)', async (test) => {
     test.strictSame(req.headers['custom-header'], 'custom-value');
     test.strictSame(req.method, 'POST');
 
-    res.end('{"key": "value"}');
+    res.end('{"key":"value"}');
   });
 
   server.listen(0);
@@ -150,7 +150,7 @@ metatests.test('Network: httpApiCall (POST without body)', async (test) => {
     test.strictSame(req.method, 'POST');
     test.strictSame(body, '');
 
-    res.end('{"key": "value"}');
+    res.end('{"key":"value"}');
   });
 
   server.listen(0);
@@ -179,7 +179,7 @@ metatests.test('Network: httpApiCall (GET)', async (test) => {
     test.strictSame(req.headers['custom-header'], 'custom-value');
     test.strictSame(req.method, 'GET');
 
-    res.end('{"key": "value"}');
+    res.end('{"key":"value"}');
   });
 
   server.listen(0);
