@@ -1,5 +1,7 @@
 'use strict';
 
+const http = require('node:http');
+const { once } = require('node:events');
 const metatests = require('metatests');
 const metautil = require('..');
 
@@ -73,7 +75,7 @@ metatests.case(
   },
 );
 
-metatests.test('Newtork: httpApiCall', async (test) => {
+metatests.test('Network: httpApiCall', async (test) => {
   const res1 = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
   test.strictSame(typeof res1.disclaimer, 'string');
   test.strictSame(typeof res1.license, 'string');
@@ -95,4 +97,104 @@ metatests.test('Newtork: httpApiCall', async (test) => {
   test.strictSame(res3.error, null);
 
   test.end();
+});
+
+metatests.test('Network: httpApiCall (POST)', async (test) => {
+  const expectedBody = '{"key":"value"}';
+  const expectedLength = Buffer.byteLength(expectedBody).toString();
+
+  const server = http.createServer();
+
+  server.on('request', async (req, res) => {
+    let body = '';
+    for await (const chunk of req) body += chunk;
+
+    test.strictSame(body, expectedBody);
+    test.strictSame(req.headers['content-length'], expectedLength);
+    test.strictSame(req.headers['content-type'], 'application/json');
+    test.strictSame(req.headers['custom-header'], 'custom-value');
+    test.strictSame(req.method, 'POST');
+
+    res.end('{"key":"value"}');
+  });
+
+  server.listen(0);
+
+  await once(server, 'listening');
+
+  const url = `http://localhost:${server.address().port}`;
+  const headers = { 'Custom-Header': 'custom-value' };
+  const body = '{"key": "value"}';
+  const method = 'POST';
+
+  try {
+    const res = await metautil.httpApiCall(url, { method, headers, body });
+    test.strictSame(res, { key: 'value' });
+  } catch (err) {
+    test.error(err);
+  }
+
+  server.close();
+});
+
+metatests.test('Network: httpApiCall (POST without body)', async (test) => {
+  const server = http.createServer();
+
+  server.on('request', async (req, res) => {
+    let body = '';
+    for await (const chunk of req) body += chunk;
+
+    test.strictSame(req.headers['content-length'], '0');
+    test.strictSame(req.headers['content-type'], 'application/json');
+    test.strictSame(req.headers['custom-header'], 'custom-value');
+    test.strictSame(req.method, 'POST');
+    test.strictSame(body, '');
+
+    res.end('{"key":"value"}');
+  });
+
+  server.listen(0);
+
+  await once(server, 'listening');
+
+  const url = `http://localhost:${server.address().port}`;
+  const headers = { 'Custom-Header': 'custom-value' };
+
+  try {
+    const res = await metautil.httpApiCall(url, { method: 'POST', headers });
+    test.strictSame(res, { key: 'value' });
+  } catch (err) {
+    test.error(err);
+  }
+
+  server.close();
+});
+
+metatests.test('Network: httpApiCall (GET)', async (test) => {
+  const server = http.createServer();
+
+  server.on('request', async (req, res) => {
+    test.strictSame(req.headers['content-length'], undefined);
+    test.strictSame(req.headers['content-type'], 'application/json');
+    test.strictSame(req.headers['custom-header'], 'custom-value');
+    test.strictSame(req.method, 'GET');
+
+    res.end('{"key":"value"}');
+  });
+
+  server.listen(0);
+
+  await once(server, 'listening');
+
+  const url = `http://localhost:${server.address().port}`;
+  const headers = { 'Custom-Header': 'custom-value' };
+
+  try {
+    const res = await metautil.httpApiCall(url, { method: 'GET', headers });
+    test.strictSame(res, { key: 'value' });
+  } catch (err) {
+    test.error(err);
+  }
+
+  server.close();
 });
