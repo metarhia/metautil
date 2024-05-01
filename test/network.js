@@ -173,7 +173,7 @@ metatests.test('Network: httpApiCall (POST without body)', async (test) => {
 metatests.test('Network: httpApiCall (GET)', async (test) => {
   const server = http.createServer();
 
-  server.on('request', async (req, res) => {
+  server.on('request', (req, res) => {
     test.strictSame(req.headers['content-length'], undefined);
     test.strictSame(req.headers['content-type'], 'application/json');
     test.strictSame(req.headers['custom-header'], 'custom-value');
