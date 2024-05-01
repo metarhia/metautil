@@ -356,7 +356,7 @@ console.log({ size, bytes });
 |     mb |     6 | megabyte  |
 |     kb |     3 | kilobyte  |
 
-## Class `EnevtEmitter`
+## Class `EventEmitter`
 
 - `getMaxListeners(): number`
 - `listenerCount(name: string): number`
@@ -366,7 +366,7 @@ console.log({ size, bytes });
 - `remove(name: string, fn: Function)`
 - `clear(name: string)`
 
-## `EnevtEmitter` utilities
+## `EventEmitter` utilities
 
 - `once(emitter: EventEmitter, name: string): Promise<unknown>`
 
