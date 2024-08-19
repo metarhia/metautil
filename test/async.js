@@ -36,7 +36,7 @@ metatests.test('Async: Abortable delay', async (test) => {
   try {
     const res = await delay(10);
     test.strictSame(res, undefined);
-  } catch (err) {
+  } catch {
     test.error(new Error('Should not be executed'));
   }
   const ac = new AbortController();
@@ -66,7 +66,7 @@ metatests.test('Async: timeoutify', async (test) => {
     const response = await timeoutify(request, 1000);
     test.strictSame(response, undefined);
     test.end();
-  } catch (err) {
+  } catch {
     test.error(new Error('Should not be executed'));
   }
 });

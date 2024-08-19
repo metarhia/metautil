@@ -97,13 +97,13 @@ metatests.test('Semaphore real life usage', async (test) => {
   const useSemaphore = async () => {
     try {
       await semaphore.enter();
-    } catch (e) {
+    } catch {
       return;
     }
     try {
       await delay(1000);
       return;
-    } catch (e) {
+    } catch {
       return;
     } finally {
       semaphore.leave();
