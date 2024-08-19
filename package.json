@@ -38,16 +38,13 @@
   "scripts": {
     "test": "npm run lint && npm run types && metatests test/",
     "types": "tsc -p tsconfig.json",
-    "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\"",
-    "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/.*rc\" \"**/*.ts\""
+    "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
+    "fmt": "prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\""
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-metarhia": "^8.2.2",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-prettier": "^5.2.1",
+    "@types/node": "^22.3.0",
+    "eslint": "^9.9.0",
+    "eslint-config-metarhia": "^9.0.3",
     "metatests": "^0.8.2",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4"
