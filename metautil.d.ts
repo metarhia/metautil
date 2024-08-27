@@ -210,7 +210,10 @@ export class Semaphore {
 
 export function replace(str: string, substr: string, newstr: string): string;
 export function between(s: string, prefix: string, suffix: string): string;
-export function split(s: string, separator: string): [string, string];
+export function split(
+  s: string,
+  separator: string,
+): { first: string; rest: string };
 export function isFirstUpper(s: string): boolean;
 export function isFirstLower(s: string): boolean;
 export function isFirstLetter(s: string): boolean;

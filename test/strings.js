@@ -8,13 +8,13 @@ metatests.case(
   { metautil },
   {
     'metautil.split': [
-      ['abc.def', '.', ['abc', 'def']],
-      ['abc.', '.', ['abc', '']],
-      ['abc', '.', ['abc', '']],
-      ['.abc', '.', ['', 'abc']],
-      ['.', '.', ['', '']],
-      ['', '.', ['', '']],
-      ['abc', '', ['', 'abc']],
+      ['abc.def', '.', { first: 'abc', rest: 'def' }],
+      ['abc.', '.', { first: 'abc', rest: '' }],
+      ['abc', '.', { first: 'abc', rest: '' }],
+      ['.abc', '.', { first: '', rest: 'abc' }],
+      ['.', '.', { first: '', rest: '' }],
+      ['', '.', { first: '', rest: '' }],
+      ['abc', '', { first: '', rest: 'abc' }],
     ],
     'metautil.replace': [
       ['a2a2a2', 'a2', 'z', 'zzz'],

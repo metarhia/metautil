@@ -318,7 +318,7 @@ semaphore.leave();
 
 - `replace(str: string, substr: string, newstr: string): string`
 - `between(s: string, prefix: string, suffix: string): string`
-- `split(s: string, separator: string): [string, string]`
+- `split(s: string, separator: string): { first: string, rest: string }`
 - `isFirstUpper(s: string): boolean`
 - `isFirstLower(s: string): boolean`
 - `isFirstLetter(s: string): boolean`
