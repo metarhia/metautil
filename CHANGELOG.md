@@ -2,6 +2,12 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.3][] - 2024-08-30
+
+- Update eslint to 9.x and prettier with configs
+- Add node.js 22 to CI
+- Add await for res.json()
+
 ## [5.2.2][] - 2024-04-26
 
 - Fix Content-length on httpApiCall
