@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.4][] - 2024-09-12
+
+- Update eslint/prettier/metarhia configs
+
 ## [5.2.3][] - 2024-08-30
 
 - Update eslint to 9.x and prettier with configs
@@ -307,7 +311,9 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.2....HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.4....HEAD
+[5.2.4]: https://github.com/metarhia/metautil/compare/v5.2.4...v5.2.4
+[5.2.3]: https://github.com/metarhia/metautil/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/metarhia/metautil/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/metarhia/metautil/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/metarhia/metautil/compare/v5.1.0...v5.2.0
