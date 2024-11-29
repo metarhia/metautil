@@ -7,9 +7,9 @@ const metautil = require('..');
 
 const RATES_HOST = 'openexchangerates.org';
 const RATES_PATH = '/api/latest.json?app_id=';
-const RATES_API_KEY = '1f43ea96b1e343fe94333dd2b97a109d';
+const RATES_API_KEY = '9e329e4313bc4462b04e07f314c6f7eb';
+// Alternative key: '1f43ea96b1e343fe94333dd2b97a109d'
 const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
-
 const MATH_API_URL = 'https://api.mathjs.org/v4';
 
 metatests.test('Newtork: receiveBody', async (test) => {
