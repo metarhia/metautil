@@ -6,6 +6,7 @@ module.exports = {
   ...require('./lib/datetime.js'),
   ...require('./lib/error.js'),
   ...require('./lib/events.js'),
+  ...require('./lib/future.js'),
   ...require('./lib/http.js'),
   ...require('./lib/objects.js'),
   ...require('./lib/pool.js'),
