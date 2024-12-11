@@ -32,18 +32,25 @@ Async collection is an utility to collect needed keys and signalize on done.
   - `options.exact?: boolean`
   - `options.timeout?: number`
   - `options.reassign?: boolean`
+  - `options.defaults?: object`
+  - `options.validate?: (data: Record<string, unknown>) => unknown`
 - `set(key: string, value: unknown)`
 - `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>)`
 - `take(key: string, fn: Function, ...args?: Array<unknown>)`
 - `collect(sources: Record<string, Collector>)`
 - `fail(error: Error)`
-- `then(fulfill: Function, reject?: Function)`
+- `abort()`
+- `then(onFulfill: Function, onReject?: Function)`
 - `done: boolean`
 - `data: Dictionary`
 - `keys: Array<string>`
 - `count: number`
 - `exact: boolean`
 - `timeout: number`
+- `defaults: object`
+- `reassign: boolean`
+- `validate?: (data: Record<string, unknown>) => unknown`
+- `signal: AbortSignal`
 
 Collect keys with `.set` method:
 
@@ -82,6 +89,17 @@ ac.take('file', getFileCallback, 'marcus.txt');
 ac.take('user', getUserCallback, 'Marcus');
 
 const result = await ac;
+```
+
+Set default values ​​for unset keys using the `options.defaults` argument:
+
+```js
+const defaults = { key1: 'sub1', key2: 'sub1' };
+
+const dc = collect(['key1', 'key2'], { defaults, timeout: 2000 });
+dc.set('key2', 'sub2');
+
+const result = await dc;
 ```
 
 Compose collectors (collect subkeys from multiple sources):
