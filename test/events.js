@@ -1,12 +1,12 @@
 'use strict';
 
 const metatests = require('metatests');
-const metautil = require('..');
+const { EventEmitter } = require('..');
 
 metatests.test('EventEmitter', async (test) => {
-  const ee = new metautil.EventEmitter();
+  const ee = new EventEmitter();
 
-  test.strictSame(ee.getMaxListeners(), 10);
+  test.strictSame(ee.maxListeners, 10);
   test.assert(ee.events instanceof Map);
 
   let onCount = 0;
@@ -40,7 +40,7 @@ metatests.test('EventEmitter', async (test) => {
   test.strictSame(count, 1);
 
   test.strictSame(ee.listenerCount('name1'), 2);
-  ee.remove('name1', fn);
+  ee.off('name1', fn);
   test.strictSame(ee.listenerCount('name1'), 1);
 
   ee.emit('name1', 'value');
@@ -53,7 +53,7 @@ metatests.test('EventEmitter', async (test) => {
     ee.emit('name3', 'value');
   }, 50);
 
-  const result = await metautil.once(ee, 'name3');
+  const result = await ee.toPromise('name3');
   test.strictSame(result, 'value');
 
   ee.clear();
