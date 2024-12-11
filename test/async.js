@@ -2,7 +2,14 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
-const { toBool, timeout, delay, timeoutify } = require('..');
+const {
+  toBool,
+  timeout,
+  delay,
+  timeoutify,
+  throttle,
+  debounce,
+} = require('..');
 
 test('Async: toBool', async () => {
   const success = await Promise.resolve('success').then(...toBool);
@@ -66,4 +73,97 @@ test('Async: timeoutify', async () => {
   } catch {
     assert.ifError(new Error('Should not be executed'));
   }
+});
+
+test('Async: throttle', () => {
+  let callCount = 0;
+
+  const fn = (arg1, arg2, ...otherArgs) => {
+    assert.strictEqual(arg1, 'someVal');
+    assert.strictEqual(arg2, 4);
+    assert.strictEqual(otherArgs, []);
+    callCount++;
+  };
+
+  const throttledFn = throttle(1, fn, 'someVal', 4);
+
+  throttledFn();
+  assert.strictEqual(callCount, 1);
+  throttledFn();
+  throttledFn();
+  assert.strictEqual(callCount, 1);
+});
+
+test('Async: throttle merge args', () => {
+  let callCount = 0;
+
+  const fn = (arg1, arg2, ...otherArgs) => {
+    assert.strictEqual(arg1, 'someVal');
+    assert.strictEqual(arg2, 4);
+    assert.strictEqual(otherArgs, ['str']);
+    callCount++;
+  };
+
+  const throttledFn = throttle(1, fn, 'someVal', 4);
+
+  throttledFn('str');
+  assert.strictEqual(callCount, 1);
+  throttledFn('str');
+  throttledFn('str');
+  assert.strictEqual(callCount, 1);
+});
+
+test('Async: throttle without arguments', () => {
+  let callCount = 0;
+
+  const fn = (...args) => {
+    assert.strictEqual(args, []);
+    callCount++;
+  };
+
+  const throttledFn = throttle(1, fn);
+
+  throttledFn();
+  assert.strictEqual(callCount, 1);
+  throttledFn();
+  throttledFn();
+  assert.strictEqual(callCount, 1);
+});
+
+test('Async: debounce', async () => {
+  const { promise, resolve } = Promise.withResolvers();
+  let count = 0;
+
+  const fn = (arg1, arg2, ...otherArgs) => {
+    assert.strictEqual(arg1, 'someVal');
+    assert.strictEqual(arg2, 4);
+    assert.strictEqual(otherArgs, []);
+    count++;
+    resolve();
+  };
+
+  const debouncedFn = debounce(1, fn, 'someVal', 4);
+
+  debouncedFn();
+  debouncedFn();
+  assert.strictEqual(count, 0);
+  return promise;
+});
+
+test('Async: debounce without arguments', async () => {
+  const { promise, resolve } = Promise.withResolvers();
+  let count = 0;
+
+  const fn = (...args) => {
+    assert.strictEqual(args, []);
+    count++;
+    resolve();
+  };
+
+  const debouncedFn = debounce(1, fn);
+
+  debouncedFn();
+  debouncedFn();
+  assert.strictEqual(count, 0);
+  return promise;
 });
