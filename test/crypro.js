@@ -1,52 +1,52 @@
 'use strict';
 
+const test = require('node:test');
+const assert = require('node:assert');
 const metatests = require('metatests');
 const metautil = require('..');
 
-const testRandom = (test, random) => {
+const testRandom = (random) => {
   {
     const value = random(100, 100);
-    test.strictSame(typeof value, 'number');
-    test.strictSame(value, 100);
+    assert.strictEqual(typeof value, 'number');
+    assert.strictEqual(value, 100);
   }
   {
     const value = random(-100, -100);
-    test.strictSame(typeof value, 'number');
-    test.strictSame(value, -100);
+    assert.strictEqual(typeof value, 'number');
+    assert.strictEqual(value, -100);
   }
   {
     const value = random(0, 0);
-    test.strictSame(typeof value, 'number');
-    test.strictSame(value, 0);
+    assert.strictEqual(typeof value, 'number');
+    assert.strictEqual(value, 0);
   }
   for (let i = 0; i < 200; i++) {
     const value = random();
-    test.strictSame(typeof value, 'number');
-    test.assert(value >= 0, true);
-    test.assert(value <= 1, true);
+    assert.strictEqual(typeof value, 'number');
+    assert(value >= 0);
+    assert(value <= 1);
   }
   for (let i = 0; i < 200; i++) {
     const value = random(100);
-    test.strictSame(typeof value, 'number');
-    test.assert(value >= 0, true);
-    test.assert(value <= 100, true);
+    assert.strictEqual(typeof value, 'number');
+    assert(value >= 0);
+    assert(value <= 100);
   }
   for (let i = 0; i < 200; i++) {
     const value = random(100, 200);
-    test.strictSame(typeof value, 'number');
-    test.assert(value >= 100, true);
-    test.assert(value <= 200, true);
+    assert.strictEqual(typeof value, 'number');
+    assert(value >= 100);
+    assert(value <= 200);
   }
 };
 
-metatests.test('Crypto: cryptoRandom', async (test) => {
-  testRandom(test, metautil.cryptoRandom);
-  test.end();
+test('Crypto: cryptoRandom', async () => {
+  testRandom(metautil.cryptoRandom);
 });
 
-metatests.test('Crypto: random', async (test) => {
-  testRandom(test, metautil.random);
-  test.end();
+test('Crypto: random', async () => {
+  testRandom(metautil.random);
 });
 
 const CHARS = 'ABCD';
@@ -101,37 +101,34 @@ metatests.case(
   },
 );
 
-metatests.test('Crypto: hashing passwords', async (test) => {
+test('Crypto: hashing passwords', async () => {
   const password = 'password';
 
   const hash = await metautil.hashPassword(password);
-  test.strictSame(typeof hash, 'string');
-  test.strictSame(hash.length, 170);
+  assert.strictEqual(typeof hash, 'string');
+  assert.strictEqual(hash.length, 170);
 
   const res = metautil.deserializeHash(hash);
-  test.strictEqual(res.params.N, 32768);
-  test.strictEqual(res.params.r, 8);
-  test.strictEqual(res.params.p, 1);
-  test.strictEqual(res.params.maxmem, 67108864);
-  test.strictEqual(res.salt.length, 32);
-  test.strictEqual(res.hash.length, 64);
+  assert.strictEqual(res.params.N, 32768);
+  assert.strictEqual(res.params.r, 8);
+  assert.strictEqual(res.params.p, 1);
+  assert.strictEqual(res.params.maxmem, 67108864);
+  assert.strictEqual(res.salt.length, 32);
+  assert.strictEqual(res.hash.length, 64);
 
   const serialized = metautil.serializeHash(res.hash, res.salt);
-  test.strictSame(serialized.length, 170);
+  assert.strictEqual(serialized.length, 170);
 
   const valid = await metautil.validatePassword(password, hash);
-  test.strictSame(valid, true);
-
-  test.end();
+  assert(valid, true);
 });
 
-metatests.test('Crypto: md5', async (test) => {
+test('Crypto: md5', async () => {
   const hash = await metautil.md5('./.npmignore');
-  test.strictSame(hash, '8278a9c6e40823bd7fde51d4ce8ac3f8');
-  test.end();
+  assert.strictEqual(hash, '8278a9c6e40823bd7fde51d4ce8ac3f8');
 });
 
-metatests.test('Crypto: x509 names', async (test) => {
+test('Crypto: x509 names', async () => {
   const cert = {
     subject: 'CN=localhost',
     subjectAltName:
@@ -147,6 +144,5 @@ metatests.test('Crypto: x509 names', async (test) => {
     'hello1.example.com',
     'hello2.example.com',
   ];
-  test.strictSame(names, expected);
-  test.end();
+  assert.deepStrictEqual(names, expected);
 });

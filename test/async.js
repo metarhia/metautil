@@ -1,23 +1,23 @@
 'use strict';
 
-const metatests = require('metatests');
+const test = require('node:test');
+const assert = require('node:assert');
 const { toBool, timeout, delay, timeoutify } = require('..');
 
-metatests.test('Async: toBool', async (test) => {
+test('Async: toBool', async () => {
   const success = await Promise.resolve('success').then(...toBool);
-  test.strictSame(success, true);
+  assert.strictEqual(success, true);
   const rejected = await Promise.reject(new Error('Ups')).then(...toBool);
-  test.strictSame(rejected, false);
-  test.end();
+  assert.strictEqual(rejected, false);
 });
 
-metatests.test('Async: Abortable timeout', async (test) => {
+test('Async: Abortable timeout', async () => {
   try {
     await timeout(10);
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (err) {
-    test.strictSame(err.code, 'ETIMEOUT');
-    test.strictSame(err.message, 'Timeout of 10ms reached');
+    assert.strictEqual(err.code, 'ETIMEOUT');
+    assert.strictEqual(err.message, 'Timeout of 10ms reached');
   }
   const ac = new AbortController();
   setTimeout(() => {
@@ -25,19 +25,18 @@ metatests.test('Async: Abortable timeout', async (test) => {
   }, 10);
   try {
     await timeout(100, ac.signal);
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (err) {
-    test.strictSame(err.message, 'Timeout aborted');
-    test.end();
+    assert.strictEqual(err.message, 'Timeout aborted');
   }
 });
 
-metatests.test('Async: Abortable delay', async (test) => {
+test('Async: Abortable delay', async () => {
   try {
     const res = await delay(10);
-    test.strictSame(res, undefined);
+    assert.strictEqual(res, undefined);
   } catch {
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   }
   const ac = new AbortController();
   setTimeout(() => {
@@ -45,28 +44,26 @@ metatests.test('Async: Abortable delay', async (test) => {
   }, 10);
   try {
     await delay(100, ac.signal);
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (err) {
-    test.strictSame(err.message, 'Delay aborted');
-    test.end();
+    assert.strictEqual(err.message, 'Delay aborted');
   }
 });
 
-metatests.test('Async: timeoutify', async (test) => {
+test('Async: timeoutify', async () => {
   try {
     const request = delay(1000);
     await timeoutify(request, 10);
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (err) {
-    test.strictSame(err.code, 'ETIMEOUT');
-    test.strictSame(err.message, 'Timeout of 10ms reached');
+    assert.strictEqual(err.code, 'ETIMEOUT');
+    assert.strictEqual(err.message, 'Timeout of 10ms reached');
   }
   try {
     const request = delay(10);
     const response = await timeoutify(request, 1000);
-    test.strictSame(response, undefined);
-    test.end();
+    assert.strictEqual(response, undefined);
   } catch {
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   }
 });

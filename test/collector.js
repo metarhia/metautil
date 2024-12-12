@@ -1,9 +1,10 @@
 'use strict';
 
+const test = require('node:test');
+const assert = require('node:assert');
 const { collect } = require('..');
-const metatests = require('metatests');
 
-metatests.test('Collector: keys', async (test) => {
+test('Collector: keys', async () => {
   const expectedResult = { key1: 1, key2: 2 };
   const dc = collect(['key1', 'key2']);
 
@@ -16,11 +17,10 @@ metatests.test('Collector: keys', async (test) => {
   }, 100);
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: exact', async (test) => {
+test('Collector: exact', async () => {
   const dc = collect(['key1', 'key2']);
 
   setTimeout(() => {
@@ -29,14 +29,13 @@ metatests.test('Collector: exact', async (test) => {
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Unexpected key: wrongKey');
-    test.end();
+    assert.strictEqual(error.message, 'Unexpected key: wrongKey');
   }
 });
 
-metatests.test('Collector: not exact', async (test) => {
+test('Collector: not exact', async () => {
   const expectedResult = { key1: 1, wrongKey: 'someVal', key2: 2 };
   const dc = collect(['key1', 'key2'], { exact: false });
 
@@ -54,14 +53,13 @@ metatests.test('Collector: not exact', async (test) => {
 
   try {
     const result = await dc;
-    test.strictSame(result, expectedResult);
-    test.end();
+    assert.deepStrictEqual(result, expectedResult);
   } catch (error) {
-    test.error(error);
+    assert.ifError(error);
   }
 });
 
-metatests.test('Collector: set after done', async (test) => {
+test('Collector: set after done', async () => {
   const expectedResult = { key1: 1 };
   const dc = collect(['key1']);
 
@@ -74,16 +72,14 @@ metatests.test('Collector: set after done', async (test) => {
   }, 75);
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
+  assert.deepStrictEqual(result, expectedResult);
 
   setTimeout(() => {
     dc.set('key3', 3);
   }, 100);
-
-  test.end();
 });
 
-metatests.test('Collector: timeout', async (test) => {
+test('Collector: timeout', async () => {
   const dc = collect(['key1'], { timeout: 50 });
 
   setTimeout(() => {
@@ -92,21 +88,23 @@ metatests.test('Collector: timeout', async (test) => {
   }, 100);
 
   dc.signal.addEventListener('abort', (event) => {
-    test.strictSame(event.type, 'abort');
-    test.assert(dc.signal.reason instanceof DOMException);
-    test.strictSame(dc.signal.reason.name, 'TimeoutError');
+    assert.strictEqual(event.type, 'abort');
+    assert(dc.signal.reason instanceof DOMException);
+    assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
   });
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'The operation was aborted due to timeout');
-    test.end();
+    assert.strictEqual(
+      error.message,
+      'The operation was aborted due to timeout',
+    );
   }
 });
 
-metatests.test('Collector: default values', async (test) => {
+test('Collector: default values', async () => {
   const defaults = { key1: 1 };
 
   const dc1 = collect(['key1'], { defaults, timeout: 50 });
@@ -121,20 +119,22 @@ metatests.test('Collector: default values', async (test) => {
   }, 100);
 
   const result1 = await dc1;
-  test.strictSame(result1, defaults);
+  assert.deepStrictEqual(result1, defaults);
   const result3 = await dc3;
-  test.strictSame(result3, { ...defaults, key2: 1 });
+  assert.deepStrictEqual(result3, { ...defaults, key2: 1 });
 
   try {
     await dc2;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'The operation was aborted due to timeout');
+    assert.strictEqual(
+      error.message,
+      'The operation was aborted due to timeout',
+    );
   }
-  test.end();
 });
 
-metatests.test('Collector: fail', async (test) => {
+test('Collector: fail', async () => {
   const dc = collect(['key1']);
 
   setTimeout(() => {
@@ -143,14 +143,13 @@ metatests.test('Collector: fail', async (test) => {
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Custom error');
-    test.end();
+    assert.strictEqual(error.message, 'Custom error');
   }
 });
 
-metatests.test('Collector: take', async (test) => {
+test('Collector: take', async () => {
   const expectedResult = { key1: 'User: Marcus' };
   const dc = collect(['key1']);
 
@@ -162,11 +161,10 @@ metatests.test('Collector: take', async (test) => {
   dc.take('key1', fn, 'Marcus');
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: wait', async (test) => {
+test('Collector: wait', async () => {
   const expectedResult = { key1: 'User: Marcus' };
   const dc = collect(['key1']);
 
@@ -177,11 +175,10 @@ metatests.test('Collector: wait', async (test) => {
   dc.wait('key1', fn, 'Marcus');
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: wait for promise', async (test) => {
+test('Collector: wait for promise', async () => {
   const expectedResult = { key1: 'User: Marcus' };
   const dc = collect(['key1']);
 
@@ -191,11 +188,10 @@ metatests.test('Collector: wait for promise', async (test) => {
   dc.wait('key1', promise);
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: compose collect', async (test) => {
+test('Collector: compose collect', async () => {
   const expectedResult = { key1: { sub1: 11 }, key2: 2, key3: { sub3: 31 } };
   const dc = collect(['key1', 'key2', 'key3']);
   const key1 = collect(['sub1']);
@@ -215,11 +211,10 @@ metatests.test('Collector: compose collect', async (test) => {
   }, 150);
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: after done', async (test) => {
+test('Collector: after done', async () => {
   const expectedResult = { key1: 1, key2: 2 };
   const dc = collect(['key1', 'key2']);
 
@@ -227,11 +222,10 @@ metatests.test('Collector: after done', async (test) => {
   dc.set('key2', 2);
 
   const result = await dc;
-  test.strictSame(result, expectedResult);
-  test.end();
+  assert.deepStrictEqual(result, expectedResult);
 });
 
-metatests.test('Collector: then chain', (test) => {
+test('Collector: then chain', () => {
   const expectedResult = { key1: 1, key2: 2, key3: 3 };
   const dc = collect(['key1', 'key2']);
 
@@ -239,12 +233,11 @@ metatests.test('Collector: then chain', (test) => {
   dc.set('key2', 2);
 
   dc.then((result) => ({ ...result, key3: 3 })).then((result) => {
-    test.strictSame(result, expectedResult);
-    test.end();
+    assert.deepStrictEqual(result, expectedResult);
   });
 });
 
-metatests.test('Collector: error in then chain', (test) => {
+test('Collector: error in then chain', () => {
   const expectedResult = new Error('expected error');
   const dc = collect(['key1', 'key2']);
 
@@ -255,18 +248,15 @@ metatests.test('Collector: error in then chain', (test) => {
     throw new Error('expected error');
   }).then(
     () => {
-      test.error(new Error('Should not be executed'));
+      assert.ifError(new Error('Should not be executed'));
     },
     (error) => {
-      test.strictSame(error.message, expectedResult.message);
-      test.end();
+      assert.strictEqual(error.message, expectedResult.message);
     },
   );
 });
 
-metatests.test('Collector: reassign is off', async (test) => {
-  test.plan(1);
-
+test('Collector: reassign is off', async () => {
   const expectedError = new Error('Collector reassign mode is off');
   const dc = collect(['key1', 'key2'], { reassign: false });
 
@@ -276,13 +266,13 @@ metatests.test('Collector: reassign is off', async (test) => {
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, expectedError.message);
+    assert.strictEqual(error.message, expectedError.message);
   }
 });
 
-metatests.test('Collector: abort', async (test) => {
+test('Collector: abort', async () => {
   const dc = collect(['key1', 'key2'], { timeout: 200 });
 
   setTimeout(() => {
@@ -294,21 +284,20 @@ metatests.test('Collector: abort', async (test) => {
   }, 100);
 
   dc.signal.addEventListener('abort', (event) => {
-    test.strictSame(event.type, 'abort');
-    test.assert(dc.signal.reason instanceof DOMException);
-    test.strictSame(dc.signal.reason.name, 'AbortError');
+    assert.strictEqual(event.type, 'abort');
+    assert(dc.signal.reason instanceof DOMException);
+    assert.strictEqual(dc.signal.reason.name, 'AbortError');
   });
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Collector aborted');
-    test.end();
+    assert.strictEqual(error.message, 'Collector aborted');
   }
 });
 
-metatests.test('Collector: validate scheme(valid)', async (test) => {
+test('Collector: validate scheme(valid)', async () => {
   const from = (schema) => (data) => {
     for (const [key, value] of Object.entries(data)) {
       const type = schema[key];
@@ -330,12 +319,11 @@ metatests.test('Collector: validate scheme(valid)', async (test) => {
   try {
     await dc;
   } catch {
-    test.error(new Error('Should not be executed'));
-    test.end();
+    assert.ifError(new Error('Should not be executed'));
   }
 });
 
-metatests.test('Collector: validate scheme(invalid)', async (test) => {
+test('Collector: validate scheme(invalid)', async () => {
   const from = (schema) => (data) => {
     for (const [key, value] of Object.entries(data)) {
       const type = schema[key];
@@ -356,8 +344,8 @@ metatests.test('Collector: validate scheme(invalid)', async (test) => {
 
   try {
     await dc;
-    test.error(new Error('Should not be executed'));
+    assert.ifError(new Error('Should not be executed'));
   } catch (error) {
-    test.strictSame(error.message, 'Schema validate error');
+    assert.strictEqual(error.message, 'Schema validate error');
   }
 });
