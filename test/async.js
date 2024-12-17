@@ -98,7 +98,11 @@ test('Async: timeoutify', async () => {
 });
 
 test('Async: throttle', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
   let callCount = 0;
 
   const fn = (arg1, arg2, ...otherArgs) => {
@@ -122,7 +126,11 @@ test('Async: throttle', async () => {
 });
 
 test('Async: throttle merge args', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
   let callCount = 0;
 
   const fn = (arg1, arg2, ...otherArgs) => {
@@ -146,7 +154,11 @@ test('Async: throttle merge args', async () => {
 });
 
 test('Async: throttle without arguments', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
   let callCount = 0;
 
   const fn = (...args) => {
@@ -168,7 +180,11 @@ test('Async: throttle without arguments', async () => {
 });
 
 test('Async: debounce', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
   let count = 0;
 
   const fn = (arg1, arg2, ...otherArgs) => {
@@ -190,7 +206,11 @@ test('Async: debounce', async () => {
 });
 
 test('Async: debounce without arguments', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
   let count = 0;
 
   const fn = (...args) => {
@@ -210,7 +230,10 @@ test('Async: debounce without arguments', async () => {
 });
 
 test('Callbackify: Promise to callback-last', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
 
   const promiseReturning = () => Promise.resolve('result');
   const asyncFn = callbackify(promiseReturning);
@@ -225,7 +248,10 @@ test('Callbackify: Promise to callback-last', async () => {
 });
 
 test('Asyncify: sync function to callback-last', async () => {
-  const { promise, resolve } = Promise.withResolvers();
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
 
   const fn = (par) => par;
   const asyncFn = asyncify(fn);
