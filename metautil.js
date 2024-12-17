@@ -9,6 +9,7 @@ module.exports = {
   ...require('./lib/error.js'),
   ...require('./lib/events.js'),
   ...require('./lib/fs.js'),
+  ...require('./lib/future.js'),
   ...require('./lib/http.js'),
   ...require('./lib/network.js'),
   ...require('./lib/objects.js'),
