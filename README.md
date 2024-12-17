@@ -32,18 +32,25 @@ Async collection is an utility to collect needed keys and signalize on done.
   - `options.exact?: boolean`
   - `options.timeout?: number`
   - `options.reassign?: boolean`
-- `set(key: string, value: unknown)`
-- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>)`
-- `take(key: string, fn: Function, ...args?: Array<unknown>)`
-- `collect(sources: Record<string, Collector>)`
-- `fail(error: Error)`
-- `then(fulfill: Function, reject?: Function)`
+  - `options.defaults?: object`
+  - `options.validate?: (data: Record<string, unknown>) => unknown`
+- `set(key: string, value: unknown): void`
+- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>): void`
+- `take(key: string, fn: Function, ...args?: Array<unknown>): void`
+- `collect(sources: Record<string, Collector>): void`
+- `fail(error: Error): void`
+- `abort(): void`
+- `then(onFulfilled: Function, onRejected?: Function): Promise<unknown>`
 - `done: boolean`
 - `data: Dictionary`
 - `keys: Array<string>`
 - `count: number`
 - `exact: boolean`
 - `timeout: number`
+- `defaults: object`
+- `reassign: boolean`
+- `validate?: (data: Record<string, unknown>) => unknown`
+- `signal: AbortSignal`
 
 Collect keys with `.set` method:
 
@@ -82,6 +89,17 @@ ac.take('file', getFileCallback, 'marcus.txt');
 ac.take('user', getUserCallback, 'Marcus');
 
 const result = await ac;
+```
+
+Set default values ​​for unset keys using the `options.defaults` argument:
+
+```js
+const defaults = { key1: 'sub1', key2: 'sub1' };
+
+const dc = collect(['key1', 'key2'], { defaults, timeout: 2000 });
+dc.set('key2', 'sub2');
+
+const result = await dc;
 ```
 
 Compose collectors (collect subkeys from multiple sources):
@@ -360,11 +378,11 @@ console.log({ size, bytes });
 
 - `getMaxListeners(): number`
 - `listenerCount(name: string): number`
-- `on(name: string, fn: Function)`
-- `once(name: string, fn: Function)`
-- `emit(name: string, ...args: Array<unknown>)`
-- `remove(name: string, fn: Function)`
-- `clear(name: string)`
+- `on(name: string, fn: Function): void`
+- `once(name: string, fn: Function): void`
+- `emit(name: string, ...args: Array<unknown>): void`
+- `remove(name: string, fn: Function): void`
+- `clear(name: string): void`
 
 ## `EventEmitter` utilities
 

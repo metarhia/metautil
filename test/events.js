@@ -1,35 +1,36 @@
 'use strict';
 
-const metatests = require('metatests');
-const { EventEmitter } = require('..');
+const test = require('node:test');
+const assert = require('node:assert');
+const metautil = require('..');
 
-metatests.test('EventEmitter', async (test) => {
-  const ee = new EventEmitter();
+test('EventEmitter', async () => {
+  const ee = new metautil.EventEmitter();
 
-  test.strictSame(ee.maxListeners, 10);
-  test.assert(ee.events instanceof Map);
+  assert.strictEqual(ee.getMaxListeners(), 10);
+  assert(ee.events instanceof Map);
 
   let onCount = 0;
   let onceCount = 0;
 
   ee.on('name1', (data) => {
-    test.strictSame(data, 'value');
+    assert.strictEqual(data, 'value');
     onCount++;
   });
 
   ee.once('name1', (data) => {
-    test.strictSame(data, 'value');
+    assert.strictEqual(data, 'value');
     onceCount++;
   });
 
   ee.emit('name1', 'value');
   ee.emit('name1', 'value');
 
-  test.strictSame(onCount, 2);
-  test.strictSame(onceCount, 1);
+  assert.strictEqual(onCount, 2);
+  assert.strictEqual(onceCount, 1);
 
-  test.strictSame(ee.listenerCount('name1'), 1);
-  test.strictSame(ee.listenerCount('name2'), 0);
+  assert.strictEqual(ee.listenerCount('name1'), 1);
+  assert.strictEqual(ee.listenerCount('name2'), 0);
 
   let count = 0;
   const fn = () => {
@@ -37,27 +38,25 @@ metatests.test('EventEmitter', async (test) => {
   };
   ee.on('name1', fn);
   ee.emit('name1', 'value');
-  test.strictSame(count, 1);
+  assert.strictEqual(count, 1);
 
-  test.strictSame(ee.listenerCount('name1'), 2);
-  ee.off('name1', fn);
-  test.strictSame(ee.listenerCount('name1'), 1);
+  assert.strictEqual(ee.listenerCount('name1'), 2);
+  ee.remove('name1', fn);
+  assert.strictEqual(ee.listenerCount('name1'), 1);
 
   ee.emit('name1', 'value');
-  test.strictSame(count, 1);
+  assert.strictEqual(count, 1);
 
   ee.clear('name1');
-  test.strictSame(ee.listenerCount('name1'), 0);
+  assert.strictEqual(ee.listenerCount('name1'), 0);
 
   setTimeout(() => {
     ee.emit('name3', 'value');
   }, 50);
 
-  const result = await ee.toPromise('name3');
-  test.strictSame(result, 'value');
+  const result = await metautil.once(ee, 'name3');
+  assert.strictEqual(result, 'value');
 
   ee.clear();
-  test.strictSame(ee.listenerCount('name3'), 0);
-
-  test.end();
+  assert.strictEqual(ee.listenerCount('name3'), 0);
 });
