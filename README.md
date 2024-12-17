@@ -34,13 +34,13 @@ Async collection is an utility to collect needed keys and signalize on done.
   - `options.reassign?: boolean`
   - `options.defaults?: object`
   - `options.validate?: (data: Record<string, unknown>) => unknown`
-- `set(key: string, value: unknown)`
-- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>)`
-- `take(key: string, fn: Function, ...args?: Array<unknown>)`
-- `collect(sources: Record<string, Collector>)`
-- `fail(error: Error)`
-- `abort()`
-- `then(onFulfill: Function, onReject?: Function)`
+- `set(key: string, value: unknown): void`
+- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>): void`
+- `take(key: string, fn: Function, ...args?: Array<unknown>): void`
+- `collect(sources: Record<string, Collector>): void`
+- `fail(error: Error): void`
+- `abort(): void`
+- `then(onFulfilled: Function, onRejected?: Function): Promise<unknown>`
 - `done: boolean`
 - `data: Dictionary`
 - `keys: Array<string>`
@@ -378,11 +378,11 @@ console.log({ size, bytes });
 
 - `getMaxListeners(): number`
 - `listenerCount(name: string): number`
-- `on(name: string, fn: Function)`
-- `once(name: string, fn: Function)`
-- `emit(name: string, ...args: Array<unknown>)`
-- `remove(name: string, fn: Function)`
-- `clear(name: string)`
+- `on(name: string, fn: Function): void`
+- `once(name: string, fn: Function): void`
+- `emit(name: string, ...args: Array<unknown>): void`
+- `remove(name: string, fn: Function): void`
+- `clear(name: string): void`
 
 ## `EventEmitter` utilities
 
