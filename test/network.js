@@ -2,6 +2,8 @@
 
 const http = require('node:http');
 const { once } = require('node:events');
+const test = require('node:test');
+const assert = require('node:assert');
 const metatests = require('metatests');
 const metautil = require('..');
 
@@ -12,7 +14,7 @@ const RATES_API_KEY = '9e329e4313bc4462b04e07f314c6f7eb';
 const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
 const MATH_API_URL = 'https://api.mathjs.org/v4';
 
-metatests.test('Newtork: receiveBody', async (test) => {
+test('Newtork: receiveBody', async () => {
   const value = Buffer.from('{ "a": 5 }');
   let done = false;
   const body = {
@@ -27,8 +29,7 @@ metatests.test('Newtork: receiveBody', async (test) => {
     },
   };
   const data = await metautil.receiveBody(body);
-  test.strictSame(data.toString(), '{ "a": 5 }');
-  test.end();
+  assert.strictEqual(data.toString(), '{ "a": 5 }');
 });
 
 metatests.case(
@@ -75,31 +76,29 @@ metatests.case(
   },
 );
 
-metatests.test('Network: httpApiCall', async (test) => {
+test('Network: httpApiCall', async () => {
   const res1 = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
-  test.strictSame(typeof res1.disclaimer, 'string');
-  test.strictSame(typeof res1.license, 'string');
-  test.strictSame(typeof res1.timestamp, 'number');
-  test.strictSame(res1.base, 'USD');
-  test.strictSame(typeof res1.rates, 'object');
-  test.strictSame(typeof res1.rates['UAH'], 'number');
+  assert.strictEqual(typeof res1.disclaimer, 'string');
+  assert.strictEqual(typeof res1.license, 'string');
+  assert.strictEqual(typeof res1.timestamp, 'number');
+  assert.strictEqual(res1.base, 'USD');
+  assert.strictEqual(typeof res1.rates, 'object');
+  assert.strictEqual(typeof res1.rates['UAH'], 'number');
 
   const body = '{"expr":"2+3*sqrt(4)","precision":3}';
   const options = { method: 'POST', body };
   const res2 = await metautil.httpApiCall(MATH_API_URL, options);
-  test.strictSame(Object.keys(res2), ['result', 'error']);
-  test.strictSame(res2.result, '8');
-  test.strictSame(res2.error, null);
+  assert.deepStrictEqual(Object.keys(res2), ['result', 'error']);
+  assert.strictEqual(res2.result, '8');
+  assert.strictEqual(res2.error, null);
 
   const res3 = await metautil.httpApiCall(MATH_API_URL, { body });
-  test.strictSame(Object.keys(res3), ['result', 'error']);
-  test.strictSame(res3.result, '8');
-  test.strictSame(res3.error, null);
-
-  test.end();
+  assert.deepStrictEqual(Object.keys(res3), ['result', 'error']);
+  assert.strictEqual(res3.result, '8');
+  assert.strictEqual(res3.error, null);
 });
 
-metatests.test('Network: httpApiCall (POST)', async (test) => {
+test('Network: httpApiCall (POST)', async () => {
   const expectedBody = '{"key":"value"}';
   const expectedLength = Buffer.byteLength(expectedBody).toString();
 
@@ -109,11 +108,11 @@ metatests.test('Network: httpApiCall (POST)', async (test) => {
     let body = '';
     for await (const chunk of req) body += chunk;
 
-    test.strictSame(body, expectedBody);
-    test.strictSame(req.headers['content-length'], expectedLength);
-    test.strictSame(req.headers['content-type'], 'application/json');
-    test.strictSame(req.headers['custom-header'], 'custom-value');
-    test.strictSame(req.method, 'POST');
+    assert.strictEqual(body, expectedBody);
+    assert.strictEqual(req.headers['content-length'], expectedLength);
+    assert.strictEqual(req.headers['content-type'], 'application/json');
+    assert.strictEqual(req.headers['custom-header'], 'custom-value');
+    assert.strictEqual(req.method, 'POST');
 
     res.end('{"key":"value"}');
   });
@@ -129,26 +128,26 @@ metatests.test('Network: httpApiCall (POST)', async (test) => {
 
   try {
     const res = await metautil.httpApiCall(url, { method, headers, body });
-    test.strictSame(res, { key: 'value' });
+    assert.deepStrictEqual(res, { key: 'value' });
   } catch (err) {
-    test.error(err);
+    assert.ifError(err);
   }
 
   server.close();
 });
 
-metatests.test('Network: httpApiCall (POST without body)', async (test) => {
+test('Network: httpApiCall (POST without body)', async () => {
   const server = http.createServer();
 
   server.on('request', async (req, res) => {
     let body = '';
     for await (const chunk of req) body += chunk;
 
-    test.strictSame(req.headers['content-length'], '0');
-    test.strictSame(req.headers['content-type'], 'application/json');
-    test.strictSame(req.headers['custom-header'], 'custom-value');
-    test.strictSame(req.method, 'POST');
-    test.strictSame(body, '');
+    assert.strictEqual(req.headers['content-length'], '0');
+    assert.strictEqual(req.headers['content-type'], 'application/json');
+    assert.strictEqual(req.headers['custom-header'], 'custom-value');
+    assert.strictEqual(req.method, 'POST');
+    assert.strictEqual(body, '');
 
     res.end('{"key":"value"}');
   });
@@ -162,22 +161,22 @@ metatests.test('Network: httpApiCall (POST without body)', async (test) => {
 
   try {
     const res = await metautil.httpApiCall(url, { method: 'POST', headers });
-    test.strictSame(res, { key: 'value' });
+    assert.deepStrictEqual(res, { key: 'value' });
   } catch (err) {
-    test.error(err);
+    assert.ifError(err);
   }
 
   server.close();
 });
 
-metatests.test('Network: httpApiCall (GET)', async (test) => {
+test('Network: httpApiCall (GET)', async () => {
   const server = http.createServer();
 
   server.on('request', (req, res) => {
-    test.strictSame(req.headers['content-length'], undefined);
-    test.strictSame(req.headers['content-type'], 'application/json');
-    test.strictSame(req.headers['custom-header'], 'custom-value');
-    test.strictSame(req.method, 'GET');
+    assert.strictEqual(req.headers['content-length'], undefined);
+    assert.strictEqual(req.headers['content-type'], 'application/json');
+    assert.strictEqual(req.headers['custom-header'], 'custom-value');
+    assert.strictEqual(req.method, 'GET');
 
     res.end('{"key":"value"}');
   });
@@ -191,9 +190,9 @@ metatests.test('Network: httpApiCall (GET)', async (test) => {
 
   try {
     const res = await metautil.httpApiCall(url, { method: 'GET', headers });
-    test.strictSame(res, { key: 'value' });
+    assert.deepStrictEqual(res, { key: 'value' });
   } catch (err) {
-    test.error(err);
+    assert.ifError(err);
   }
 
   server.close();

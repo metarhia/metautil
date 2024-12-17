@@ -1,9 +1,10 @@
 'use strict';
 
-const metatests = require('metatests');
+const test = require('node:test');
+const assert = require('node:assert');
 const metautil = require('..');
 
-metatests.test('Pool: add/next', async (test) => {
+test('Pool: add/next', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -13,20 +14,18 @@ metatests.test('Pool: add/next', async (test) => {
   const obj3 = { a: 3 };
   pool.add(obj3);
 
-  test.strictSame(await pool.next(), obj1);
-  test.strictSame(await pool.next(), obj2);
-  test.strictSame(await pool.next(), obj3);
-  test.strictSame(await pool.next(), obj1);
-  test.end();
+  assert.strictEqual(await pool.next(), obj1);
+  assert.strictEqual(await pool.next(), obj2);
+  assert.strictEqual(await pool.next(), obj3);
+  assert.strictEqual(await pool.next(), obj1);
 });
 
-metatests.test('Pool: empty', async (test) => {
+test('Pool: empty', async () => {
   const pool = new metautil.Pool();
-  test.strictSame(await pool.next(), null);
-  test.end();
+  assert.strictEqual(await pool.next(), null);
 });
 
-metatests.test('Pool: capture/next', async (test) => {
+test('Pool: capture/next', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -36,30 +35,29 @@ metatests.test('Pool: capture/next', async (test) => {
   const obj3 = { a: 3 };
   pool.add(obj3);
 
-  test.strictSame(pool.isFree(obj1), true);
-  test.strictSame(pool.isFree(obj2), true);
-  test.strictSame(pool.isFree(obj3), true);
+  assert.strictEqual(pool.isFree(obj1), true);
+  assert.strictEqual(pool.isFree(obj2), true);
+  assert.strictEqual(pool.isFree(obj3), true);
 
   const item = await pool.capture();
-  test.strictSame(item, obj1);
-  test.strictSame(pool.isFree(item), false);
-  test.strictSame(await pool.next(), obj2);
-  test.strictSame(await pool.next(), obj3);
-  test.strictSame(await pool.next(), obj2);
+  assert.strictEqual(item, obj1);
+  assert.strictEqual(pool.isFree(item), false);
+  assert.strictEqual(await pool.next(), obj2);
+  assert.strictEqual(await pool.next(), obj3);
+  assert.strictEqual(await pool.next(), obj2);
 
   pool.release(item);
-  test.strictSame(pool.isFree(item), true);
+  assert.strictEqual(pool.isFree(item), true);
   try {
     pool.release(item);
   } catch (err) {
-    test.strictSame(err.message, 'Pool: release not captured');
+    assert.strictEqual(err.message, 'Pool: release not captured');
   }
-  test.strictSame(await pool.next(), obj3);
-  test.strictSame(await pool.next(), obj1);
-  test.end();
+  assert.strictEqual(await pool.next(), obj3);
+  assert.strictEqual(await pool.next(), obj1);
 });
 
-metatests.test('Pool: capture/release', async (test) => {
+test('Pool: capture/release', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -70,19 +68,18 @@ metatests.test('Pool: capture/release', async (test) => {
   pool.add(obj3);
 
   const item1 = await pool.capture();
-  test.strictSame(item1, obj1);
+  assert.strictEqual(item1, obj1);
   const item2 = await pool.capture();
-  test.strictSame(item2, obj2);
+  assert.strictEqual(item2, obj2);
   const item3 = await pool.capture();
-  test.strictSame(item3, obj3);
+  assert.strictEqual(item3, obj3);
 
   pool.release(obj3);
   const item4 = await pool.capture();
-  test.strictSame(item4, obj3);
-  test.end();
+  assert.strictEqual(item4, obj3);
 });
 
-metatests.test('Pool: wait for release', async (test) => {
+test('Pool: wait for release', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -94,18 +91,17 @@ metatests.test('Pool: wait for release', async (test) => {
   const item2 = await pool.capture();
 
   pool.capture().then((item3) => {
-    test.strictSame(item3, obj2);
+    assert.strictEqual(item3, obj2);
   });
   pool.capture().then((item4) => {
-    test.strictSame(item4, obj1);
+    assert.strictEqual(item4, obj1);
   });
 
   pool.release(item2);
   pool.release(item1);
-  test.end();
 });
 
-metatests.test('Pool: wait timeout', async (test) => {
+test('Pool: wait timeout', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -114,21 +110,21 @@ metatests.test('Pool: wait timeout', async (test) => {
   pool.add(obj2);
 
   const item1 = await pool.capture();
-  test.strictSame(item1, obj1);
+  assert.strictEqual(item1, obj1);
   const item2 = await pool.capture();
-  test.strictSame(item2, obj2);
+  assert.strictEqual(item2, obj2);
 
   pool.capture().then((item3) => {
-    test.strictSame(item3, obj2);
+    assert.strictEqual(item3, obj2);
   });
   pool.capture().catch((err) => {
-    test.strictSame(err.message, 'Pool next item timeout');
+    assert.strictEqual(err.message, 'Pool next item timeout');
   });
 
   pool.release(obj2);
 });
 
-metatests.test('Pool: sync capture timeout', (test) => {
+test('Pool: sync capture timeout', () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -141,20 +137,19 @@ metatests.test('Pool: sync capture timeout', (test) => {
   const p3 = pool.capture();
 
   p1.then((item1) => {
-    test.strictSame(item1, obj1);
+    assert.strictEqual(item1, obj1);
   });
 
   p2.then((item2) => {
-    test.strictSame(item2, obj2);
+    assert.strictEqual(item2, obj2);
   });
 
   p3.catch((err) => {
-    test.strictSame(err.message, 'Pool next item timeout');
-    test.end();
+    assert.strictEqual(err.message, 'Pool next item timeout');
   });
 });
 
-metatests.test('Pool: prevent infinite loop', async (test) => {
+test('Pool: prevent infinite loop', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -164,15 +159,13 @@ metatests.test('Pool: prevent infinite loop', async (test) => {
 
   await pool.next();
   const item1 = await pool.capture();
-  test.strictSame(item1, obj2);
+  assert.strictEqual(item1, obj2);
   await pool.next();
   const item2 = await pool.capture();
-  test.strictSame(item2, obj1);
-
-  test.end();
+  assert.strictEqual(item2, obj1);
 });
 
-metatests.test('Pool: release to queue', async (test) => {
+test('Pool: release to queue', async () => {
   const pool = new metautil.Pool();
 
   const obj = { a: 1 };
@@ -180,12 +173,10 @@ metatests.test('Pool: release to queue', async (test) => {
 
   const item = await pool.capture();
   pool.capture().then((item) => {
-    test.assert(pool.available === 0);
-    test.assert(!pool.isFree(item));
-    test.strictSame(item, obj);
+    assert(pool.available === 0);
+    assert(!pool.isFree(item));
+    assert.strictEqual(item, obj);
   });
 
   pool.release(item);
-
-  test.end();
 });

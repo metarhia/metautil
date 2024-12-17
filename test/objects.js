@@ -1,9 +1,11 @@
 'use strict';
 
+const test = require('node:test');
+const assert = require('node:assert');
 const metatests = require('metatests');
 const metautil = require('..');
 
-metatests.test('Object: makePrivate', (test) => {
+test('Object: makePrivate', () => {
   const obj = {
     field: 'value',
     CONSTANT: 1000,
@@ -12,16 +14,15 @@ metatests.test('Object: makePrivate', (test) => {
     },
   };
   const iface = metautil.makePrivate(obj);
-  test.strictSame(typeof iface, 'object');
-  test.strictSame(obj === iface, false);
-  test.strictSame(iface.field, undefined);
-  test.strictSame(iface.CONSTANT, 1000);
-  test.strictSame(typeof iface.method, 'function');
-  test.strictSame(iface.method(3, 5), 8);
-  test.end();
+  assert.strictEqual(typeof iface, 'object');
+  assert.strictEqual(obj === iface, false);
+  assert.strictEqual(iface.field, undefined);
+  assert.strictEqual(iface.CONSTANT, 1000);
+  assert.strictEqual(typeof iface.method, 'function');
+  assert.strictEqual(iface.method(3, 5), 8);
 });
 
-metatests.test('Object: protect', (test) => {
+test('Object: protect', () => {
   const obj1 = {
     field1: 'value1',
     module1: {
@@ -41,28 +42,26 @@ metatests.test('Object: protect', (test) => {
   metautil.protect(['module1'], obj1, obj2);
   try {
     obj1.field1 = 100;
-    test.strictSame(obj1.field1, 100);
+    assert.strictEqual(obj1.field1, 100);
     obj1.module1.method = () => {};
-    test.strictSame(obj1.module1.method(3, 5), undefined);
+    assert.strictEqual(obj1.module1.method(3, 5), undefined);
   } catch (err) {
-    test.error(err);
+    assert.ifError(err);
   }
   try {
     obj2.field1 = 200;
-    test.strictSame(obj2.field1, 200);
+    assert.strictEqual(obj2.field1, 200);
     obj2.module2.method = () => {};
-    test.strictSame(obj2.module2.method(3, 5), 8);
+    assert.strictEqual(obj2.module2.method(3, 5), 8);
   } catch (err) {
-    test.strictSame(err.constructor.name, 'TypeError');
+    assert.strictEqual(err.constructor.name, 'TypeError');
   }
-  test.end();
 });
 
-metatests.test('Introspection: getSignature', async (test) => {
+test('Introspection: getSignature', async () => {
   const method = ({ a, b, c }) => ({ a, b, c });
   const signature = metautil.getSignature(method);
-  test.strictSame(signature, ['a', 'b', 'c']);
-  test.end();
+  assert.deepStrictEqual(signature, ['a', 'b', 'c']);
 });
 
 metatests.case(
@@ -78,7 +77,7 @@ metatests.case(
   },
 );
 
-metatests.test('Object: flatFields with keys names', (test) => {
+test('Object: flatFields with keys names', () => {
   const source = {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
@@ -96,11 +95,10 @@ metatests.test('Object: flatFields with keys names', (test) => {
 
   const result = metautil.flatObject(source, ['name', 'parent']);
 
-  test.strictSame(result, expected);
-  test.end();
+  assert.deepStrictEqual(result, expected);
 });
 
-metatests.test('Object: flatFields duplicate key', (test) => {
+test('Object: flatFields duplicate key', () => {
   const source = {
     name: { first: 'Andrew', second: 'Johnson' },
     nameFirst: 'Andrew',
@@ -108,15 +106,13 @@ metatests.test('Object: flatFields duplicate key', (test) => {
     parent: { mother: 'Eva', father: 'Adam' },
   };
 
-  test.throws(
+  assert.throws(
     () => metautil.flatObject(source),
     new Error('Can not combine keys: key "nameFirst" already exists'),
   );
-
-  test.end();
 });
 
-metatests.test('Object: unflatFields with key names', (test) => {
+test('Object: unflatFields with key names', () => {
   const fieldNames = ['name', 'parent'];
 
   const source = {
@@ -137,11 +133,10 @@ metatests.test('Object: unflatFields with key names', (test) => {
 
   const result = metautil.unflatObject(source, fieldNames);
 
-  test.strictSame(result, expected);
-  test.end();
+  assert.deepStrictEqual(result, expected);
 });
 
-metatests.test('Object: unflatFields naming collision', (test) => {
+test('Object: unflatFields naming collision', () => {
   const fieldNames = ['name', 'parent'];
 
   const source = {
@@ -154,15 +149,13 @@ metatests.test('Object: unflatFields naming collision', (test) => {
     parentFather: 'Adam',
   };
 
-  test.throws(
+  assert.throws(
     () => metautil.unflatObject(source, fieldNames),
     new Error('Can not combine keys: key "name" already exists'),
   );
-
-  test.end();
 });
 
-metatests.test('Object: namespaceByPath', (test) => {
+test('Object: namespaceByPath', () => {
   const ns = {
     module1: {
       method(a, b) {
@@ -176,23 +169,22 @@ metatests.test('Object: namespaceByPath', (test) => {
     },
   };
   const ent1 = metautil.namespaceByPath(ns, 'module2.method');
-  test.strictSame(ent1, ns.module2.method);
+  assert.strictEqual(ent1, ns.module2.method);
   const ent2 = metautil.namespaceByPath(ns, 'module1.unknown');
-  test.strictSame(ent2, null);
+  assert.strictEqual(ent2, null);
   const ent3 = metautil.namespaceByPath(ns, 'module3.method');
-  test.strictSame(ent3, null);
+  assert.strictEqual(ent3, null);
   const ent4 = metautil.namespaceByPath(ns, 'unknown.unknown');
-  test.strictSame(ent4, null);
+  assert.strictEqual(ent4, null);
   const ent5 = metautil.namespaceByPath(ns, 'module1');
-  test.strictSame(ent5, ns.module1);
+  assert.strictEqual(ent5, ns.module1);
   const ent6 = metautil.namespaceByPath(ns, 'module3');
-  test.strictSame(ent6, null);
+  assert.strictEqual(ent6, null);
   const ent7 = metautil.namespaceByPath(ns, '');
-  test.strictSame(ent7, null);
-  test.end();
+  assert.strictEqual(ent7, null);
 });
 
-metatests.test('Object: flatFields', (test) => {
+test('Object: flatFields', () => {
   const source = {
     name: { first: 'Andrew', second: 'Johnson' },
     old: true,
@@ -210,8 +202,7 @@ metatests.test('Object: flatFields', (test) => {
 
   const result = metautil.flatObject(source);
 
-  test.strictSame(result, expected);
-  test.end();
+  assert.deepStrictEqual(result, expected);
 });
 
 metatests.case(
