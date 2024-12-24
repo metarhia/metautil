@@ -59,4 +59,33 @@ test('EventEmitter', async () => {
 
   ee.clear();
   assert.strictEqual(ee.listenerCount('name3'), 0);
+
+  const iterator = ee.toIterator('name4');
+  const iteratorResults = [];
+  ee.emit('name4', 'start');
+  ee.emit('name4', 12, 35);
+  setTimeout(() => ee.emit('name4', 0), 10);
+  setTimeout(() => ee.emit('name4', 1, 11, 'test'), 20);
+  setTimeout(() => ee.emit('name4', 2), 30);
+  setTimeout(() => ee.emit('name4', 'stop'), 40);
+  for await (const data of iterator) {
+    iteratorResults.push(data);
+    if (data[0] === 'stop') {
+      iterator.return();
+      break;
+    }
+  }
+  assert.deepStrictEqual(iteratorResults, [
+    ['start'],
+    [12, 35],
+    [0],
+    [1, 11, 'test'],
+    [2],
+    ['stop'],
+  ]);
+
+  const emitExpect = ['await emit 5', 'await emit 6', 'await emit 7'];
+  emitExpect.forEach((e) => ee.on('name5', () => e));
+  const emitResult = await ee.emit('name5');
+  assert.deepStrictEqual(emitResult, emitExpect);
 });
