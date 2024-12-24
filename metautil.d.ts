@@ -286,3 +286,31 @@ export class EventEmitter {
 }
 
 export function once(emitter: EventEmitter, name: string): Promise<unknown>;
+
+// Submodule: Future
+
+type Resolve<T = unknown> = (value: T) => void;
+type Reject = (reason?: Error | unknown) => void;
+type Executor<T = unknown> = (resolve: Resolve<T>, reject?: Reject) => void;
+
+interface Thenable<T = unknown> {
+  then(resolve: Resolve<T>, reject: Reject): unknown;
+}
+
+export class Future<T = unknown> {
+  static of<U = unknown>(value: U): Future<U>;
+  constructor(executor: Executor<T>);
+  chain<U = T>(fn: (value: T) => Future<U>): Future<U>;
+  map<U = T>(fn: (value: T) => U): Future<U>;
+  fork(successed: Resolve<T>, failed?: Reject): void;
+  toPromise(): Promise<T>;
+  toThenable(): Thenable<T>;
+  toCallbackLast(callback: Function): CallbackLastFunction;
+}
+
+type CallbackLastArgs = [...args: Array<unknown>, callback: Function];
+type CallbackLastFunction = (...args: CallbackLastArgs) => unknown;
+
+export function futurify(
+  fn: CallbackLastFunction,
+): (...args: CallbackLastArgs) => Future;
