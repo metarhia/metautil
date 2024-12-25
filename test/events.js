@@ -88,11 +88,13 @@ test('EventEmitter', async () => {
       break;
     }
   }
+  assert.strictEqual(ee.listenerCount('name4'), 0);
+  assert.strictEqual(ee.listenerCount('error'), 0);
 
   const iteratorWithError = ee.toIterator('bang');
-  const _err = new Error('Big bang');
+  const expectedError = new Error('Big bang');
   process.nextTick(() => {
-    ee.emit('error', _err);
+    ee.emit('error', expectedError);
   });
   let looped = false;
   let thrown = false;
@@ -103,11 +105,12 @@ test('EventEmitter', async () => {
     }
   } catch (err) {
     thrown = true;
-    assert.strictEqual(err, _err);
+    assert.strictEqual(err, expectedError);
   }
   assert.strictEqual(thrown, true);
   assert.strictEqual(looped, false);
-  assert.strictEqual(ee.listeners('error').length, 0);
+  assert.strictEqual(ee.listenerCount('bang'), 0);
+  assert.strictEqual(ee.listenerCount('error'), 0);
 
   const emitExpect = ['await emit 1', 'await emit 2', 'await emit 3'];
   emitExpect.forEach((e) => ee.on('name5', () => e));
