@@ -107,6 +107,7 @@ test('EventEmitter', async () => {
   }
   assert.strictEqual(thrown, true);
   assert.strictEqual(looped, false);
+  assert.strictEqual(ee.listeners('error').length, 0);
 
   const emitExpect = ['await emit 1', 'await emit 2', 'await emit 3'];
   emitExpect.forEach((e) => ee.on('name5', () => e));
