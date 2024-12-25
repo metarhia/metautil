@@ -61,30 +61,54 @@ test('EventEmitter', async () => {
   assert.strictEqual(ee.listenerCount('name3'), 0);
 
   const iterator = ee.toIterator('name4');
-  const iteratorResults = [];
   ee.emit('name4', 'start');
   ee.emit('name4', 12, 35);
+  ee.emit('name4');
+  process.nextTick(() => {
+    ee.emit('name4', 'foo', 'bar', 12);
+  });
   setTimeout(() => ee.emit('name4', 0), 10);
   setTimeout(() => ee.emit('name4', 1, 11, 'test'), 20);
   setTimeout(() => ee.emit('name4', 2), 30);
   setTimeout(() => ee.emit('name4', 'stop'), 40);
-  for await (const data of iterator) {
-    iteratorResults.push(data);
-    if (data[0] === 'stop') {
-      iterator.return();
-      break;
-    }
-  }
-  assert.deepStrictEqual(iteratorResults, [
+  const iteratorExpect = [
     ['start'],
     [12, 35],
+    [],
+    ['foo', 'bar', 12],
     [0],
     [1, 11, 'test'],
     [2],
     ['stop'],
-  ]);
+  ];
+  for await (const event of iterator) {
+    const current = iteratorExpect.shift();
+    assert.deepStrictEqual(current, event);
+    if (!iteratorExpect.length) {
+      break;
+    }
+  }
 
-  const emitExpect = ['await emit 5', 'await emit 6', 'await emit 7'];
+  const iteratorWithError = ee.toIterator('bang');
+  const _err = new Error('Big bang');
+  process.nextTick(() => {
+    ee.emit('error', _err);
+  });
+  let looped = false;
+  let thrown = false;
+  try {
+    // eslint-disable-next-line no-unused-vars
+    for await (const event of iteratorWithError) {
+      looped = true;
+    }
+  } catch (err) {
+    thrown = true;
+    assert.strictEqual(err, _err);
+  }
+  assert.strictEqual(thrown, true);
+  assert.strictEqual(looped, false);
+
+  const emitExpect = ['await emit 1', 'await emit 2', 'await emit 3'];
   emitExpect.forEach((e) => ee.on('name5', () => e));
   const emitResult = await ee.emit('name5');
   assert.deepStrictEqual(emitResult, emitExpect);
