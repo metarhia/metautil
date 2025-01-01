@@ -291,7 +291,7 @@ export function once(emitter: EventEmitter, name: string): Promise<unknown>;
 
 type Resolve<T = unknown> = (value: T) => void;
 type Reject = (reason?: Error | unknown) => void;
-type Executor<T = unknown> = (resolve: Resolve<T>, reject?: Reject) => void;
+type Executor<T = unknown> = (resolve: Resolve<T>, reject?: Reject) => unknown;
 
 interface Thenable<T = unknown> {
   then(resolve: Resolve<T>, reject: Reject): unknown;
