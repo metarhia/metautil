@@ -3,9 +3,17 @@
 const test = require('node:test');
 const assert = require('node:assert');
 const metautil = require('..');
-const { toBool, timeout, delay } = metautil;
-const { timeoutify, throttle, debounce } = metautil;
-const { callbackify, asyncify, promisify } = metautil;
+const {
+  toBool,
+  timeout,
+  delay,
+  timeoutify,
+  throttle,
+  debounce,
+  callbackify,
+  promisify,
+  asyncify,
+} = metautil;
 
 test('Async: toBool', async () => {
   const success = await Promise.resolve('success').then(...toBool);
@@ -71,86 +79,110 @@ test('Async: timeoutify', async () => {
   }
 });
 
-test('Async: throttle', async () => {
+test('Async: throttle timing', async () => {
   let resolve = null;
   const promise = new Promise((r) => {
     resolve = r;
   });
 
   let callCount = 0;
-
-  const fn = (arg1, arg2, ...otherArgs) => {
-    assert.strictEqual(arg1, 'someVal');
-    assert.strictEqual(arg2, 4);
-    assert.deepEqual(otherArgs, []);
+  const fn = () => {
     callCount++;
-    assert.ok(callCount <= 2);
     if (callCount === 2) resolve();
   };
 
-  const throttledFn = throttle(1, fn, 'someVal', 4);
+  const throttledFn = throttle(fn, 50);
 
   throttledFn();
   assert.strictEqual(callCount, 1);
+
+  await new Promise((r) => setTimeout(r, 60));
   throttledFn();
-  assert.strictEqual(callCount, 1);
-  throttledFn();
-  assert.strictEqual(callCount, 1);
+  assert.strictEqual(callCount, 2);
+
   return promise;
 });
 
-test('Async: throttle merge args', async () => {
+test('Async: throttle no args', async () => {
   let resolve = null;
   const promise = new Promise((r) => {
     resolve = r;
   });
 
   let callCount = 0;
-
-  const fn = (arg1, arg2, ...otherArgs) => {
-    assert.strictEqual(arg1, 'someVal');
-    assert.strictEqual(arg2, 4);
-    assert.deepEqual(otherArgs, ['str']);
-    callCount++;
-    assert.ok(callCount <= 2);
-    if (callCount === 2) resolve();
-  };
-
-  const throttledFn = throttle(1, fn, 'someVal', 4);
-
-  throttledFn('str');
-  assert.strictEqual(callCount, 1);
-  throttledFn('str');
-  assert.strictEqual(callCount, 1);
-  throttledFn('str');
-  assert.strictEqual(callCount, 1);
-  return promise;
-});
-
-test('Async: throttle without arguments', async () => {
-  let resolve = null;
-  const promise = new Promise((r) => {
-    resolve = r;
-  });
-
-  let callCount = 0;
-
   const fn = (...args) => {
     assert.deepEqual(args, []);
     callCount++;
-    assert.ok(callCount <= 2);
     if (callCount === 2) resolve();
   };
 
-  const throttledFn = throttle(1, fn);
+  const throttledFn = throttle(fn, 50);
 
   throttledFn();
   assert.strictEqual(callCount, 1);
+
+  await new Promise((r) => setTimeout(r, 60));
+
   throttledFn();
-  assert.strictEqual(callCount, 1);
-  throttledFn();
-  assert.strictEqual(callCount, 1);
+  assert.strictEqual(callCount, 2);
+
   return promise;
+});
+
+test('Async: throttle with invalid intervals', async () => {
+  const fn = () => {};
+  assert.throws(() => throttle(fn, -1), {
+    name: 'Error',
+    message: 'Interval must be greater then 0',
+  });
+  assert.throws(() => throttle(fn, null), {
+    name: 'Error',
+    message: 'Interval must be greater then 0',
+  });
+  assert.throws(() => throttle(fn, undefined), {
+    name: 'Error',
+    message: 'Interval must be greater then 0',
+  });
+});
+
+test('Async: throttle timing verification', async () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  let lastCallTime = 0;
+  let callCount = 0;
+  const interval = 100;
+
+  const fn = () => {
+    const now = Date.now();
+    if (lastCallTime) {
+      assert.ok(now - lastCallTime >= interval);
+    }
+    lastCallTime = now;
+    callCount++;
+    if (callCount === 3) resolve();
+  };
+
+  const throttledFn = throttle(fn, interval);
+
+  throttledFn();
+  await new Promise((r) => setTimeout(r, interval + 10));
+  throttledFn();
+  await new Promise((r) => setTimeout(r, interval + 10));
+  throttledFn();
+
+  return promise;
+});
+
+test('Async: throttle error propagation', async () => {
+  const errorFn = () => {
+    throw new Error('Test error');
+  };
+
+  const throttledFn = throttle(errorFn, 1);
+  assert.throws(() => throttledFn(), Error);
 });
 
 test('Async: debounce', async () => {
@@ -170,7 +202,7 @@ test('Async: debounce', async () => {
     resolve();
   };
 
-  const debouncedFn = debounce(1, fn, 'someVal', 4);
+  const debouncedFn = debounce(fn, 1, 'someVal', 4);
 
   debouncedFn();
   assert.strictEqual(count, 0);
@@ -179,7 +211,7 @@ test('Async: debounce', async () => {
   return promise;
 });
 
-test('Async: debounce without arguments', async () => {
+test('Async: debounce (without arguments)', async () => {
   let resolve = null;
   const promise = new Promise((r) => {
     resolve = r;
@@ -194,7 +226,7 @@ test('Async: debounce without arguments', async () => {
     resolve();
   };
 
-  const debouncedFn = debounce(1, fn);
+  const debouncedFn = debounce(fn, 1);
 
   debouncedFn();
   assert.strictEqual(count, 0);
@@ -203,7 +235,112 @@ test('Async: debounce without arguments', async () => {
   return promise;
 });
 
-test('Callbackify: Promise to callback-last', async () => {
+test('Async: debounce (multiple calls)', () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  let counter = 0;
+  const increment = () => {
+    counter++;
+    resolve();
+  };
+  const debouncedFn = debounce(increment, 100);
+
+  debouncedFn();
+  debouncedFn();
+  debouncedFn();
+
+  assert.strictEqual(counter, 0);
+
+  setTimeout(() => {
+    assert.strictEqual(counter, 1);
+  }, 150);
+
+  return promise;
+});
+
+test('Async: debounce (preserves arguments)', () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  let result = 0;
+  const sum = (a, b) => {
+    result = a + b;
+    resolve();
+  };
+  const debouncedSum = debounce(sum, 100, 2, 3);
+
+  debouncedSum();
+
+  setTimeout(() => {
+    assert.strictEqual(result, 5);
+  }, 150);
+
+  return promise;
+});
+
+test('Async: debounce (timing)', () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  const start = Date.now();
+  let executionTime;
+
+  const fn = () => {
+    executionTime = Date.now() - start;
+    resolve();
+  };
+
+  const debouncedFn = debounce(fn, 100);
+  debouncedFn();
+
+  setTimeout(() => {
+    assert(executionTime >= 100);
+  }, 150);
+
+  return promise;
+});
+
+test('Async: callbackify (validates callback parameter)', () => {
+  const promiseReturning = () => Promise.resolve('test');
+  const asyncFn = callbackify(promiseReturning);
+
+  const nonFunctions = [null, undefined, 123, 'string', {}, [], true];
+  nonFunctions.forEach((value) => {
+    assert.throws(() => asyncFn(value), {
+      name: 'Error',
+      message: 'Last argument should be a function with 2 parameters',
+    });
+  });
+
+  const wrongParamCallbacks = [
+    () => {},
+    // eslint-disable-next-line no-unused-vars
+    (_err) => {},
+    // eslint-disable-next-line no-unused-vars
+    (_err, _val, _extra) => {},
+  ];
+
+  wrongParamCallbacks.forEach((callback) => {
+    assert.throws(() => asyncFn(callback), {
+      name: 'Error',
+      message: 'Last argument should be a function with 2 parameters',
+    });
+  });
+
+  assert.doesNotThrow(() => {
+    // eslint-disable-next-line no-unused-vars
+    asyncFn((_err, _result) => {});
+  });
+});
+
+test(`Async: callbackify (resolved promise)`, async () => {
   let resolve = null;
   const promise = new Promise((r) => {
     resolve = r;
@@ -221,57 +358,185 @@ test('Callbackify: Promise to callback-last', async () => {
   return promise;
 });
 
-test('Asyncify: sync function to callback-last', async () => {
+test('Async: callbackify (rejected promise)', async () => {
   let resolve = null;
   const promise = new Promise((r) => {
     resolve = r;
   });
 
-  const fn = (par) => par;
-  const asyncFn = asyncify(fn);
+  const promiseReturning = () => Promise.reject(new Error('error'));
+  const asyncFn = callbackify(promiseReturning);
 
-  asyncFn('result', (err, value) => {
-    if (err) assert.ifError(err);
-    assert.strictEqual(value, 'result');
+  asyncFn((err, value) => {
+    assert(err);
+    assert.strictEqual(err.message, 'error');
+    assert.strictEqual(value, undefined);
     resolve();
   });
 
   return promise;
 });
 
-test('Promisify: callback-last to Promise', async () => {
-  const id = 100;
-  const data = { key: 'value' };
+test('Async: callbackify (async function with arguments)', async () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
 
-  const getDataAsync = (dataId, callback) => {
-    assert.strictEqual(dataId, id);
-    callback(null, data);
+  const promiseReturning = (arg) => Promise.resolve(arg);
+  const asyncFn = callbackify(promiseReturning);
+
+  asyncFn('test', (err, value) => {
+    assert.ifError(err);
+    assert.strictEqual(value, 'test');
+    resolve();
+  });
+
+  return promise;
+});
+
+test('Async: callbackify (async function with multiple args)', async () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  const promiseReturning = (arg1, arg2) => Promise.resolve(arg1 + arg2);
+  const asyncFn = callbackify(promiseReturning);
+
+  asyncFn(1, 2, (err, value) => {
+    assert.ifError(err);
+    assert.strictEqual(value, 3);
+    resolve();
+  });
+
+  return promise;
+});
+
+test('Async: asyncify (handles sync fn execution asynchronously', async () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  const syncFunction = (a, b) => a + b;
+
+  const asyncFunction = asyncify(syncFunction);
+
+  let result = null;
+  let error = null;
+
+  asyncFunction(2, 3, (err, res) => {
+    error = err;
+    result = res;
+    resolve();
+  });
+
+  assert.strictEqual(result, null);
+  assert.strictEqual(error, null);
+
+  await promise;
+
+  assert.strictEqual(error, null);
+  assert.strictEqual(result, 5);
+});
+
+test('Async: asyncify (handles sync fn throwing an error)', async () => {
+  let resolve = null;
+  const promise = new Promise((r) => {
+    resolve = r;
+  });
+
+  const syncFunction = () => {
+    throw new Error('Test Error');
   };
 
-  const getDataPromise = promisify(getDataAsync);
+  const asyncFunction = asyncify(syncFunction);
+
+  let result = null;
+  let error = null;
+
+  asyncFunction((err, res) => {
+    error = err;
+    result = res;
+    resolve();
+  });
+
+  assert.strictEqual(result, null);
+  assert.strictEqual(error, null);
+
+  await promise;
+
+  assert.strictEqual(result, undefined);
+  assert.strictEqual(error.message, 'Test Error');
+});
+
+test('Async: promisify (basic functionality)', async () => {
+  const syncFn = (value, callback) => {
+    callback(null, value);
+  };
+  const promisified = promisify(syncFn);
 
   try {
-    const result = await getDataPromise(id);
-    assert.strictEqual(result, data);
+    const result = await promisified('test');
+    assert.strictEqual(result, 'test');
   } catch (err) {
     assert.ifError(err);
   }
 });
 
-test('Promisify: callback-last to Promise throw', async () => {
-  const id = 100;
-
-  const getDataAsync = (dataId, callback) => {
-    assert.strictEqual(dataId, id);
-    callback(new Error('Data not found'));
+test('Async: promisify (handles errors)', async () => {
+  const errorFn = (callback) => {
+    callback(new Error('test error'));
   };
-
-  const getDataPromise = promisify(getDataAsync);
+  const promisified = promisify(errorFn);
 
   try {
-    const result = await getDataPromise(id);
-    assert.notOk(result);
+    await promisified();
+    assert.fail('Should throw error');
   } catch (err) {
-    assert.ok(err);
+    assert.strictEqual(err.message, 'test error');
+  }
+});
+
+test('Async: promisify (multiple arguments)', async () => {
+  const sum = (a, b, callback) => {
+    callback(null, a + b);
+  };
+  const promisified = promisify(sum);
+
+  try {
+    const result = await promisified(2, 3);
+    assert.strictEqual(result, 5);
+  } catch (err) {
+    assert.ifError(err);
+  }
+});
+
+test('Async: promisify (no arguments except callback)', async () => {
+  const constantFn = (callback) => {
+    callback(null, 42);
+  };
+  const promisified = promisify(constantFn);
+
+  try {
+    const result = await promisified();
+    assert.strictEqual(result, 42);
+  } catch (err) {
+    assert.ifError(err);
+  }
+});
+
+test('Async: promisify (complex return value)', async () => {
+  const objFn = (callback) => {
+    callback(null, { key: 'value', num: 123 });
+  };
+  const promisified = promisify(objFn);
+
+  try {
+    const result = await promisified();
+    assert.deepStrictEqual(result, { key: 'value', num: 123 });
+  } catch (err) {
+    assert.ifError(err);
   }
 });

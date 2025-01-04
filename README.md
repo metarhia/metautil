@@ -14,15 +14,92 @@
 
 ## Async utilities
 
-- `toBool = [() => true, () => false]`
-  - Example: `const created = await mkdir(path).then(...toBool);`
-- `timeout(msec: number, signal?: AbortSignal): Promise<void>`
-- `delay(msec: number, signal?: AbortSignal): Promise<void>`
-- `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
-- `collect(keys: Array<string>, options?: CollectorOptions): Collector`
-  - `options.exact?: boolean`
-  - `options.timeout?: number`
-  - `options.reassign?: boolean`
+- **toBool = [() => true, () => false]**
+
+  - Example:
+    ```javascript
+    const created = await mkdir(path).then(...toBool);
+    ```
+
+- **timeout(msec: number, signal?: AbortSignal): Promise<void>**
+
+  - Creates a promise that resolves after `msec` milliseconds or rejects if `signal` is aborted.
+
+- **delay(msec: number, signal?: AbortSignal): Promise<void>**
+
+  - Delays the execution of a promise for a specified number of milliseconds, optionally cancelable via `signal`.
+
+- **timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>**
+
+  - Adds a timeout to an existing promise. If the promise doesn't resolve or reject within the given `msec`, it rejects with a timeout error.
+
+- **throttle(fn: Function, interval: number, ...presetArgs: Array<unknown>): Function**
+
+  - Executes a given function at most once per specified interval, even if it's called multiple times.
+  - Example:
+
+    ```javascript
+    const log = (msg) => console.log(msg);
+    const throttledLog = throttle(log, 2000);
+
+    throttledLog('Hello'); // Logs: "Hello"
+    throttledLog('World'); // Ignored if called within 2 seconds of the last call
+    ```
+
+- **debounce(fn: Function, delay: number, ...args: Array<unknown>): Function**
+
+  - Delays the execution of a function until a specified delay has elapsed since the last time it was invoked.
+  - Example:
+
+    ```javascript
+    const log = (msg) => console.log(msg);
+    const debouncedLog = debounce(log, 1000);
+
+    debouncedLog('Hello'); // Logs: "Hello" after 1 second
+    debouncedLog('World'); // Resets the timer, only "World" is logged after 1 second
+    ```
+
+- **callbackify(asyncFn: Function): Function**
+
+  - Converts an async function into a callback-style function (Node.js-style).
+  - Example:
+
+    ```javascript
+    const asyncAdd = async (a, b) => a + b;
+    const callbackAdd = callbackify(asyncAdd);
+
+    callbackAdd(2, 3, (err, result) => {
+      if (err) console.error(err);
+      else console.log(result); // Logs: 5
+    });
+    ```
+
+- **asyncify(fn: Function): Function**
+
+  - Converts a synchronous function into a callback-style asynchronous function.
+  - Example:
+
+    ```javascript
+    const syncAdd = (a, b) => a + b;
+    const asyncAdd = asyncify(syncAdd);
+
+    asyncAdd(2, 3, (err, result) => {
+      if (err) console.error(err);
+      else console.log(result); // Logs: 5
+    });
+    ```
+
+- **promisify(fn: Function): Function**
+
+  - Converts a callback-style function into a promise-based function.
+  - Example:
+
+    ```javascript
+    const callbackAdd = (a, b, callback) => callback(null, a + b);
+    const promiseAdd = promisify(callbackAdd);
+
+    promiseAdd(2, 3).then(console.log).catch(console.error); // Logs: 5
+    ```
 
 ## Class `Collector`
 

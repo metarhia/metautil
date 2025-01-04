@@ -2,6 +2,17 @@
 
 ## [Unreleased][unreleased]
 
+- Added `throttle(fn, interval, ...presetArgs): Function`
+  - Executes a given function at most once per specified interval, even if it's called multiple times.
+- Added `debounce(fn, delay, ...args): Function`
+  - Delays the execution of a function until a specified delay has elapsed since the last time it was invoked.
+- Added `callbackify(asyncFn): Function`
+  - Converts an async function into a callback-style function (Node.js-style).
+- Added `asyncify(fn): Function`
+  - Converts a synchronous function into a callback-style asynchronous function.
+- Added `promisify(fn): Function`
+  - Converts a callback-style function into a promise-based function.
+
 ## [5.2.4][] - 2024-09-12
 
 - Update eslint/prettier/metarhia configs

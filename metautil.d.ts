@@ -16,6 +16,23 @@ export function timeoutify(
   msec: number,
 ): Promise<unknown>;
 
+type Callback = (...args: Array<unknown>) => unknown;
+export function callbackify(asyncFunction: AsyncFunction): Callback;
+export function asyncify(
+  syncFunction: Function,
+): (...args: Array<unknown>) => void;
+export function promisify(asyncFunction: AsyncFunction): Promise<unknown>;
+export function debounce(
+  fn: Function,
+  delay: number,
+  ...args: Array<unknown>
+): void;
+export function throttle(
+  fn: Function,
+  interval: number,
+  ...args: Array<unknown>
+): Function;
+
 // Submodule: crypto
 
 export function cryptoRandom(min?: number, max?: number): number;
