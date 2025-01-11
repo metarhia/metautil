@@ -149,48 +149,6 @@ try {
 }
 ```
 
-## Future
-
-Future is a stateless chained abstraction for handling asynchronous operations.
-
-- `constructor(executor: Function)`
-- `static of(value: unknown): Future<unknown>`
-- `chain(fn: Function): Future<unknown>`
-- `map(fn: Function): Future<unknown>`
-- `fork(successed: Function, failed?: Function): void`
-- `toPromise(): Promise<unknown>`
-- `toThenable(): Thenable<unknown>`
-
-Example with `Future`
-
-```js
-const futureFile = (name) =>
-  new Future((resolve, reject) => {
-    fs.readFile(name, 'utf8', (err, data) => {
-      if (err) reject(err);
-      else resolve(data);
-    });
-  });
-
-const future = futureFile('file.js');
-const size = future.map((x) => x.length);
-const lines = future.map((x) => x.split('\n').length);
-
-size.fork((x) => console.log('File size:', x));
-lines.fork((x) => console.log('Line count:', x));
-```
-
-Using `futurify`
-
-```js
-const readFile = (name, callback) => fs.readFile(name, 'utf8', callback);
-const futureFile = futurify(readFile);
-
-futureFile('file.js')
-  .map((x) => x.length)
-  .fork((x) => console.log('File size:', x));
-```
-
 ## Crypto utilities
 
 - `cryptoRandom(min?: number, max?: number): number`
