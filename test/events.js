@@ -41,7 +41,7 @@ test('EventEmitter', async () => {
   assert.strictEqual(count, 1);
 
   assert.strictEqual(ee.listenerCount('name1'), 2);
-  ee.remove('name1', fn);
+  ee.off('name1', fn);
   assert.strictEqual(ee.listenerCount('name1'), 1);
 
   ee.emit('name1', 'value');
