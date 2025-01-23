@@ -274,15 +274,22 @@ export function collect(
 
 // Submodule: Events
 
+type Listener = (...args: unknown[]) => void;
+type EventName = string | symbol;
+
 export class EventEmitter {
   constructor();
   getMaxListeners(): number;
-  listenerCount(name: string): number;
-  on(name: string, fn: Function): void;
-  once(name: string, fn: Function): void;
-  emit(name: string, ...args: Array<unknown>): void;
-  remove(name: string, fn: Function): void;
-  clear(name: string): void;
+  listenerCount(eventName?: EventName): number;
+  on(eventName: EventName, listener: Listener): void;
+  once(eventName: EventName, listener: Listener): void;
+  emit(eventName: EventName, ...args: unknown[]): Promise<void>;
+  off(eventName: EventName, listener?: Listener): void;
+  clear(eventName?: EventName): void;
+  toPromise(eventName: EventName): Promise<unknown>;
+  toIterator(eventName: EventName): Iterator<unknown>;
+  eventNames(): EventName[];
+  listeners(eventName: EventName): Listener[];
 }
 
 export function once(emitter: EventEmitter, name: string): Promise<unknown>;
