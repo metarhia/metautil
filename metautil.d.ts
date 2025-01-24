@@ -289,7 +289,7 @@ export class EventEmitter {
   toPromise(eventName: EventName): Promise<unknown>;
   toIterator(eventName: EventName): Iterator<unknown>;
   eventNames(): EventName[];
-  listeners(eventName: EventName): Listener[];
+  listeners(eventName?: EventName): Listener[];
 }
 
 export function once(emitter: EventEmitter, name: string): Promise<unknown>;
