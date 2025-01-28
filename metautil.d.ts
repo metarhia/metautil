@@ -291,5 +291,3 @@ export class EventEmitter {
   eventNames(): EventName[];
   listeners(eventName?: EventName): Listener[];
 }
-
-export function once(emitter: EventEmitter, name: string): Promise<unknown>;

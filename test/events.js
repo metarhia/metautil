@@ -2,10 +2,10 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
-const metautil = require('..');
+const { EventEmitter } = require('..');
 
 test('EventEmitter', async () => {
-  const ee = new metautil.EventEmitter();
+  const ee = new EventEmitter();
 
   assert.strictEqual(ee.maxListenersCount, 10);
   assert(ee.events instanceof Map);
@@ -54,8 +54,8 @@ test('EventEmitter', async () => {
     ee.emit('name3', 'value');
   }, 50);
 
-  const result = await metautil.once(ee, 'name3');
-  assert.strictEqual(result, 'value');
+  const result = await ee.toPromise('name3');
+  assert.deepStrictEqual(result, ['value']);
 
   ee.clear();
   assert.strictEqual(ee.listenerCount('name3'), 0);
