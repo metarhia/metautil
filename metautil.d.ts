@@ -286,8 +286,14 @@ export class EventEmitter {
   emit(eventName: EventName, ...args: unknown[]): Promise<void>;
   off(eventName: EventName, listener?: Listener): void;
   clear(eventName?: EventName): void;
-  toPromise(eventName: EventName): Promise<unknown>;
-  toIterator(eventName: EventName): Iterator<unknown>;
+  toPromise(
+    eventName: EventName,
+    options?: { signal: AbortSignal },
+  ): Promise<unknown>;
+  toIterator(
+    eventName: EventName,
+    options?: { singal: AbortSignal },
+  ): Iterator<unknown>;
   eventNames(): EventName[];
   listeners(eventName?: EventName): Listener[];
 }
