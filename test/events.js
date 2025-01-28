@@ -7,7 +7,7 @@ const { EventEmitter } = require('..');
 test('EventEmitter', async () => {
   const ee = new EventEmitter();
 
-  assert.strictEqual(ee.maxListenersCount, 10);
+  assert.strictEqual(ee.maxListeners, 10);
   assert(ee.events instanceof Map);
 
   let onCount = 0;
