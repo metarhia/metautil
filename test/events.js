@@ -66,29 +66,20 @@ test('EventEmitter', async () => {
   assert.deepStrictEqual(emitResult, emitExpect);
 });
 
-test('EventIterator', async (testCase) => {
+test('Emitter.toAsyncIterable', async (testCase) => {
   await testCase.test('base', async () => {
     const ee = new metautil.EventEmitter();
-    const iterator = ee.toIterator('name4');
     process.nextTick(async () => {
-      await ee.emit('name4', 'foo', 'bar', 12);
+      await ee.emit('name4', 'foo');
       await ee.emit('name4', 'banana');
       await ee.emit('name4', 'nana');
     });
     setTimeout(() => ee.emit('name4', 0), 0);
-    setTimeout(() => ee.emit('name4', 1, 11, 'test'), 0);
+    setTimeout(() => ee.emit('name4', 1), 0);
     setTimeout(() => ee.emit('name4', 2), 0);
     setTimeout(() => ee.emit('name4', 'stop'), 0);
-    const iteratorExpect = [
-      ['foo', 'bar', 12],
-      ['banana'],
-      ['nana'],
-      [0],
-      [1, 11, 'test'],
-      [2],
-      ['stop'],
-    ];
-    for await (const event of iterator) {
+    const iteratorExpect = ['foo', 'banana', 'nana', 0, 1, 2, 'stop'];
+    for await (const event of ee.toAsyncIterable('name4')) {
       const current = iteratorExpect.shift();
       assert.deepStrictEqual(current, event);
       if (!iteratorExpect.length) {
@@ -100,24 +91,23 @@ test('EventIterator', async (testCase) => {
   });
   await testCase.test('error', async () => {
     const ee = new metautil.EventEmitter();
-    const iteratorWithError = ee.toIterator('bang');
     const expectedError = new Error('Big bang');
     process.nextTick(() => {
       ee.emit('error', expectedError);
+      ee.emit('bang', 'bang event');
     });
-    let looped = false;
+    let loopedEvent = null;
     let thrown = false;
     try {
-      // eslint-disable-next-line no-unused-vars
-      for await (const event of iteratorWithError) {
-        looped = true;
+      for await (const event of ee.toAsyncIterable('bang')) {
+        loopedEvent = event;
       }
     } catch (err) {
       thrown = true;
       assert.strictEqual(err, expectedError);
     }
     assert.strictEqual(thrown, true);
-    assert.strictEqual(looped, false);
+    assert.strictEqual(loopedEvent, null);
   });
   await testCase.test('errorDelayed', async () => {
     const ee = new metautil.EventEmitter();
@@ -126,15 +116,12 @@ test('EventIterator', async (testCase) => {
       await ee.emit('foo', 42);
       await ee.emit('error', _err);
     });
-
-    const iterable = ee.toIterator('foo');
-    const expected = [[42]];
+    const expected = 42;
     let thrown = false;
 
     try {
-      for await (const event of iterable) {
-        const current = expected.shift();
-        assert.deepStrictEqual(current, event);
+      for await (const event of ee.toAsyncIterable('foo')) {
+        assert.deepStrictEqual(expected, event);
       }
     } catch (err) {
       thrown = true;
@@ -154,8 +141,8 @@ test('EventIterator', async (testCase) => {
     });
 
     try {
-      for await (const event of ee.toIterator('foo')) {
-        assert.deepStrictEqual(event, [42]);
+      for await (const event of ee.toAsyncIterable('foo')) {
+        assert.deepStrictEqual(event, 42);
         throw _err;
       }
     } catch (err) {
@@ -168,26 +155,27 @@ test('EventIterator', async (testCase) => {
 
   await testCase.test('next', async () => {
     const ee = new metautil.EventEmitter();
-    const iterable = ee.toIterator('foo');
+    const iterable = ee.toAsyncIterable('foo');
+    const iterator = iterable[Symbol.asyncIterator]();
 
     process.nextTick(async () => {
       await ee.emit('foo', 'bar');
       await ee.emit('foo', 42);
-      iterable.return();
+      iterator.return();
     });
 
-    const first = await iterable.next();
-    const second = await iterable.next();
-    const third = await iterable.next();
+    const first = await iterator.next();
+    const second = await iterator.next();
+    const third = await iterator.next();
     const results = [first, second, third];
 
     assert.deepStrictEqual(results, [
       {
-        value: ['bar'],
+        value: 'bar',
         done: false,
       },
       {
-        value: [42],
+        value: 42,
         done: false,
       },
       {
@@ -195,7 +183,7 @@ test('EventIterator', async (testCase) => {
         done: true,
       },
     ]);
-    assert.deepStrictEqual(await iterable.next(), {
+    assert.deepStrictEqual(await iterator.next(), {
       value: undefined,
       done: true,
     });
