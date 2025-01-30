@@ -4,8 +4,8 @@ const test = require('node:test');
 const assert = require('node:assert');
 const metautil = require('..');
 
-test('EventEmitter', async () => {
-  const ee = new metautil.EventEmitter();
+test('Emitter', async () => {
+  const ee = new metautil.Emitter();
 
   assert.strictEqual(ee.maxListeners, 10);
   assert(ee.events instanceof Map);
@@ -68,7 +68,7 @@ test('EventEmitter', async () => {
 
 test('Emitter.toAsyncIterable', async (testCase) => {
   await testCase.test('base', async () => {
-    const ee = new metautil.EventEmitter();
+    const ee = new metautil.Emitter();
     process.nextTick(async () => {
       await ee.emit('name4', 'foo');
       await ee.emit('name4', 'banana');
@@ -90,7 +90,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     assert.strictEqual(ee.listenerCount('error'), 0);
   });
   await testCase.test('error', async () => {
-    const ee = new metautil.EventEmitter();
+    const ee = new metautil.Emitter();
     const expectedError = new Error('Big bang');
     process.nextTick(() => {
       ee.emit('error', expectedError);
@@ -110,7 +110,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     assert.strictEqual(loopedEvent, null);
   });
   await testCase.test('errorDelayed', async () => {
-    const ee = new metautil.EventEmitter();
+    const ee = new metautil.Emitter();
     const _err = new Error('kaboom');
     process.nextTick(async () => {
       await ee.emit('foo', 42);
@@ -133,7 +133,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
   });
 
   await testCase.test('throwInLoop', async () => {
-    const ee = new metautil.EventEmitter();
+    const ee = new metautil.Emitter();
     const _err = new Error('kaboom');
 
     process.nextTick(() => {
@@ -154,7 +154,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
   });
 
   await testCase.test('next', async () => {
-    const ee = new metautil.EventEmitter();
+    const ee = new metautil.Emitter();
     const iterable = ee.toAsyncIterable('foo');
     const iterator = iterable[Symbol.asyncIterator]();
 
