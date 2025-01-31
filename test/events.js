@@ -74,21 +74,25 @@ test('Emitter.toAsyncIterable', async (testCase) => {
       await ee.emit('name4', 'banana');
       await ee.emit('name4', 'nana');
     });
-    setTimeout(() => ee.emit('name4', 0), 0);
-    setTimeout(() => ee.emit('name4', 1), 0);
+    setTimeout(() => {
+      ee.emit('name4', 0);
+      ee.emit('name4', 1);
+    }, 0);
     setTimeout(() => ee.emit('name4', 2), 0);
+    setTimeout(() => ee.emit('name4', 3), 0);
     setTimeout(() => ee.emit('name4', 'stop'), 0);
-    const iteratorExpect = ['foo', 'banana', 'nana', 0, 1, 2, 'stop'];
+    const expect = ['foo', 'banana', 'nana', 0, 1, 2, 3, 'stop'];
     for await (const event of ee.toAsyncIterable('name4')) {
-      const current = iteratorExpect.shift();
+      const current = expect.shift();
       assert.deepStrictEqual(current, event);
-      if (!iteratorExpect.length) {
+      if (!expect.length) {
         break;
       }
     }
     assert.strictEqual(ee.listenerCount('name4'), 0);
     assert.strictEqual(ee.listenerCount('error'), 0);
   });
+
   await testCase.test('error', async () => {
     const ee = new metautil.Emitter();
     const expectedError = new Error('Big bang');
@@ -109,6 +113,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     assert.strictEqual(thrown, true);
     assert.strictEqual(loopedEvent, null);
   });
+
   await testCase.test('errorDelayed', async () => {
     const ee = new metautil.Emitter();
     const _err = new Error('kaboom');
@@ -116,12 +121,11 @@ test('Emitter.toAsyncIterable', async (testCase) => {
       await ee.emit('foo', 42);
       await ee.emit('error', _err);
     });
-    const expected = 42;
+    const expect = 42;
     let thrown = false;
-
     try {
       for await (const event of ee.toAsyncIterable('foo')) {
-        assert.deepStrictEqual(expected, event);
+        assert.deepStrictEqual(expect, event);
       }
     } catch (err) {
       thrown = true;
@@ -135,11 +139,9 @@ test('Emitter.toAsyncIterable', async (testCase) => {
   await testCase.test('throwInLoop', async () => {
     const ee = new metautil.Emitter();
     const _err = new Error('kaboom');
-
     process.nextTick(() => {
       ee.emit('foo', 42);
     });
-
     try {
       for await (const event of ee.toAsyncIterable('foo')) {
         assert.deepStrictEqual(event, 42);
@@ -148,7 +150,6 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     } catch (err) {
       assert.strictEqual(err, _err);
     }
-
     assert.strictEqual(ee.listenerCount('foo'), 0);
     assert.strictEqual(ee.listenerCount('error'), 0);
   });
@@ -157,13 +158,11 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     const ee = new metautil.Emitter();
     const iterable = ee.toAsyncIterable('foo');
     const iterator = iterable[Symbol.asyncIterator]();
-
     process.nextTick(async () => {
       await ee.emit('foo', 'bar');
       await ee.emit('foo', 42);
       iterator.return();
     });
-
     const first = await iterator.next();
     const second = await iterator.next();
     const third = await iterator.next();
