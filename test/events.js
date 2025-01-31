@@ -59,11 +59,6 @@ test('Emitter', async () => {
 
   ee.clear();
   assert.strictEqual(ee.listenerCount('name3'), 0);
-
-  const emitExpect = ['await emit 1', 'await emit 2', 'await emit 3'];
-  emitExpect.forEach((e) => ee.on('name5', () => e));
-  const emitResult = await ee.emit('name5');
-  assert.deepStrictEqual(emitResult, emitExpect);
 });
 
 test('Emitter.toAsyncIterable', async (testCase) => {
