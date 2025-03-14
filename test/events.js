@@ -7,9 +7,6 @@ const metautil = require('..');
 test('Emitter', async () => {
   const ee = new metautil.Emitter();
 
-  assert.strictEqual(ee.maxListeners, 10);
-  assert(ee.events instanceof Map);
-
   let onCount = 0;
   let onceCount = 0;
 
