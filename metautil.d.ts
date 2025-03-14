@@ -280,7 +280,7 @@ type EventName = string | symbol;
 export class EventEmitter {
   maxListeners: number;
   constructor();
-  emit(eventName: EventName, ...args: unknown[]): Promise<void>;
+  emit(eventName: EventName, value: unknown): Promise<void>;
   on(eventName: EventName, listener: Listener): void;
   once(eventName: EventName, listener: Listener): void;
   off(eventName: EventName, listener?: Listener): void;
