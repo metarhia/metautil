@@ -82,6 +82,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     assert.strictEqual(ee.listenerCount('name4'), 0);
     assert.strictEqual(ee.listenerCount('error'), 0);
   });
+
   await testCase.test('error', async () => {
     const ee = new metautil.Emitter();
     const expectedError = new Error('Big bang');
@@ -102,6 +103,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     assert.strictEqual(thrown, true);
     assert.strictEqual(loopedEvent, null);
   });
+
   await testCase.test('errorDelayed', async () => {
     const ee = new metautil.Emitter();
     const _err = new Error('kaboom');
