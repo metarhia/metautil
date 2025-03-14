@@ -274,18 +274,38 @@ export function collect(
 
 // Submodule: Events
 
-type Listener = (...args: unknown[]) => void;
-type EventName = string | symbol;
+type Listener = (data: unknown) => void;
+type EventName = PropertyKey;
 
-export class EventEmitter {
-  maxListeners: number;
-  constructor();
-  emit(eventName: EventName, value: unknown): Promise<void>;
+interface EventResolver {
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+}
+
+export class EventIterator implements AsyncIterator<unknown> {
+  constructor(emitter: Emitter, eventName: EventName);
+
+  next(): Promise<IteratorResult<unknown>>;
+  return(): Promise<IteratorResult<unknown>>;
+  throw(): Promise<IteratorResult<unknown>>;
+}
+
+export class EventIterable implements AsyncIterable<unknown> {
+  constructor(emitter: Emitter, eventName: EventName);
+  [Symbol.asyncIterator](): EventIterator;
+}
+
+export class Emitter {
+  constructor(options?: { maxListeners?: number });
+
+  emit(eventName: EventName, data: unknown): Promise<void>;
   on(eventName: EventName, listener: Listener): void;
   once(eventName: EventName, listener: Listener): void;
   off(eventName: EventName, listener?: Listener): void;
+
   toPromise(eventName: EventName): Promise<unknown>;
-  toIterator(eventName: EventName): Iterator<unknown>;
+  toAsyncIterable(eventName: EventName): AsyncIterable<unknown>;
+
   clear(eventName?: EventName): void;
   listeners(eventName?: EventName): Listener[];
   listenerCount(eventName?: EventName): number;
