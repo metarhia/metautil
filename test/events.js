@@ -77,9 +77,7 @@ test('Emitter.toAsyncIterable', async (testCase) => {
     for await (const event of ee.toAsyncIterable('name4')) {
       const current = iteratorExpect.shift();
       assert.deepStrictEqual(current, event);
-      if (!iteratorExpect.length) {
-        break;
-      }
+      if (!iteratorExpect.length) break;
     }
     assert.strictEqual(ee.listenerCount('name4'), 0);
     assert.strictEqual(ee.listenerCount('error'), 0);
