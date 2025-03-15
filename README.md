@@ -374,24 +374,49 @@ console.log({ size, bytes });
 |     mb |     6 | megabyte  |
 |     kb |     3 | kilobyte  |
 
-## Class `EventEmitter`
+## Class `Emitter`
 
-- `getMaxListeners(): number`
-- `listenerCount(name: string): number`
-- `on(name: string, fn: Function): void`
-- `once(name: string, fn: Function): void`
-- `emit(name: string, ...args: Array<unknown>): void`
-- `remove(name: string, fn: Function): void`
-- `clear(name: string): void`
+- Events:
+  - `constructor(options?: { maxListeners?: number })`
+  - `emit(eventName: EventName, data: unknown): Promise<void>`
+  - `on(eventName: EventName, listener: Listener): void`
+  - `once(eventName: EventName, listener: Listener): void`
+  - `off(eventName: EventName, listener?: Listener): void`
+- Adapters:
+  - `toPromise(eventName: EventName): Promise<unknown>`
+  - `toAsyncIterable(eventName: EventName): AsyncIterable<unknown>`
+- Utilities:
+  - `clear(eventName?: EventName): void`
+  - `listeners(eventName?: EventName): Listener[]`
+  - `listenerCount(eventName?: EventName): number`
+  - `eventNames(): EventName[]`
 
-## `EventEmitter` utilities
-
-- `once(emitter: EventEmitter, name: string): Promise<unknown>`
+Examples:
 
 ```js
-const ee = new metautil.EventEmitter();
-setTimeout(() => ee.emit('name3', 'value'), 100);
-const result = await metautil.once(ee, 'name3');
+const ee = new Emitter();
+ee.on('eventA', (data) => {
+  console.log({ data });
+  // Prints: { data: 'value' }
+});
+ee.emit('eventA', 'value');
+```
+
+```js
+const ee = new Emitter();
+setTimeout(() => {
+  ee.emit('eventA', 'value');
+}, 100);
+const result = await ee.toPromise('eventA');
+```
+
+```js
+const ee = new Emitter();
+passReferenceSomewhere(ee);
+const iterable = ee.toAsyncIterable('eventB');
+for await (const eventData of iterable) {
+  console.log({ eventData });
+}
 ```
 
 ## License & Contributors
