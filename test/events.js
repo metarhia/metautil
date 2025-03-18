@@ -184,3 +184,16 @@ test('Emitter.toAsyncIterable iterator control', async () => {
   const data = await iterator.next();
   assert.deepStrictEqual(data, { value: undefined, done: true });
 });
+
+test('Emitter unhandled error', async () => {
+  const ee = new metautil.Emitter();
+
+  let capturedError = null;
+  try {
+    await ee.emit('error', new Error('Test error'));
+  } catch (err) {
+    capturedError = err;
+  }
+
+  assert.strictEqual(capturedError.message, 'Unhandled error');
+});
