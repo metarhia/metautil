@@ -49,8 +49,11 @@ test('Emitter add/remove listeners', async () => {
 
 test('Emitter clear listeners', async () => {
   const ee = new metautil.Emitter();
-  ee.on('eventC', () => {});
-  ee.on('eventD', () => {});
+  let countC = 0;
+  let countD = 0;
+
+  ee.on('eventC', () => countC++);
+  ee.on('eventD', () => countD++);
 
   assert.strictEqual(ee.listenerCount('eventC'), 1);
   assert.strictEqual(ee.listenerCount('eventD'), 1);
@@ -63,13 +66,12 @@ test('Emitter clear listeners', async () => {
   assert.strictEqual(ee.listenerCount('eventD'), 0);
 });
 
-test('Emitter toPromise', async () => {
+test('Emitter.toPromise', async () => {
   const ee = new metautil.Emitter();
   setTimeout(() => ee.emit('eventE', 'resolved'), 50);
 
   const result = await ee.toPromise('eventE');
   assert.strictEqual(result, 'resolved');
-
   assert.strictEqual(ee.listenerCount('eventE'), 0);
 });
 
@@ -114,27 +116,18 @@ test('Emitter.toAsyncIterable with errors', async () => {
   assert.strictEqual(ee.listenerCount('error'), 0);
 });
 
-test('Emitter.toAsyncIterable with delayed error', async () => {
+test('Emitter handles multiple once()', async () => {
   const ee = new metautil.Emitter();
-  const error = new Error('Delayed error');
+  let callCount = 0;
 
-  process.nextTick(async () => {
-    await ee.emit('eventH', 42);
-    await ee.emit('error', error);
-  });
+  ee.once('eventH', () => callCount++);
+  ee.once('eventH', () => callCount++);
 
-  let receivedError = null;
-  try {
-    for await (const value of ee.toAsyncIterable('eventH')) {
-      assert.strictEqual(value, 42);
-    }
-  } catch (err) {
-    receivedError = err;
-  }
+  await ee.emit('eventH', 'data');
+  await ee.emit('eventH', 'data');
 
-  assert.strictEqual(receivedError, error);
+  assert.strictEqual(callCount, 2);
   assert.strictEqual(ee.listenerCount('eventH'), 0);
-  assert.strictEqual(ee.listenerCount('error'), 0);
 });
 
 test('Emitter.toAsyncIterable throws inside loop', async () => {
@@ -183,6 +176,53 @@ test('Emitter.toAsyncIterable iterator control', async () => {
 
   const data = await iterator.next();
   assert.deepStrictEqual(data, { value: undefined, done: true });
+});
+
+test('Emitter does not allow duplicate listeners', () => {
+  const ee = new metautil.Emitter();
+  const listener = () => {};
+
+  ee.on('eventK', listener);
+  assert.throws(() => {
+    ee.on('eventK', listener);
+  }, /Duplicate listeners detected/);
+});
+
+test('Emitter emits async & sync listeners', async () => {
+  const ee = new metautil.Emitter();
+  const results = [];
+
+  ee.on('eventL', (data) => results.push(`sync:${data}`));
+  ee.on('eventL', async (data) => {
+    await new Promise((res) => setTimeout(res, 10));
+    results.push(`async:${data}`);
+  });
+
+  await ee.emit('eventL', 'valueL');
+  assert.deepStrictEqual(results, ['sync:valueL', 'async:valueL']);
+});
+
+test('Emitter.toAsyncIterable stops manually', async () => {
+  const ee = new metautil.Emitter();
+  const iterator = ee.toAsyncIterable('eventM')[Symbol.asyncIterator]();
+
+  process.nextTick(async () => {
+    await ee.emit('eventM', 'data1');
+    await ee.emit('eventM', 'data2');
+    iterator.return();
+    await ee.emit('eventM', 'data3'); // Should not be received
+  });
+
+  const first = await iterator.next();
+  assert.deepStrictEqual(first, { value: 'data1', done: false });
+
+  const second = await iterator.next();
+  assert.deepStrictEqual(second, { value: 'data2', done: false });
+
+  const third = await iterator.next();
+  assert.deepStrictEqual(third, { value: undefined, done: true });
+
+  assert.strictEqual(ee.listenerCount('eventM'), 0);
 });
 
 test('Emitter unhandled error', async () => {
