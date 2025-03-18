@@ -224,3 +224,16 @@ test('Emitter.toAsyncIterable stops manually', async () => {
 
   assert.strictEqual(ee.listenerCount('eventM'), 0);
 });
+
+test('Emitter unhandled error', async () => {
+  const ee = new metautil.Emitter();
+
+  let capturedError = null;
+  try {
+    await ee.emit('error', new Error('Test error'));
+  } catch (err) {
+    capturedError = err;
+  }
+
+  assert.strictEqual(capturedError.message, 'Unhandled error');
+});
