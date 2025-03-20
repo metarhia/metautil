@@ -274,15 +274,40 @@ export function collect(
 
 // Submodule: Events
 
-export class EventEmitter {
-  constructor();
-  getMaxListeners(): number;
-  listenerCount(name: string): number;
-  on(name: string, fn: Function): void;
-  once(name: string, fn: Function): void;
-  emit(name: string, ...args: Array<unknown>): void;
-  remove(name: string, fn: Function): void;
-  clear(name: string): void;
+type Listener = (data: unknown) => void;
+type EventName = PropertyKey;
+
+interface EventResolver {
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
 }
 
-export function once(emitter: EventEmitter, name: string): Promise<unknown>;
+export class EventIterator implements AsyncIterator<unknown> {
+  constructor(emitter: Emitter, eventName: EventName);
+
+  next(): Promise<IteratorResult<unknown>>;
+  return(): Promise<IteratorResult<unknown>>;
+  throw(): Promise<IteratorResult<unknown>>;
+}
+
+export class EventIterable implements AsyncIterable<unknown> {
+  constructor(emitter: Emitter, eventName: EventName);
+  [Symbol.asyncIterator](): EventIterator;
+}
+
+export class Emitter {
+  constructor(options?: { maxListeners?: number });
+
+  emit(eventName: EventName, data: unknown): Promise<void>;
+  on(eventName: EventName, listener: Listener): void;
+  once(eventName: EventName, listener: Listener): void;
+  off(eventName: EventName, listener?: Listener): void;
+
+  toPromise(eventName: EventName): Promise<unknown>;
+  toAsyncIterable(eventName: EventName): AsyncIterable<unknown>;
+
+  clear(eventName?: EventName): void;
+  listeners(eventName?: EventName): Listener[];
+  listenerCount(eventName?: EventName): number;
+  eventNames(): EventName[];
+}
