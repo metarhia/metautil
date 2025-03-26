@@ -299,7 +299,11 @@ export class Emitter {
   constructor(options?: { maxListeners?: number });
 
   emit(eventName: EventName, data: unknown): Promise<void>;
-  on(eventName: EventName, listener: Listener): void;
+  on(
+    eventName: EventName,
+    listener: Listener,
+    options?: { once?: boolean },
+  ): void;
   once(eventName: EventName, listener: Listener): void;
   off(eventName: EventName, listener?: Listener): void;
 
