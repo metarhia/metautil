@@ -310,3 +310,17 @@ test('Emitter.off do not change event listeners array', async () => {
   await ee.emit(eventName, eventName);
   assert.strictEqual(count, 2);
 });
+
+test('Emitter.once add listener thought max listeners error', () => {
+  const ee = new metautil.Emitter({ maxListeners: 2 });
+  const eventName = 'eventO';
+
+  ee.on(eventName, () => {});
+  ee.on(eventName, () => {});
+
+  assert.throws(
+    () => ee.once(eventName, () => {}),
+    /MaxListenersExceededWarning/,
+  );
+  assert.strictEqual(ee.listenerCount(eventName), 3);
+});
