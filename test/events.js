@@ -38,7 +38,6 @@ test('Emitter add/remove listeners', async () => {
   ee.on('eventB', listener);
   await ee.emit('eventB', 'data');
   assert.strictEqual(callCount, 1);
-
   assert.strictEqual(ee.listenerCount('eventB'), 1);
   ee.off('eventB', listener);
   assert.strictEqual(ee.listenerCount('eventB'), 0);
@@ -223,4 +222,73 @@ test('Emitter.toAsyncIterable stops manually', async () => {
   assert.deepStrictEqual(third, { value: undefined, done: true });
 
   assert.strictEqual(ee.listenerCount('eventM'), 0);
+});
+
+test('Emitter unhandled error', async () => {
+  const ee = new metautil.Emitter();
+
+  let capturedError = null;
+  try {
+    await ee.emit('error', new Error('Test error'));
+  } catch (err) {
+    capturedError = err;
+  }
+
+  assert.strictEqual(capturedError.message, 'Unhandled error');
+});
+
+test('Emitter once() cleanup', async () => {
+  const ee = new metautil.Emitter();
+  let callCount = 0;
+  const handler = () => callCount++;
+
+  ee.once('eventK', handler);
+  assert.strictEqual(ee.listenerCount('eventK'), 1);
+
+  await ee.emit('eventK', 'test');
+  assert.strictEqual(callCount, 1);
+  assert.strictEqual(ee.listenerCount('eventK'), 0);
+});
+
+test('Emitter off() removes once()', async () => {
+  const ee = new metautil.Emitter();
+  let count = 0;
+  const listener = () => count++;
+
+  ee.once('eventL', listener);
+  ee.off('eventL', listener);
+  await ee.emit('eventL');
+
+  assert.strictEqual(count, 0);
+  assert.strictEqual(ee.listenerCount('eventL'), 0);
+});
+
+test('Emitter calls listeners order', async () => {
+  const ee = new metautil.Emitter();
+  const results = [];
+
+  const e1 = () => results.push(1);
+  const e2 = () => results.push(2);
+  const e3 = () => results.push(3);
+  const e4 = () => results.push(4);
+  const e5 = () => results.push(5);
+  const e6 = () => results.push(6);
+
+  ee.on('eventM', e1);
+  ee.on('eventM', e2);
+  ee.on('eventM', e3);
+  ee.once('eventM', e4);
+  ee.once('eventM', e5);
+  ee.once('eventM', e6);
+  ee.off('eventM', e2);
+  ee.off('eventM', e5);
+
+  await ee.emit('eventM');
+
+  ee.on('eventM', e5);
+  ee.once('eventM', e2);
+
+  await ee.emit('eventM');
+
+  assert.deepStrictEqual(results, [1, 3, 4, 6, 1, 3, 5, 2]);
 });
