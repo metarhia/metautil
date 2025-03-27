@@ -285,8 +285,8 @@ test('Emitter calls listeners order', async () => {
 
   await ee.emit('eventM');
 
-  ee.on('eventM', e5);
-  ee.once('eventM', e2);
+  ee.once('eventM', e5);
+  ee.on('eventM', e2);
 
   await ee.emit('eventM');
 
