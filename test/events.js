@@ -38,7 +38,6 @@ test('Emitter add/remove listeners', async () => {
   ee.on('eventB', listener);
   await ee.emit('eventB', 'data');
   assert.strictEqual(callCount, 1);
-
   assert.strictEqual(ee.listenerCount('eventB'), 1);
   ee.off('eventB', listener);
   assert.strictEqual(ee.listenerCount('eventB'), 0);
