@@ -286,8 +286,8 @@ test('Emitter calls listeners order', async () => {
 
   await ee.emit('eventM');
 
-  ee.on('eventM', e5);
-  ee.once('eventM', e2);
+  ee.once('eventM', e5);
+  ee.on('eventM', e2);
 
   await ee.emit('eventM');
 
@@ -297,17 +297,16 @@ test('Emitter calls listeners order', async () => {
 test('Emitter.off do not change event listeners array', async () => {
   const ee = new metautil.Emitter();
   let count = 0;
-  const eventName = 'eventN';
 
   const listener = () => {
     count++;
-    ee.off(eventName, listener);
+    ee.off('eventN', listener);
   };
 
-  ee.on(eventName, listener);
-  ee.on(eventName, () => count++);
+  ee.on('eventN', listener);
+  ee.on('eventN', () => count++);
 
-  await ee.emit(eventName, eventName);
+  await ee.emit('eventN', 'data');
   assert.strictEqual(count, 2);
 });
 
