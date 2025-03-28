@@ -294,7 +294,7 @@ test('Emitter calls listeners order', async () => {
   assert.deepStrictEqual(results, [1, 3, 4, 6, 1, 3, 5, 2]);
 });
 
-test('Emitter.off do not change event listeners array', async () => {
+test('Emitter off while emitting', async () => {
   const ee = new metautil.Emitter();
   let count = 0;
 
@@ -310,7 +310,7 @@ test('Emitter.off do not change event listeners array', async () => {
   assert.strictEqual(count, 2);
 });
 
-test('Emitter.once add listener thought max listeners error', () => {
+test('Emitter once with max listeners error', () => {
   const ee = new metautil.Emitter({ maxListeners: 2 });
   const eventName = 'eventO';
 
