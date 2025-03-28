@@ -307,7 +307,7 @@ export class Emitter {
   toAsyncIterable(eventName: EventName): AsyncIterable<unknown>;
 
   clear(eventName?: EventName): void;
-  listeners(eventName?: EventName): Listener[];
-  listenerCount(eventName?: EventName): number;
+  listeners(eventName: EventName): Listener[];
+  listenerCount(eventName: EventName): number;
   eventNames(): EventName[];
 }
