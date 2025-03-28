@@ -292,3 +292,20 @@ test('Emitter calls listeners order', async () => {
 
   assert.deepStrictEqual(results, [1, 3, 4, 6, 1, 3, 5, 2]);
 });
+
+test('Emitter.off do not change event listeners array', async () => {
+  const ee = new metautil.Emitter();
+  let count = 0;
+  const eventName = 'eventN';
+
+  const listener = () => {
+    count++;
+    ee.off(eventName, listener);
+  };
+
+  ee.on(eventName, listener);
+  ee.on(eventName, () => count++);
+
+  await ee.emit(eventName, eventName);
+  assert.strictEqual(count, 2);
+});
