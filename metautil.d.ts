@@ -311,3 +311,18 @@ export class Emitter {
   listenerCount(eventName: EventName): number;
   eventNames(): EventName[];
 }
+
+// Submodule: Queue
+
+export interface UnrolledQueueOptions {
+  nodeSize?: number;
+}
+
+export class UnrolledQueue<T = any> {
+  constructor(options?: UnrolledQueueOptions);
+
+  readonly length: number;
+
+  enqueue(item: T): void;
+  dequeue(): T | null;
+}
