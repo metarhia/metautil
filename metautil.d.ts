@@ -318,7 +318,7 @@ export interface UnrolledQueueOptions {
   nodeSize?: number;
 }
 
-export class UnrolledQueue<T = any> {
+export class UnrolledQueue<T = unknown> {
   constructor(options?: UnrolledQueueOptions);
 
   readonly length: number;
