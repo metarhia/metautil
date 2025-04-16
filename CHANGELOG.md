@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Fixed `Pool`: better performance
+
 ## [5.2.4][] - 2024-09-12
 
 - Update eslint/prettier/metarhia configs
