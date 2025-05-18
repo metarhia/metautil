@@ -2,7 +2,7 @@
 
 ## [Unreleased][unreleased]
 
-## [5.2.5][] - 2025-05-18
+## [5.3.0][] - 2025-05-18
 
 - node 24 support
 
