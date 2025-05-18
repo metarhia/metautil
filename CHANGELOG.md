@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+## [5.2.5][] - 2025-05-18
+
+- node 24 support
+
 ## [5.2.4][] - 2024-09-12
 
 - Update eslint/prettier/metarhia configs
