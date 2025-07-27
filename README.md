@@ -221,7 +221,9 @@ const domains = metautil.getX509names(x509);
 
 ## File system utilities
 
+- `exists(path: string): Promise<boolean>`
 - `directoryExists(path: string): Promise<boolean>`
+- `fileExists(path: string): Promise<boolean>`
 - `ensureDirectory(path: string): Promise<boolean>`
 - `parsePath(relPath: string): Strings`
 

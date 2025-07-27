@@ -6,13 +6,33 @@ const test = require('node:test');
 const assert = require('node:assert');
 const metatests = require('metatests');
 const metautil = require('..');
-const { directoryExists, ensureDirectory } = metautil;
+const { exists, directoryExists, fileExists, ensureDirectory } = metautil;
+
+test('Fs: exists', async () => {
+  const exists1 = await exists('./test');
+  assert.strictEqual(exists1, true);
+  const exists2 = await exists('./abrvalg');
+  assert.strictEqual(exists2, false);
+  const exists3 = await exists('./README.md');
+  assert.strictEqual(exists3, true);
+});
 
 test('Fs: directoryExists', async () => {
   const exists1 = await directoryExists('./test');
   assert.strictEqual(exists1, true);
   const exists2 = await directoryExists('./abrvalg');
   assert.strictEqual(exists2, false);
+  const exists3 = await directoryExists('./README.md');
+  assert.strictEqual(exists3, false);
+});
+
+test('Fs: fileExists', async () => {
+  const exists1 = await fileExists('./test');
+  assert.strictEqual(exists1, false);
+  const exists2 = await fileExists('./abrvalg');
+  assert.strictEqual(exists2, false);
+  const exists3 = await fileExists('./README.md');
+  assert.strictEqual(exists3, true);
 });
 
 test('Fs: ensureDirectory', async () => {

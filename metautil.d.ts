@@ -102,7 +102,9 @@ export function isError(instance: object): boolean;
 
 // Submodule: file system
 
+export function exists(path: string): Promise<boolean>;
 export function directoryExists(path: string): Promise<boolean>;
+export function fileExists(path: string): Promise<boolean>;
 export function ensureDirectory(path: string): Promise<boolean>;
 
 // Submodule: http
