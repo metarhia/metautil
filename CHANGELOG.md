@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Added `fileExists` and `exists`
+
 ## [5.2.5][] - 2025-05-21
 
 - Add node.js 24 to CI
