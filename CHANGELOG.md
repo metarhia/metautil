@@ -2,7 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [5.3.0][] - 2025-07-28
+
 - Added `fileExists` and `exists`
+- Improve timeoutify
+- Update dependencies
 
 ## [5.2.5][] - 2025-05-21
 
