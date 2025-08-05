@@ -9,55 +9,55 @@
 
 ## Enhanced Task Structure
 
-### 1. Randomness Source
+### Randomness Source
 
-1.1. Benchmark alternative sources:
-  - lib/crypto/randomPrefetcher
-  - crypto.randomUUID
-  - crypto.randomInt
-  - Math.random
-  - propose more
-1.2. Measure throughput (IDs/second) for each source
-1.3. Analyze memory usage patterns
-1.4. Test entropy quality and distribution
-1.5. Evaluate thread safety and concurrent access performance
+- Benchmark alternative sources:
+  - lib/crypto/randomPrefetcher  
+  - crypto.randomUUID  
+  - crypto.randomInt  
+  - Math.random  
+  - propose more  
+- Measure throughput (IDs/second) for each source
+- Analyze memory usage patterns
+- Test entropy quality and distribution
+- Evaluate thread safety and concurrent access performance
 
-### 2. Advanced Performance Optimization
+### Advanced Performance Optimization
 
-2.1. Implement pregeneration of random data like `randomPrefetcher` do
-2.2. Use CPU-effective memory allocation and copy routines
-2.3. Implement typed arrays and Buffer optimizations
-2.4. Design for 64-character table efficiency
-2.5. Avoid expensive operations: %, /, memory copy, nested loops, transcoding
-2.6. Optimize prefetcher: read uint8 with minimal overhead
-2.7. Implement performance testing and metrics collection
+1. Implement pregeneration of random data like `randomPrefetcher` do
+2. Use CPU-effective memory allocation and copy routines
+3. Implement typed arrays and Buffer optimizations
+4. Design for 64-character table efficiency
+5. Avoid expensive operations: %, /, memory copy, nested loops, transcoding
+6. Optimize prefetcher: read uint8 with minimal overhead
+7. Implement performance testing and metrics collection
 
-### 3. Implementation Ideas
+### Implementation Ideas
 
-3.1. Character table optimization
-3.1.1. Evaluate 64-char tables: 0-9,a-z,A-Z,-,\_ vs BASE64 vs URL-safe vs custom
-3.1.2. Benchmark encoding/decoding performance for each table
-3.1.3. Analyze collision probability for different table sizes
-3.2. Identifier structure optimization
-3.2.1. Create comprehensive comparison table with all major algorithms
-3.2.2. Analyze trade-offs between size, entropy, and sortability
-3.2.3. Design hybrid approaches combining best features
-3.3. Performance impact analysis
-3.3.1. Benchmark different ID structures on generation speed
-3.3.2. Analyze memory footprint and garbage collection impact
-3.4. We need no sortable (non-time-based IDs for maximum performance)
+- Character table optimization
+  - Evaluate 64-char tables: 0-9,a-z,A-Z,-,\_ vs BASE64 vs URL-safe vs custom
+  - Benchmark encoding/decoding performance for each table
+  - Analyze collision probability for different table sizes
+- Identifier structure optimization
+  - Create comprehensive comparison table with all major algorithms
+  - Analyze trade-offs between size, entropy, and sortability
+  - Design hybrid approaches combining best features
+- Performance impact analysis
+  - Benchmark different ID structures on generation speed
+  - Analyze memory footprint and garbage collection impact
+- We need no sortable (non-time-based IDs for maximum performance)
 
-### 4. Implementation and Testing Strategy
+### Implementation and Testing Strategy
 
-4. Create lib/gsid.js implementation and test/gsid.js tests
-4.1. Generate unit tests for gsid
-4.1.1. Test uniqueness across 1M+ generations
-4.1.2. Test concurrent generation safety
-4.1.3. Test performance under load
-4.1.4. Test edge cases and error conditions
-4.2. Update metautil.d.ts with proper TypeScript definitions
-4.3. Add integration tests with existing metautil modules
-4.4. Create performance benchmarks and comparison tools
+- Generate unit tests for gsid
+  - Create lib/gsid.js implementation and test/gsid.js tests
+  - Test uniqueness across 1M+ generations
+  - Test concurrent generation safety
+  - Test performance under load
+  - Test edge cases and error conditions
+- Update metautil.d.ts with proper TypeScript definitions
+- Add integration tests with existing metautil modules
+- Create performance benchmarks and comparison tools
 
 ## Performance Targets
 
@@ -101,7 +101,6 @@
 4. Buffer Optimization: Optimized buffer size (24 \* 1024 bytes)
 5. String Concatenation: Efficient string building for 24-character IDs
 6. Subbuffer approach: Return 24 bytes at once instead of single bytes
-
 
 ## Next Phase Recommendations
 
