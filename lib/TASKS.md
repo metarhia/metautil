@@ -2,8 +2,6 @@
 
 ## GSID Design Specifications
 
-### Target Specifications
-
 - Length: 24 characters
 - Entropy: 144 bits
 - Sortable: No
@@ -14,16 +12,15 @@
 ### 1. Randomness Source
 
 1.1. Benchmark alternative sources:
-
-- lib/crypto/randomPrefetcher
-- crypto.randomUUID
-- crypto.randomInt
-- Math.random
-- propose more
-  1.2. Measure throughput (IDs/second) for each source
-  1.3. Analyze memory usage patterns
-  1.4. Test entropy quality and distribution
-  1.5. Evaluate thread safety and concurrent access performance
+  - lib/crypto/randomPrefetcher
+  - crypto.randomUUID
+  - crypto.randomInt
+  - Math.random
+  - propose more
+1.2. Measure throughput (IDs/second) for each source
+1.3. Analyze memory usage patterns
+1.4. Test entropy quality and distribution
+1.5. Evaluate thread safety and concurrent access performance
 
 ### 2. Advanced Performance Optimization
 
@@ -53,14 +50,14 @@
 ### 4. Implementation and Testing Strategy
 
 4. Create lib/gsid.js implementation and test/gsid.js tests
-   4.1. Generate unit tests for gsid
-   4.1.1. Test uniqueness across 1M+ generations
-   4.1.2. Test concurrent generation safety
-   4.1.3. Test performance under load
-   4.1.4. Test edge cases and error conditions
-   4.2. Update metautil.d.ts with proper TypeScript definitions
-   4.3. Add integration tests with existing metautil modules
-   4.4. Create performance benchmarks and comparison tools
+4.1. Generate unit tests for gsid
+4.1.1. Test uniqueness across 1M+ generations
+4.1.2. Test concurrent generation safety
+4.1.3. Test performance under load
+4.1.4. Test edge cases and error conditions
+4.2. Update metautil.d.ts with proper TypeScript definitions
+4.3. Add integration tests with existing metautil modules
+4.4. Create performance benchmarks and comparison tools
 
 ## Performance Targets
 
@@ -69,6 +66,14 @@
 - Memory usage < 1MB for 1M ID buffer
 - Zero garbage collection impact during generation
 - We need no thread-safeety, gsid will work in isolated thread
+
+## Implementation Priority
+
+1. Basic GSID generation with 24-char format
+2. Prepare unittests
+3. Prepare performance tests
+4. Basic performance optimization after testing
+5. Configurable lengths: Support 10, 12, 16, 20, 24, 32 character variants (24 by default)
 
 ## Implementation Results and Validation
 
@@ -97,13 +102,6 @@
 5. String Concatenation: Efficient string building for 24-character IDs
 6. Subbuffer approach: Return 24 bytes at once instead of single bytes
 
-## Implementation Priority
-
-1. Basic GSID generation with 24-char format
-2. Prepare unittests
-3. Prepare performance tests
-4. Basic performance optimization after testing
-5. Configurable lengths: Support 10, 12, 16, 20, 24, 32 character variants (24 by default)
 
 ## Next Phase Recommendations
 
