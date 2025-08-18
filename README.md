@@ -421,6 +421,26 @@ for await (const eventData of iterable) {
 }
 ```
 
+## Class UnrolledQueue
+
+- `constructor(options?: UnrolledQueueOptions)`
+  - `options.nodeSize?: number`
+- `readonly length: number`
+- `enqueue(item: T): void`
+- `dequeue(): T | null`
+
+```js
+const queue = new UnrolledQueue();
+queue.enqueue({ id: 1 });
+queue.enqueue({ id: 2 });
+queue.enqueue({ id: 3 });
+const item = queue.dequeue();
+console.log({ item });
+// Output: { id: 1 }
+console.log({ length: queue.length });
+// Output: { length: 2 }
+```
+
 ## License & Contributors
 
 Copyright (c) 2017-2025 [Metarhia contributors](https://github.com/metarhia/metautil/graphs/contributors).
