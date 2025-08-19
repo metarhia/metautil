@@ -48,6 +48,10 @@ export function validatePassword(
 export function md5(fileName: string): Promise<string>;
 export function getX509(cert: X509Certificate): Strings;
 
+// Submodule: gsid
+
+export function generateId(options?: { length?: number }): string;
+
 // Submodule: datetime
 
 export function duration(s: string | number): number;
