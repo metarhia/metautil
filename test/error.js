@@ -2,7 +2,6 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
-
 const metatests = require('metatests');
 const metautil = require('..');
 
