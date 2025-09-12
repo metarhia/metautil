@@ -4,7 +4,6 @@ const LOWER = 'abcdefghijklmnopqrstuvwxyz';
 const CHARS = '-' + DIGITS + UPPER + '_' + LOWER;
 const CHARS_LENGTH = CHARS.length;
 
-
 const POSSIBLE = new Uint8Array(256);
 const CHAR_MAP = {};
 for (let i = 0; i < CHARS_LENGTH; i++) {
