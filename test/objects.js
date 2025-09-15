@@ -218,3 +218,61 @@ metatests.case(
     ],
   },
 );
+
+test('Object: firstKey', () => {
+  const obj1 = { '1key': 'value1', Akey: 'value2', bkey: 'value3' };
+  assert.strictEqual(metautil.firstKey(obj1), 'Akey');
+
+  const obj2 = { 1: 'value1', 2: 'value2', 3: 'value3' };
+  assert.strictEqual(metautil.firstKey(obj2), undefined);
+
+  const obj3 = {};
+  assert.strictEqual(metautil.firstKey(obj3), undefined);
+
+  const obj4 = { 1: 'value1', a: 'value2', B: 'value3', c: 'value4' };
+  assert.strictEqual(metautil.firstKey(obj4), 'a');
+
+  const obj5 = { Z: 'value1', A: 'value2', B: 'value3' };
+  assert.strictEqual(metautil.firstKey(obj5), 'Z');
+
+  const obj6 = { z: 'value1', a: 'value2', b: 'value3' };
+  assert.strictEqual(metautil.firstKey(obj6), 'z');
+});
+
+test('Object: isInstanceOf', () => {
+  const date = new Date();
+  assert.strictEqual(metautil.isInstanceOf(date, 'Date'), true);
+  assert.strictEqual(metautil.isInstanceOf(date, 'Object'), false);
+
+  const arr = [1, 2, 3];
+  assert.strictEqual(metautil.isInstanceOf(arr, 'Array'), true);
+  assert.strictEqual(metautil.isInstanceOf(arr, 'Object'), false);
+  assert.strictEqual(metautil.isInstanceOf(arr, 'Date'), false);
+
+  class TestClass {}
+  const instance = new TestClass();
+  assert.strictEqual(metautil.isInstanceOf(instance, 'TestClass'), true);
+  assert.strictEqual(metautil.isInstanceOf(instance, 'Object'), false);
+
+  const obj = { a: 1, b: 2 };
+  assert.strictEqual(metautil.isInstanceOf(obj, 'Object'), true);
+  assert.strictEqual(metautil.isInstanceOf(obj, 'Array'), false);
+
+  assert.strictEqual(metautil.isInstanceOf(null, 'Object'), false);
+  assert.strictEqual(metautil.isInstanceOf(null, 'Date'), false);
+
+  assert.strictEqual(metautil.isInstanceOf(undefined, 'Object'), false);
+  assert.strictEqual(metautil.isInstanceOf(undefined, 'Date'), false);
+
+  assert.strictEqual(metautil.isInstanceOf(42, 'Number'), true);
+  assert.strictEqual(metautil.isInstanceOf('hello', 'String'), true);
+  assert.strictEqual(metautil.isInstanceOf(true, 'Boolean'), true);
+
+  const fn = () => {};
+  assert.strictEqual(metautil.isInstanceOf(fn, 'Function'), true);
+  assert.strictEqual(metautil.isInstanceOf(fn, 'Object'), false);
+
+  const regex = /test/;
+  assert.strictEqual(metautil.isInstanceOf(regex, 'RegExp'), true);
+  assert.strictEqual(metautil.isInstanceOf(regex, 'Object'), false);
+});

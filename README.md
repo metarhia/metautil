@@ -256,6 +256,8 @@ const domains = metautil.getX509names(x509);
 - `getSignature(method: Function): Strings`
 - `namespaceByPath(namespace: Dictionary, path: string): Dictionary | null`
 - `serializeArguments(fields: Strings, args: Dictionary): string`
+- `firstKey(obj: Dictionary): string | undefined`
+- `isInstanceOf(obj: unknown, constrName: string): boolean`
 
 ## Class Pool
 

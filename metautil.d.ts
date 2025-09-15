@@ -152,6 +152,8 @@ export function namespaceByPath(
   path: string,
 ): Dictionary | null;
 export function serializeArguments(fields: Strings, args: Dictionary): string;
+export function firstKey(obj: Dictionary): string | undefined;
+export function isInstanceOf(obj: unknown, constrName: string): boolean;
 
 // Submodule: pool
 
