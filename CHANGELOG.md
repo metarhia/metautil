@@ -2,6 +2,14 @@
 
 ## [Unreleased][unreleased]
 
+## [5.4.0][] - 2025-09-15
+
+- Added firstKey: returns the first key in an object that starts with a letter
+- Added isInstanceOf: checks if an object is an instance of a constructor
+- Updated dependencies
+- Fixed deprecated `NodeJS.Timer` type to `NodeJS.Timeout`
+- Updated Node.js engine requirement to `>=18`
+
 ## [5.3.0][] - 2025-07-28
 
 - Added `fileExists` and `exists`
@@ -322,8 +330,11 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.2.4....HEAD
-[5.2.4]: https://github.com/metarhia/metautil/compare/v5.2.4...v5.2.4
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.4.0...HEAD
+[5.4.0]: https://github.com/metarhia/metautil/compare/v5.3.0...v5.4.0
+[5.3.0]: https://github.com/metarhia/metautil/compare/v5.2.5...v5.3.0
+[5.2.5]: https://github.com/metarhia/metautil/compare/v5.2.4...v5.2.5
+[5.2.4]: https://github.com/metarhia/metautil/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/metarhia/metautil/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/metarhia/metautil/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/metarhia/metautil/compare/v5.2.0...v5.2.1
