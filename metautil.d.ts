@@ -159,7 +159,7 @@ export function isInstanceOf(obj: unknown, constrName: string): boolean;
 
 export interface QueueElement {
   resolve: Function;
-  timer: NodeJS.Timer;
+  timer: NodeJS.Timeout;
 }
 
 export class Pool {
