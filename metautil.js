@@ -4,11 +4,9 @@ module.exports = {
   ...require('./lib/array.js'),
   ...require('./lib/async.js'),
   ...require('./lib/collector.js'),
-  ...require('./lib/crypto.js'),
   ...require('./lib/datetime.js'),
   ...require('./lib/error.js'),
   ...require('./lib/events.js'),
-  ...require('./lib/fs.js'),
   ...require('./lib/http.js'),
   ...require('./lib/network.js'),
   ...require('./lib/objects.js'),
@@ -16,4 +14,5 @@ module.exports = {
   ...require('./lib/semaphore.js'),
   ...require('./lib/strings.js'),
   ...require('./lib/units.js'),
+  ...require('./lib/node.js'),
 };

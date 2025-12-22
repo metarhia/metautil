@@ -2,6 +2,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+const fsp = require('node:fs').promises;
+const path = require('node:path');
 const metatests = require('metatests');
 const metautil = require('..');
 
@@ -146,3 +148,55 @@ test('Crypto: x509 names', async () => {
   ];
   assert.deepStrictEqual(names, expected);
 });
+
+test('Fs: exists', async () => {
+  const exists1 = await metautil.exists('./test');
+  assert.strictEqual(exists1, true);
+  const exists2 = await metautil.exists('./abrvalg');
+  assert.strictEqual(exists2, false);
+  const exists3 = await metautil.exists('./README.md');
+  assert.strictEqual(exists3, true);
+});
+
+test('Fs: directoryExists', async () => {
+  const exists1 = await metautil.directoryExists('./test');
+  assert.strictEqual(exists1, true);
+  const exists2 = await metautil.directoryExists('./abrvalg');
+  assert.strictEqual(exists2, false);
+  const exists3 = await metautil.directoryExists('./README.md');
+  assert.strictEqual(exists3, false);
+});
+
+test('Fs: fileExists', async () => {
+  const exists1 = await metautil.fileExists('./test');
+  assert.strictEqual(exists1, false);
+  const exists2 = await metautil.fileExists('./abrvalg');
+  assert.strictEqual(exists2, false);
+  const exists3 = await metautil.fileExists('./README.md');
+  assert.strictEqual(exists3, true);
+});
+
+test('Fs: ensureDirectory', async () => {
+  const created1 = await metautil.ensureDirectory('./abc');
+  assert.strictEqual(created1, true);
+  const created2 = await metautil.ensureDirectory('./abc');
+  assert.strictEqual(created2, true);
+  await fsp.rmdir('./abc');
+  const created3 = await metautil.ensureDirectory('./LICENSE');
+  assert.strictEqual(created3, false);
+});
+
+metatests.case(
+  'Path functions',
+  { metautil },
+  {
+    'metautil.parsePath': [
+      ['', ['']],
+      ['file', ['file']],
+      ['file.js', ['file']],
+      [`example${path.sep}stop`, ['example', 'stop']],
+      [`example${path.sep}stop.js`, ['example', 'stop']],
+      [`example${path.sep}sub2${path.sep}do.js`, ['example', 'sub2', 'do']],
+    ],
+  },
+);
