@@ -11,7 +11,7 @@
   ],
   "main": "metautil.js",
   "browser": {
-    "./metautil.js": "./dist.js"
+    "./metautil.js": "./metautil.mjs"
   },
   "types": "metautil.d.ts",
   "files": [
@@ -39,12 +39,14 @@
     "test": "npm run lint && npm run types && node --test --test-reporter=tap",
     "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\""
+    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
+    "build": "esbuild ./browser.js --bundle --platform=browser --format=esm --target=esnext --legal-comments=none --outfile=./dist.js"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "eslint": "^9.35.0",
     "eslint-config-metarhia": "^9.1.5",
+    "esbuild": "^0.27.2",
     "metatests": "^0.9.3",
     "prettier": "^3.3.3",
     "typescript": "^5.9.3"

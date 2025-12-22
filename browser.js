@@ -3,6 +3,7 @@
 module.exports = {
   ...require('./lib/array.js'),
   ...require('./lib/async.js'),
+  ...require('./lib/collector.js'),
   ...require('./lib/datetime.js'),
   ...require('./lib/error.js'),
   ...require('./lib/events.js'),
@@ -12,4 +13,5 @@ module.exports = {
   ...require('./lib/semaphore.js'),
   ...require('./lib/strings.js'),
   ...require('./lib/units.js'),
+  ...require('./lib/browser.js'),
 };
