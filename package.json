@@ -16,7 +16,7 @@
   "types": "metautil.d.ts",
   "files": [
     "lib/",
-    "dist.js",
+    "metautil.mjs",
     "metautil.d.ts"
   ],
   "engines": {
@@ -36,19 +36,19 @@
     "url": "https://www.patreon.com/tshemsedinov"
   },
   "scripts": {
-    "test": "npm run lint && npm run types && node --test --test-reporter=tap",
+    "build": "metarhia-build lib",
+    "test": "npm run lint && npm run types && node --test",
     "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "build": "esbuild ./browser.js --bundle --platform=browser --format=esm --target=esnext --legal-comments=none --outfile=./dist.js"
+    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\""
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "eslint": "^9.35.0",
     "eslint-config-metarhia": "^9.1.5",
-    "esbuild": "^0.27.2",
     "metatests": "^0.9.3",
     "prettier": "^3.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "metarhia-build": "^0.0.1"
   }
 }
