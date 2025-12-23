@@ -21,6 +21,13 @@ const fileOrder = [
 
 const libDir = path.join(__dirname, 'lib');
 const outputFile = path.join(__dirname, 'metautil.mjs');
+const packageJsonPath = path.join(__dirname, 'package.json');
+const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8');
+const packageJson = JSON.parse(packageJsonContent);
+const licenseText = fs.readFileSync(path.join(__dirname, 'LICENSE'), 'utf8');
+const licenseLines = licenseText.split('\n');
+const licenseName = licenseLines[0];
+const copyrightLine = licenseLines[2];
 
 const processFile = (filename) => {
   const filePath = path.join(libDir, filename);
@@ -84,13 +91,17 @@ const processFile = (filename) => {
 };
 
 const build = () => {
+  const header =
+    `// ${copyrightLine}\n` +
+    `// Version ${packageJson.version} metautil ${licenseName}\n\n`;
   const bundle = [];
   for (const filename of fileOrder) {
     const content = processFile(filename);
     bundle.push(`// ${filename}\n`);
     bundle.push(content + '\n');
   }
-  fs.writeFileSync(outputFile, bundle.join('\n'), 'utf8');
+  const content = header + bundle.join('\n');
+  fs.writeFileSync(outputFile, content, 'utf8');
   console.log(`Bundle created: ${outputFile}`);
 };
 
