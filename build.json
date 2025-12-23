@@ -1,0 +1,17 @@
+{
+  "order": [
+    "error.js",
+    "strings.js",
+    "array.js",
+    "async.js",
+    "datetime.js",
+    "objects.js",
+    "collector.js",
+    "events.js",
+    "http.js",
+    "pool.js",
+    "semaphore.js",
+    "units.js",
+    "browser.js"
+  ]
+}
