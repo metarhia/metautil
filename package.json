@@ -40,12 +40,13 @@
     "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
     "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "build": "node build.js"
+    "build": "metarhia-build"
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "eslint": "^9.35.0",
     "eslint-config-metarhia": "^9.1.5",
+    "metarhia-build": "^0.0.0",
     "metatests": "^0.9.3",
     "prettier": "^3.3.3",
     "typescript": "^5.9.3"
