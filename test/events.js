@@ -225,6 +225,102 @@ test('Emitter.toAsyncIterable stops manually', async () => {
   assert.strictEqual(ee.listenerCount('eventM'), 0);
 });
 
+test('EventIterator.throw() finalizes iterator', async () => {
+  const ee = new metautil.Emitter();
+  const iterator = ee.toAsyncIterable('eventN')[Symbol.asyncIterator]();
+
+  process.nextTick(() => {
+    ee.emit('eventN', 'value1');
+  });
+
+  const first = await iterator.next();
+  assert.deepStrictEqual(first, { value: 'value1', done: false });
+
+  const result = await iterator.throw(new Error('test'));
+  assert.deepStrictEqual(result, { value: undefined, done: true });
+
+  assert.strictEqual(ee.listenerCount('eventN'), 0);
+});
+
+test('EventIterator next() after done returns DONE', async () => {
+  const ee = new metautil.Emitter();
+  const iterator = ee.toAsyncIterable('eventO')[Symbol.asyncIterator]();
+
+  await iterator.return();
+
+  const result1 = await iterator.next();
+  const result2 = await iterator.next();
+
+  assert.deepStrictEqual(result1, { value: undefined, done: true });
+  assert.deepStrictEqual(result2, { value: undefined, done: true });
+});
+
+test('EventIterator ignores events without pending next()', async () => {
+  const ee = new metautil.Emitter();
+  const iterator = ee.toAsyncIterable('eventP')[Symbol.asyncIterator]();
+
+  await ee.emit('eventP', 'ignored1');
+  await ee.emit('eventP', 'ignored2');
+
+  const nextPromise = iterator.next();
+  await ee.emit('eventP', 'received');
+
+  const result = await nextPromise;
+  assert.deepStrictEqual(result, { value: 'received', done: false });
+
+  iterator.return();
+});
+
+test('EventIterable creates new iterator each time', async () => {
+  const ee = new metautil.Emitter();
+  const iterable = ee.toAsyncIterable('eventQ');
+
+  const iterator1 = iterable[Symbol.asyncIterator]();
+  const iterator2 = iterable[Symbol.asyncIterator]();
+
+  assert.notStrictEqual(iterator1, iterator2);
+
+  const promise1 = iterator1.next();
+  const promise2 = iterator2.next();
+
+  await ee.emit('eventQ', 'value');
+
+  const result1 = await promise1;
+  const result2 = await promise2;
+
+  assert.deepStrictEqual(result1, { value: 'value', done: false });
+  assert.deepStrictEqual(result2, { value: 'value', done: false });
+
+  iterator1.return();
+  iterator2.return();
+});
+
+test('EventIterator handles multiple sequential events', async () => {
+  const ee = new metautil.Emitter();
+  const iterator = ee.toAsyncIterable('eventR')[Symbol.asyncIterator]();
+  const results = [];
+
+  const p1 = iterator.next();
+  const p2 = iterator.next();
+  const p3 = iterator.next();
+
+  await ee.emit('eventR', 'a');
+  await ee.emit('eventR', 'b');
+  await ee.emit('eventR', 'c');
+
+  results.push(await p1);
+  results.push(await p2);
+  results.push(await p3);
+
+  assert.deepStrictEqual(results, [
+    { value: 'a', done: false },
+    { value: 'b', done: false },
+    { value: 'c', done: false },
+  ]);
+
+  iterator.return();
+});
+
 test('Emitter unhandled error', async () => {
   const ee = new metautil.Emitter();
 
@@ -322,4 +418,191 @@ test('Emitter once with max listeners error', () => {
     /MaxListenersExceededWarning/,
   );
   assert.strictEqual(ee.listenerCount(eventName), 3);
+});
+
+test('Stream constructor without iterable', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const results = [];
+
+  stream.on('data', (chunk) => results.push(chunk));
+
+  stream.push('first');
+  stream.push('second');
+  stream.push(null);
+
+  await new Promise((resolve) => stream.on('end', resolve));
+
+  assert.deepStrictEqual(results, ['first', 'second']);
+});
+
+test('Stream constructor with sync iterable', async () => {
+  const data = ['apple', 'banana', 'cherry'];
+  const stream = new metautil.Stream(data, { objectMode: true });
+  const results = [];
+
+  stream.on('data', (chunk) => results.push(chunk));
+
+  await new Promise((resolve) => stream.on('end', resolve));
+
+  assert.deepStrictEqual(results, ['apple', 'banana', 'cherry']);
+});
+
+test('Stream constructor with async iterable', async () => {
+  async function* asyncGenerator() {
+    yield 'one';
+    yield 'two';
+    yield 'three';
+  }
+
+  const stream = new metautil.Stream(asyncGenerator(), { objectMode: true });
+  const results = [];
+
+  stream.on('data', (chunk) => results.push(chunk));
+
+  await new Promise((resolve) => stream.on('end', resolve));
+
+  assert.deepStrictEqual(results, ['one', 'two', 'three']);
+});
+
+test('Stream.toEventEmitter basic', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('data');
+  const results = [];
+
+  emitter.on('data', (chunk) => results.push(chunk));
+
+  stream.push('hello');
+  stream.push('world');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.deepStrictEqual(results, ['hello', 'world']);
+});
+
+test('Stream.toEventEmitter with custom event name', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('message');
+  const results = [];
+
+  emitter.on('message', (chunk) => results.push(chunk));
+
+  stream.push('custom1');
+  stream.push('custom2');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.deepStrictEqual(results, ['custom1', 'custom2']);
+});
+
+test('Stream.toEventEmitter emits end event', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('data');
+  let endCalled = false;
+
+  emitter.on('end', () => {
+    endCalled = true;
+  });
+
+  stream.push('data');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.strictEqual(endCalled, true);
+});
+
+test('Stream.toEventEmitter handles listener errors', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('data');
+  const testError = new Error('Listener error');
+  let capturedError = null;
+
+  emitter.on('data', () => {
+    throw testError;
+  });
+
+  emitter.on('error', (err) => {
+    capturedError = err;
+  });
+
+  stream.push('trigger');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.strictEqual(capturedError, testError);
+});
+
+test('Stream.toEventEmitter forwards stream errors', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('data');
+  const testError = new Error('Stream error');
+  let capturedError = null;
+
+  emitter.on('error', (err) => {
+    capturedError = err;
+  });
+
+  stream.destroy(testError);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.strictEqual(capturedError, testError);
+});
+
+test('Stream.toEventEmitter multiple listeners', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter('data');
+  const results1 = [];
+  const results2 = [];
+
+  emitter.on('data', (chunk) => results1.push(`l1:${chunk}`));
+  emitter.on('data', (chunk) => results2.push(`l2:${chunk}`));
+
+  stream.push('item1');
+  stream.push('item2');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.deepStrictEqual(results1, ['l1:item1', 'l1:item2']);
+  assert.deepStrictEqual(results2, ['l2:item1', 'l2:item2']);
+});
+
+test('Stream from Emitter async iterable', async () => {
+  const ee = new metautil.Emitter();
+  const iterable = ee.toAsyncIterable('eventStream');
+  const stream = new metautil.Stream(iterable, { objectMode: true });
+  const results = [];
+
+  stream.on('data', (chunk) => results.push(chunk));
+
+  process.nextTick(async () => {
+    await ee.emit('eventStream', 'val1');
+    await ee.emit('eventStream', 'val2');
+    await ee.emit('eventStream', 'val3');
+    stream.destroy();
+  });
+
+  await new Promise((resolve) => stream.on('close', resolve));
+
+  assert.deepStrictEqual(results, ['val1', 'val2', 'val3']);
+});
+
+test('Stream.toEventEmitter default event name is data', async () => {
+  const stream = new metautil.Stream(null, { objectMode: true });
+  const emitter = stream.toEventEmitter();
+  const results = [];
+
+  emitter.on('data', (chunk) => results.push(chunk));
+
+  stream.push('default1');
+  stream.push('default2');
+  stream.push(null);
+
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  assert.deepStrictEqual(results, ['default1', 'default2']);
 });
