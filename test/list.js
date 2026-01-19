@@ -529,6 +529,61 @@ metatests.test('List: iterator', (test) => {
   test.end();
 });
 
+metatests.test('List: async iterator', async (test) => {
+  const list = List.fromArray([1, 2, 3]);
+  const result = [];
+  for await (const v of list) {
+    result.push(v);
+  }
+  test.strictSame(result, [1, 2, 3]);
+  test.end();
+});
+
+metatests.test('List: async iterator with Promise values', async (test) => {
+  const list = List.fromArray([
+    Promise.resolve(10),
+    Promise.resolve(20),
+    Promise.resolve(30),
+  ]);
+  const result = [];
+  for await (const v of list) {
+    result.push(v);
+  }
+  test.strictSame(result, [10, 20, 30]);
+  test.end();
+});
+
+metatests.test('List: async iterator with mixed values', async (test) => {
+  const list = List.fromArray([1, Promise.resolve(2), 3, Promise.resolve(4)]);
+  const result = [];
+  for await (const v of list) {
+    const value = v instanceof Promise ? await v : v;
+    result.push(value);
+  }
+  test.strictSame(result, [1, 2, 3, 4]);
+  test.end();
+});
+
+metatests.test('List: async iterator with delayed Promises', async (test) => {
+  const delay = (ms, value) =>
+    new Promise((resolve) => setTimeout(() => resolve(value), ms));
+  const list = List.fromArray([
+    delay(10, 'first'),
+    delay(5, 'second'),
+    delay(1, 'third'),
+  ]);
+  const result = [];
+  const start = Date.now();
+  for await (const promise of list) {
+    const value = await promise;
+    result.push(value);
+  }
+  const elapsed = Date.now() - start;
+  test.strictSame(result, ['first', 'second', 'third']);
+  test.assert(elapsed >= 10, 'Should wait for promises to resolve');
+  test.end();
+});
+
 metatests.test('List: toArray', (test) => {
   const list = List.fromArray([1, 2, 3]);
   const array = list.toArray();
