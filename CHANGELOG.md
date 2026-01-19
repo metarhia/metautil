@@ -2,6 +2,19 @@
 
 ## [Unreleased][unreleased]
 
+- Added List: doubly-linked list data structure with comprehensive API
+  - Static factory methods: fromArray, fromIterator, range, merge
+  - Queue operations: enqueue, dequeue, first, last
+  - Access methods: at, set with negative index support
+  - Mutation: insert, delete, addAll, removeAll, fill, replace
+  - Functional operations: tail, head, drop, take, slice, splitAt
+  - Transformations: map, flatMap, filter, reduce with lazy variants
+  - Aggregations: sum, avg, min, max
+  - Searches: includes, indexOf, lastIndexOf, find, findIndex, some, every
+  - Modifications: distinct, shuffle, reverse, sort (in-place and immutable variants)
+  - Utilities: rotate, swap, move, groupBy, join, clone
+  - Full iterator and async iterator support
+
 ## [5.4.0][] - 2025-09-15
 
 - Added firstKey: returns the first key in an object that starts with a letter

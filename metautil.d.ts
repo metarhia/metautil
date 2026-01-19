@@ -190,6 +190,92 @@ export function projection(
   fields: Array<string>,
 ): Array<unknown>;
 
+// Submodule: list
+
+export class List<T> {
+  constructor(size?: number);
+  get size(): number;
+
+  static fromArray<T>(values: Array<T>): List<T>;
+  static fromIterator<T>(iterator: Iterator<T>): List<T>;
+  static range(start: number, end: number, step?: number): List<number>;
+  static merge<T>(lists: Array<List<T>>): List<T>;
+
+  append(value: T): void;
+  prepend(value: T): void;
+  clear(): void;
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+  first(): T | undefined;
+  last(): T | undefined;
+
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  insert(index: number, value: T, count?: number): void;
+  delete(index: number, count?: number): void;
+
+  addAll(values: Iterable<T>): void;
+  removeAll(values: Iterable<T>): void;
+  fill(value: T, start?: number, end?: number): void;
+  replace(oldValue: T, newValue: T): void;
+
+  tail(): List<T>;
+  head(): List<T>;
+  drop(n: number): void;
+  take(n: number): List<T>;
+  slice(start?: number, end?: number): List<T>;
+  splitAt(index: number): { before: List<T>; after: List<T> };
+
+  groupBy<K>(keyFn: (value: T) => K): Map<K, List<T>>;
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  rotate(n: number): void;
+  swap(i: number, j: number): void;
+  move(from: number, to: number): void;
+
+  includes(value: T): boolean;
+  indexOf(value: T): number;
+  lastIndexOf(value: T): number;
+  equals(other: List<T>): boolean;
+
+  find(predicate: (value: T, index: number) => boolean): T | undefined;
+  findIndex(predicate: (value: T, index: number) => boolean): number;
+  some(predicate: (value: T, index: number) => boolean): boolean;
+  every(predicate: (value: T, index: number) => boolean): boolean;
+
+  distinct(): void;
+  toDistinct(): List<T>;
+  shuffle(): void;
+  toShuffled(): List<T>;
+  reverse(): void;
+  toReversed(): List<T>;
+  sort(compare?: (a: T, b: T) => number): void;
+  toSorted(compare?: (a: T, b: T) => number): List<T>;
+
+  map<U>(fn: (value: T, index: number) => U): List<U>;
+  lazyMap<U>(fn: (value: T, index: number) => U): Iterator<U>;
+  flatMap<U>(fn: (value: T) => List<U> | Array<U>): List<U>;
+  filter(predicate: (value: T, index: number) => boolean): List<T>;
+  lazyFilter(predicate: (value: T, index: number) => boolean): Iterator<T>;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
+  lazyReduce<U>(
+    fn: (acc: U, value: T, index: number) => U,
+    initial: U,
+  ): Iterator<U>;
+
+  sum(fn?: (value: T) => number): number;
+  avg(fn?: (value: T) => number): number;
+  min(compare?: (a: T, b: T) => number): T | undefined;
+  max(compare?: (a: T, b: T) => number): T | undefined;
+
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+
+  toArray(): Array<T>;
+  join(separator?: string): string;
+  clone(): List<T>;
+}
+
 // Submodule: semaphore
 
 export interface SemaphoreOptions {

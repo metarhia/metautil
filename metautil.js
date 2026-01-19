@@ -16,4 +16,5 @@ module.exports = {
   ...require('./lib/semaphore.js'),
   ...require('./lib/strings.js'),
   ...require('./lib/units.js'),
+  ...require('./lib/list.js'),
 };
