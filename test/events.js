@@ -211,7 +211,7 @@ test('Emitter.toAsyncIterable stops manually', async () => {
     await ee.emit('eventM', 'data1');
     await ee.emit('eventM', 'data2');
     iterator.return();
-    await ee.emit('eventM', 'data3'); // Should not be received
+    await ee.emit('eventM', 'data3');
   });
 
   const first = await iterator.next();
@@ -355,9 +355,9 @@ test('Stream constructor with sync iterable', async () => {
 test('Stream constructor with async iterable', async () => {
   async function* asyncGenerator() {
     yield 'one';
-    await Promise.resolve(); // microtask delay
+    await Promise.resolve();
     yield 'two';
-    await new Promise((resolve) => setTimeout(resolve, 10)); // small timeout
+    await new Promise((resolve) => setTimeout(resolve, 10));
     yield 'three';
   }
 
