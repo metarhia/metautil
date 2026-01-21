@@ -193,7 +193,7 @@ export function projection(
 // Submodule: list
 
 export class List<T> {
-  constructor(size?: number);
+  constructor(options?: { nodeSize?: number });
   get size(): number;
 
   static fromArray<T>(values: Array<T>): List<T>;

@@ -1,545 +1,491 @@
 'use strict';
 
-const metatests = require('metatests');
+const test = require('node:test');
+const assert = require('node:assert');
 const { List } = require('../lib/list.js');
 
-metatests.test('List: constructor', (test) => {
+test('List: constructor', () => {
   const list = new List();
-  test.strictSame(list.size, 0);
-  test.end();
+  assert.strictEqual(list.size, 0);
 });
 
-metatests.test('List: constructor with size', (test) => {
-  const list = new List(3);
-  test.strictSame(list.size, 3);
-  test.strictSame(list.at(0), undefined);
-  test.end();
-});
-
-metatests.test('List: fromArray', (test) => {
+test('List: fromArray', () => {
   const list = List.fromArray([1, 2, 3]);
-  test.strictSame(list.size, 3);
-  test.strictSame(list.at(0), 1);
-  test.strictSame(list.at(2), 3);
-  test.end();
+  assert.strictEqual(list.size, 3);
+  assert.strictEqual(list.at(0), 1);
+  assert.strictEqual(list.at(2), 3);
 });
 
-metatests.test('List: fromIterator', (test) => {
+test('List: fromIterator', () => {
   function* gen() {
     yield 1;
     yield 2;
     yield 3;
   }
   const list = List.fromIterator(gen());
-  test.strictSame(list.size, 3);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.strictEqual(list.size, 3);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: range', (test) => {
+test('List: range', () => {
   const list1 = List.range(0, 5);
-  test.strictSame(list1.toArray(), [0, 1, 2, 3, 4]);
+  assert.deepStrictEqual(list1.toArray(), [0, 1, 2, 3, 4]);
 
   const list2 = List.range(0, 10, 2);
-  test.strictSame(list2.toArray(), [0, 2, 4, 6, 8]);
+  assert.deepStrictEqual(list2.toArray(), [0, 2, 4, 6, 8]);
 
   const list3 = List.range(5, 0, -1);
-  test.strictSame(list3.toArray(), [5, 4, 3, 2, 1]);
-
-  test.end();
+  assert.deepStrictEqual(list3.toArray(), [5, 4, 3, 2, 1]);
 });
 
-metatests.test('List: merge', (test) => {
+test('List: merge', () => {
   const list1 = List.fromArray([1, 2]);
   const list2 = List.fromArray([3, 4]);
   const list3 = List.fromArray([5, 6]);
   const merged = List.merge([list1, list2, list3]);
-  test.strictSame(merged.toArray(), [1, 2, 3, 4, 5, 6]);
-  test.end();
+  assert.deepStrictEqual(merged.toArray(), [1, 2, 3, 4, 5, 6]);
 });
 
-metatests.test('List: append', (test) => {
+test('List: append', () => {
   const list = new List();
   list.append(1);
   list.append(2);
   list.append(3);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: prepend', (test) => {
+test('List: prepend', () => {
   const list = new List();
   list.prepend(3);
   list.prepend(2);
   list.prepend(1);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: clear', (test) => {
+test('List: clear', () => {
   const list = List.fromArray([1, 2, 3]);
   list.clear();
-  test.strictSame(list.size, 0);
-  test.end();
+  assert.strictEqual(list.size, 0);
 });
 
-metatests.test('List: enqueue and dequeue', (test) => {
+test('List: enqueue and dequeue', () => {
   const list = new List();
   list.enqueue(1);
   list.enqueue(2);
   list.enqueue(3);
-  test.strictSame(list.dequeue(), 1);
-  test.strictSame(list.dequeue(), 2);
-  test.strictSame(list.size, 1);
-  test.end();
+  assert.strictEqual(list.dequeue(), 1);
+  assert.strictEqual(list.dequeue(), 2);
+  assert.strictEqual(list.size, 1);
 });
 
-metatests.test('List: first and last', (test) => {
+test('List: first and last', () => {
   const list = List.fromArray([1, 2, 3]);
-  test.strictSame(list.first(), 1);
-  test.strictSame(list.last(), 3);
-  test.end();
+  assert.strictEqual(list.first(), 1);
+  assert.strictEqual(list.last(), 3);
 });
 
-metatests.test('List: at with positive index', (test) => {
+test('List: at with positive index', () => {
   const list = List.fromArray(['a', 'b', 'c', 'd']);
-  test.strictSame(list.at(0), 'a');
-  test.strictSame(list.at(2), 'c');
-  test.end();
+  assert.strictEqual(list.at(0), 'a');
+  assert.strictEqual(list.at(2), 'c');
 });
 
-metatests.test('List: at with negative index', (test) => {
+test('List: at with negative index', () => {
   const list = List.fromArray(['a', 'b', 'c', 'd']);
-  test.strictSame(list.at(-1), 'd');
-  test.strictSame(list.at(-2), 'c');
-  test.end();
+  assert.strictEqual(list.at(-1), 'd');
+  assert.strictEqual(list.at(-2), 'c');
 });
 
-metatests.test('List: set', (test) => {
+test('List: set', () => {
   const list = List.fromArray([1, 2, 3]);
   list.set(1, 20);
-  test.strictSame(list.at(1), 20);
+  assert.strictEqual(list.at(1), 20);
   list.set(-1, 30);
-  test.strictSame(list.at(2), 30);
-  test.end();
+  assert.strictEqual(list.at(2), 30);
 });
 
-metatests.test('List: insert', (test) => {
+test('List: insert', () => {
   const list = List.fromArray([1, 3]);
   list.insert(1, 2);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: insert multiple', (test) => {
+test('List: insert multiple', () => {
   const list = List.fromArray([1, 4]);
   list.insert(1, 2, 2);
-  test.strictSame(list.toArray(), [1, 2, 2, 4]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 2, 4]);
 });
 
-metatests.test('List: delete', (test) => {
+test('List: delete', () => {
   const list = List.fromArray([1, 2, 3, 4]);
   list.delete(1);
-  test.strictSame(list.toArray(), [1, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 3, 4]);
 });
 
-metatests.test('List: delete multiple', (test) => {
+test('List: delete multiple', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.delete(1, 3);
-  test.strictSame(list.toArray(), [1, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 5]);
 });
 
-metatests.test('List: addAll', (test) => {
+test('List: addAll', () => {
   const list = List.fromArray([1, 2]);
   list.addAll([3, 4, 5]);
-  test.strictSame(list.toArray(), [1, 2, 3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4, 5]);
 });
 
-metatests.test('List: removeAll', (test) => {
+test('List: removeAll', () => {
   const list = List.fromArray([1, 2, 3, 2, 4, 2, 5]);
   list.removeAll([2, 4]);
-  test.strictSame(list.toArray(), [1, 3, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 3, 5]);
 });
 
-metatests.test('List: fill', (test) => {
+test('List: fill', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.fill(0, 1, 4);
-  test.strictSame(list.toArray(), [1, 0, 0, 0, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 0, 0, 0, 5]);
 });
 
-metatests.test('List: replace', (test) => {
+test('List: replace', () => {
   const list = List.fromArray([1, 2, 3, 2, 4, 2]);
   list.replace(2, 20);
-  test.strictSame(list.toArray(), [1, 20, 3, 20, 4, 20]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 20, 3, 20, 4, 20]);
 });
 
-metatests.test('List: tail', (test) => {
+test('List: tail', () => {
   const list = List.fromArray([1, 2, 3, 4]);
   const tail = list.tail();
-  test.strictSame(tail.toArray(), [2, 3, 4]);
-  test.strictSame(list.toArray(), [1, 2, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(tail.toArray(), [2, 3, 4]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4]);
 });
 
-metatests.test('List: head', (test) => {
+test('List: head', () => {
   const list = List.fromArray([1, 2, 3, 4]);
   const head = list.head();
-  test.strictSame(head.toArray(), [1, 2, 3]);
-  test.strictSame(list.toArray(), [1, 2, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(head.toArray(), [1, 2, 3]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4]);
 });
 
-metatests.test('List: drop from beginning', (test) => {
+test('List: drop from beginning', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.drop(2);
-  test.strictSame(list.toArray(), [3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [3, 4, 5]);
 });
 
-metatests.test('List: drop from end', (test) => {
+test('List: drop from end', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.drop(-2);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: take from beginning', (test) => {
+test('List: take from beginning', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const taken = list.take(3);
-  test.strictSame(taken.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(taken.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: take from end', (test) => {
+test('List: take from end', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const taken = list.take(-3);
-  test.strictSame(taken.toArray(), [3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(taken.toArray(), [3, 4, 5]);
 });
 
-metatests.test('List: slice', (test) => {
+test('List: slice', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const sliced = list.slice(1, 4);
-  test.strictSame(sliced.toArray(), [2, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(sliced.toArray(), [2, 3, 4]);
 });
 
-metatests.test('List: splitAt', (test) => {
+test('List: splitAt', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const { before, after } = list.splitAt(2);
-  test.strictSame(before.toArray(), [1, 2]);
-  test.strictSame(after.toArray(), [3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(before.toArray(), [1, 2]);
+  assert.deepStrictEqual(after.toArray(), [3, 4, 5]);
 });
 
-metatests.test('List: groupBy', (test) => {
+test('List: groupBy', () => {
   const list = List.fromArray([1, 2, 3, 4, 5, 6]);
   const groups = list.groupBy((v) => (v % 2 === 0 ? 'even' : 'odd'));
-  test.strictSame(groups.get('even').toArray(), [2, 4, 6]);
-  test.strictSame(groups.get('odd').toArray(), [1, 3, 5]);
-  test.end();
+  assert.deepStrictEqual(groups.get('even').toArray(), [2, 4, 6]);
+  assert.deepStrictEqual(groups.get('odd').toArray(), [1, 3, 5]);
 });
 
-metatests.test('List: rotateLeft', (test) => {
+test('List: rotateLeft', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.rotateLeft(2);
-  test.strictSame(list.toArray(), [3, 4, 5, 1, 2]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [3, 4, 5, 1, 2]);
 });
 
-metatests.test('List: rotateRight', (test) => {
+test('List: rotateRight', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.rotateRight(2);
-  test.strictSame(list.toArray(), [4, 5, 1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [4, 5, 1, 2, 3]);
 });
 
-metatests.test('List: rotate', (test) => {
+test('List: rotate', () => {
   const list1 = List.fromArray([1, 2, 3, 4, 5]);
   list1.rotate(2);
-  test.strictSame(list1.toArray(), [4, 5, 1, 2, 3]);
+  assert.deepStrictEqual(list1.toArray(), [4, 5, 1, 2, 3]);
 
   const list2 = List.fromArray([1, 2, 3, 4, 5]);
   list2.rotate(-2);
-  test.strictSame(list2.toArray(), [3, 4, 5, 1, 2]);
-
-  test.end();
+  assert.deepStrictEqual(list2.toArray(), [3, 4, 5, 1, 2]);
 });
 
-metatests.test('List: swap', (test) => {
+test('List: swap', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.swap(1, 3);
-  test.strictSame(list.toArray(), [1, 4, 3, 2, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 4, 3, 2, 5]);
 });
 
-metatests.test('List: move', (test) => {
+test('List: move', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.move(1, 3);
-  test.strictSame(list.toArray(), [1, 3, 4, 2, 5]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 3, 4, 2, 5]);
 });
 
-metatests.test('List: includes', (test) => {
+test('List: includes', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
-  test.strictSame(list.includes(3), true);
-  test.strictSame(list.includes(10), false);
-  test.end();
+  assert.strictEqual(list.includes(3), true);
+  assert.strictEqual(list.includes(10), false);
 });
 
-metatests.test('List: indexOf', (test) => {
+test('List: indexOf', () => {
   const list = List.fromArray([1, 2, 3, 2, 4]);
-  test.strictSame(list.indexOf(2), 1);
-  test.strictSame(list.indexOf(5), -1);
-  test.end();
+  assert.strictEqual(list.indexOf(2), 1);
+  assert.strictEqual(list.indexOf(5), -1);
 });
 
-metatests.test('List: lastIndexOf', (test) => {
+test('List: lastIndexOf', () => {
   const list = List.fromArray([1, 2, 3, 2, 4]);
-  test.strictSame(list.lastIndexOf(2), 3);
-  test.strictSame(list.lastIndexOf(5), -1);
-  test.end();
+  assert.strictEqual(list.lastIndexOf(2), 3);
+  assert.strictEqual(list.lastIndexOf(5), -1);
 });
 
-metatests.test('List: equals', (test) => {
+test('List: equals', () => {
   const list1 = List.fromArray([1, 2, 3]);
   const list2 = List.fromArray([1, 2, 3]);
   const list3 = List.fromArray([1, 2, 4]);
-  test.strictSame(list1.equals(list2), true);
-  test.strictSame(list1.equals(list3), false);
-  test.end();
+  assert.strictEqual(list1.equals(list2), true);
+  assert.strictEqual(list1.equals(list3), false);
 });
 
-metatests.test('List: find', (test) => {
+test('List: find', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const found = list.find((v) => v > 3);
-  test.strictSame(found, 4);
-  test.end();
+  assert.strictEqual(found, 4);
 });
 
-metatests.test('List: findIndex', (test) => {
+test('List: findIndex', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const index = list.findIndex((v) => v > 3);
-  test.strictSame(index, 3);
-  test.end();
+  assert.strictEqual(index, 3);
 });
 
-metatests.test('List: some', (test) => {
+test('List: some', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
-  test.strictSame(
+  assert.strictEqual(
     list.some((v) => v > 4),
     true,
   );
-  test.strictSame(
+  assert.strictEqual(
     list.some((v) => v > 10),
     false,
   );
-  test.end();
 });
 
-metatests.test('List: every', (test) => {
+test('List: every', () => {
   const list1 = List.fromArray([2, 4, 6, 8]);
-  test.strictSame(
+  assert.strictEqual(
     list1.every((v) => v % 2 === 0),
     true,
   );
 
   const list2 = List.fromArray([2, 4, 5, 8]);
-  test.strictSame(
+  assert.strictEqual(
     list2.every((v) => v % 2 === 0),
     false,
   );
-
-  test.end();
 });
 
-metatests.test('List: distinct', (test) => {
+test('List: distinct', () => {
   const list = List.fromArray([1, 2, 2, 3, 3, 3, 4]);
   list.distinct();
-  test.strictSame(list.toArray(), [1, 2, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4]);
 });
 
-metatests.test('List: toDistinct', (test) => {
+test('List: toDistinct', () => {
   const list = List.fromArray([1, 2, 2, 3, 3, 3, 4]);
   const distinct = list.toDistinct();
-  test.strictSame(distinct.toArray(), [1, 2, 3, 4]);
-  test.strictSame(list.toArray(), [1, 2, 2, 3, 3, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(distinct.toArray(), [1, 2, 3, 4]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 2, 3, 3, 3, 4]);
 });
 
-metatests.test('List: shuffle', (test) => {
+test('List: shuffle', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const original = list.toArray().slice();
   list.shuffle();
-  test.strictSame(list.size, 5);
-  test.strictSame(
+  assert.strictEqual(list.size, 5);
+  assert.deepStrictEqual(
     list.toArray().sort((a, b) => a - b),
     original.sort((a, b) => a - b),
   );
-  test.end();
 });
 
-metatests.test('List: toShuffled', (test) => {
+test('List: toShuffled', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const shuffled = list.toShuffled();
-  test.strictSame(shuffled.size, 5);
-  test.strictSame(list.toArray(), [1, 2, 3, 4, 5]);
-  test.end();
+  assert.strictEqual(shuffled.size, 5);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4, 5]);
 });
 
-metatests.test('List: reverse', (test) => {
+test('List: reverse', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   list.reverse();
-  test.strictSame(list.toArray(), [5, 4, 3, 2, 1]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [5, 4, 3, 2, 1]);
 });
 
-metatests.test('List: toReversed', (test) => {
+test('List: toReversed', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const reversed = list.toReversed();
-  test.strictSame(reversed.toArray(), [5, 4, 3, 2, 1]);
-  test.strictSame(list.toArray(), [1, 2, 3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(reversed.toArray(), [5, 4, 3, 2, 1]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4, 5]);
 });
 
-metatests.test('List: sort', (test) => {
+test('List: sort', () => {
   const list = List.fromArray([3, 1, 4, 1, 5, 9, 2, 6]);
   list.sort();
-  test.strictSame(list.toArray(), [1, 1, 2, 3, 4, 5, 6, 9]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [1, 1, 2, 3, 4, 5, 6, 9]);
 });
 
-metatests.test('List: sort with comparator', (test) => {
+test('List: sort with comparator', () => {
   const list = List.fromArray([3, 1, 4, 1, 5]);
   list.sort((a, b) => b - a);
-  test.strictSame(list.toArray(), [5, 4, 3, 1, 1]);
-  test.end();
+  assert.deepStrictEqual(list.toArray(), [5, 4, 3, 1, 1]);
 });
 
-metatests.test('List: toSorted', (test) => {
+test('List: toSorted', () => {
   const list = List.fromArray([3, 1, 4, 1, 5]);
   const sorted = list.toSorted();
-  test.strictSame(sorted.toArray(), [1, 1, 3, 4, 5]);
-  test.strictSame(list.toArray(), [3, 1, 4, 1, 5]);
-  test.end();
+  assert.deepStrictEqual(sorted.toArray(), [1, 1, 3, 4, 5]);
+  assert.deepStrictEqual(list.toArray(), [3, 1, 4, 1, 5]);
 });
 
-metatests.test('List: map', (test) => {
+test('List: map', () => {
   const list = List.fromArray([1, 2, 3]);
   const mapped = list.map((v) => v * 2);
-  test.strictSame(mapped.toArray(), [2, 4, 6]);
-  test.strictSame(list.toArray(), [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(mapped.toArray(), [2, 4, 6]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-metatests.test('List: lazyMap', (test) => {
+test('List: lazyMap', () => {
   const list = List.fromArray([1, 2, 3]);
   const iterator = list.lazyMap((v) => v * 2);
   const result = [...iterator];
-  test.strictSame(result, [2, 4, 6]);
-  test.end();
+  assert.deepStrictEqual(result, [2, 4, 6]);
 });
 
-metatests.test('List: flatMap', (test) => {
+test('List: flatMap', () => {
   const list = List.fromArray([1, 2, 3]);
   const flattened = list.flatMap((v) => [v, v * 10]);
-  test.strictSame(flattened.toArray(), [1, 10, 2, 20, 3, 30]);
-  test.end();
+  assert.deepStrictEqual(flattened.toArray(), [1, 10, 2, 20, 3, 30]);
 });
 
-metatests.test('List: filter', (test) => {
+test('List: filter', () => {
   const list = List.fromArray([1, 2, 3, 4, 5, 6]);
   const filtered = list.filter((v) => v % 2 === 0);
-  test.strictSame(filtered.toArray(), [2, 4, 6]);
-  test.strictSame(list.toArray(), [1, 2, 3, 4, 5, 6]);
-  test.end();
+  assert.deepStrictEqual(filtered.toArray(), [2, 4, 6]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4, 5, 6]);
 });
 
-metatests.test('List: lazyFilter', (test) => {
+test('List: lazyFilter', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const iterator = list.lazyFilter((v) => v > 2);
   const result = [...iterator];
-  test.strictSame(result, [3, 4, 5]);
-  test.end();
+  assert.deepStrictEqual(result, [3, 4, 5]);
 });
 
-metatests.test('List: reduce', (test) => {
+test('List: reduce', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
   const sum = list.reduce((acc, v) => acc + v, 0);
-  test.strictSame(sum, 15);
-  test.end();
+  assert.strictEqual(sum, 15);
 });
 
-metatests.test('List: lazyReduce', (test) => {
+test('List: lazyReduce', () => {
   const list = List.fromArray([1, 2, 3, 4]);
   const iterator = list.lazyReduce((acc, v) => acc + v, 0);
   const results = [...iterator];
-  test.strictSame(results, [1, 3, 6, 10]);
-  test.end();
+  assert.deepStrictEqual(results, [1, 3, 6, 10]);
 });
 
-metatests.test('List: sum', (test) => {
+test('List: sum', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
-  test.strictSame(list.sum(), 15);
-  test.end();
+  assert.strictEqual(list.sum(), 15);
 });
 
-metatests.test('List: sum with extractor', (test) => {
+test('List: sum with extractor', () => {
   const list = List.fromArray([{ v: 1 }, { v: 2 }, { v: 3 }]);
-  test.strictSame(
+  assert.strictEqual(
     list.sum((x) => x.v),
     6,
   );
-  test.end();
 });
 
-metatests.test('List: avg', (test) => {
+test('List: avg', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
-  test.strictSame(list.avg(), 3);
-  test.end();
+  assert.strictEqual(list.avg(), 3);
 });
 
-metatests.test('List: min', (test) => {
+test('List: min', () => {
   const list = List.fromArray([3, 1, 4, 1, 5, 9, 2]);
-  test.strictSame(list.min(), 1);
-  test.end();
+  assert.strictEqual(list.min(), 1);
 });
 
-metatests.test('List: max', (test) => {
+test('List: max', () => {
   const list = List.fromArray([3, 1, 4, 1, 5, 9, 2]);
-  test.strictSame(list.max(), 9);
-  test.end();
+  assert.strictEqual(list.max(), 9);
 });
 
-metatests.test('List: iterator', (test) => {
+test('List: iterator', () => {
   const list = List.fromArray([1, 2, 3]);
   const result = [];
   for (const v of list) {
     result.push(v);
   }
-  test.strictSame(result, [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(result, [1, 2, 3]);
 });
 
-metatests.test('List: async iterator', async (test) => {
+test('List: toArray', () => {
+  const list = List.fromArray([1, 2, 3]);
+  const array = list.toArray();
+  assert.deepStrictEqual(array, [1, 2, 3]);
+});
+
+test('List: join', () => {
+  const list = List.fromArray([1, 2, 3]);
+  assert.strictEqual(list.join('-'), '1-2-3');
+  assert.strictEqual(list.join(), '1,2,3');
+});
+
+test('List: clone', () => {
+  const list = List.fromArray([1, 2, 3]);
+  const cloned = list.clone();
+  assert.deepStrictEqual(cloned.toArray(), [1, 2, 3]);
+  cloned.append(4);
+  assert.strictEqual(list.size, 3);
+  assert.strictEqual(cloned.size, 4);
+});
+
+test('List: async iterator', async () => {
   const list = List.fromArray([1, 2, 3]);
   const result = [];
   for await (const v of list) {
     result.push(v);
   }
-  test.strictSame(result, [1, 2, 3]);
-  test.end();
+  assert.deepStrictEqual(result, [1, 2, 3]);
 });
 
-metatests.test('List: async iterator with Promise values', async (test) => {
+test('List: async iterator with Promise values', async () => {
   const list = List.fromArray([
     Promise.resolve(10),
     Promise.resolve(20),
@@ -549,22 +495,20 @@ metatests.test('List: async iterator with Promise values', async (test) => {
   for await (const v of list) {
     result.push(v);
   }
-  test.strictSame(result, [10, 20, 30]);
-  test.end();
+  assert.deepStrictEqual(result, [10, 20, 30]);
 });
 
-metatests.test('List: async iterator with mixed values', async (test) => {
+test('List: async iterator with mixed values', async () => {
   const list = List.fromArray([1, Promise.resolve(2), 3, Promise.resolve(4)]);
   const result = [];
   for await (const v of list) {
     const value = v instanceof Promise ? await v : v;
     result.push(value);
   }
-  test.strictSame(result, [1, 2, 3, 4]);
-  test.end();
+  assert.deepStrictEqual(result, [1, 2, 3, 4]);
 });
 
-metatests.test('List: async iterator with delayed Promises', async (test) => {
+test('List: async iterator with delayed Promises', async () => {
   const delay = (ms, value) =>
     new Promise((resolve) => setTimeout(() => resolve(value), ms));
   const list = List.fromArray([
@@ -579,31 +523,6 @@ metatests.test('List: async iterator with delayed Promises', async (test) => {
     result.push(value);
   }
   const elapsed = Date.now() - start;
-  test.strictSame(result, ['first', 'second', 'third']);
-  test.assert(elapsed >= 10, 'Should wait for promises to resolve');
-  test.end();
-});
-
-metatests.test('List: toArray', (test) => {
-  const list = List.fromArray([1, 2, 3]);
-  const array = list.toArray();
-  test.strictSame(array, [1, 2, 3]);
-  test.end();
-});
-
-metatests.test('List: join', (test) => {
-  const list = List.fromArray([1, 2, 3]);
-  test.strictSame(list.join('-'), '1-2-3');
-  test.strictSame(list.join(), '1,2,3');
-  test.end();
-});
-
-metatests.test('List: clone', (test) => {
-  const list = List.fromArray([1, 2, 3]);
-  const cloned = list.clone();
-  test.strictSame(cloned.toArray(), [1, 2, 3]);
-  cloned.append(4);
-  test.strictSame(list.size, 3);
-  test.strictSame(cloned.size, 4);
-  test.end();
+  assert.deepStrictEqual(result, ['first', 'second', 'third']);
+  assert.ok(elapsed >= 10, 'Should wait for promises to resolve');
 });
