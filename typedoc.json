@@ -1,0 +1,16 @@
+{
+    "entryPoints": [
+        "metautil.d.ts"
+    ],
+    "out": "docs",
+    "name": "metautil",
+    "includeVersion": true,
+    "plugin": [],
+    "exclude": [
+        "node_modules",
+        "test",
+        "lib/*.benchmark.js"
+    ],
+    "theme": "default",
+    "readme": "README.md"
+}

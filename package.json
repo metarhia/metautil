@@ -39,7 +39,8 @@
     "test": "npm run lint && npm run types && node --test --test-reporter=tap",
     "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\""
+    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
+    "docs": "typedoc"
   },
   "devDependencies": {
     "@types/node": "^24.5.0",
@@ -47,6 +48,7 @@
     "eslint-config-metarhia": "^9.1.3",
     "metatests": "^0.9.0",
     "prettier": "^3.3.3",
+    "typedoc": "^0.28.16",
     "typescript": "^5.9.2"
   }
 }
