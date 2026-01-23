@@ -6,6 +6,11 @@
 [![npm downloads/month](https://img.shields.io/npm/dm/metautil.svg)](https://www.npmjs.com/package/metautil)
 [![npm downloads](https://img.shields.io/npm/dt/metautil.svg)](https://www.npmjs.com/package/metautil)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/metarhia/metautil/blob/master/LICENSE)
+[![docs](https://img.shields.io/badge/docs-API-orange.svg)](https://metarhia.github.io/metautil/)
+
+## Documentation
+
+Full API documentation is available at [https://metarhia.github.io/metautil/](https://metarhia.github.io/metautil/)
 
 ## Usage
 
