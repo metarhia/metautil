@@ -2,6 +2,10 @@
 
 ## [Unreleased][unreleased]
 
+- Added flattenBySeparator: flattens nested objects and arrays using a custom
+  separator
+- Added unflattenBySeparator: reconstructs nested objects from flattened keys
+
 ## [5.4.0][] - 2025-09-15
 
 - Added firstKey: returns the first key in an object that starts with a letter
