@@ -154,6 +154,15 @@ export function namespaceByPath(
 export function serializeArguments(fields: Strings, args: Dictionary): string;
 export function firstKey(obj: Dictionary): string | undefined;
 export function isInstanceOf(obj: unknown, constrName: string): boolean;
+export function flattenBySeparator(
+  source: object,
+  separator: string,
+  prefix?: string,
+): Dictionary;
+export function unflattenBySeparator(
+  source: Dictionary,
+  separator: string,
+): object;
 
 // Submodule: pool
 

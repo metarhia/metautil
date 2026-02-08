@@ -276,3 +276,206 @@ test('Object: isInstanceOf', () => {
   assert.strictEqual(metautil.isInstanceOf(regex, 'RegExp'), true);
   assert.strictEqual(metautil.isInstanceOf(regex, 'Object'), false);
 });
+
+test('Object: flattenBySeparator with separator', () => {
+  const obj = {
+    levelOne: {
+      levelTwo: {
+        prop: 'test',
+      },
+    },
+    simpleProp: 'test 2',
+    array: [1, 2],
+  };
+
+  const result = metautil.flattenBySeparator(obj, '$$');
+
+  const expected = {
+    levelOne$$levelTwo$$prop: 'test',
+    simpleProp: 'test 2',
+    array$$0: 1,
+    array$$1: 2,
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: flattenBySeparator with parent namespace', () => {
+  const obj = {
+    levelOne: {
+      levelTwo: {
+        prop: 'test',
+      },
+    },
+    simpleProp: 'test 2',
+  };
+
+  const result = metautil.flattenBySeparator(obj, '$$', 'parentNs');
+
+  const expected = {
+    parentNs$$levelOne$$levelTwo$$prop: 'test',
+    parentNs$$simpleProp: 'test 2',
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: flattenBySeparator with dot separator', () => {
+  const obj = {
+    level: {
+      nested: {
+        value: 123,
+      },
+    },
+    other: 'string',
+  };
+
+  const result = metautil.flattenBySeparator(obj, '.');
+
+  const expected = {
+    'level.nested.value': 123,
+    other: 'string',
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: flattenBySeparator with null and undefined', () => {
+  const obj = {
+    nullValue: null,
+    undefinedValue: undefined,
+    nested: {
+      nullInside: null,
+    },
+  };
+
+  const result = metautil.flattenBySeparator(obj, '.');
+
+  const expected = {
+    nullValue: null,
+    undefinedValue: undefined,
+    'nested.nullInside': null,
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: flattenBySeparator with empty object and array', () => {
+  const obj = {
+    emptyObj: {},
+    emptyArr: [],
+    nested: {
+      empty: {},
+    },
+  };
+
+  const result = metautil.flattenBySeparator(obj, '.');
+
+  const expected = {};
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: unflattenBySeparator with separator', () => {
+  const flat = {
+    levelOne$$levelTwo$$prop: 'test',
+    simpleProp: 'test 2',
+    array$$0: 1,
+    array$$1: 2,
+  };
+
+  const result = metautil.unflattenBySeparator(flat, '$$');
+
+  const expected = {
+    levelOne: {
+      levelTwo: {
+        prop: 'test',
+      },
+    },
+    simpleProp: 'test 2',
+    array: [1, 2],
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: unflattenBySeparator with dot separator', () => {
+  const flat = {
+    'level.nested.value': 123,
+    other: 'string',
+  };
+
+  const result = metautil.unflattenBySeparator(flat, '.');
+
+  const expected = {
+    level: {
+      nested: {
+        value: 123,
+      },
+    },
+    other: 'string',
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: unflattenBySeparator with numeric keys creates arrays', () => {
+  const flat = {
+    'items.0': 'first',
+    'items.1': 'second',
+    'items.2': 'third',
+  };
+
+  const result = metautil.unflattenBySeparator(flat, '.');
+
+  const expected = {
+    items: ['first', 'second', 'third'],
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: unflattenBySeparator with mixed paths', () => {
+  const flat = {
+    'user.name': 'John',
+    'user.age': 30,
+    'user.addresses.0.city': 'New York',
+    'user.addresses.0.zip': '10001',
+    'user.addresses.1.city': 'Boston',
+    'user.addresses.1.zip': '02101',
+  };
+
+  const result = metautil.unflattenBySeparator(flat, '.');
+
+  const expected = {
+    user: {
+      name: 'John',
+      age: 30,
+      addresses: [
+        { city: 'New York', zip: '10001' },
+        { city: 'Boston', zip: '02101' },
+      ],
+    },
+  };
+
+  assert.deepStrictEqual(result, expected);
+});
+
+test('Object: flatten and unflatten roundtrip', () => {
+  const original = {
+    level1: {
+      level2: {
+        level3: {
+          value: 'deep',
+        },
+      },
+      array: [1, 2, { nested: true }],
+    },
+    simple: 'value',
+  };
+
+  const flattened = metautil.flattenBySeparator(original, '.');
+  const unflattened = metautil.unflattenBySeparator(flattened, '.');
+
+  assert.deepStrictEqual(unflattened, original);
+});
