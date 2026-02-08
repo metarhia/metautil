@@ -36,11 +36,11 @@
     "url": "https://www.patreon.com/tshemsedinov"
   },
   "scripts": {
+    "build": "metarhia-build lib",
     "test": "npm run lint && npm run types && node --test",
     "types": "tsc -p tsconfig.json",
     "lint": "eslint . && prettier --check \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\"",
-    "build": "node build.js"
+    "fix": "eslint . --fix && prettier --write \"**/*.js\" \"**/*.json\" \"**/*.md\" \"**/*.ts\""
   },
   "devDependencies": {
     "@types/node": "^25.0.3",
@@ -48,6 +48,7 @@
     "eslint-config-metarhia": "^9.1.5",
     "metatests": "^0.9.3",
     "prettier": "^3.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "metarhia-build": "^0.0.1"
   }
 }
