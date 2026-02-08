@@ -2,6 +2,13 @@
 
 ## [Unreleased][unreleased]
 
+## [5.5.0][] - 2026-02-09
+
+- Fixed metautil.d.ts: getX509names, Pool.next
+- Added metarhia-build devDependency for library bundling
+- Added build and link npm scripts
+- Prepared first single-file build: metautil.mjs
+
 ## [5.4.0][] - 2025-09-15
 
 - Added firstKey: returns the first key in an object that starts with a letter
@@ -330,7 +337,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.4.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.0...HEAD
+[5.5.0]: https://github.com/metarhia/metautil/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/metarhia/metautil/compare/v5.3.0...v5.4.0
 [5.3.0]: https://github.com/metarhia/metautil/compare/v5.2.5...v5.3.0
 [5.2.5]: https://github.com/metarhia/metautil/compare/v5.2.4...v5.2.5
