@@ -46,7 +46,7 @@ export function validatePassword(
   serHash: string,
 ): Promise<boolean>;
 export function md5(fileName: string): Promise<string>;
-export function getX509(cert: X509Certificate): Strings;
+export function getX509names(cert: X509Certificate): Strings;
 
 // Submodule: datetime
 
@@ -171,7 +171,7 @@ export class Pool {
   size: number;
   available: number;
   timeout: number;
-  next(): Promise<unknown>;
+  next(exclusive?: boolean): Promise<unknown>;
   add(item: unknown): void;
   capture(): Promise<unknown>;
   release(item: unknown): void;

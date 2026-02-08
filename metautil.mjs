@@ -1,5 +1,5 @@
-// Copyright (c) 2017-2025 Metarhia contributors (full list in AUTHORS file)
-// Version 5.4.0 metautil MIT License
+// Copyright (c) 2017-2026 Metarhia contributors (full list in AUTHORS file)
+// Version 5.5.0 metautil MIT License
 
 // error.js
 
