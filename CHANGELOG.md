@@ -2,6 +2,14 @@
 
 ## [Unreleased][unreleased]
 
+## [5.5.1][] - 2026-03-09
+
+- Fix generateUUID: randomUUID call from crypto
+- Updated dependencies
+- Rebuild with mew bundler for web
+- Fixed README: getX509 → getX509names, Pool.next exclusive parameter
+- Added metautil.js to package files for npm publish
+
 ## [5.5.0][] - 2026-02-09
 
 - Fixed metautil.d.ts: getX509names, Pool.next
@@ -337,7 +345,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.0...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.1...HEAD
+[5.5.1]: https://github.com/metarhia/metautil/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/metarhia/metautil/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/metarhia/metautil/compare/v5.3.0...v5.4.0
 [5.3.0]: https://github.com/metarhia/metautil/compare/v5.2.5...v5.3.0

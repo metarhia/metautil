@@ -1,6 +1,6 @@
 {
   "name": "metautil",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "author": "Timur Shemsedinov <timur.shemsedinov@gmail.com>",
   "license": "MIT",
   "description": "Metarhia utilities",
@@ -16,6 +16,7 @@
   "types": "metautil.d.ts",
   "files": [
     "lib/",
+    "metautil.js",
     "metautil.mjs",
     "metautil.d.ts"
   ],
