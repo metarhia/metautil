@@ -100,7 +100,6 @@ test('Semaphore real life usage', async () => {
     }
     try {
       await delay(1000);
-      return;
     } catch {
       return;
     } finally {
