@@ -1,6 +1,3 @@
-// Copyright (c) 2017-2026 Metarhia contributors (full list in AUTHORS file)
-// Version 5.5.0 metautil MIT License
-
 // error.js
 
 class Error extends globalThis.Error {
@@ -28,12 +25,6 @@ class DomainError extends Error {
 }
 
 const isError = (err) => err?.constructor?.name?.includes('Error') || false;
-
-export {
-  Error,
-  DomainError,
-  isError,
-};
 
 // strings.js
 
@@ -106,24 +97,6 @@ const trimLines = (s) => {
   return chunks.filter((d) => d !== '').join('\n');
 };
 
-export {
-  replace,
-  between,
-  split,
-  isFirstUpper,
-  isFirstLower,
-  isFirstLetter,
-  toLowerCamel,
-  toUpperCamel,
-  toLower,
-  toCamel,
-  spinalToCamel,
-  snakeToCamel,
-  isConstant,
-  fileExt,
-  trimLines,
-};
-
 // array.js
 
 const sample = (array, random = Math.random) => {
@@ -150,12 +123,6 @@ const projection = (source, fields) => {
     }
   }
   return Object.fromEntries(entries);
-};
-
-export {
-  sample,
-  shuffle,
-  projection,
 };
 
 // async.js
@@ -194,13 +161,6 @@ const timeoutify = (promise, msec) =>
       if (timer) clearTimeout(timer);
     });
   });
-
-export {
-  toBool,
-  timeout,
-  delay,
-  timeoutify,
-};
 
 // datetime.js
 
@@ -360,16 +320,6 @@ const nextEvent = (ev, d = new Date()) => {
   return ms;
 };
 
-export {
-  duration,
-  nowDate,
-  nowDateTimeUTC,
-  parseMonth,
-  parseDay,
-  parseEvery,
-  nextEvent,
-};
-
 // objects.js
 
 const makePrivate = (instance) => {
@@ -479,20 +429,6 @@ const serializeArguments = (fields, args) => {
 const firstKey = (obj) => Object.keys(obj).find(isFirstLetter);
 
 const isInstanceOf = (obj, constrName) => obj?.constructor?.name === constrName;
-
-export {
-  makePrivate,
-  protect,
-  jsonParse,
-  isHashObject,
-  flatObject,
-  unflatObject,
-  getSignature,
-  namespaceByPath,
-  serializeArguments,
-  firstKey,
-  isInstanceOf,
-};
 
 // collector.js
 
@@ -621,11 +557,6 @@ class Collector {
 }
 
 const collect = (keys, options) => new Collector(keys, options);
-
-export {
-  Collector,
-  collect,
-};
 
 // events.js
 
@@ -806,8 +737,6 @@ class Emitter {
   }
 }
 
-export { Emitter };
-
 // http.js
 
 const parseHost = (host) => {
@@ -836,13 +765,6 @@ const parseRange = (range) => {
   const [start, end] = bytes.split('-').map((n) => parseInt(n));
   if (isNaN(start)) return isNaN(end) ? {} : { tail: end };
   return isNaN(end) ? { start } : { start, end };
-};
-
-export {
-  parseHost,
-  parseParams,
-  parseCookies,
-  parseRange,
 };
 
 // pool.js
@@ -920,8 +842,6 @@ class Pool {
   }
 }
 
-export { Pool };
-
 // semaphore.js
 
 class Semaphore {
@@ -971,8 +891,6 @@ class Semaphore {
   }
 }
 
-export { Semaphore };
-
 // units.js
 
 const SIZE_UNITS = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
@@ -1004,11 +922,6 @@ const sizeToBytes = (size) => {
   const exp = UNIT_SIZES[unit];
   if (!exp) return value;
   return value * Math.pow(10, exp);
-};
-
-export {
-  bytesToSize,
-  sizeToBytes,
 };
 
 // browser.js
@@ -1072,6 +985,60 @@ const generateKey = (possible, length) => {
 };
 
 export {
+  Error,
+  DomainError,
+  isError,
+  replace,
+  between,
+  split,
+  isFirstUpper,
+  isFirstLower,
+  isFirstLetter,
+  toLowerCamel,
+  toUpperCamel,
+  toLower,
+  toCamel,
+  spinalToCamel,
+  snakeToCamel,
+  isConstant,
+  fileExt,
+  trimLines,
+  sample,
+  shuffle,
+  projection,
+  toBool,
+  timeout,
+  delay,
+  timeoutify,
+  duration,
+  nowDate,
+  nowDateTimeUTC,
+  parseMonth,
+  parseDay,
+  parseEvery,
+  nextEvent,
+  makePrivate,
+  protect,
+  jsonParse,
+  isHashObject,
+  flatObject,
+  unflatObject,
+  getSignature,
+  namespaceByPath,
+  serializeArguments,
+  firstKey,
+  isInstanceOf,
+  Collector,
+  collect,
+  Emitter,
+  parseHost,
+  parseParams,
+  parseCookies,
+  parseRange,
+  Pool,
+  Semaphore,
+  bytesToSize,
+  sizeToBytes,
   cryptoRandom,
   random,
   generateUUID,
