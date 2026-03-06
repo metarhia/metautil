@@ -968,7 +968,7 @@ const random = (min, max) => {
   return a + Math.floor(rnd * (b - a + 1));
 };
 
-const generateUUID = crypto.randomUUID;
+const generateUUID = () => crypto.randomUUID();
 
 const generateKey = (possible, length) => {
   if (length < 0) return '';
