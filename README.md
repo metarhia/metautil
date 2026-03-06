@@ -181,7 +181,7 @@ try {
 - `hashPassword(password: string): Promise<string>`
 - `validatePassword(password: string, serHash: string): Promise<boolean>`
 - `md5(fileName: string): Promise<string>`
-- `getX509(cert: X509Certificate): Strings`
+- `getX509names(cert: X509Certificate): Strings`
 
 ```js
 const x509 = new crypto.X509Certificate(cert);
@@ -270,7 +270,7 @@ const domains = metautil.getX509names(x509);
 - `size: number`
 - `available: number`
 - `timeout: number`
-- `next(): Promise<unknown>`
+- `next(exclusive?: boolean): Promise<unknown>`
 - `add(item: unknown): void`
 - `capture(): Promise<unknown>`
 - `release(item: unknown): void`
