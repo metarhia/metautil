@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'node:http';
 import { ScryptOptions, X509Certificate } from 'node:crypto';
+import { Readable, ReadableOptions } from 'node:stream';
 
 type Strings = Array<string>;
 type Dictionary = Record<string, unknown>;
@@ -314,4 +315,13 @@ export class Emitter {
   listeners(eventName: EventName): Listener[];
   listenerCount(eventName: EventName): number;
   eventNames(): EventName[];
+}
+
+export class Stream extends Readable {
+  constructor(
+    iterable?: AsyncIterable<unknown> | Iterable<unknown>,
+    options?: ReadableOptions,
+  );
+
+  toEventEmitter(eventName?: EventName): Emitter;
 }
