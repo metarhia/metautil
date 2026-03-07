@@ -276,6 +276,327 @@ export function collect(
   options?: CollectorOptions,
 ): Collector;
 
+// Submodule: list
+
+export class List<T> {
+  readonly size: number;
+  constructor(size?: number);
+
+  // Static factory methods
+  static fromArray<T>(values: Array<T>): List<T>;
+  static fromIterator<T>(iterator: Iterable<T>): List<T>;
+  static range(start: number, end: number, step?: number): List<number>;
+  static merge<T>(lists: Array<List<T>>): List<T>;
+
+  // Core
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+  toArray(): Array<T>;
+  clone(): List<T>;
+  clear(): void;
+
+  // Element access
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  first(): T | undefined;
+  last(): T | undefined;
+
+  // Add/remove
+  append(value: T): void;
+  prepend(value: T): void;
+  insert(index: number, value: T, count?: number): void;
+  delete(index: number, count?: number): void;
+
+  // Queue/Stack
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+
+  // Slicing
+  slice(start?: number, end?: number): List<T>;
+  head(): List<T>;
+  tail(): List<T>;
+  take(n: number): List<T>;
+  drop(n: number): void;
+  splitAt(index: number): { before: List<T>; after: List<T> };
+
+  // Search
+  includes(value: T): boolean;
+  indexOf(value: T): number;
+  lastIndexOf(value: T): number;
+  find(fn: (value: T, index: number) => boolean): T | undefined;
+  findIndex(fn: (value: T, index: number) => boolean): number;
+  equals(other: List<T>): boolean;
+
+  // Bulk modifications
+  addAll(values: Iterable<T>): void;
+  removeAll(values: Iterable<T>): void;
+  fill(value: T, start?: number, end?: number): void;
+  replace(oldValue: T, newValue: T): void;
+
+  // Reordering
+  swap(i: number, j: number): void;
+  move(from: number, to: number): void;
+  rotate(n: number): void;
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  reverse(): void;
+  toReversed(): List<T>;
+
+  // Sorting & shuffling
+  sort(compare?: (a: T, b: T) => number): void;
+  toSorted(compare?: (a: T, b: T) => number): List<T>;
+  shuffle(random?: () => number): void;
+  toShuffled(random?: () => number): List<T>;
+
+  // Deduplication
+  distinct(): void;
+  toDistinct(): List<T>;
+
+  // Functional
+  map<U>(fn: (value: T, index: number) => U): List<U>;
+  flatMap<U>(fn: (value: T) => List<U> | Array<U>): List<U>;
+  filter(fn: (value: T, index: number) => boolean): List<T>;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
+  some(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  sum(fn?: (value: T) => number): number;
+  avg(fn?: (value: T) => number): number;
+  min(compare?: (a: T, b: T) => number): T | undefined;
+  max(compare?: (a: T, b: T) => number): T | undefined;
+  groupBy<K>(key: (value: T) => K): Map<K, List<T>>;
+
+  // Lazy iterators
+  lazyMap<U>(fn: (value: T, index: number) => U): Generator<U>;
+  lazyFilter(fn: (value: T, index: number) => boolean): Generator<T>;
+  lazyReduce<U>(
+    fn: (acc: U, value: T, index: number) => U,
+    initial: U,
+  ): Generator<U>;
+
+  // String output
+  join(separator?: string): string;
+}
+
+// Submodule: linkedlist
+
+export class LinkedList<T> {
+  readonly size: number;
+  constructor();
+
+  // Static factory methods
+  static fromArray<T>(values: Array<T>): LinkedList<T>;
+  static fromIterator<T>(iterator: Iterable<T>): LinkedList<T>;
+  static range(start: number, end: number, step?: number): LinkedList<number>;
+  static merge<T>(lists: Array<LinkedList<T>>): LinkedList<T>;
+
+  // Core
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+  toArray(): Array<T>;
+  clone(): LinkedList<T>;
+  clear(): void;
+
+  // Element access
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  first(): T | undefined;
+  last(): T | undefined;
+
+  // Add/remove
+  append(value: T): void;
+  prepend(value: T): void;
+  insert(index: number, value: T, count?: number): void;
+  delete(index: number, count?: number): void;
+
+  // Queue/Stack
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+
+  // Slicing
+  slice(start?: number, end?: number): LinkedList<T>;
+  head(): LinkedList<T>;
+  tail(): LinkedList<T>;
+  take(n: number): LinkedList<T>;
+  drop(n: number): void;
+  splitAt(index: number): { before: LinkedList<T>; after: LinkedList<T> };
+
+  // Search
+  includes(value: T): boolean;
+  indexOf(value: T): number;
+  lastIndexOf(value: T): number;
+  find(fn: (value: T, index: number) => boolean): T | undefined;
+  findIndex(fn: (value: T, index: number) => boolean): number;
+  equals(other: LinkedList<T>): boolean;
+
+  // Bulk modifications
+  addAll(values: Iterable<T>): void;
+  removeAll(values: Iterable<T>): void;
+  fill(value: T, start?: number, end?: number): void;
+  replace(oldValue: T, newValue: T): void;
+
+  // Reordering
+  swap(i: number, j: number): void;
+  move(from: number, to: number): void;
+  rotate(n: number): void;
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  reverse(): void;
+  toReversed(): LinkedList<T>;
+
+  // Sorting & shuffling
+  sort(compare?: (a: T, b: T) => number): void;
+  toSorted(compare?: (a: T, b: T) => number): LinkedList<T>;
+  shuffle(random?: () => number): void;
+  toShuffled(random?: () => number): LinkedList<T>;
+
+  // Deduplication
+  distinct(): void;
+  toDistinct(): LinkedList<T>;
+
+  // Functional
+  map<U>(fn: (value: T, index: number) => U): LinkedList<U>;
+  flatMap<U>(fn: (value: T) => LinkedList<U> | Array<U>): LinkedList<U>;
+  filter(fn: (value: T, index: number) => boolean): LinkedList<T>;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
+  some(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  sum(fn?: (value: T) => number): number;
+  avg(fn?: (value: T) => number): number;
+  min(compare?: (a: T, b: T) => number): T | undefined;
+  max(compare?: (a: T, b: T) => number): T | undefined;
+  groupBy<K>(key: (value: T) => K): Map<K, LinkedList<T>>;
+
+  // Lazy iterators
+  lazyMap<U>(fn: (value: T, index: number) => U): Generator<U>;
+  lazyFilter(fn: (value: T, index: number) => boolean): Generator<T>;
+  lazyReduce<U>(
+    fn: (acc: U, value: T, index: number) => U,
+    initial: U,
+  ): Generator<U>;
+
+  // String output
+  join(separator?: string): string;
+}
+
+// Submodule: unrolledlist
+
+export interface UnrolledListOptions {
+  nodeSize?: number;
+}
+
+export class UnrolledList<T> {
+  readonly size: number;
+  constructor(options?: UnrolledListOptions);
+
+  // Static factory methods
+  static fromArray<T>(
+    values: Array<T>,
+    options?: UnrolledListOptions,
+  ): UnrolledList<T>;
+  static fromIterator<T>(
+    iterator: Iterable<T>,
+    options?: UnrolledListOptions,
+  ): UnrolledList<T>;
+  static range(
+    start: number,
+    end: number,
+    step?: number,
+    options?: UnrolledListOptions,
+  ): UnrolledList<number>;
+  static merge<T>(
+    lists: Array<UnrolledList<T>>,
+    options?: UnrolledListOptions,
+  ): UnrolledList<T>;
+
+  // Core
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+  toArray(): Array<T>;
+  clone(): UnrolledList<T>;
+  clear(): void;
+
+  // Element access
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  first(): T | undefined;
+  last(): T | undefined;
+
+  // Add/remove
+  append(value: T): void;
+  prepend(value: T): void;
+  insert(index: number, value: T, count?: number): void;
+  delete(index: number, count?: number): void;
+
+  // Queue/Stack
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+
+  // Slicing
+  slice(start?: number, end?: number): UnrolledList<T>;
+  head(): UnrolledList<T>;
+  tail(): UnrolledList<T>;
+  take(n: number): UnrolledList<T>;
+  drop(n: number): void;
+  splitAt(index: number): { before: UnrolledList<T>; after: UnrolledList<T> };
+
+  // Search
+  includes(value: T): boolean;
+  indexOf(value: T): number;
+  lastIndexOf(value: T): number;
+  find(fn: (value: T, index: number) => boolean): T | undefined;
+  findIndex(fn: (value: T, index: number) => boolean): number;
+  equals(other: UnrolledList<T>): boolean;
+
+  // Bulk modifications
+  addAll(values: Iterable<T>): void;
+  removeAll(values: Iterable<T>): void;
+  fill(value: T, start?: number, end?: number): void;
+  replace(oldValue: T, newValue: T): void;
+
+  // Reordering
+  swap(i: number, j: number): void;
+  move(from: number, to: number): void;
+  rotate(n: number): void;
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  reverse(): void;
+  toReversed(): UnrolledList<T>;
+
+  // Sorting & shuffling
+  sort(compare?: (a: T, b: T) => number): void;
+  toSorted(compare?: (a: T, b: T) => number): UnrolledList<T>;
+  shuffle(random?: () => number): void;
+  toShuffled(random?: () => number): UnrolledList<T>;
+
+  // Deduplication
+  distinct(): void;
+  toDistinct(): UnrolledList<T>;
+
+  // Functional
+  map<U>(fn: (value: T, index: number) => U): UnrolledList<U>;
+  flatMap<U>(fn: (value: T) => UnrolledList<U> | Array<U>): UnrolledList<U>;
+  filter(fn: (value: T, index: number) => boolean): UnrolledList<T>;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
+  some(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  sum(fn?: (value: T) => number): number;
+  avg(fn?: (value: T) => number): number;
+  min(compare?: (a: T, b: T) => number): T | undefined;
+  max(compare?: (a: T, b: T) => number): T | undefined;
+  groupBy<K>(key: (value: T) => K): Map<K, UnrolledList<T>>;
+
+  // Lazy iterators
+  lazyMap<U>(fn: (value: T, index: number) => U): Generator<U>;
+  lazyFilter(fn: (value: T, index: number) => boolean): Generator<T>;
+  lazyReduce<U>(
+    fn: (acc: U, value: T, index: number) => U,
+    initial: U,
+  ): Generator<U>;
+
+  // String output
+  join(separator?: string): string;
+}
+
 // Submodule: Events
 
 type Listener = (data: unknown) => void;
