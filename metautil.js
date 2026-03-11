@@ -11,6 +11,7 @@ module.exports = {
   ...require('./lib/network.js'),
   ...require('./lib/objects.js'),
   ...require('./lib/pool.js'),
+  ...require('./lib/record.js'),
   ...require('./lib/semaphore.js'),
   ...require('./lib/strings.js'),
   ...require('./lib/units.js'),
