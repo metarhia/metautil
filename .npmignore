@@ -1,4 +1,8 @@
 node_modules
 *.log
-.DS_Store
 CHANGELOG.md
+.cursor
+.claude
+.windsurf
+.agents
+.github/skills
