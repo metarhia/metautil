@@ -127,7 +127,7 @@ test('Crypto: hashing passwords', async () => {
 
 test('Crypto: md5', async () => {
   const hash = await metautil.md5('./.npmignore');
-  assert.strictEqual(hash, '8278a9c6e40823bd7fde51d4ce8ac3f8');
+  assert.strictEqual(hash, '2bbb4284b7e4fc9a8f8335d6e92123c9');
 });
 
 test('Crypto: x509 names', async () => {

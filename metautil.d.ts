@@ -62,7 +62,6 @@ type Every = {
   MM: number;
   DD: number;
   wd: number;
-  dd: number;
   hh: number;
   mm: number;
   ms: number;
@@ -188,7 +187,7 @@ export function shuffle(
 export function projection(
   source: object,
   fields: Array<string>,
-): Array<unknown>;
+): Record<string, unknown>;
 
 // Submodule: semaphore
 
