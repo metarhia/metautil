@@ -1,8 +1,3 @@
 node_modules
 *.log
-.DS_Store
-.cursor
-.claude
-.windsurf
-.agents
-.github/skills
+*/skills/metaskills
