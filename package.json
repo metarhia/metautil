@@ -48,7 +48,7 @@
     "eslint": "^9.39.4",
     "eslint-config-metarhia": "^9.1.8",
     "metarhia-build": "^0.0.2",
-    "metarhia-skills": "^1.0.0",
+    "metaskills": "^1.0.1",
     "metatests": "^0.9.3",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3"

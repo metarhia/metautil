@@ -1,8 +1,4 @@
 node_modules
 *.log
 CHANGELOG.md
-.cursor
-.claude
-.windsurf
-.agents
-.github/skills
+*/skills/metaskills
