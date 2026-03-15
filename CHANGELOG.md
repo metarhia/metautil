@@ -2,6 +2,14 @@
 
 ## [Unreleased][unreleased]
 
+## [5.5.2][] - 2026-03-15
+
+- Made randomPrefetcher implementations compatible between node and browser
+- Optimized generateKey for Node and browser
+- Fix test: use stable file for md5 test
+- Renamed metarhia-skills to metaskills
+- Applied JavaScript code style optimizations
+
 ## [5.5.1][] - 2026-03-09
 
 - Fix generateUUID: randomUUID call from crypto
@@ -345,7 +353,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.1...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.2...HEAD
+[5.5.2]: https://github.com/metarhia/metautil/compare/v5.5.1...v5.5.2
 [5.5.1]: https://github.com/metarhia/metautil/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/metarhia/metautil/compare/v5.4.0...v5.5.0
 [5.4.0]: https://github.com/metarhia/metautil/compare/v5.3.0...v5.4.0

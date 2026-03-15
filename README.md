@@ -425,6 +425,6 @@ for await (const eventData of iterable) {
 
 ## License & Contributors
 
-Copyright (c) 2017-2025 [Metarhia contributors](https://github.com/metarhia/metautil/graphs/contributors).
+Copyright (c) 2017-2026 [Metarhia contributors](https://github.com/metarhia/metautil/graphs/contributors).
 Metautil is [MIT licensed](./LICENSE).\
 Metautil is a part of [Metarhia](https://github.com/metarhia) technology stack.
