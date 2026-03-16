@@ -378,6 +378,116 @@ console.log({ size, bytes });
 |     mb |     6 | megabyte  |
 |     kb |     3 | kilobyte  |
 
+## Class `List`
+
+A feature-rich list data structure with array-backed storage for O(1) random access.
+
+- `constructor(size?: number)` - Create list with optional pre-allocation
+- `readonly size: number` - Current element count
+
+### Static Factory Methods
+
+- `List.fromArray<T>(values: T[]): List<T>`
+- `List.fromIterator<T>(iterator: Iterable<T>): List<T>`
+- `List.range(start: number, end: number, step?: number): List<number>`
+- `List.merge<T>(lists: List<T>[]): List<T>`
+
+### Element Access
+
+- `at(index: number): T | undefined` - Supports negative indices
+- `set(index: number, value: T): void`
+- `first(): T | undefined`
+- `last(): T | undefined`
+
+### Add/Remove
+
+- `append(value: T): void`
+- `prepend(value: T): void`
+- `insert(index: number, value: T, count?: number): void`
+- `delete(index: number, count?: number): void`
+- `enqueue(value: T): void` - Alias for append
+- `dequeue(): T | undefined` - Remove and return first
+
+### Slicing
+
+- `slice(start?: number, end?: number): List<T>`
+- `head(): List<T>` - All but last element
+- `tail(): List<T>` - All but first element
+- `take(n: number): List<T>` - Take n from start (negative = from end)
+- `drop(n: number): void` - Remove n from start (negative = from end)
+- `splitAt(index: number): { before: List<T>; after: List<T> }`
+
+### Search
+
+- `includes(value: T): boolean`
+- `indexOf(value: T): number`
+- `lastIndexOf(value: T): number`
+- `find(fn: (value: T, index: number) => boolean): T | undefined`
+- `findIndex(fn: (value: T, index: number) => boolean): number`
+- `equals(other: List<T>): boolean`
+
+### Reordering
+
+- `swap(i: number, j: number): void`
+- `move(from: number, to: number): void`
+- `rotate(n: number): void` - Positive = right, negative = left
+- `reverse(): void` / `toReversed(): List<T>`
+- `sort(compare?): void` / `toSorted(compare?): List<T>`
+- `shuffle(random?): void` / `toShuffled(random?): List<T>`
+- `distinct(): void` / `toDistinct(): List<T>`
+
+### Functional Methods
+
+- `map<U>(fn: (value: T, index: number) => U): List<U>`
+- `flatMap<U>(fn: (value: T) => List<U> | U[]): List<U>`
+- `filter(fn: (value: T, index: number) => boolean): List<T>`
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U`
+- `some(fn): boolean` / `every(fn): boolean`
+- `sum(fn?): number` / `avg(fn?): number`
+- `min(compare?): T` / `max(compare?): T`
+- `groupBy<K>(key: (value: T) => K): Map<K, List<T>>`
+
+### Lazy Iterators
+
+- `lazyMap<U>(fn): Generator<U>`
+- `lazyFilter(fn): Generator<T>`
+- `lazyReduce<U>(fn, initial): Generator<U>`
+
+### Iteration & Output
+
+- `[Symbol.iterator]()` - Sync iteration
+- `[Symbol.asyncIterator]()` - Async iteration (waits for new items)
+- `toArray(): T[]`
+- `clone(): List<T>`
+- `join(separator?: string): string`
+- `clear(): void`
+
+```js
+const { List } = require('metautil');
+
+// Create and manipulate
+const list = List.fromArray([1, 2, 3]);
+list.append(4);
+list.prepend(0);
+console.log([...list]); // [0, 1, 2, 3, 4]
+
+// Functional operations
+const doubled = list.map((x) => x * 2);
+const sum = list.sum();
+
+// Range and aggregation
+const range = List.range(1, 100);
+console.log(range.avg()); // 50
+
+// Async iteration (stream-like)
+const stream = new List();
+setTimeout(() => stream.append('data'), 100);
+for await (const item of stream) {
+  console.log(item); // 'data'
+  break;
+}
+```
+
 ## Class `Emitter`
 
 - Events:
