@@ -915,13 +915,38 @@ const UNIT_SIZES = {
   kb: 3, // kilobyte
 };
 
+const BINARY_SIZE_UNITS = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+
+const bytesToBinarySize = (bytes) => {
+  if (bytes === 0) return '0';
+  const exp = Math.floor(Math.log(bytes) / Math.log(1024));
+  const size = bytes / 1024 ** exp;
+  const short = Math.round(size);
+  const unit = exp === 0 ? '' : ' ' + BINARY_SIZE_UNITS[exp - 1];
+  return short.toString() + unit;
+};
+
+const BINARY_UNIT_SIZES = {
+  yib: 80, // yobibyte
+  zib: 70, // zebibyte
+  eib: 60, // exbibyte
+  pib: 50, // pebibyte
+  tib: 40, // tebibyte
+  gib: 30, // gibibyte
+  mib: 20, // mebibyte
+  kib: 10, // kibibyte
+};
+
 const sizeToBytes = (size) => {
   const length = size.length;
-  const unit = size.substring(length - 2, length).toLowerCase();
+  const unit3 = size.substring(length - 3, length).toLowerCase();
+  const exp3 = BINARY_UNIT_SIZES[unit3];
   const value = parseInt(size, 10);
-  const exp = UNIT_SIZES[unit];
-  if (!exp) return value;
-  return value * Math.pow(10, exp);
+  if (exp3) return value * 2 ** exp3;
+  const unit2 = size.substring(length - 2, length).toLowerCase();
+  const exp2 = UNIT_SIZES[unit2];
+  if (!exp2) return value;
+  return value * Math.pow(10, exp2);
 };
 
 // browser.js
@@ -1039,6 +1064,7 @@ export {
   Semaphore,
   bytesToSize,
   sizeToBytes,
+  bytesToBinarySize,
   cryptoRandom,
   random,
   generateUUID,

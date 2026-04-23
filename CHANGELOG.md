@@ -2,6 +2,11 @@
 
 ## [Unreleased][unreleased]
 
+## [5.5.21][] - 2026-04-23
+
+- Added `bytesToBinarySize`: formats bytes using binary units (KiB, MiB, GiB, ...)
+- Extended `sizeToBytes` to parse binary units (KiB, MiB, GiB, ...) in addition to decimal
+
 ## [5.5.2][] - 2026-03-15
 
 - Made randomPrefetcher implementations compatible between node and browser

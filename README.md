@@ -359,13 +359,21 @@ semaphore.leave();
 
 - `bytesToSize(bytes: number): string`
 - `sizeToBytes(size: string): number`
+- `bytesToBinarySize(bytes: number): string`
 
 ```js
 const size = bytesToSize(100000000);
 const bytes = sizeToBytes(size);
 console.log({ size, bytes });
 // { size: '100 MB', bytes: 100000000 }
+
+const binSize = bytesToBinarySize(1073741824);
+const binBytes = sizeToBytes(binSize);
+console.log({ binSize, binBytes });
+// { binSize: '1 GiB', binBytes: 1073741824 }
 ```
+
+Decimal units (powers of 1000):
 
 | Symbol | zeros | Unit      |
 | -----: | ----: | --------- |
@@ -377,6 +385,19 @@ console.log({ size, bytes });
 |     gb |     9 | gigabyte  |
 |     mb |     6 | megabyte  |
 |     kb |     3 | kilobyte  |
+
+Binary units (powers of 1024):
+
+| Symbol | power | Unit     |
+| -----: | ----: | -------- |
+|    yib |    80 | yobibyte |
+|    zib |    70 | zebibyte |
+|    eib |    60 | exbibyte |
+|    pib |    50 | pebibyte |
+|    tib |    40 | tebibyte |
+|    gib |    30 | gibibyte |
+|    mib |    20 | mebibyte |
+|    kib |    10 | kibibyte |
 
 ## Class `Emitter`
 
