@@ -232,6 +232,7 @@ export function trimLines(s: string): string;
 
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
+export function bytesToBinarySize(bytes: number): string;
 
 // Submodule: collector
 
