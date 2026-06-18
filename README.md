@@ -249,7 +249,7 @@ const domains = metautil.getX509names(x509);
 
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Strings, ...namespaces: Namespaces): void`
-- `jsonParse(buffer: Buffer): Dictionary | null`
+- `jsonParse(data: Buffer | string | null | undefined): Dictionary | null`
 - `isHashObject(o: string | number | boolean | object): boolean`
 - `flatObject(source: Dictionary, fields: Strings): Dictionary`
 - `unflatObject(source: Dictionary, fields: Strings): Dictionary`
