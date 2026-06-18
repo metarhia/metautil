@@ -185,22 +185,16 @@ const duration = (s) => {
   return result * 1000;
 };
 
-const twoDigit = (n) => {
-  const s = n.toString();
-  if (n < 10) return '0' + s;
-  return s;
-};
+const twoDigit = (n) => n.toString().padStart(2, '0');
 
-const nowDate = (date) => {
-  if (!date) date = new Date();
+const nowDate = (date = new Date()) => {
   const yyyy = date.getUTCFullYear().toString();
   const mm = twoDigit(date.getUTCMonth() + 1);
   const dd = twoDigit(date.getUTCDate());
   return `${yyyy}-${mm}-${dd}`;
 };
 
-const nowDateTimeUTC = (date, timeSep = ':') => {
-  if (!date) date = new Date();
+const nowDateTimeUTC = (date = new Date(), timeSep = ':') => {
   const yyyy = date.getUTCFullYear().toString();
   const mm = twoDigit(date.getUTCMonth() + 1);
   const dd = twoDigit(date.getUTCDate());
@@ -306,9 +300,9 @@ const nextEvent = (ev, d = new Date()) => {
   const im = ev.mm > -1;
   const ims = ev.ms > -1;
 
-  if (iY && (ev.YY < Y || ev.YY > Y)) return ev.YY < Y ? -1 : 0;
-  if (iM && (ev.MM < M || ev.MM > M || ev.MM !== M)) return ev.MM < M ? -1 : 0;
-  if (iD && (ev.DD < D || ev.DD > D || ev.DD !== D)) return ev.DD < D ? -1 : 0;
+  if (iY && ev.YY !== Y) return ev.YY < Y ? -1 : 0;
+  if (iM && ev.MM !== M) return ev.MM < M ? -1 : 0;
+  if (iD && ev.DD !== D) return ev.DD < D ? -1 : 0;
   if (iw && ev.wd !== w) return 0;
   if (ih && (ev.hh < h || (ev.hh === h && im && ev.mm < m))) return -1;
 
@@ -330,9 +324,9 @@ const makePrivate = (instance) => {
     if (isConstant(fieldName)) {
       iface[fieldName] = field;
     } else if (typeof field === 'function') {
-      const bindedMethod = field.bind(instance);
-      iface[fieldName] = bindedMethod;
-      instance[fieldName] = bindedMethod;
+      const boundMethod = field.bind(instance);
+      iface[fieldName] = boundMethod;
+      instance[fieldName] = boundMethod;
     }
   }
   return iface;
@@ -348,10 +342,11 @@ const protect = (allowMixins, ...namespaces) => {
   }
 };
 
-const jsonParse = (buffer) => {
-  if (buffer.length === 0) return null;
+const jsonParse = (data) => {
+  if (data === null || data === undefined) return null;
+  if (data.length === 0) return null;
   try {
-    return JSON.parse(buffer);
+    return JSON.parse(data);
   } catch {
     return null;
   }
@@ -388,7 +383,7 @@ const unflatObject = (source, fields) => {
   for (const [key, value] of Object.entries(source)) {
     const prefix = fields.find((name) => key.startsWith(name));
     if (prefix) {
-      if (Object.prototype.hasOwnProperty.call(source, prefix)) {
+      if (Object.hasOwn(source, prefix)) {
         throw new Error(`Can not combine keys: key "${prefix}" already exists`);
       }
       const newKey = key.substring(prefix.length).toLowerCase();
@@ -438,7 +433,7 @@ class Collector {
   keys = [];
   count = 0;
   exact = true;
-  reassign = true;
+  reassign = false;
   timeout = 0;
   defaults = {};
   validate = null;
@@ -502,8 +497,8 @@ class Collector {
   }
 
   take(key, fn, ...args) {
-    fn(...args, (err, data) => {
-      if (err) this.fail(err);
+    fn(...args, (error, data) => {
+      if (error) this.fail(error);
       else this.set(key, data);
     });
   }
@@ -512,7 +507,7 @@ class Collector {
     const promise = fn instanceof Promise ? fn : fn(...args);
     promise.then(
       (data) => this.set(key, data),
-      (err) => this.fail(err),
+      (error) => this.fail(error),
     );
   }
 
@@ -520,7 +515,7 @@ class Collector {
     for (const [key, collector] of Object.entries(sources)) {
       collector.then(
         (data) => this.set(key, data),
-        (err) => this.fail(err),
+        (error) => this.fail(error),
       );
     }
   }
@@ -528,10 +523,10 @@ class Collector {
   fail(error) {
     this.done = true;
     this.#timeout = null;
-    const err = error || new Error('Collector aborted');
-    this.#cause = err;
+    const cause = error || new Error('Collector aborted');
+    this.#cause = cause;
     this.#controller.abort();
-    if (this.#reject) this.#reject(err);
+    if (this.#reject) this.#reject(cause);
   }
 
   abort() {
@@ -546,8 +541,8 @@ class Collector {
       if (this.validate) {
         try {
           this.validate(this.data);
-        } catch (err) {
-          this.#cause = err;
+        } catch (error) {
+          this.#cause = error;
         }
       }
       if (this.#cause) reject(this.#cause);
@@ -575,14 +570,18 @@ class EventIterator {
     this.#eventName = eventName;
 
     this.#listener = (value) => {
-      for (const resolver of this.#resolvers) {
+      const resolvers = this.#resolvers;
+      this.#resolvers = [];
+      for (const resolver of resolvers) {
         resolver.resolve({ done: this.#done, value });
       }
     };
     emitter.on(eventName, this.#listener);
 
     this.#onerror = (error) => {
-      for (const resolver of this.#resolvers) {
+      const resolvers = this.#resolvers;
+      this.#resolvers = [];
+      for (const resolver of resolvers) {
         resolver.reject(error);
       }
       this.#finalize();
@@ -647,22 +646,22 @@ class Emitter {
       if (eventName !== 'error') return Promise.resolve();
       throw new Error('Unhandled error');
     }
-    const on = event.on.slice();
-    const promises = on.map(async (fn) => fn(value));
+    const listeners = event.on.slice();
+    const promises = listeners.map(async (fn) => fn(value));
     if (event.once.size > 0) {
       const len = event.on.length;
-      const on = new Array(len);
+      const remaining = new Array(len);
       let index = 0;
       for (let i = 0; i < len; i++) {
         const listener = event.on[i];
-        if (!event.once.has(listener)) on[index++] = listener;
+        if (!event.once.has(listener)) remaining[index++] = listener;
       }
       if (index === 0) {
         this.#events.delete(eventName);
-        return Promise.resolve();
+      } else {
+        remaining.length = index;
+        this.#events.set(eventName, { on: remaining, once: new Set() });
       }
-      on.length = index;
-      this.#events.set(eventName, { on, once: new Set() });
     }
     return Promise.all(promises).then(() => undefined);
   }
@@ -742,7 +741,7 @@ class Emitter {
 const parseHost = (host) => {
   if (!host) return 'no-host-name-in-http-headers';
   const portOffset = host.indexOf(':');
-  if (portOffset > -1) host = host.substr(0, portOffset);
+  if (portOffset > -1) return host.substring(0, portOffset);
   return host;
 };
 
@@ -795,11 +794,13 @@ class Pool {
     }
     let item = null;
     let free = false;
+    let attempts = 0;
     do {
       item = this.items[this.current];
       free = this.free[this.current];
       this.current++;
       if (this.current === this.size) this.current = 0;
+      if (++attempts > this.size) return null;
     } while (!item || !free);
     if (exclusive) {
       const index = this.items.indexOf(item);
@@ -818,8 +819,7 @@ class Pool {
   }
 
   async capture() {
-    const item = await this.next(true);
-    return item;
+    return this.next(true);
   }
 
   release(item) {
@@ -921,7 +921,7 @@ const sizeToBytes = (size) => {
   const value = parseInt(size, 10);
   const exp = UNIT_SIZES[unit];
   if (!exp) return value;
-  return value * Math.pow(10, exp);
+  return value * 10 ** exp;
 };
 
 // browser.js
@@ -970,18 +970,18 @@ const random = (min, max) => {
 
 const generateUUID = () => crypto.randomUUID();
 
+const latin1Decoder = new TextDecoder('latin1');
+
 const generateKey = (possible, length) => {
   if (length < 0) return '';
   const base = possible.length;
   if (base < 1) return '';
   const key = new Uint8Array(length);
-  const randomValues = new Uint8Array(length);
-  crypto.getRandomValues(randomValues);
   for (let i = 0; i < length; i++) {
-    const index = randomValues[i] % base;
+    const index = cryptoRandom(0, base - 1);
     key[i] = possible.charCodeAt(index);
   }
-  return String.fromCharCode.apply(null, key);
+  return latin1Decoder.decode(key);
 };
 
 export {
