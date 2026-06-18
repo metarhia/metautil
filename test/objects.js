@@ -73,6 +73,8 @@ metatests.case(
       ['{ "a": 5 }', { a: 5 }],
       ['{', null],
       ['', null],
+      [null, null],
+      [undefined, null],
     ],
   },
 );

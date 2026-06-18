@@ -141,7 +141,9 @@ type Namespaces = Array<Dictionary>;
 
 export function makePrivate(instance: object): object;
 export function protect(allowMixins: Strings, ...namespaces: Namespaces): void;
-export function jsonParse(buffer: Buffer): Dictionary | null;
+export function jsonParse(
+  data: Buffer | string | null | undefined,
+): Dictionary | null;
 export function isHashObject(o: string | number | boolean | object): boolean;
 export function flatObject(source: Dictionary, fields: Strings): Dictionary;
 export function unflatObject(source: Dictionary, fields: Strings): Dictionary;
