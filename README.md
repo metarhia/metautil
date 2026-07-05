@@ -219,6 +219,31 @@ const domains = metautil.getX509names(x509);
   - `toError(errors: Errors): Error`
 - `isError(instance: object): boolean`
 
+## Class `Result`
+
+A container holding either a value or an error, useful to avoid `try`/`catch`
+boilerplate and to pass either outcome around as a single value.
+
+- `constructor(value?: unknown, error?: unknown)`
+- `static ok(value?: unknown): Result`
+- `static fail(error: unknown): Result`
+- `static from(fn: () => unknown): Result`
+- `static fromAsync(fn: () => Promise<unknown>): Promise<Result>`
+- `value: unknown`
+- `error: unknown`
+- `ok: boolean`
+- `unwrap(defaultValue?: unknown): unknown`
+- `map(fn: (value: unknown) => unknown): Result`
+
+```js
+const parsed = metautil.Result.from(() => JSON.parse(input));
+if (parsed.ok) console.log(parsed.value);
+else console.error(parsed.error);
+
+const loaded = await metautil.Result.fromAsync(() => readFile(path));
+const size = loaded.map((buffer) => buffer.length).unwrap(0);
+```
+
 ## File system utilities
 
 - `exists(path: string): Promise<boolean>`
