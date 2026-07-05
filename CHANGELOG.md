@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Added `Result` class: a container holding either a value or an error
+
 ## [5.5.2][] - 2026-03-15
 
 - Made randomPrefetcher implementations compatible between node and browser

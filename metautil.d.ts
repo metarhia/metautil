@@ -179,6 +179,21 @@ export class Pool {
   isFree(item: unknown): boolean;
 }
 
+// Submodule: result
+
+export class Result<T = unknown> {
+  constructor(value?: T | null, error?: unknown);
+  static ok<T = unknown>(value?: T | null): Result<T>;
+  static fail<T = unknown>(error: unknown): Result<T>;
+  static from<T = unknown>(fn: () => T): Result<T>;
+  static fromAsync<T = unknown>(fn: () => Promise<T>): Promise<Result<T>>;
+  value: T | null;
+  error: unknown;
+  ok: boolean;
+  unwrap(defaultValue?: T): T;
+  map<U = unknown>(fn: (value: T) => U): Result<U>;
+}
+
 // Submodule: array
 
 export function sample(array: Array<unknown>, random?: Function): unknown;

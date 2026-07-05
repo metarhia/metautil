@@ -10,6 +10,7 @@
     "events.js",
     "http.js",
     "pool.js",
+    "result.js",
     "semaphore.js",
     "units.js",
     "browser.js"
