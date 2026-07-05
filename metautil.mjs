@@ -479,7 +479,7 @@ class Collector {
     if (this.done) return;
     const expected = this.keys.includes(key);
     if (!expected && this.exact) {
-      this.fail(new Error('Unexpected key: ' + key));
+      this.fail(new Error(`Unexpected key: ${key}`));
       return;
     }
     const has = this.data[key] !== undefined;
@@ -961,7 +961,7 @@ const bytesToSize = (bytes) => {
   const exp = Math.floor(Math.log(bytes) / Math.log(1000));
   const size = bytes / 1000 ** exp;
   const short = Math.round(size);
-  const unit = exp === 0 ? '' : ' ' + SIZE_UNITS[exp - 1];
+  const unit = exp === 0 ? '' : ` ${SIZE_UNITS[exp - 1]}`;
   return short.toString() + unit;
 };
 
