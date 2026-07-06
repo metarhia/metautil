@@ -2,9 +2,9 @@ import { IncomingMessage } from 'node:http';
 import { ScryptOptions, X509Certificate } from 'node:crypto';
 
 type Strings = Array<string>;
-type Dictionary = Record<string, unknown>;
-type Cookies = Record<string, string>;
-type Headers = Record<string, string>;
+type Dictionary = globalThis.Record<string, unknown>;
+type Cookies = globalThis.Record<string, string>;
+type Headers = globalThis.Record<string, string>;
 
 // Submodule: async
 
@@ -86,7 +86,7 @@ export class Error extends global.Error {
   cause?: Error;
 }
 
-type Errors = Record<string, string>;
+type Errors = globalThis.Record<string, string>;
 
 export class DomainError extends Error {
   constructor(code?: string, options?: number | string | ErrorOptions);
@@ -179,6 +179,54 @@ export class Pool {
   isFree(item: unknown): boolean;
 }
 
+// Submodule: record
+
+export type RecordFieldType =
+  | 'array'
+  | 'null'
+  | 'undefined'
+  | 'object'
+  | 'boolean'
+  | 'number'
+  | 'bigint'
+  | 'string'
+  | 'symbol'
+  | 'function';
+
+export interface ImmutableRecordInstance<T extends object> {
+  fork(updates?: Partial<T>): T & ImmutableRecordInstance<T>;
+  branch(updates?: Partial<T>): T & ImmutableRecordInstance<T>;
+  toObject(): T;
+}
+
+export interface MutableRecordInstance<T extends object> {
+  update(updates: Partial<T>): T & MutableRecordInstance<T>;
+  fork(updates?: Partial<T>): T & MutableRecordInstance<T>;
+  branch(updates?: Partial<T>): T & MutableRecordInstance<T>;
+  toObject(): T;
+}
+
+export interface ImmutableRecordClass<T extends object> {
+  new (data?: Partial<T>): T & ImmutableRecordInstance<T>;
+  create(data?: Partial<T>): T & ImmutableRecordInstance<T>;
+  readonly fields: Array<keyof T>;
+  readonly schema: globalThis.Record<keyof T, RecordFieldType>;
+  readonly mutable: false;
+}
+
+export interface MutableRecordClass<T extends object> {
+  new (data?: Partial<T>): T & MutableRecordInstance<T>;
+  create(data?: Partial<T>): T & MutableRecordInstance<T>;
+  readonly fields: Array<keyof T>;
+  readonly schema: globalThis.Record<keyof T, RecordFieldType>;
+  readonly mutable: true;
+}
+
+export class Record {
+  static immutable<T extends object>(defaults: T): ImmutableRecordClass<T>;
+  static mutable<T extends object>(defaults: T): MutableRecordClass<T>;
+}
+
 // Submodule: result
 
 export class Result<T = unknown> {
@@ -204,7 +252,7 @@ export function shuffle(
 export function projection(
   source: object,
   fields: Array<string>,
-): Record<string, unknown>;
+): globalThis.Record<string, unknown>;
 
 // Submodule: semaphore
 
@@ -250,6 +298,186 @@ export function trimLines(s: string): string;
 export function bytesToSize(bytes: number): string;
 export function sizeToBytes(size: string): number;
 
+// Submodule: list
+
+export interface Sequence<T> extends Iterable<T> {
+  readonly size: number;
+  first(): T | undefined;
+  last(): T | undefined;
+  includes(value: T): boolean;
+  toArray(): Array<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+export interface Indexable<T> {
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+}
+
+export class List<T> implements Sequence<T>, Indexable<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): List<T>;
+  static fromIterable<T>(iterable: Iterable<T>): List<T>;
+  static range(start: number, end: number, step?: number): List<number>;
+  static merge<T>(lists: Array<List<T>>): List<T>;
+
+  append(value: T): void;
+  prepend(value: T): void;
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+  insert(index: number, value: T, count?: number): void;
+  delete(index: number, count?: number): void;
+
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  first(): T | undefined;
+  last(): T | undefined;
+
+  tail(n?: number): List<T>;
+  init(n?: number): List<T>;
+  drop(n: number): void;
+  take(n: number): List<T>;
+  slice(start?: number, end?: number): List<T>;
+
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  rotate(n: number): void;
+  swap(i: number, j: number): void;
+  move(from: number, to: number): void;
+  splitAt(index: number): { before: List<T>; after: List<T> };
+  groupBy<K>(key: (v: T) => K): Map<K, List<T>>;
+
+  includes(value: T): boolean;
+  indexOf(value: T): number;
+  lastIndexOf(value: T): number;
+  equals(other: List<T>): boolean;
+
+  addAll(values: Iterable<T>): void;
+  removeAll(values: Iterable<T>): void;
+  fill(value: T, start?: number, end?: number): void;
+  replace(oldValue: T, newValue: T): void;
+  distinct(): void;
+  toDistinct(): List<T>;
+
+  shuffle(): void;
+  toShuffled(): List<T>;
+  reverse(): void;
+  toReversed(): List<T>;
+  sort(compare?: (a: T, b: T) => number): void;
+  toSorted(compare?: (a: T, b: T) => number): List<T>;
+
+  map<U>(fn: (value: T, index: number) => U): List<U>;
+  lazyMap<U>(fn: (value: T, index: number) => U): Iterator<U>;
+  flatMap<U>(fn: (value: T) => Iterable<U>): List<U>;
+  filter(fn: (value: T, index: number) => boolean): List<T>;
+  lazyFilter(fn: (value: T, index: number) => boolean): Iterator<T>;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
+  lazyReduce<U>(
+    fn: (acc: U, value: T, index: number) => U,
+    initial: U,
+  ): Iterator<U>;
+  some(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  find(fn: (value: T, index: number) => boolean): T | undefined;
+  findIndex(fn: (value: T, index: number) => boolean): number;
+
+  sum(fn?: (value: T) => number): number;
+  avg(fn?: (value: T) => number): number;
+  min(compare?: (a: T, b: T) => number): T | undefined;
+  max(compare?: (a: T, b: T) => number): T | undefined;
+
+  isEmpty(): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  join(separator?: string): string;
+  clone(): List<T>;
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+export class PersistentList<T> {
+  readonly value: T | undefined;
+  readonly next: PersistentList<T> | null;
+  readonly size: number;
+  isEmpty(): boolean;
+
+  static readonly empty: PersistentList<any>;
+  static of<T>(...values: Array<T>): PersistentList<T>;
+  static fromArray<T>(values: Array<T>): PersistentList<T>;
+  static fromIterable<T>(iterable: Iterable<T>): PersistentList<T>;
+
+  prepend(value: T): PersistentList<T>;
+  first(): T | undefined;
+  rest(): PersistentList<T>;
+  toArray(): Array<T>;
+  [Symbol.iterator](): Iterator<T>;
+}
+
+export class Stack<T> implements Sequence<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): Stack<T>;
+  static fromIterable<T>(iterable: Iterable<T>): Stack<T>;
+  push(value: T): void;
+  pop(): T | undefined;
+  peek(): T | undefined;
+  first(): T | undefined;
+  last(): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  clone(): Stack<T>;
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+export class Deque<T> implements Sequence<T>, Indexable<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): Deque<T>;
+  static fromIterable<T>(iterable: Iterable<T>): Deque<T>;
+  static range(start: number, end: number, step?: number): Deque<number>;
+  prepend(value: T): void;
+  append(value: T): void;
+  dequeue(): T | undefined;
+  pop(): T | undefined;
+  at(index: number): T | undefined;
+  set(index: number, value: T): void;
+  first(): T | undefined;
+  last(): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  equals(other: Deque<T>): boolean;
+  rotateLeft(steps?: number): void;
+  rotateRight(steps?: number): void;
+  clear(): void;
+  toArray(): Array<T>;
+  clone(): Deque<T>;
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+export class Queue<T> implements Sequence<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): Queue<T>;
+  static fromIterable<T>(iterable: Iterable<T>): Queue<T>;
+  enqueue(value: T): void;
+  dequeue(): T | undefined;
+  peek(): T | undefined;
+  first(): T | undefined;
+  last(): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  clone(): Queue<T>;
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
 // Submodule: collector
 
 export interface CollectorOptions {
@@ -257,7 +485,7 @@ export interface CollectorOptions {
   defaults?: object;
   timeout?: number;
   reassign?: boolean;
-  validate?: (data: Record<string, unknown>) => unknown;
+  validate?: (data: globalThis.Record<string, unknown>) => unknown;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -271,7 +499,7 @@ export class Collector {
   timeout: number;
   defaults: object;
   reassign: boolean;
-  validate?: (data: Record<string, unknown>) => unknown;
+  validate?: (data: globalThis.Record<string, unknown>) => unknown;
   signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
@@ -281,7 +509,7 @@ export class Collector {
     ...args: Array<unknown>
   ): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
-  collect(sources: Record<string, Collector>): void;
+  collect(sources: globalThis.Record<string, Collector>): void;
   fail(error: Error): void;
   abort(): void;
   then(onFulfilled: Function, onRejected?: Function): Promise<unknown>;

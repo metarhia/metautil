@@ -185,7 +185,7 @@ try {
 
 ```js
 const x509 = new crypto.X509Certificate(cert);
-const domains = metautil.getX509names(x509);
+const domains = getX509names(x509);
 ```
 
 ## Datetime utilities
@@ -236,11 +236,11 @@ boilerplate and to pass either outcome around as a single value.
 - `map(fn: (value: unknown) => unknown): Result`
 
 ```js
-const parsed = metautil.Result.from(() => JSON.parse(input));
+const parsed = Result.from(() => JSON.parse(input));
 if (parsed.ok) console.log(parsed.value);
 else console.error(parsed.error);
 
-const loaded = await metautil.Result.fromAsync(() => readFile(path));
+const loaded = await Result.fromAsync(() => readFile(path));
 const size = loaded.map((buffer) => buffer.length).unwrap(0);
 ```
 
@@ -302,7 +302,7 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 - `isFree(item: unknown): boolean`
 
 ```js
-const pool = new metautil.Pool();
+const pool = new Pool();
 pool.add({ a: 1 });
 pool.add({ a: 2 });
 pool.add({ a: 3 });
@@ -313,6 +313,371 @@ if (pool.isFree(obj1)) console.log('1 is captured');
 const obj = await pool.next();
 // obj is { a: 2 }
 pool.release(item);
+```
+
+## Data structures
+
+All data structure classes implement a common interoperability contract:
+every class has `static fromArray`, `static fromIterable`, `toArray`,
+and `[Symbol.iterator]`, making any structure convertible to any other
+via `Array` as the universal interchange format. The shared TypeScript
+interfaces `Sequence<T>` and `Indexable<T>` (in `metautil.d.ts`) describe
+structural contracts at the type level.
+
+| Class            | ADT            | Backed by    | Push/Pop | Index access |
+| ---------------- | -------------- | ------------ | -------- | ------------ |
+| `Stack`          | LIFO           | `Array`      | O(1)     | O(1)         |
+| `Queue`          | FIFO           | `LinkedList` | O(1)     | —            |
+| `Deque`          | double-ended   | `LinkedList` | O(1)     | O(n)         |
+| `List`           | sequence       | `LinkedList` | O(1)     | O(n)         |
+| `PersistentList` | immutable cons | shared nodes | O(1)     | O(n)         |
+
+```js
+// Any structure can feed any other via iterables
+const list = List.range(1, 5);
+const queue = Queue.fromIterable(list.filter((n) => n % 2 === 0));
+const deque = Deque.fromIterable(queue);
+const persistent = PersistentList.fromArray(deque.toArray());
+```
+
+## Class `PersistentList`
+
+An immutable singly-linked cons-list with structural sharing. Every
+`prepend` returns a new `PersistentList` that shares its tail with the
+original — enabling multiple independent branches from a common suffix
+at zero copy cost (inspired by LISP cons cells).
+
+- `static empty: PersistentList<T>` — canonical empty singleton
+- `static of<T>(...values: Array<T>): PersistentList<T>`
+- `static fromArray<T>(values: Array<T>): PersistentList<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): PersistentList<T>`
+- `prepend(value: T): PersistentList<T>` — O(1), returns new head sharing old tail
+- `first(): T | undefined` — head value
+- `rest(): PersistentList<T>` — tail (O(1), no copy)
+- `toArray(): Array<T>`
+- `[Symbol.iterator](): Iterator<T>`
+- `value: T | undefined`
+- `next: PersistentList<T> | null`
+- `size: number`
+- `isEmpty(): boolean`
+
+```js
+const shared = PersistentList.of(3, 4, 5);
+
+const branch1 = shared.prepend(2).prepend(1); // [1, 2, 3, 4, 5]
+const branch2 = shared.prepend(99); // [99, 3, 4, 5]
+
+// Both branches share the [3, 4, 5] suffix — no copying
+console.log(branch1.next.next === shared); // true
+console.log(branch2.next === shared); // true
+```
+
+**Use case: undo history with branching (time-travel state)**
+
+```js
+let history = PersistentList.of('draft v1');
+history = history.prepend('draft v2');
+history = history.prepend('draft v3');
+console.log(history.first()); // 'draft v3'
+
+// Jump back in time — earlier states remain valid and untouched
+const undone = history.rest();
+console.log(undone.first()); // 'draft v2'
+
+// Branch a new edit off the older state without affecting `history`
+const branched = undone.prepend('draft v2b');
+console.log(branched.toArray()); // ['draft v2b', 'draft v2', 'draft v1']
+console.log(history.toArray()); // ['draft v3', 'draft v2', 'draft v1']
+```
+
+## Class `List`
+
+A doubly-linked-list-backed sequence with a comprehensive API. All
+push/pop/append/prepend operations are O(1); index-based operations
+are O(n).
+
+**Construction**
+
+- `constructor()`
+- `static fromArray<T>(values: Array<T>): List<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): List<T>`
+- `static range(start: number, end: number, step?: number): List<number>`
+- `static merge<T>(lists: Array<List<T>>): List<T>`
+
+**CRUD / index**
+
+- `append(value: T): void`
+- `prepend(value: T): void`
+- `enqueue(value: T): void` — alias for `append`
+- `dequeue(): T | undefined` — removes and returns first element
+- `insert(index: number, value: T, count?: number): void`
+- `delete(index: number, count?: number): void`
+- `at(index: number): T | undefined`
+- `set(index: number, value: T): void`
+- `first(): T | undefined`
+- `last(): T | undefined`
+
+**Slicing**
+
+- `tail(n?: number): List<T>` — all-but-first-n (default 1)
+- `init(n?: number): List<T>` — all-but-last-n (default 1)
+- `drop(n: number): void` — drops first n (or last |n| if negative)
+- `take(n: number): List<T>` — first n (or last |n| if negative)
+- `slice(start?: number, end?: number): List<T>`
+
+**Rearranging**
+
+- `rotateLeft(steps?: number): void`
+- `rotateRight(steps?: number): void`
+- `rotate(n: number): void` — positive rotates left, negative right
+- `swap(i: number, j: number): void`
+- `move(from: number, to: number): void`
+- `splitAt(index: number): { before: List<T>; after: List<T> }`
+- `groupBy<K>(key: (v: T) => K): Map<K, List<T>>`
+
+**Search / compare**
+
+- `includes(value: T): boolean`
+- `indexOf(value: T): number`
+- `lastIndexOf(value: T): number`
+- `equals(other: List<T>): boolean`
+
+**Bulk mutations**
+
+- `addAll(values: Iterable<T>): void`
+- `removeAll(values: Iterable<T>): void`
+- `fill(value: T, start?: number, end?: number): void`
+- `replace(oldValue: T, newValue: T): void`
+- `distinct(): void` — removes duplicates in place
+- `toDistinct(): List<T>`
+
+**Ordering**
+
+- `shuffle(): void`
+- `toShuffled(): List<T>`
+- `reverse(): void`
+- `toReversed(): List<T>`
+- `sort(compare?: (a: T, b: T) => number): void`
+- `toSorted(compare?: (a: T, b: T) => number): List<T>`
+
+**Functional**
+
+- `map<U>(fn: (value: T, index: number) => U): List<U>`
+- `lazyMap<U>(fn): Iterator<U>` — generator, does not materialize
+- `flatMap<U>(fn: (value: T) => Iterable<U>): List<U>`
+- `filter(fn: (value: T, index: number) => boolean): List<T>`
+- `lazyFilter(fn): Iterator<T>` — generator, does not materialize
+- `reduce<U>(fn, initial: U): U`
+- `lazyReduce<U>(fn, initial: U): Iterator<U>` — yields running accumulator (scan)
+- `some(fn): boolean`
+- `every(fn): boolean`
+- `find(fn): T | undefined`
+- `findIndex(fn): number`
+
+**Stats**
+
+- `sum(fn?: (value: T) => number): number`
+- `avg(fn?: (value: T) => number): number`
+- `min(compare?: (a: T, b: T) => number): T | undefined`
+- `max(compare?: (a: T, b: T) => number): T | undefined`
+
+**Utility**
+
+- `isEmpty(): boolean`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `join(separator?: string): string`
+- `clone(): List<T>`
+- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `size: number`
+
+```js
+const list = List.range(1, 5);
+list.append(6);
+list.prepend(0);
+console.log(list.toArray()); // [0, 1, 2, 3, 4, 5, 6]
+console.log(list.filter((v) => v % 2 === 0).toArray()); // [0, 2, 4, 6]
+console.log(list.reduce((acc, v) => acc + v, 0)); // 21
+
+const grouped = list.groupBy((v) => v % 3);
+console.log(grouped.get(0).toArray()); // [0, 3, 6]
+```
+
+**Use case: playlist manager**
+
+```js
+const playlist = List.fromArray(['intro', 'verse', 'chorus', 'verse', 'outro']);
+
+playlist.distinct(); // drop duplicate tracks in place
+console.log(playlist.toArray()); // ['intro', 'verse', 'chorus', 'outro']
+
+playlist.move(3, 0); // move 'outro' to the front
+console.log(playlist.toArray()); // ['outro', 'intro', 'verse', 'chorus']
+
+console.log(playlist.find((track) => track.startsWith('ch'))); // 'chorus'
+```
+
+## Class `Deque`
+
+Double-ended queue backed by a growable circular buffer. Supports O(1)
+push and pop at both ends and O(1) index-based access.
+
+- `constructor()`
+- `static fromArray<T>(values: Array<T>): Deque<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): Deque<T>`
+- `static range(start: number, end: number, step?: number): Deque<number>`
+- `prepend(value: T): void`
+- `append(value: T): void`
+- `dequeue(): T | undefined` — removes and returns the front element
+- `pop(): T | undefined` — removes and returns the back element
+- `at(index: number): T | undefined`
+- `set(index: number, value: T): void`
+- `first(): T | undefined`
+- `last(): T | undefined`
+- `isEmpty(): boolean`
+- `includes(value: T): boolean`
+- `equals(other: Deque<T>): boolean`
+- `rotateLeft(steps?: number): void`
+- `rotateRight(steps?: number): void`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `clone(): Deque<T>`
+- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `size: number`
+
+```js
+const deque = Deque.range(1, 5);
+// [1, 2, 3, 4, 5]
+deque.prepend(0);
+deque.append(6);
+console.log(deque.dequeue()); // 0
+console.log(deque.pop()); // 6
+deque.rotateLeft(2);
+console.log(deque.toArray()); // [3, 4, 5, 1, 2]
+```
+
+**Use case: sliding window maximum**
+
+```js
+// Monotonic deque of indices — the front always holds the current max
+function maxSlidingWindow(nums, k) {
+  const deque = new Deque();
+  const result = [];
+  for (let i = 0; i < nums.length; i++) {
+    if (!deque.isEmpty() && deque.first() <= i - k) deque.dequeue();
+    while (!deque.isEmpty() && nums[deque.last()] <= nums[i]) deque.pop();
+    deque.append(i);
+    if (i >= k - 1) result.push(nums[deque.first()]);
+  }
+  return result;
+}
+
+console.log(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3));
+// [3, 3, 5, 5, 6, 7]
+```
+
+## Class `Queue`
+
+FIFO (first in, first out) queue backed by a growable circular buffer
+with O(1) enqueue and dequeue.
+
+- `constructor()`
+- `static fromArray<T>(values: Array<T>): Queue<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): Queue<T>`
+- `enqueue(value: T): void`
+- `dequeue(): T | undefined`
+- `peek(): T | undefined`
+- `first(): T | undefined`
+- `last(): T | undefined`
+- `isEmpty(): boolean`
+- `includes(value: T): boolean`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `clone(): Queue<T>`
+- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `size: number`
+
+```js
+const queue = new Queue();
+queue.enqueue('a');
+queue.enqueue('b');
+queue.enqueue('c');
+console.log(queue.dequeue()); // 'a'
+console.log(queue.peek()); // 'b'
+console.log(queue.size); // 2
+```
+
+**Use case: breadth-first traversal**
+
+```js
+const tree = {
+  value: 1,
+  children: [
+    { value: 2, children: [{ value: 4, children: [] }] },
+    { value: 3, children: [] },
+  ],
+};
+
+const queue = new Queue();
+queue.enqueue(tree);
+const order = [];
+while (!queue.isEmpty()) {
+  const node = queue.dequeue();
+  order.push(node.value);
+  for (const child of node.children) queue.enqueue(child);
+}
+console.log(order); // [1, 2, 3, 4]
+```
+
+## Class `Stack`
+
+LIFO (last in, first out) stack backed by a native array.
+
+- `constructor()`
+- `static fromArray<T>(values: Array<T>): Stack<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): Stack<T>`
+- `push(value: T): void`
+- `pop(): T | undefined`
+- `peek(): T | undefined`
+- `first(): T | undefined`
+- `last(): T | undefined`
+- `isEmpty(): boolean`
+- `includes(value: T): boolean`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `clone(): Stack<T>`
+- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `size: number`
+
+```js
+const stack = new Stack();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // 3
+console.log(stack.pop()); // 3
+console.log(stack.size); // 2
+```
+
+**Use case: balanced brackets validator**
+
+```js
+function isBalanced(input) {
+  const pairs = { ')': '(', ']': '[', '}': '{' };
+  const stack = new Stack();
+  for (const char of input) {
+    if ('([{'.includes(char)) stack.push(char);
+    else if (char in pairs && stack.pop() !== pairs[char]) return false;
+  }
+  return stack.isEmpty();
+}
+
+console.log(isBalanced('{[()]}')); // true
+console.log(isBalanced('{[(])}')); // false
 ```
 
 ## Array utilities

@@ -16,4 +16,9 @@ module.exports = {
   ...require('./lib/strings.js'),
   ...require('./lib/units.js'),
   ...require('./lib/node.js'),
+  ...require('./lib/stack.js'),
+  ...require('./lib/queue.js'),
+  ...require('./lib/deque.js'),
+  ...require('./lib/list.js'),
+  ...require('./lib/persistent-list.js'),
 };

@@ -109,7 +109,9 @@ const shuffle = (array, random = Math.random) => {
   // https://en.wikipedia.org/wiki/Fisher-Yates_shuffle
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    const temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
   }
   return array;
 };
@@ -252,7 +254,9 @@ const parseEvery = (s = '') => {
   const parts = s.split(' ');
   for (const part of parts) {
     if (part.includes(':')) {
-      const [h, m] = split(part, ':');
+      const hm = split(part, ':');
+      const h = hm[0];
+      const m = hm[1];
       if (h !== '') hh = parseInt(h);
       mm = m === '' ? 0 : parseInt(m);
       continue;
@@ -357,7 +361,9 @@ const isHashObject = (o) =>
 
 const flatObject = (source, fields = []) => {
   const target = {};
-  for (const [key, value] of Object.entries(source)) {
+  for (const entry of Object.entries(source)) {
+    const key = entry[0];
+    const value = entry[1];
     if (!isHashObject(value)) {
       target[key] = value;
       continue;
@@ -366,7 +372,9 @@ const flatObject = (source, fields = []) => {
       target[key] = { ...value };
       continue;
     }
-    for (const [childKey, childValue] of Object.entries(value)) {
+    for (const childEntry of Object.entries(value)) {
+      const childKey = childEntry[0];
+      const childValue = childEntry[1];
       const combined = `${key}${toUpperCamel(childKey)}`;
       if (source[combined] !== undefined) {
         const error = `Can not combine keys: key "${combined}" already exists`;
@@ -380,7 +388,9 @@ const flatObject = (source, fields = []) => {
 
 const unflatObject = (source, fields) => {
   const result = {};
-  for (const [key, value] of Object.entries(source)) {
+  for (const entry of Object.entries(source)) {
+    const key = entry[0];
+    const value = entry[1];
     const prefix = fields.find((name) => key.startsWith(name));
     if (prefix) {
       if (Object.hasOwn(source, prefix)) {
@@ -405,7 +415,9 @@ const getSignature = (method) => {
 };
 
 const namespaceByPath = (namespace, path) => {
-  const [key, rest] = split(path, '.');
+  const parts = split(path, '.');
+  const key = parts[0];
+  const rest = parts[1];
   const step = namespace[key];
   if (!step) return null;
   if (rest === '') return step;
@@ -466,7 +478,9 @@ class Collector {
   }
 
   #default() {
-    for (const [key, value] of Object.entries(this.defaults)) {
+    for (const entry of Object.entries(this.defaults)) {
+      const key = entry[0];
+      const value = entry[1];
       if (this.data[key] === undefined) this.set(key, value);
     }
   }
@@ -512,7 +526,9 @@ class Collector {
   }
 
   collect(sources) {
-    for (const [key, collector] of Object.entries(sources)) {
+    for (const entry of Object.entries(sources)) {
+      const key = entry[0];
+      const collector = entry[1];
       collector.then(
         (data) => this.set(key, data),
         (error) => this.fail(error),
@@ -751,7 +767,9 @@ const parseCookies = (cookie) => {
   const values = [];
   const items = cookie.split(';');
   for (const item of items) {
-    const [key, val = ''] = item.split('=');
+    const pair = item.split('=');
+    const key = pair[0];
+    const val = pair[1] === undefined ? '' : pair[1];
     values.push([key.trim(), val.trim()]);
   }
   return Object.fromEntries(values);
@@ -761,7 +779,9 @@ const parseRange = (range) => {
   if (!range || !range.includes('=')) return {};
   const bytes = range.split('=').pop();
   if (!bytes || !range.includes('-')) return {};
-  const [start, end] = bytes.split('-').map((n) => parseInt(n));
+  const bounds = bytes.split('-').map((n) => parseInt(n));
+  const start = bounds[0];
+  const end = bounds[1];
   if (isNaN(start)) return isNaN(end) ? {} : { tail: end };
   return isNaN(end) ? { start } : { start, end };
 };
@@ -1018,14 +1038,18 @@ randomPrefetcher.view = new DataView(
 const cryptoRandom = (min, max) => {
   const rnd = randomPrefetcher.next();
   if (min === undefined) return rnd;
-  const [a, b] = max === undefined ? [0, min] : [min, max];
+  const hasMax = max !== undefined;
+  const a = hasMax ? min : 0;
+  const b = hasMax ? max : min;
   return a + Math.floor(rnd * (b - a + 1));
 };
 
 const random = (min, max) => {
   const rnd = Math.random();
   if (min === undefined) return rnd;
-  const [a, b] = max === undefined ? [0, min] : [min, max];
+  const hasMax = max !== undefined;
+  const a = hasMax ? min : 0;
+  const b = hasMax ? max : min;
   return a + Math.floor(rnd * (b - a + 1));
 };
 
