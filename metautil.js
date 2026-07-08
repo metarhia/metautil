@@ -14,6 +14,7 @@ module.exports = {
   ...require('./lib/result.js'),
   ...require('./lib/semaphore.js'),
   ...require('./lib/strings.js'),
+  ...require('./lib/struct.js'),
   ...require('./lib/units.js'),
   ...require('./lib/node.js'),
 };
