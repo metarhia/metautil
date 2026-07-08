@@ -2,9 +2,9 @@ import { IncomingMessage } from 'node:http';
 import { ScryptOptions, X509Certificate } from 'node:crypto';
 
 type Strings = Array<string>;
-type Dictionary = globalThis.Record<string, unknown>;
-type Cookies = globalThis.Record<string, string>;
-type Headers = globalThis.Record<string, string>;
+type Dictionary = Record<string, unknown>;
+type Cookies = Record<string, string>;
+type Headers = Record<string, string>;
 
 // Submodule: async
 
@@ -86,7 +86,7 @@ export class Error extends global.Error {
   cause?: Error;
 }
 
-type Errors = globalThis.Record<string, string>;
+type Errors = Record<string, string>;
 
 export class DomainError extends Error {
   constructor(code?: string, options?: number | string | ErrorOptions);
@@ -179,54 +179,6 @@ export class Pool {
   isFree(item: unknown): boolean;
 }
 
-// Submodule: record
-
-export type RecordFieldType =
-  | 'array'
-  | 'null'
-  | 'undefined'
-  | 'object'
-  | 'boolean'
-  | 'number'
-  | 'bigint'
-  | 'string'
-  | 'symbol'
-  | 'function';
-
-export interface ImmutableRecordInstance<T extends object> {
-  fork(updates?: Partial<T>): T & ImmutableRecordInstance<T>;
-  branch(updates?: Partial<T>): T & ImmutableRecordInstance<T>;
-  toObject(): T;
-}
-
-export interface MutableRecordInstance<T extends object> {
-  update(updates: Partial<T>): T & MutableRecordInstance<T>;
-  fork(updates?: Partial<T>): T & MutableRecordInstance<T>;
-  branch(updates?: Partial<T>): T & MutableRecordInstance<T>;
-  toObject(): T;
-}
-
-export interface ImmutableRecordClass<T extends object> {
-  new (data?: Partial<T>): T & ImmutableRecordInstance<T>;
-  create(data?: Partial<T>): T & ImmutableRecordInstance<T>;
-  readonly fields: Array<keyof T>;
-  readonly schema: globalThis.Record<keyof T, RecordFieldType>;
-  readonly mutable: false;
-}
-
-export interface MutableRecordClass<T extends object> {
-  new (data?: Partial<T>): T & MutableRecordInstance<T>;
-  create(data?: Partial<T>): T & MutableRecordInstance<T>;
-  readonly fields: Array<keyof T>;
-  readonly schema: globalThis.Record<keyof T, RecordFieldType>;
-  readonly mutable: true;
-}
-
-export class Record {
-  static immutable<T extends object>(defaults: T): ImmutableRecordClass<T>;
-  static mutable<T extends object>(defaults: T): MutableRecordClass<T>;
-}
-
 // Submodule: result
 
 export class Result<T = unknown> {
@@ -252,7 +204,7 @@ export function shuffle(
 export function projection(
   source: object,
   fields: Array<string>,
-): globalThis.Record<string, unknown>;
+): Record<string, unknown>;
 
 // Submodule: semaphore
 
@@ -485,7 +437,7 @@ export interface CollectorOptions {
   defaults?: object;
   timeout?: number;
   reassign?: boolean;
-  validate?: (data: globalThis.Record<string, unknown>) => unknown;
+  validate?: (data: Record<string, unknown>) => unknown;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
@@ -499,7 +451,7 @@ export class Collector {
   timeout: number;
   defaults: object;
   reassign: boolean;
-  validate?: (data: globalThis.Record<string, unknown>) => unknown;
+  validate?: (data: Record<string, unknown>) => unknown;
   signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
@@ -509,7 +461,7 @@ export class Collector {
     ...args: Array<unknown>
   ): void;
   take(key: string, fn: Function, ...args: Array<unknown>): void;
-  collect(sources: globalThis.Record<string, Collector>): void;
+  collect(sources: Record<string, Collector>): void;
   fail(error: Error): void;
   abort(): void;
   then(onFulfilled: Function, onRejected?: Function): Promise<unknown>;
