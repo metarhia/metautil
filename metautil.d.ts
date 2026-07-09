@@ -163,20 +163,23 @@ export interface QueueElement {
   timer: NodeJS.Timeout;
 }
 
+export interface PoolOptions {
+  timeout?: number;
+}
+
+export class Lease {
+  constructor(resource: unknown, release: () => void);
+  readonly resource: unknown;
+  release(): void;
+}
+
 export class Pool {
-  constructor(options: { timeout?: number });
-  items: Array<unknown>;
-  free: Array<boolean>;
-  queue: Array<unknown>;
-  current: number;
-  size: number;
-  available: number;
-  timeout: number;
-  next(exclusive?: boolean): Promise<unknown>;
-  add(item: unknown): void;
-  capture(): Promise<unknown>;
-  release(item: unknown): void;
-  isFree(item: unknown): boolean;
+  constructor(options?: PoolOptions);
+  next(): unknown | null;
+  add(resource: unknown): void;
+  capture(): Lease | Promise<Lease> | null;
+  release(lease: Lease): void;
+  isFree(resource: unknown): boolean;
 }
 
 // Submodule: result
