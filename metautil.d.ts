@@ -254,41 +254,41 @@ export function sizeToBytes(size: string): number;
 
 export interface CollectorOptions {
   exact?: boolean;
-  defaults?: object;
-  timeout?: number;
   reassign?: boolean;
-  validate?: (data: Record<string, unknown>) => unknown;
+  timeout?: number;
+  defaults?: Dictionary;
+  validate?: (data: Dictionary) => unknown;
 }
 
 type AsyncFunction = (...args: Array<unknown>) => Promise<unknown>;
 
 export class Collector {
-  done: boolean;
-  data: Dictionary;
-  keys: Array<string>;
-  count: number;
-  exact: boolean;
-  timeout: number;
-  defaults: object;
-  reassign: boolean;
-  validate?: (data: Record<string, unknown>) => unknown;
-  signal: AbortSignal;
-  constructor(keys: Array<string>, options?: CollectorOptions);
-  set(key: string, value: unknown): void;
+  constructor(keys: Array<string | symbol>, options?: CollectorOptions);
+  readonly done: boolean;
+  readonly count: number;
+  readonly keys: Array<string | symbol>;
+  readonly data: Dictionary;
+  readonly signal: AbortSignal;
+  set(key: string | symbol, value: unknown): void;
+  take(key: string | symbol, fn: Function, ...args: Array<unknown>): void;
   wait(
-    key: string,
+    key: string | symbol,
     fn: AsyncFunction | Promise<unknown>,
     ...args: Array<unknown>
   ): void;
-  take(key: string, fn: Function, ...args: Array<unknown>): void;
   collect(sources: Record<string, Collector>): void;
-  fail(error: Error): void;
+  fail(error?: Error): void;
   abort(): void;
-  then(onFulfilled: Function, onRejected?: Function): Promise<unknown>;
+  then<TResult1 = Dictionary, TResult2 = never>(
+    onFulfilled?:
+      | ((value: Dictionary) => TResult1 | PromiseLike<TResult1>)
+      | null,
+    onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
+  ): Promise<TResult1 | TResult2>;
 }
 
 export function collect(
-  keys: Array<string>,
+  keys: Array<string | symbol>,
   options?: CollectorOptions,
 ): Collector;
 
