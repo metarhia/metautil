@@ -140,6 +140,7 @@ test('Collector: timeout rejects when defaults are not enough', async () => {
 
   keepEventLoopAlive(100);
   await assert.rejects(async () => dc, {
+    name: 'TimeoutError',
     message: 'The operation was aborted due to timeout',
   });
 });
