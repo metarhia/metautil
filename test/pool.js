@@ -1,10 +1,10 @@
 'use strict';
 
 const test = require('node:test');
-const assert = require('node:assert');
+const assert = require('node:assert/strict');
 const metautil = require('..');
 
-test('Pool: add/next', async () => {
+test('Pool: add + next', () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -14,94 +14,77 @@ test('Pool: add/next', async () => {
   const obj3 = { a: 3 };
   pool.add(obj3);
 
-  assert.strictEqual(await pool.next(), obj1);
-  assert.strictEqual(await pool.next(), obj2);
-  assert.strictEqual(await pool.next(), obj3);
-  assert.strictEqual(await pool.next(), obj1);
+  assert.strictEqual(pool.next(), obj1);
+  assert.strictEqual(pool.next(), obj2);
+  assert.strictEqual(pool.next(), obj3);
+  assert.strictEqual(pool.next(), obj1);
 });
 
-test('Pool: empty', async () => {
+test('Pool: empty', () => {
   const pool = new metautil.Pool();
-  assert.strictEqual(await pool.next(), null);
+  assert.strictEqual(pool.next(), null);
 });
 
-test('Pool: capture/next', async () => {
+test('Pool: capture + release', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
   pool.add(obj1);
   const obj2 = { a: 2 };
   pool.add(obj2);
-  const obj3 = { a: 3 };
-  pool.add(obj3);
 
   assert.strictEqual(pool.isFree(obj1), true);
   assert.strictEqual(pool.isFree(obj2), true);
-  assert.strictEqual(pool.isFree(obj3), true);
 
-  const item = await pool.capture();
-  assert.strictEqual(item, obj1);
-  assert.strictEqual(pool.isFree(item), false);
-  assert.strictEqual(await pool.next(), obj2);
-  assert.strictEqual(await pool.next(), obj3);
-  assert.strictEqual(await pool.next(), obj2);
+  const lease = await pool.capture();
+  assert.strictEqual(lease.resource, obj1);
+  assert.strictEqual(pool.isFree(obj1), false);
+  assert.strictEqual(pool.next(), obj2);
 
-  pool.release(item);
-  assert.strictEqual(pool.isFree(item), true);
-  try {
-    pool.release(item);
-  } catch (err) {
-    assert.strictEqual(err.message, 'Pool: release not captured');
-  }
-  assert.strictEqual(await pool.next(), obj3);
-  assert.strictEqual(await pool.next(), obj1);
+  pool.release(lease);
+  assert.strictEqual(pool.isFree(obj1), true);
+
+  const lease2 = await pool.capture();
+  assert.strictEqual(lease2.resource, obj1);
+  lease2.release();
+  assert.strictEqual(pool.isFree(obj1), true);
 });
 
-test('Pool: capture/release', async () => {
+test('Pool: double release error', async () => {
   const pool = new metautil.Pool();
+  pool.add({ a: 1 });
 
-  const obj1 = { a: 1 };
-  pool.add(obj1);
-  const obj2 = { a: 2 };
-  pool.add(obj2);
-  const obj3 = { a: 3 };
-  pool.add(obj3);
+  const lease = await pool.capture();
+  pool.release(lease);
 
-  const item1 = await pool.capture();
-  assert.strictEqual(item1, obj1);
-  const item2 = await pool.capture();
-  assert.strictEqual(item2, obj2);
-  const item3 = await pool.capture();
-  assert.strictEqual(item3, obj3);
-
-  pool.release(obj3);
-  const item4 = await pool.capture();
-  assert.strictEqual(item4, obj3);
+  assert.throws(() => pool.release(lease), {
+    message: 'Pool: release already released',
+  });
+  assert.throws(() => lease.release(), {
+    message: 'Pool: release already released',
+  });
 });
 
-test('Pool: wait for release', async () => {
+test('Pool: release unexpected lease error', () => {
   const pool = new metautil.Pool();
+  pool.add({ a: 1 });
 
-  const obj1 = { a: 1 };
-  pool.add(obj1);
-  const obj2 = { a: 2 };
-  pool.add(obj2);
-
-  const item1 = await pool.capture();
-  const item2 = await pool.capture();
-
-  pool.capture().then((item3) => {
-    assert.strictEqual(item3, obj2);
+  assert.throws(() => pool.release({}), {
+    message: 'Pool: release unexpected lease',
   });
-  pool.capture().then((item4) => {
-    assert.strictEqual(item4, obj1);
-  });
-
-  pool.release(item2);
-  pool.release(item1);
 });
 
-test('Pool: wait timeout', async () => {
+test('Pool: duplicate add error', () => {
+  const pool = new metautil.Pool();
+  const resource = { a: 1 };
+
+  pool.add(resource);
+  assert.throws(() => pool.add(resource), {
+    message: 'Pool: add duplicates',
+  });
+});
+
+test('Pool: waiting capture resolved after release', async () => {
   const pool = new metautil.Pool();
 
   const obj1 = { a: 1 };
@@ -109,74 +92,43 @@ test('Pool: wait timeout', async () => {
   const obj2 = { a: 2 };
   pool.add(obj2);
 
-  const item1 = await pool.capture();
-  assert.strictEqual(item1, obj1);
-  const item2 = await pool.capture();
-  assert.strictEqual(item2, obj2);
+  const lease1 = await pool.capture();
+  const lease2 = await pool.capture();
 
-  pool.capture().then((item3) => {
-    assert.strictEqual(item3, obj2);
-  });
-  pool.capture().catch((err) => {
-    assert.strictEqual(err.message, 'Pool next item timeout');
-  });
+  const pending = pool.capture();
+  pool.release(lease1);
 
-  pool.release(obj2);
+  const lease3 = await pending;
+  assert.strictEqual(lease3.resource, obj1);
+  assert.strictEqual(pool.isFree(obj1), false);
+
+  pool.release(lease2);
+  pool.release(lease3);
 });
 
-test('Pool: sync capture timeout', () => {
-  const pool = new metautil.Pool();
+test('Pool: timeout removes correct waiting item', async (t) => {
+  t.mock.timers.enable(['setTimeout']);
 
-  const obj1 = { a: 1 };
-  pool.add(obj1);
-  const obj2 = { a: 2 };
-  pool.add(obj2);
+  const pool = new metautil.Pool({ timeout: 100 });
 
-  const p1 = pool.capture();
-  const p2 = pool.capture();
-  const p3 = pool.capture();
+  const resource = { a: 1 };
+  pool.add(resource);
 
-  p1.then((item1) => {
-    assert.strictEqual(item1, obj1);
-  });
+  const held = await pool.capture();
 
-  p2.then((item2) => {
-    assert.strictEqual(item2, obj2);
-  });
+  const expired = pool.capture().catch((error) => error);
+  t.mock.timers.tick(50);
+  const pending = pool.capture();
 
-  p3.catch((err) => {
-    assert.strictEqual(err.message, 'Pool next item timeout');
-  });
-});
+  t.mock.timers.tick(50);
 
-test('Pool: prevent infinite loop', async () => {
-  const pool = new metautil.Pool();
+  const error = await expired;
+  assert.strictEqual(error.message, 'Pool next item timeout');
 
-  const obj1 = { a: 1 };
-  pool.add(obj1);
-  const obj2 = { a: 2 };
-  pool.add(obj2);
+  pool.release(held);
 
-  await pool.next();
-  const item1 = await pool.capture();
-  assert.strictEqual(item1, obj2);
-  await pool.next();
-  const item2 = await pool.capture();
-  assert.strictEqual(item2, obj1);
-});
+  const lease = await pending;
+  assert.strictEqual(lease.resource, resource);
 
-test('Pool: release to queue', async () => {
-  const pool = new metautil.Pool();
-
-  const obj = { a: 1 };
-  pool.add(obj);
-
-  const item = await pool.capture();
-  pool.capture().then((item) => {
-    assert(pool.available === 0);
-    assert(!pool.isFree(item));
-    assert.strictEqual(item, obj);
-  });
-
-  pool.release(item);
+  t.mock.timers.reset();
 });
