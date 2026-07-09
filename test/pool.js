@@ -107,7 +107,7 @@ test('Pool: waiting capture resolved after release', async () => {
 });
 
 test('Pool: timeout removes correct waiting item', async (t) => {
-  t.mock.timers.enable({ apis: ['setTimeout'] });
+  t.mock.timers.enable(['setTimeout']);
 
   const pool = new metautil.Pool({ timeout: 100 });
 
