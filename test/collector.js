@@ -131,6 +131,7 @@ test('Collector: timeout rejects when defaults are not enough', async () => {
   const dc = collect(['key1', 'key2'], { defaults: { key1: 1 }, timeout: 50 });
 
   await assert.rejects(async () => dc, {
+    name: 'TimeoutError',
     message: 'The operation was aborted due to timeout',
   });
 });
