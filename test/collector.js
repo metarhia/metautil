@@ -4,6 +4,13 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { collect } = require('..');
 
+// AbortSignal.timeout() uses an internal timer that is never ref'd, so on
+// Node.js versions before 24 it does not by itself keep the event loop (and
+// thus the test) alive long enough to fire. Tests that rely solely on
+// Collector's `timeout` option, with no other pending work, need a harmless
+// ref'd timer to keep the process alive until the abort fires.
+const keepEventLoopAlive = (ms) => setTimeout(() => {}, ms);
+
 test('Collector: create collector', () => {
   const dc = collect(['key1', 'key2']);
 
@@ -124,12 +131,14 @@ test('Collector: timeout applies defaults', async () => {
   const defaults = { key1: 1 };
   const dc = collect(['key1'], { defaults, timeout: 50 });
 
+  keepEventLoopAlive(100);
   assert.deepStrictEqual(await dc, defaults);
 });
 
 test('Collector: timeout rejects when defaults are not enough', async () => {
   const dc = collect(['key1', 'key2'], { defaults: { key1: 1 }, timeout: 50 });
 
+  keepEventLoopAlive(100);
   await assert.rejects(async () => dc, {
     message: 'The operation was aborted due to timeout',
   });
