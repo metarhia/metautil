@@ -331,3 +331,48 @@ export class Emitter {
   listenerCount(eventName: EventName): number;
   eventNames(): EventName[];
 }
+
+// Submodule: struct
+
+type FieldType =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'undefined'
+  | 'function'
+  | 'symbol'
+  | 'bigint'
+  | 'object'
+  | 'array'
+  | 'null';
+
+export type StructSchema<T extends Dictionary> = {
+  readonly [K in keyof T]: FieldType;
+};
+
+export interface StructInstance<T extends Dictionary> {
+  update(updates: Partial<T>): this;
+  fork(updates?: Partial<T>): this;
+  branch(updates?: Partial<T>): this;
+  toObject(): T;
+}
+
+export type StructRecord<T extends Dictionary> = T & StructInstance<T>;
+
+export interface StructClass<T extends Dictionary> {
+  new (data?: Partial<T>): StructRecord<T>;
+  readonly fields: Array<keyof T>;
+  readonly schema: StructSchema<T>;
+  readonly mutable: boolean;
+  create(data?: Partial<T>): StructRecord<T>;
+}
+
+type StructFactory = <T extends Dictionary>(
+  className: string,
+  defaults: T,
+) => StructClass<T>;
+
+export class Struct {
+  static immutable: StructFactory;
+  static mutable: StructFactory;
+}
