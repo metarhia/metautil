@@ -521,13 +521,13 @@ type FieldType =
   | 'string'
   | 'number'
   | 'boolean'
-  | 'undefined'
   | 'function'
   | 'symbol'
   | 'bigint'
   | 'object'
   | 'array'
-  | 'null';
+  | 'unknown'
+  | 'ref';
 
 export type StructSchema<T extends Dictionary> = {
   readonly [K in keyof T]: FieldType;

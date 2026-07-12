@@ -284,6 +284,45 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 - `firstKey(obj: Dictionary): string | undefined`
 - `isInstanceOf(obj: unknown, constrName: string): boolean`
 
+## Class `Struct`
+
+Typed records with schema inferred from literal defaults.
+
+- `Struct.immutable(className: string, defaults: object): StructClass`
+- `Struct.mutable(className: string, defaults: object): StructClass`
+
+Default literals define field types:
+
+- `undefined` → schema `unknown`, accepts any value, defaults to `undefined`
+- `null` → schema `ref`, accepts null, objects, and functions, defaults to `null`
+- `[]` → schema `array`, accepts arrays, fresh copy per instance
+- `{}` → schema `object`, accepts plain objects, fresh copy per instance
+- primitive → schema `typeof`, accepts exact primitive type, literal default value
+
+Generated class:
+
+- `constructor(data?: object)`
+- `static create(data?: object): StructRecord`
+- `static fields: Array<string>`
+- `static schema: object`
+- `static mutable: boolean`
+- `update(updates: object): this` (mutable only)
+- `fork(updates?: object): StructRecord`
+- `branch(updates?: object): StructRecord`
+- `toObject(): object`
+
+```js
+const City = metautil.Struct.immutable('City', { name: 'Unknown' });
+const rome = new City({ name: 'Rome' });
+
+const User = metautil.Struct.mutable('User', {
+  id: 0,
+  name: 'Anonymous',
+  roles: [],
+});
+const marcus = User.create({ id: 1, name: 'Marcus' });
+```
+
 ## Class Pool
 
 - `constructor(options: PoolOptions)`
