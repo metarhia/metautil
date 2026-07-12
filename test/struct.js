@@ -77,10 +77,10 @@ test('Struct: wrong field type throws TypeError', () => {
   );
 });
 
-test('Struct: array and null are distinguished from object', () => {
+test('Struct: array, ref, and object are distinguished', () => {
   const Data = Struct.mutable('Data', { tags: [], meta: null, info: {} });
   assert.strictEqual(Data.schema.tags, 'array');
-  assert.strictEqual(Data.schema.meta, 'null');
+  assert.strictEqual(Data.schema.meta, 'ref');
   assert.strictEqual(Data.schema.info, 'object');
   assert.throws(
     () => new Data({ tags: {} }),
@@ -230,4 +230,91 @@ test('Struct: toObject returns a plain independent copy', () => {
   assert.strictEqual(obj.constructor, Object);
   obj.name = 'Changed';
   assert.strictEqual(marcus.name, 'Marcus');
+});
+
+test('Struct: literal defaults infer schema names', () => {
+  const Example = Struct.immutable('Example', {
+    value: undefined,
+    parent: null,
+    items: [],
+    metadata: {},
+    name: '',
+    count: 0,
+    enabled: false,
+  });
+  assert.deepStrictEqual(
+    { ...Example.schema },
+    {
+      value: 'unknown',
+      parent: 'ref',
+      items: 'array',
+      metadata: 'object',
+      name: 'string',
+      count: 'number',
+      enabled: 'boolean',
+    },
+  );
+});
+
+test('Struct: undefined default accepts any value', () => {
+  const Box = Struct.immutable('Box', { value: undefined });
+  const empty = new Box();
+  assert.strictEqual(empty.value, undefined);
+  const nested = { nested: [1, null, true] };
+  const boxed = new Box({ value: nested });
+  assert.strictEqual(boxed.value, nested);
+});
+
+test('Struct: null default accepts refs and defaults to null', () => {
+  const Link = Struct.immutable('Link', {
+    head: undefined,
+    tail: null,
+  });
+  const fn = () => {};
+  const list = new Link({
+    head: 1,
+    tail: new Link({
+      head: 2,
+      tail: null,
+    }),
+  });
+  const empty = new Link();
+  assert.strictEqual(empty.tail, null);
+  assert.strictEqual(list.head, 1);
+  assert.strictEqual(list.tail.head, 2);
+  assert.strictEqual(list.tail.tail, null);
+  assert.doesNotThrow(() => new Link({ head: 0, tail: fn }));
+  assert.throws(
+    () => new Link({ head: 0, tail: 1 }),
+    new TypeError('Invalid type for "tail": expected ref, got number'),
+  );
+});
+
+test('Struct: array and object defaults are fresh per instance', () => {
+  const Node = Struct.immutable('Node', { items: [], metadata: {} });
+  const a = new Node();
+  const b = new Node();
+  assert.notStrictEqual(a.items, b.items);
+  assert.notStrictEqual(a.metadata, b.metadata);
+  assert.deepStrictEqual(a.items, []);
+  assert.deepStrictEqual(a.metadata, {});
+});
+
+test('Struct: array and object defaults validate their types', () => {
+  const TreeNode = Struct.immutable('TreeNode', {
+    children: [],
+    metadata: {},
+  });
+  assert.throws(
+    () => new TreeNode({ children: {} }),
+    new TypeError('Invalid type for "children": expected array, got object'),
+  );
+  assert.throws(
+    () => new TreeNode({ metadata: [] }),
+    new TypeError('Invalid type for "metadata": expected object, got array'),
+  );
+  assert.throws(
+    () => new TreeNode({ metadata: null }),
+    new TypeError('Invalid type for "metadata": expected object, got ref'),
+  );
 });
