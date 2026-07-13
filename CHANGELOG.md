@@ -7,9 +7,13 @@
   sharing; multiple branches share common tails at zero copy cost
 - Added `List` class: doubly-linked-list-backed sequence with a full
   API covering CRUD, slicing, rearranging, functional, and stats methods
-- Added `Deque` class: double-ended queue backed by a doubly-linked list
-- Added `Queue` class: FIFO queue backed by a doubly-linked list
-- Added `Stack` class: LIFO stack backed by a native array
+- Added `Deque` class: double-ended queue backed by a circular buffer
+  with O(1) ops at both ends and O(1) index access; shared engine for
+  `Stack` and `Queue`
+- Added `Queue` class: FIFO facade over `Deque` (`enqueue` / `dequeue` /
+  `peek` at the front)
+- Added `Stack` class: LIFO facade over `Deque` (`push` / `pop` / `peek`
+  at the back)
 - Added `Sequence<T>` and `Indexable<T>` TypeScript interfaces for
   shared structural contracts across data structure classes
 

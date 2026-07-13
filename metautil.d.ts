@@ -260,6 +260,8 @@ export interface Sequence<T> extends Iterable<T> {
   first(): T | undefined;
   last(): T | undefined;
   includes(value: T): boolean;
+  isEmpty(): boolean;
+  clear(): void;
   toArray(): Array<T>;
   [Symbol.asyncIterator](): AsyncIterator<T>;
 }
@@ -369,25 +371,6 @@ export class PersistentList<T> {
   [Symbol.iterator](): Iterator<T>;
 }
 
-export class Stack<T> implements Sequence<T> {
-  readonly size: number;
-  constructor();
-  static fromArray<T>(values: Array<T>): Stack<T>;
-  static fromIterable<T>(iterable: Iterable<T>): Stack<T>;
-  push(value: T): void;
-  pop(): T | undefined;
-  peek(): T | undefined;
-  first(): T | undefined;
-  last(): T | undefined;
-  isEmpty(): boolean;
-  includes(value: T): boolean;
-  clear(): void;
-  toArray(): Array<T>;
-  clone(): Stack<T>;
-  [Symbol.iterator](): Iterator<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
-}
-
 export class Deque<T> implements Sequence<T>, Indexable<T> {
   readonly size: number;
   constructor();
@@ -429,6 +412,25 @@ export class Queue<T> implements Sequence<T> {
   clear(): void;
   toArray(): Array<T>;
   clone(): Queue<T>;
+  [Symbol.iterator](): Iterator<T>;
+  [Symbol.asyncIterator](): AsyncIterator<T>;
+}
+
+export class Stack<T> implements Sequence<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): Stack<T>;
+  static fromIterable<T>(iterable: Iterable<T>): Stack<T>;
+  push(value: T): void;
+  pop(): T | undefined;
+  peek(): T | undefined;
+  first(): T | undefined;
+  last(): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  clone(): Stack<T>;
   [Symbol.iterator](): Iterator<T>;
   [Symbol.asyncIterator](): AsyncIterator<T>;
 }

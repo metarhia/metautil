@@ -361,15 +361,16 @@ every class has `static fromArray`, `static fromIterable`, `toArray`,
 and `[Symbol.iterator]`, making any structure convertible to any other
 via `Array` as the universal interchange format. The shared TypeScript
 interfaces `Sequence<T>` and `Indexable<T>` (in `metautil.d.ts`) describe
-structural contracts at the type level.
+structural contracts at the type level. `Stack` and `Queue` are thin
+ADT facades over `Deque` (same circular buffer; flavored method names).
 
-| Class            | ADT            | Backed by    | Push/Pop | Index access |
-| ---------------- | -------------- | ------------ | -------- | ------------ |
-| `Stack`          | LIFO           | `Array`      | O(1)     | O(1)         |
-| `Queue`          | FIFO           | `LinkedList` | O(1)     | —            |
-| `Deque`          | double-ended   | `LinkedList` | O(1)     | O(n)         |
-| `List`           | sequence       | `LinkedList` | O(1)     | O(n)         |
-| `PersistentList` | immutable cons | shared nodes | O(1)     | O(n)         |
+| Class            | ADT            | Backed by         | Ends | Index |
+| ---------------- | -------------- | ----------------- | ---- | ----- |
+| `Deque`          | double-ended   | circular buffer   | O(1) | O(1)  |
+| `Queue`          | FIFO           | `Deque`           | O(1) | —     |
+| `Stack`          | LIFO           | `Deque`           | O(1) | —     |
+| `List`           | sequence       | doubly-linked     | O(1) | O(n)  |
+| `PersistentList` | immutable cons | shared cons nodes | O(1) | O(n)  |
 
 ```js
 // Any structure can feed any other via iterables
@@ -559,8 +560,10 @@ console.log(playlist.find((track) => track.startsWith('ch'))); // 'chorus'
 
 ## Class `Deque`
 
-Double-ended queue backed by a growable circular buffer. Supports O(1)
-push and pop at both ends and O(1) index-based access.
+Double-ended queue backed by a growable circular buffer — the shared
+engine for `Stack` and `Queue`. Supports O(1) ops at both ends and O(1)
+index-based access. Method names stay end-oriented (`prepend` / `append`
+/ `dequeue` / `pop`).
 
 - `constructor()`
 - `static fromArray<T>(values: Array<T>): Deque<T>`
@@ -619,15 +622,16 @@ console.log(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3));
 
 ## Class `Queue`
 
-FIFO (first in, first out) queue backed by a growable circular buffer
-with O(1) enqueue and dequeue.
+FIFO (first in, first out) facade over `Deque`: `enqueue` appends at the
+back, `dequeue` / `peek` operate at the front. Same circular buffer and
+O(1) costs as `Deque`.
 
 - `constructor()`
 - `static fromArray<T>(values: Array<T>): Queue<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): Queue<T>`
-- `enqueue(value: T): void`
-- `dequeue(): T | undefined`
-- `peek(): T | undefined`
+- `enqueue(value: T): void` — appends at the back
+- `dequeue(): T | undefined` — removes and returns the front
+- `peek(): T | undefined` — front element (`first`), does not remove
 - `first(): T | undefined`
 - `last(): T | undefined`
 - `isEmpty(): boolean`
@@ -673,16 +677,17 @@ console.log(order); // [1, 2, 3, 4]
 
 ## Class `Stack`
 
-LIFO (last in, first out) stack backed by a native array.
+LIFO (last in, first out) facade over `Deque`: `push` / `pop` / `peek`
+operate at the back. Same circular buffer and O(1) end costs as `Deque`.
 
 - `constructor()`
 - `static fromArray<T>(values: Array<T>): Stack<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): Stack<T>`
-- `push(value: T): void`
-- `pop(): T | undefined`
-- `peek(): T | undefined`
-- `first(): T | undefined`
-- `last(): T | undefined`
+- `push(value: T): void` — appends at the back
+- `pop(): T | undefined` — removes and returns the back
+- `peek(): T | undefined` — back element (`last`), does not remove
+- `first(): T | undefined` — bottom (oldest)
+- `last(): T | undefined` — top (same as `peek`)
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
 - `clear(): void`
