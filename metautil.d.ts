@@ -353,20 +353,20 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   [Symbol.asyncIterator](): AsyncIterator<T>;
 }
 
-export class PersistentList<T> {
+export class ConsList<T> {
   readonly value: T | undefined;
-  readonly next: PersistentList<T> | null;
+  readonly next: ConsList<T> | null;
   readonly size: number;
   isEmpty(): boolean;
 
-  static readonly empty: PersistentList<any>;
-  static of<T>(...values: Array<T>): PersistentList<T>;
-  static fromArray<T>(values: Array<T>): PersistentList<T>;
-  static fromIterable<T>(iterable: Iterable<T>): PersistentList<T>;
+  static readonly empty: ConsList<any>;
+  static of<T>(...values: Array<T>): ConsList<T>;
+  static fromArray<T>(values: Array<T>): ConsList<T>;
+  static fromIterable<T>(iterable: Iterable<T>): ConsList<T>;
 
-  prepend(value: T): PersistentList<T>;
+  prepend(value: T): ConsList<T>;
   first(): T | undefined;
-  rest(): PersistentList<T>;
+  rest(): ConsList<T>;
   toArray(): Array<T>;
   [Symbol.iterator](): Iterator<T>;
 }

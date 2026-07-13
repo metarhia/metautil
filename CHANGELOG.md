@@ -3,7 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Added `Result` class: a container holding either a value or an error
-- Added `PersistentList` class: immutable cons-list with structural
+- Added `ConsList` class: immutable cons-list with structural
   sharing; multiple branches share common tails at zero copy cost
 - Added `List` class: doubly-linked-list-backed sequence with a full
   API covering CRUD, slicing, rearranging, functional, and stats methods

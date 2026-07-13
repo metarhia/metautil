@@ -371,38 +371,39 @@ ADT facades over `Deque` (same circular buffer; flavored method names).
 | `Stack`          | LIFO           | `Deque`           | O(1) | —     |
 | `List`           | sequence       | doubly-linked     | O(1) | O(n)  |
 | `PersistentList` | immutable cons | shared cons nodes | O(1) | O(n)  |
+| `ConsList`       | immutable cons | shared nodes      | O(1) | O(n)  |
 
 ```js
 // Any structure can feed any other via iterables
 const list = List.range(1, 5);
 const queue = Queue.fromIterable(list.filter((n) => n % 2 === 0));
 const deque = Deque.fromIterable(queue);
-const persistent = PersistentList.fromArray(deque.toArray());
+const cons = ConsList.fromArray(deque.toArray());
 ```
 
-## Class `PersistentList`
+## Class `ConsList`
 
 An immutable singly-linked cons-list with structural sharing. Every
-`prepend` returns a new `PersistentList` that shares its tail with the
+`prepend` returns a new `ConsList` that shares its tail with the
 original — enabling multiple independent branches from a common suffix
 at zero copy cost (inspired by LISP cons cells).
 
-- `static empty: PersistentList<T>` — canonical empty singleton
-- `static of<T>(...values: Array<T>): PersistentList<T>`
-- `static fromArray<T>(values: Array<T>): PersistentList<T>`
-- `static fromIterable<T>(iterable: Iterable<T>): PersistentList<T>`
-- `prepend(value: T): PersistentList<T>` — O(1), returns new head sharing old tail
+- `static empty: ConsList<T>` — canonical empty singleton
+- `static of<T>(...values: Array<T>): ConsList<T>`
+- `static fromArray<T>(values: Array<T>): ConsList<T>`
+- `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
+- `prepend(value: T): ConsList<T>` — O(1), returns new head sharing old tail
 - `first(): T | undefined` — head value
-- `rest(): PersistentList<T>` — tail (O(1), no copy)
+- `rest(): ConsList<T>` — tail (O(1), no copy)
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): Iterator<T>`
 - `value: T | undefined`
-- `next: PersistentList<T> | null`
+- `next: ConsList<T> | null`
 - `size: number`
 - `isEmpty(): boolean`
 
 ```js
-const shared = PersistentList.of(3, 4, 5);
+const shared = ConsList.of(3, 4, 5);
 
 const branch1 = shared.prepend(2).prepend(1); // [1, 2, 3, 4, 5]
 const branch2 = shared.prepend(99); // [99, 3, 4, 5]
@@ -415,7 +416,7 @@ console.log(branch2.next === shared); // true
 **Use case: undo history with branching (time-travel state)**
 
 ```js
-let history = PersistentList.of('draft v1');
+let history = ConsList.of('draft v1');
 history = history.prepend('draft v2');
 history = history.prepend('draft v3');
 console.log(history.first()); // 'draft v3'

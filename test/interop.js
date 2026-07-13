@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const metautil = require('..');
 
-const { Stack, Queue, Deque, List, PersistentList } = metautil;
+const { Stack, Queue, Deque, List, ConsList } = metautil;
 
 // --- Array as universal interchange format ---
 
@@ -35,17 +35,17 @@ test('Interop: List → Array → Stack', () => {
   assert.strictEqual(stack.pop(), 4);
 });
 
-test('Interop: PersistentList → Array → List', () => {
-  const persistent = PersistentList.of(3, 1, 4, 1, 5);
-  const list = List.fromArray(persistent.toArray());
+test('Interop: ConsList → Array → List', () => {
+  const cons = ConsList.of(3, 1, 4, 1, 5);
+  const list = List.fromArray(cons.toArray());
   list.sort();
   assert.deepStrictEqual(list.toArray(), [1, 1, 3, 4, 5]);
 });
 
-test('Interop: List → Array → PersistentList', () => {
+test('Interop: List → Array → ConsList', () => {
   const list = List.fromArray([1, 2, 3]);
-  const persistent = PersistentList.fromArray(list.toArray());
-  assert.deepStrictEqual(persistent.toArray(), [1, 2, 3]);
+  const cons = ConsList.fromArray(list.toArray());
+  assert.deepStrictEqual(cons.toArray(), [1, 2, 3]);
 });
 
 // --- Using iterables across structures ---
@@ -64,9 +64,9 @@ test('Interop: Queue.fromIterable(Deque)', () => {
   assert.strictEqual(queue.dequeue(), 100);
 });
 
-test('Interop: Deque.fromIterable(PersistentList)', () => {
-  const persistent = PersistentList.of(1, 2, 3, 4);
-  const deque = Deque.fromIterable(persistent);
+test('Interop: Deque.fromIterable(ConsList)', () => {
+  const cons = ConsList.of(1, 2, 3, 4);
+  const deque = Deque.fromIterable(cons);
   deque.rotateLeft(1);
   assert.deepStrictEqual(deque.toArray(), [2, 3, 4, 1]);
 });
@@ -83,10 +83,10 @@ test('Interop: List.fromIterable(Queue)', () => {
   assert.strictEqual(list.sum(), 60);
 });
 
-test('Interop: PersistentList.fromIterable(List)', () => {
+test('Interop: ConsList.fromIterable(List)', () => {
   const list = List.fromArray([5, 6, 7]);
-  const persistent = PersistentList.fromIterable(list);
-  assert.deepStrictEqual(persistent.toArray(), [5, 6, 7]);
+  const cons = ConsList.fromIterable(list);
+  assert.deepStrictEqual(cons.toArray(), [5, 6, 7]);
 });
 
 // --- Cross-structure functional pipeline ---
@@ -108,9 +108,9 @@ test('Interop: merge multiple structures via List.merge', () => {
   assert.deepStrictEqual(merged.toArray(), [1, 2, 3, 4, 5, 6]);
 });
 
-test('Interop: Deque.range consumed by PersistentList', () => {
+test('Interop: Deque.range consumed by ConsList', () => {
   const deque = Deque.range(1, 4);
-  const persistent = PersistentList.fromIterable(deque);
-  assert.strictEqual(persistent.size, 4);
-  assert.strictEqual(persistent.value, 1);
+  const cons = ConsList.fromIterable(deque);
+  assert.strictEqual(cons.size, 4);
+  assert.strictEqual(cons.value, 1);
 });
