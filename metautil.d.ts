@@ -255,7 +255,7 @@ export function sizeToBytes(size: string): number;
 
 // Submodule: list
 
-export interface Sequence<T> extends Iterable<T> {
+export interface Sequence<T> extends Iterable<T>, AsyncIterable<T> {
   readonly size: number;
   first(): T | undefined;
   last(): T | undefined;
@@ -263,7 +263,8 @@ export interface Sequence<T> extends Iterable<T> {
   isEmpty(): boolean;
   clear(): void;
   toArray(): Array<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export interface Indexable<T> {
@@ -325,15 +326,15 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   toSorted(compare?: (a: T, b: T) => number): List<T>;
 
   map<U>(fn: (value: T, index: number) => U): List<U>;
-  lazyMap<U>(fn: (value: T, index: number) => U): Iterator<U>;
+  lazyMap<U>(fn: (value: T, index: number) => U): IterableIterator<U>;
   flatMap<U>(fn: (value: T) => Iterable<U>): List<U>;
   filter(fn: (value: T, index: number) => boolean): List<T>;
-  lazyFilter(fn: (value: T, index: number) => boolean): Iterator<T>;
+  lazyFilter(fn: (value: T, index: number) => boolean): IterableIterator<T>;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
   lazyReduce<U>(
     fn: (acc: U, value: T, index: number) => U,
     initial: U,
-  ): Iterator<U>;
+  ): IterableIterator<U>;
   some(fn: (value: T, index: number) => boolean): boolean;
   every(fn: (value: T, index: number) => boolean): boolean;
   find(fn: (value: T, index: number) => boolean): T | undefined;
@@ -349,8 +350,8 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   toArray(): Array<T>;
   join(separator?: string): string;
   clone(): List<T>;
-  [Symbol.iterator](): Iterator<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export class ConsList<T> {
@@ -393,8 +394,8 @@ export class Deque<T> implements Sequence<T>, Indexable<T> {
   clear(): void;
   toArray(): Array<T>;
   clone(): Deque<T>;
-  [Symbol.iterator](): Iterator<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export class Queue<T> implements Sequence<T> {
@@ -412,8 +413,8 @@ export class Queue<T> implements Sequence<T> {
   clear(): void;
   toArray(): Array<T>;
   clone(): Queue<T>;
-  [Symbol.iterator](): Iterator<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export class Stack<T> implements Sequence<T> {
@@ -431,8 +432,8 @@ export class Stack<T> implements Sequence<T> {
   clear(): void;
   toArray(): Array<T>;
   clone(): Stack<T>;
-  [Symbol.iterator](): Iterator<T>;
-  [Symbol.asyncIterator](): AsyncIterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 // Submodule: collector
