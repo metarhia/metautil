@@ -363,22 +363,22 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   [Symbol.asyncIterator](): AsyncIterator<T>;
 }
 
-export class ConsList<T> {
+export class ConsList<T> implements Iterable<T> {
   readonly value: T | undefined;
   readonly next: ConsList<T> | null;
   readonly size: number;
-  isEmpty(): boolean;
 
   static readonly empty: ConsList<any>;
   static of<T>(...values: Array<T>): ConsList<T>;
   static fromArray<T>(values: Array<T>): ConsList<T>;
   static fromIterable<T>(iterable: Iterable<T>): ConsList<T>;
 
-  prepend(value: T): ConsList<T>;
+  isEmpty(): boolean;
   first(): T | undefined;
   rest(): ConsList<T>;
+  prepend(value: T): ConsList<T>;
   toArray(): Array<T>;
-  [Symbol.iterator](): Iterator<T>;
+  [Symbol.iterator](): IterableIterator<T>;
 }
 
 export class Deque<T> implements Sequence<T>, Indexable<T> {

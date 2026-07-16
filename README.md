@@ -288,6 +288,8 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 ## Class `Cons`
 
 Immutable pair cell (linked-list node shape) with private fields.
+For a sized immutable list ADT with `prepend` / `rest` / iteration, see
+`ConsList`.
 
 - `constructor(value: unknown, next?: unknown)` — `next` defaults to `null`
 - `value: unknown` — read-only head
@@ -383,15 +385,17 @@ via `Array` as the universal interchange format. The shared TypeScript
 interfaces `Sequence<T>` and `Indexable<T>` (in `metautil.d.ts`) describe
 structural contracts at the type level. `Stack` and `Queue` are thin
 ADT facades over `Deque` (same circular buffer; flavored method names).
+`List` is a value-level facade over an internal doubly-linked list.
+`ConsList` is a separate immutable cons ADT (not the same as pair cell
+`Cons`).
 
-| Class            | ADT            | Backed by         | Ends | Index |
-| ---------------- | -------------- | ----------------- | ---- | ----- |
-| `Deque`          | double-ended   | circular buffer   | O(1) | O(1)  |
-| `Queue`          | FIFO           | `Deque`           | O(1) | —     |
-| `Stack`          | LIFO           | `Deque`           | O(1) | —     |
-| `List`           | sequence       | doubly-linked     | O(1) | O(n)  |
-| `PersistentList` | immutable cons | shared cons nodes | O(1) | O(n)  |
-| `ConsList`       | immutable cons | shared nodes      | O(1) | O(n)  |
+| Class      | ADT            | Backed by       | Ends | Index |
+| ---------- | -------------- | --------------- | ---- | ----- |
+| `Deque`    | double-ended   | circular buffer | O(1) | O(1)  |
+| `Queue`    | FIFO           | `Deque`         | O(1) | —     |
+| `Stack`    | LIFO           | `Deque`         | O(1) | —     |
+| `List`     | sequence       | doubly-linked   | O(1) | O(n)  |
+| `ConsList` | immutable cons | shared nodes    | O(1) | O(n)  |
 
 ```js
 // Any structure can feed any other via iterables
@@ -403,20 +407,21 @@ const cons = ConsList.fromArray(deque.toArray());
 
 ## Class `ConsList`
 
-An immutable singly-linked cons-list with structural sharing. Every
-`prepend` returns a new `ConsList` that shares its tail with the
-original — enabling multiple independent branches from a common suffix
-at zero copy cost (inspired by LISP cons cells).
+An immutable singly-linked cons-list with structural sharing (distinct
+from the `Cons` pair cell). Every `prepend` returns a new `ConsList`
+that shares its tail with the original — enabling multiple independent
+branches from a common suffix at zero copy cost (inspired by LISP cons
+cells).
 
-- `static empty: ConsList<T>` — canonical empty singleton
+- `static empty: ConsList<any>` — canonical empty singleton
 - `static of<T>(...values: Array<T>): ConsList<T>`
 - `static fromArray<T>(values: Array<T>): ConsList<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
 - `prepend(value: T): ConsList<T>` — O(1), returns new head sharing old tail
 - `first(): T | undefined` — head value
-- `rest(): ConsList<T>` — tail (O(1), no copy)
+- `rest(): ConsList<T>` — tail (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`
-- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>`
 - `value: T | undefined`
 - `next: ConsList<T> | null`
 - `size: number`
