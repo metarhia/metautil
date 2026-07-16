@@ -278,3 +278,28 @@ test('Object: isInstanceOf', () => {
   assert.strictEqual(metautil.isInstanceOf(regex, 'RegExp'), true);
   assert.strictEqual(metautil.isInstanceOf(regex, 'Object'), false);
 });
+
+test('Object: cons', () => {
+  const pair = metautil.cons(1, 2);
+  assert.strictEqual(pair instanceof metautil.Cons, true);
+  assert.strictEqual(pair.value, 1);
+  assert.strictEqual(pair.next, 2);
+  assert.strictEqual(metautil.Cons.value(pair), 1);
+  assert.strictEqual(metautil.Cons.next(pair), 2);
+
+  const nested = metautil.cons(1, metautil.cons(2, metautil.cons(3, null)));
+  assert.strictEqual(metautil.Cons.value(nested), 1);
+  assert.strictEqual(metautil.Cons.value(metautil.Cons.next(nested)), 2);
+  assert.strictEqual(
+    metautil.Cons.value(metautil.Cons.next(metautil.Cons.next(nested))),
+    3,
+  );
+  assert.strictEqual(
+    metautil.Cons.next(metautil.Cons.next(metautil.Cons.next(nested))),
+    null,
+  );
+
+  const alone = metautil.cons('a');
+  assert.strictEqual(metautil.Cons.value(alone), 'a');
+  assert.strictEqual(metautil.Cons.next(alone), null);
+});

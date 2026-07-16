@@ -283,6 +283,26 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 - `serializeArguments(fields: Strings, args: Dictionary): string`
 - `firstKey(obj: Dictionary): string | undefined`
 - `isInstanceOf(obj: unknown, constrName: string): boolean`
+- `cons(value: unknown, next?: unknown): Cons`
+
+## Class `Cons`
+
+Immutable pair cell (linked-list node shape) with private fields.
+
+- `constructor(value: unknown, next?: unknown)` — `next` defaults to `null`
+- `value: unknown` — read-only head
+- `next: unknown` — read-only tail (`null` or another `Cons`)
+- `static value(pair: Cons): unknown`
+- `static next(pair: Cons): unknown`
+
+```js
+const { cons, Cons } = metautil;
+
+const list = cons(1, cons(2, cons(3, null)));
+console.log(list.value); // 1
+console.log(Cons.next(list).value); // 2
+console.log(Cons.value(Cons.next(Cons.next(list)))); // 3
+```
 
 ## Class `Struct`
 
