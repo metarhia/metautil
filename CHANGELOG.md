@@ -3,6 +3,8 @@
 ## [Unreleased][unreleased]
 
 - Added `Result` class: a container holding either a value or an error
+- Added `Cons` / `cons`: immutable pair cell with private `#value` /
+  `#next`, instance getters, and static `Cons.value` / `Cons.next`
 - Added `ConsList` class: immutable cons-list with structural
   sharing; multiple branches share common tails at zero copy cost
 - Added `List` class: doubly-linked-list-backed sequence with a full

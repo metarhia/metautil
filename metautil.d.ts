@@ -156,6 +156,16 @@ export function serializeArguments(fields: Strings, args: Dictionary): string;
 export function firstKey(obj: Dictionary): string | undefined;
 export function isInstanceOf(obj: unknown, constrName: string): boolean;
 
+export class Cons {
+  readonly value: unknown;
+  readonly next: unknown;
+  constructor(value: unknown, next?: unknown);
+  static value(pair: Cons): unknown;
+  static next(pair: Cons): unknown;
+}
+
+export function cons(value: unknown, next?: unknown): Cons;
+
 // Submodule: pool
 
 export interface QueueElement {
