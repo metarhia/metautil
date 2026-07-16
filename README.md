@@ -396,7 +396,7 @@ at zero copy cost (inspired by LISP cons cells).
 - `first(): T | undefined` — head value
 - `rest(): ConsList<T>` — tail (O(1), no copy)
 - `toArray(): Array<T>`
-- `[Symbol.iterator](): Iterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>`
 - `value: T | undefined`
 - `next: ConsList<T> | null`
 - `size: number`
@@ -504,12 +504,12 @@ are O(n).
 **Functional**
 
 - `map<U>(fn: (value: T, index: number) => U): List<U>`
-- `lazyMap<U>(fn): Iterator<U>` — generator, does not materialize
+- `lazyMap<U>(fn): IterableIterator<U>` — lazy, does not materialize
 - `flatMap<U>(fn: (value: T) => Iterable<U>): List<U>`
 - `filter(fn: (value: T, index: number) => boolean): List<T>`
-- `lazyFilter(fn): Iterator<T>` — generator, does not materialize
+- `lazyFilter(fn): IterableIterator<T>` — lazy, does not materialize
 - `reduce<U>(fn, initial: U): U`
-- `lazyReduce<U>(fn, initial: U): Iterator<U>` — yields running accumulator (scan)
+- `lazyReduce<U>(fn, initial: U): IterableIterator<U>` — running accumulator (scan)
 - `some(fn): boolean`
 - `every(fn): boolean`
 - `find(fn): T | undefined`
@@ -529,8 +529,8 @@ are O(n).
 - `toArray(): Array<T>`
 - `join(separator?: string): string`
 - `clone(): List<T>`
-- `[Symbol.iterator](): Iterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterableIterator<T>`
 - `size: number`
 
 ```js
@@ -586,8 +586,8 @@ index-based access. Method names stay end-oriented (`prepend` / `append`
 - `clear(): void`
 - `toArray(): Array<T>`
 - `clone(): Deque<T>`
-- `[Symbol.iterator](): Iterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>`
+- `[Symbol.asyncIterator](): AsyncIterableIterator<T>`
 - `size: number`
 
 ```js
@@ -640,8 +640,8 @@ O(1) costs as `Deque`.
 - `clear(): void`
 - `toArray(): Array<T>`
 - `clone(): Queue<T>`
-- `[Symbol.iterator](): Iterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `Deque`
+- `[Symbol.asyncIterator](): AsyncIterableIterator<T>` — delegates to `Deque`
 - `size: number`
 
 ```js
@@ -694,8 +694,8 @@ operate at the back. Same circular buffer and O(1) end costs as `Deque`.
 - `clear(): void`
 - `toArray(): Array<T>`
 - `clone(): Stack<T>`
-- `[Symbol.iterator](): Iterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterator<T>`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `Deque`
+- `[Symbol.asyncIterator](): AsyncIterableIterator<T>` — delegates to `Deque`
 - `size: number`
 
 ```js
