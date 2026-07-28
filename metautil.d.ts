@@ -385,6 +385,7 @@ export class ConsList<T> implements Iterable<T> {
 }
 
 export function cons<T>(value: T, tail?: ConsList<T>): ConsList<T>;
+export function uncons<T>(list: ConsList<T>): Uncons<T>;
 
 export class Deque<T> implements Sequence<T>, Indexable<T> {
   readonly size: number;

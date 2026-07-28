@@ -488,6 +488,22 @@ console.log(list.value); // 1
 console.log(list.tail.value); // 2
 ```
 
+## Function `uncons`
+
+Inverse of `cons`: splits a `ConsList` into head and tail.
+
+- `uncons(list: ConsList<T>): Uncons<T>` — same as `list.uncons()`
+
+```js
+const { cons, uncons } = metautil;
+
+const list = cons(1, cons(2, cons(3)));
+const { value, tail } = uncons(list);
+console.log(value); // 1
+console.log(tail.toArray()); // [2, 3]
+console.log(cons(value, tail).toArray()); // [1, 2, 3]
+```
+
 ## Class `List`
 
 A doubly-linked-list-backed sequence with a comprehensive API. All
