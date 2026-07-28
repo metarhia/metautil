@@ -369,6 +369,7 @@ export class ConsList<T> implements Iterable<T> {
   uncons(): { value: T | undefined; tail: ConsList<T> };
   equals(other: ConsList<T>): boolean;
   includes(value: T): boolean;
+  reverse(): ConsList<T>;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
 }

@@ -399,6 +399,7 @@ at zero copy cost (inspired by LISP cons cells).
 - `equals(other: ConsList<T>): boolean` — structural equality (`===` on
   elements; non-`ConsList` → `false`; same reference short-circuits)
 - `includes(value: T): boolean` — O(n), `===` comparison
+- `reverse(): ConsList<T>` — O(n), returns a new reversed list
 - `value: T | undefined` — front element
 - `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`
