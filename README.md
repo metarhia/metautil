@@ -403,6 +403,10 @@ at zero copy cost (inspired by LISP cons cells).
   elements; non-`ConsList` → `false`; same reference short-circuits)
 - `includes(value: T): boolean` — O(n), `===` comparison
 - `reverse(): ConsList<T>` — O(n), returns a new reversed list
+- `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n)
+- `reduce(fn, acc?): T | U` — O(n), left fold; like `Array#reduce`
+  (`acc` optional / `undefined` → seed from head; empty + no seed →
+  `TypeError`)
 - `value: T | undefined` — front element
 - `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`
