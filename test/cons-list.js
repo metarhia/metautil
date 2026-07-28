@@ -156,6 +156,16 @@ test('ConsList: equals', () => {
   assert.strictEqual(a.equals([1, 2, 3]), false);
 });
 
+test('ConsList: includes', () => {
+  const list = ConsList.of(1, 2, 3);
+  assert.strictEqual(list.includes(1), true);
+  assert.strictEqual(list.includes(2), true);
+  assert.strictEqual(list.includes(3), true);
+  assert.strictEqual(list.includes(4), false);
+  assert.strictEqual(ConsList.empty.includes(1), false);
+  assert.strictEqual(ConsList.of(0).includes(0), true);
+});
+
 test('cons: builds ConsList', () => {
   const list = cons(1, cons(2, cons(3)));
   assert.strictEqual(list instanceof ConsList, true);
