@@ -177,6 +177,59 @@ test('ConsList: reverse', () => {
   assert.strictEqual(list.reverse().reverse().equals(list), true);
 });
 
+test('ConsList: map', () => {
+  const list = ConsList.of(1, 2, 3);
+  const mapped = list.map((v) => v * 2);
+  assert.deepStrictEqual(mapped.toArray(), [2, 4, 6]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
+  assert.deepStrictEqual(list.map((v, i) => `${i}:${v}`).toArray(), [
+    '0:1',
+    '1:2',
+    '2:3',
+  ]);
+  assert.strictEqual(
+    ConsList.empty.map((v) => v),
+    ConsList.empty,
+  );
+});
+
+test('ConsList: reduce', () => {
+  const list = ConsList.of(1, 2, 3, 4);
+  assert.strictEqual(
+    list.reduce((acc, v) => acc + v, 0),
+    10,
+  );
+  assert.strictEqual(
+    list.reduce((acc, v) => acc + v),
+    10,
+  );
+  assert.deepStrictEqual(
+    list.reduce((acc, v, i) => {
+      acc.push(`${i}:${v}`);
+      return acc;
+    }, []),
+    ['0:1', '1:2', '2:3', '3:4'],
+  );
+  const indices = [];
+  list.reduce((acc, v, i) => {
+    indices.push(i);
+    return acc + v;
+  });
+  assert.deepStrictEqual(indices, [1, 2, 3]);
+  assert.strictEqual(
+    ConsList.empty.reduce((acc, v) => acc + v, 42),
+    42,
+  );
+  assert.strictEqual(
+    ConsList.of(7).reduce((acc, v) => acc + v),
+    7,
+  );
+  assert.throws(
+    () => ConsList.empty.reduce((acc, v) => acc + v),
+    /ConsList is empty/,
+  );
+});
+
 test('ConsList: merge', () => {
   const a = ConsList.of(1, 2);
   const b = ConsList.of(3, 4);
