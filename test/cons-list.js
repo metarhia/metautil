@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const metautil = require('..');
 
-const { ConsList, cons } = metautil;
+const { ConsList, cons, uncons } = metautil;
 
 test('ConsList: empty singleton', () => {
   const empty1 = ConsList.empty;
@@ -280,4 +280,19 @@ test('cons: shares existing tail', () => {
   const list = cons(1, tail);
   assert.strictEqual(list.tail, tail);
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
+});
+
+test('uncons: splits ConsList', () => {
+  const list = ConsList.of(1, 2, 3);
+  const { value, tail } = uncons(list);
+  assert.strictEqual(value, 1);
+  assert.strictEqual(tail, list.tail);
+  assert.deepStrictEqual(tail.toArray(), [2, 3]);
+  assert.deepStrictEqual(cons(value, tail).toArray(), [1, 2, 3]);
+});
+
+test('uncons: empty', () => {
+  const result = uncons(ConsList.empty);
+  assert.strictEqual(result.value, undefined);
+  assert.strictEqual(result.tail, ConsList.empty);
 });
