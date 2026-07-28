@@ -394,6 +394,8 @@ at zero copy cost (inspired by LISP cons cells).
 - `static fromArray<T>(values: Array<T>): ConsList<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
 - `prepend(value: T): ConsList<T>` — O(1), returns new list sharing old tail
+- `uncons(): { value: T | undefined; tail: ConsList<T> }` — split front
+  element and rest (`empty` → `{ value: undefined, tail: empty }`)
 - `value: T | undefined` — front element
 - `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`
@@ -410,6 +412,22 @@ const branch2 = shared.prepend(99); // [99, 3, 4, 5]
 // Both branches share the [3, 4, 5] suffix — no copying
 console.log(branch1.tail.tail === shared); // true
 console.log(branch2.tail === shared); // true
+```
+
+```js
+const { ConsList, cons } = metautil;
+
+const list = ConsList.of(1, 2, 3);
+const { value, tail } = list.uncons();
+console.log(value); // 1
+console.log(tail.toArray()); // [2, 3]
+
+// Round-trip with cons (inverse of uncons)
+console.log(cons(value, tail).toArray()); // [1, 2, 3]
+
+const empty = ConsList.empty.uncons();
+console.log(empty.value); // undefined
+console.log(empty.tail === ConsList.empty); // true
 ```
 
 **Use case: undo history with branching (time-travel state)**

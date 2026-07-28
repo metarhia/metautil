@@ -126,6 +126,18 @@ test('ConsList: deep branching shares tail immutably', () => {
   assert.strictEqual(b.tail.tail.tail, base);
 });
 
+test('ConsList: uncons', () => {
+  const list = ConsList.of(1, 2, 3);
+  const { value, tail } = list.uncons();
+  assert.strictEqual(value, 1);
+  assert.strictEqual(tail, list.tail);
+  assert.deepStrictEqual(tail.toArray(), [2, 3]);
+
+  const empty = ConsList.empty.uncons();
+  assert.strictEqual(empty.value, undefined);
+  assert.strictEqual(empty.tail, ConsList.empty);
+});
+
 test('cons: builds ConsList', () => {
   const list = cons(1, cons(2, cons(3)));
   assert.strictEqual(list instanceof ConsList, true);
