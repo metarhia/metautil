@@ -393,6 +393,9 @@ at zero copy cost (inspired by LISP cons cells).
 - `static of<T>(...values: Array<T>): ConsList<T>`
 - `static fromArray<T>(values: Array<T>): ConsList<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
+- `static merge<T>(...lists: Array<ConsList<T>>): ConsList<T>` —
+  O(n) over all but the last list; shares the last list as suffix;
+  no args → `empty`
 - `prepend(value: T): ConsList<T>` — O(1), returns new list sharing old tail
 - `uncons(): { value: T | undefined; tail: ConsList<T> }` — split front
   element and rest (`empty` → `{ value: undefined, tail: empty }`)

@@ -177,6 +177,26 @@ test('ConsList: reverse', () => {
   assert.strictEqual(list.reverse().reverse().equals(list), true);
 });
 
+test('ConsList: merge', () => {
+  const a = ConsList.of(1, 2);
+  const b = ConsList.of(3, 4);
+  const c = ConsList.of(5);
+  const joined = ConsList.merge(a, b, c);
+  assert.deepStrictEqual(joined.toArray(), [1, 2, 3, 4, 5]);
+  assert.strictEqual(joined.size, 5);
+  assert.strictEqual(joined.tail.tail.tail.tail, c);
+  assert.deepStrictEqual(a.toArray(), [1, 2]);
+  assert.deepStrictEqual(b.toArray(), [3, 4]);
+  assert.strictEqual(ConsList.merge(a, ConsList.empty), a);
+  assert.strictEqual(ConsList.merge(ConsList.empty, b), b);
+  assert.strictEqual(ConsList.merge(a), a);
+  assert.strictEqual(ConsList.merge(), ConsList.empty);
+  assert.strictEqual(
+    ConsList.merge(ConsList.empty, ConsList.empty),
+    ConsList.empty,
+  );
+});
+
 test('cons: builds ConsList', () => {
   const list = cons(1, cons(2, cons(3)));
   assert.strictEqual(list instanceof ConsList, true);
