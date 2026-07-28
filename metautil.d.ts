@@ -370,6 +370,7 @@ export class ConsList<T> implements Iterable<T> {
   uncons(): { value: T | undefined; tail: ConsList<T> };
   equals(other: ConsList<T>): boolean;
   includes(value: T): boolean;
+  member(value: T): ConsList<T>;
   reverse(): ConsList<T>;
   map<U>(fn: (value: T, index: number) => U): ConsList<U>;
   reduce(fn: (acc: T, value: T, index: number) => T): T;

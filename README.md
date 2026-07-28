@@ -402,6 +402,8 @@ at zero copy cost (inspired by LISP cons cells).
 - `equals(other: ConsList<T>): boolean` — structural equality (`===` on
   elements; non-`ConsList` → `false`; same reference short-circuits)
 - `includes(value: T): boolean` — O(n), `===` comparison
+- `member(value: T): ConsList<T>` — O(n), suffix whose head `===` value
+  (shared node), or `empty` if missing
 - `reverse(): ConsList<T>` — O(n), returns a new reversed list
 - `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n)
 - `reduce(fn, acc?): T | U` — O(n), left fold; like `Array#reduce`
