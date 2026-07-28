@@ -166,6 +166,17 @@ test('ConsList: includes', () => {
   assert.strictEqual(ConsList.of(0).includes(0), true);
 });
 
+test('ConsList: reverse', () => {
+  const list = ConsList.of(1, 2, 3);
+  const reversed = list.reverse();
+  assert.deepStrictEqual(reversed.toArray(), [3, 2, 1]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
+  assert.strictEqual(reversed.size, 3);
+  assert.strictEqual(ConsList.empty.reverse(), ConsList.empty);
+  assert.deepStrictEqual(ConsList.of(42).reverse().toArray(), [42]);
+  assert.strictEqual(list.reverse().reverse().equals(list), true);
+});
+
 test('cons: builds ConsList', () => {
   const list = cons(1, cons(2, cons(3)));
   assert.strictEqual(list instanceof ConsList, true);
