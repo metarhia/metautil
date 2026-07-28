@@ -363,6 +363,7 @@ export class ConsList<T> implements Iterable<T> {
   static of<T>(...values: Array<T>): ConsList<T>;
   static fromArray<T>(values: Array<T>): ConsList<T>;
   static fromIterable<T>(iterable: Iterable<T>): ConsList<T>;
+  static merge<T>(...lists: Array<ConsList<T>>): ConsList<T>;
 
   isEmpty(): boolean;
   prepend(value: T): ConsList<T>;

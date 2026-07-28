@@ -6,7 +6,7 @@
 - Added `ConsList` class and `cons`: immutable cons-list with
   structural sharing; multiple branches share common tails at zero
   copy cost; ADT surface is `value` / `tail` / `prepend` / `uncons` /
-  `equals` / `includes` / `reverse`; `cons(value, tail?)` is sugar for
+  `equals` / `includes` / `reverse` / static `merge`; `cons(value, tail?)` is sugar for
   `tail.prepend(value)` (`tail` defaults to `empty`)
 - Added `List` class: doubly-linked-list-backed sequence with a full
   API covering CRUD, slicing, rearranging, functional, and stats methods
