@@ -14,16 +14,16 @@ test('ConsList: empty singleton', () => {
   assert.strictEqual(empty1.size, 0);
 });
 
-test('ConsList: prepend creates new head', () => {
+test('ConsList: prepend creates new list', () => {
   const empty = ConsList.empty;
   const list1 = empty.prepend(3);
   const list2 = list1.prepend(2);
   const list3 = list2.prepend(1);
   assert.strictEqual(list3.value, 1);
   assert.strictEqual(list3.size, 3);
-  assert.strictEqual(list3.next.value, 2);
-  assert.strictEqual(list3.next.next.value, 3);
-  assert.strictEqual(list3.next.next.next, null);
+  assert.strictEqual(list3.tail.value, 2);
+  assert.strictEqual(list3.tail.tail.value, 3);
+  assert.strictEqual(list3.tail.tail.tail, ConsList.empty);
 });
 
 test('ConsList: prepend does not mutate original', () => {
@@ -40,29 +40,29 @@ test('ConsList: structural sharing (branching)', () => {
   const branch1 = shared.prepend(1);
   const branch2 = shared.prepend(10);
 
-  assert.strictEqual(branch1.next, shared);
-  assert.strictEqual(branch2.next, shared);
+  assert.strictEqual(branch1.tail, shared);
+  assert.strictEqual(branch2.tail, shared);
 
   assert.deepStrictEqual(branch1.toArray(), [1, 2, 3, 4]);
   assert.deepStrictEqual(branch2.toArray(), [10, 2, 3, 4]);
   assert.deepStrictEqual(shared.toArray(), [2, 3, 4]);
 });
 
-test('ConsList: first', () => {
+test('ConsList: value', () => {
   const list = ConsList.fromArray([42, 99]);
-  assert.strictEqual(list.first(), 42);
-  assert.strictEqual(ConsList.empty.first(), undefined);
+  assert.strictEqual(list.value, 42);
+  assert.strictEqual(ConsList.empty.value, undefined);
 });
 
-test('ConsList: rest', () => {
+test('ConsList: tail', () => {
   const list = ConsList.fromArray([1, 2, 3]);
-  const tail = list.rest();
+  const tail = list.tail;
   assert.strictEqual(tail.value, 2);
   assert.strictEqual(tail.size, 2);
 
   const singleItem = ConsList.fromArray([42]);
-  assert.strictEqual(singleItem.rest().isEmpty(), true);
-  assert.strictEqual(singleItem.rest(), ConsList.empty);
+  assert.strictEqual(singleItem.tail.isEmpty(), true);
+  assert.strictEqual(singleItem.tail, ConsList.empty);
 });
 
 test('ConsList: fromArray', () => {
@@ -110,8 +110,8 @@ test('ConsList: size reflects chain length', () => {
   let list = ConsList.empty;
   for (let i = 5; i >= 1; i--) list = list.prepend(i);
   assert.strictEqual(list.size, 5);
-  assert.strictEqual(list.rest().size, 4);
-  assert.strictEqual(list.rest().rest().size, 3);
+  assert.strictEqual(list.tail.size, 4);
+  assert.strictEqual(list.tail.tail.size, 3);
 });
 
 test('ConsList: deep branching shares tail immutably', () => {
@@ -122,6 +122,6 @@ test('ConsList: deep branching shares tail immutably', () => {
   assert.deepStrictEqual(a.toArray(), [3, 2, 1, 100]);
   assert.deepStrictEqual(b.toArray(), [9, 8, 7, 100]);
 
-  assert.strictEqual(a.rest().rest().rest(), base);
-  assert.strictEqual(b.rest().rest().rest(), base);
+  assert.strictEqual(a.tail.tail.tail, base);
+  assert.strictEqual(b.tail.tail.tail, base);
 });

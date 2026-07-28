@@ -417,13 +417,11 @@ cells).
 - `static of<T>(...values: Array<T>): ConsList<T>`
 - `static fromArray<T>(values: Array<T>): ConsList<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
-- `prepend(value: T): ConsList<T>` — O(1), returns new head sharing old tail
-- `first(): T | undefined` — head value
-- `rest(): ConsList<T>` — tail (O(1), no copy; `empty` when none)
+- `prepend(value: T): ConsList<T>` — O(1), returns new list sharing old tail
+- `value: T | undefined` — front element
+- `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
-- `value: T | undefined`
-- `next: ConsList<T> | null`
 - `size: number`
 - `isEmpty(): boolean`
 
@@ -434,8 +432,8 @@ const branch1 = shared.prepend(2).prepend(1); // [1, 2, 3, 4, 5]
 const branch2 = shared.prepend(99); // [99, 3, 4, 5]
 
 // Both branches share the [3, 4, 5] suffix — no copying
-console.log(branch1.next.next === shared); // true
-console.log(branch2.next === shared); // true
+console.log(branch1.tail.tail === shared); // true
+console.log(branch2.tail === shared); // true
 ```
 
 **Use case: undo history with branching (time-travel state)**
@@ -444,11 +442,11 @@ console.log(branch2.next === shared); // true
 let history = ConsList.of('draft v1');
 history = history.prepend('draft v2');
 history = history.prepend('draft v3');
-console.log(history.first()); // 'draft v3'
+console.log(history.value); // 'draft v3'
 
 // Jump back in time — earlier states remain valid and untouched
-const undone = history.rest();
-console.log(undone.first()); // 'draft v2'
+const undone = history.tail;
+console.log(undone.value); // 'draft v2'
 
 // Branch a new edit off the older state without affecting `history`
 const branched = undone.prepend('draft v2b');

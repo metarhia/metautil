@@ -366,7 +366,7 @@ export class List<T> implements Sequence<T>, Indexable<T> {
 
 export class ConsList<T> implements Iterable<T> {
   readonly value: T | undefined;
-  readonly next: ConsList<T> | null;
+  readonly tail: ConsList<T>;
   readonly size: number;
 
   static readonly empty: ConsList<any>;
@@ -375,8 +375,6 @@ export class ConsList<T> implements Iterable<T> {
   static fromIterable<T>(iterable: Iterable<T>): ConsList<T>;
 
   isEmpty(): boolean;
-  first(): T | undefined;
-  rest(): ConsList<T>;
   prepend(value: T): ConsList<T>;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
