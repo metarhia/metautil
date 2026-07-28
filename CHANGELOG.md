@@ -6,7 +6,8 @@
 - Added `Cons` / `cons`: immutable pair cell with private `#value` /
   `#next`, instance getters, and static `Cons.value` / `Cons.next`
 - Added `ConsList` class: immutable cons-list with structural
-  sharing; multiple branches share common tails at zero copy cost
+  sharing; multiple branches share common tails at zero copy cost;
+  ADT surface is `value` / `tail` (element + remaining list)
 - Added `List` class: doubly-linked-list-backed sequence with a full
   API covering CRUD, slicing, rearranging, functional, and stats methods
 - Added `Deque` class: double-ended queue backed by a circular buffer
