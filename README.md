@@ -396,6 +396,8 @@ at zero copy cost (inspired by LISP cons cells).
 - `prepend(value: T): ConsList<T>` — O(1), returns new list sharing old tail
 - `uncons(): { value: T | undefined; tail: ConsList<T> }` — split front
   element and rest (`empty` → `{ value: undefined, tail: empty }`)
+- `equals(other: ConsList<T>): boolean` — structural equality (`===` on
+  elements; non-`ConsList` → `false`; same reference short-circuits)
 - `value: T | undefined` — front element
 - `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
 - `toArray(): Array<T>`

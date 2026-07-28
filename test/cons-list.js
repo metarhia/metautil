@@ -138,6 +138,24 @@ test('ConsList: uncons', () => {
   assert.strictEqual(empty.tail, ConsList.empty);
 });
 
+test('ConsList: equals', () => {
+  const a = ConsList.fromArray([1, 2, 3]);
+  const b = ConsList.fromArray([1, 2, 3]);
+  const c = ConsList.fromArray([1, 2, 4]);
+  assert.strictEqual(a.equals(b), true);
+  assert.strictEqual(a.equals(c), false);
+  assert.strictEqual(a.equals(ConsList.empty), false);
+  assert.strictEqual(ConsList.empty.equals(ConsList.empty), true);
+  assert.strictEqual(a.equals(a), true);
+
+  const shared = ConsList.of(2, 3);
+  const left = shared.prepend(1);
+  const right = ConsList.fromArray([1, 2, 3]);
+  assert.strictEqual(left.equals(right), true);
+  assert.strictEqual(a.equals(null), false);
+  assert.strictEqual(a.equals([1, 2, 3]), false);
+});
+
 test('cons: builds ConsList', () => {
   const list = cons(1, cons(2, cons(3)));
   assert.strictEqual(list instanceof ConsList, true);
