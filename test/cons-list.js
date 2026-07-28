@@ -4,7 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const metautil = require('..');
 
-const { ConsList } = metautil;
+const { ConsList, cons } = metautil;
 
 test('ConsList: empty singleton', () => {
   const empty1 = ConsList.empty;
@@ -124,4 +124,25 @@ test('ConsList: deep branching shares tail immutably', () => {
 
   assert.strictEqual(a.tail.tail.tail, base);
   assert.strictEqual(b.tail.tail.tail, base);
+});
+
+test('cons: builds ConsList', () => {
+  const list = cons(1, cons(2, cons(3)));
+  assert.strictEqual(list instanceof ConsList, true);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
+  assert.strictEqual(list.tail.tail.tail, ConsList.empty);
+});
+
+test('cons: defaults to empty tail', () => {
+  const alone = cons('a');
+  assert.strictEqual(alone.value, 'a');
+  assert.strictEqual(alone.tail, ConsList.empty);
+  assert.strictEqual(alone.size, 1);
+});
+
+test('cons: shares existing tail', () => {
+  const tail = ConsList.of(2, 3);
+  const list = cons(1, tail);
+  assert.strictEqual(list.tail, tail);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });

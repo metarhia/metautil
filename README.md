@@ -283,28 +283,6 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 - `serializeArguments(fields: Strings, args: Dictionary): string`
 - `firstKey(obj: Dictionary): string | undefined`
 - `isInstanceOf(obj: unknown, constrName: string): boolean`
-- `cons(value: unknown, next?: unknown): Cons`
-
-## Class `Cons`
-
-Immutable pair cell (linked-list node shape) with private fields.
-For a sized immutable list ADT with `prepend` / `rest` / iteration, see
-`ConsList`.
-
-- `constructor(value: unknown, next?: unknown)` — `next` defaults to `null`
-- `value: unknown` — read-only head
-- `next: unknown` — read-only tail (`null` or another `Cons`)
-- `static value(pair: Cons): unknown`
-- `static next(pair: Cons): unknown`
-
-```js
-const { cons, Cons } = metautil;
-
-const list = cons(1, cons(2, cons(3, null)));
-console.log(list.value); // 1
-console.log(Cons.next(list).value); // 2
-console.log(Cons.value(Cons.next(Cons.next(list)))); // 3
-```
 
 ## Class `Struct`
 
@@ -386,8 +364,7 @@ interfaces `Sequence<T>` and `Indexable<T>` (in `metautil.d.ts`) describe
 structural contracts at the type level. `Stack` and `Queue` are thin
 ADT facades over `Deque` (same circular buffer; flavored method names).
 `List` is a value-level facade over an internal doubly-linked list.
-`ConsList` is a separate immutable cons ADT (not the same as pair cell
-`Cons`).
+`ConsList` is an immutable cons-list ADT with structural sharing.
 
 | Class      | ADT            | Backed by       | Ends | Index |
 | ---------- | -------------- | --------------- | ---- | ----- |
@@ -407,11 +384,10 @@ const cons = ConsList.fromArray(deque.toArray());
 
 ## Class `ConsList`
 
-An immutable singly-linked cons-list with structural sharing (distinct
-from the `Cons` pair cell). Every `prepend` returns a new `ConsList`
-that shares its tail with the original — enabling multiple independent
-branches from a common suffix at zero copy cost (inspired by LISP cons
-cells).
+An immutable singly-linked cons-list with structural sharing.
+Every `prepend` returns a new `ConsList` that shares its tail with the
+original — enabling multiple independent branches from a common suffix
+at zero copy cost (inspired by LISP cons cells).
 
 - `static empty: ConsList<any>` — canonical empty singleton
 - `static of<T>(...values: Array<T>): ConsList<T>`
@@ -452,6 +428,22 @@ console.log(undone.value); // 'draft v2'
 const branched = undone.prepend('draft v2b');
 console.log(branched.toArray()); // ['draft v2b', 'draft v2', 'draft v1']
 console.log(history.toArray()); // ['draft v3', 'draft v2', 'draft v1']
+```
+
+## Function `cons`
+
+Lisp-style constructor for `ConsList`: prepends `value` onto `tail`.
+
+- `cons(value: T, tail?: ConsList<T>): ConsList<T>` — same as
+  `tail.prepend(value)`; `tail` defaults to `ConsList.empty`
+
+```js
+const { cons } = metautil;
+
+const list = cons(1, cons(2, cons(3)));
+console.log(list.toArray()); // [1, 2, 3]
+console.log(list.value); // 1
+console.log(list.tail.value); // 2
 ```
 
 ## Class `List`
