@@ -389,32 +389,43 @@ Every `prepend` returns a new `ConsList` that shares its tail with the
 original — enabling multiple independent branches from a common suffix
 at zero copy cost (inspired by LISP cons cells).
 
-- `static empty: ConsList<any>` — canonical empty singleton
-- `static of<T>(...values: Array<T>): ConsList<T>`
+- `static empty: ConsList<never>` — canonical empty singleton
+- `static of<T>(...values: Array<T>): ConsList<T>` — build from arguments
+  in order (same as `fromArray(values)`)
 - `static fromArray<T>(values: Array<T>): ConsList<T>`
 - `static fromIterable<T>(iterable: Iterable<T>): ConsList<T>`
-- `static merge<T>(...lists: Array<ConsList<T>>): ConsList<T>` —
-  O(n) over all but the last list; shares the last list as suffix;
-  no args → `empty`
-- `prepend(value: T): ConsList<T>` — O(1), returns new list sharing old tail
-- `uncons(): { value: T | undefined; tail: ConsList<T> }` — split front
-  element and rest (`empty` → `{ value: undefined, tail: empty }`)
+- `static merge<T>(...lists: Array<ConsList<T>>): ConsList<T>` — join in
+  argument order (`merge(a, b)` → `a` then `b`); O(n) over all but the
+  last list; shares the last list as suffix; no args → `empty`
+- `prepend(value: T): ConsList<T>` — O(1), new list with `value` at the
+  front, sharing this list as tail
+- `uncons(): Uncons<T>` — split head and rest
+  (`empty` → `{ value: undefined, tail: empty }`); inverse of `cons`
 - `equals(other: ConsList<T>): boolean` — structural equality (`===` on
   elements; non-`ConsList` → `false`; same reference short-circuits)
-- `includes(value: T): boolean` — O(n), `===` comparison
-- `member(value: T): ConsList<T>` — O(n), suffix whose head `===` value
-  (shared node), or `empty` if missing
-- `reverse(): ConsList<T>` — O(n), returns a new reversed list
-- `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n)
-- `reduce(fn, acc?): T | U` — O(n), left fold; like `Array#reduce`
-  (`acc` optional / `undefined` → seed from head; empty + no seed →
-  `TypeError`)
-- `value: T | undefined` — front element
-- `tail: ConsList<T>` — rest of the list (O(1), no copy; `empty` when none)
+- `includes(value: T): boolean` — O(n), whether `value` appears (`===`)
+- `member(value: T): ConsList<T>` — O(n), first suffix whose head `===`
+  `value` (shared node), or `empty` if missing; e.g.
+  `of(1, 2, 3).member(2)` → `[2, 3]`
+- `reverse(): ConsList<T>` — O(n), new list in reverse order
+- `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n), new
+  list of mapped values
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n), left
+  fold with seed from head; empty → `TypeError`
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
+  O(n), left fold with explicit seed
+- `value: T | undefined` — head (front) element
+- `tail: ConsList<T>` — rest after the head (O(1), shared; `empty` when
+  none)
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
 - `size: number`
 - `isEmpty(): boolean`
+
+**Interface `Uncons<T>`** — result of `uncons()`:
+
+- `value: T | undefined`
+- `tail: ConsList<T>`
 
 ```js
 const shared = ConsList.of(3, 4, 5);

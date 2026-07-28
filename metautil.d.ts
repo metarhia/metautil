@@ -354,12 +354,17 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
+export interface Uncons<T> {
+  readonly value: T | undefined;
+  readonly tail: ConsList<T>;
+}
+
 export class ConsList<T> implements Iterable<T> {
   readonly value: T | undefined;
   readonly tail: ConsList<T>;
   readonly size: number;
 
-  static readonly empty: ConsList<any>;
+  static readonly empty: ConsList<never>;
   static of<T>(...values: Array<T>): ConsList<T>;
   static fromArray<T>(values: Array<T>): ConsList<T>;
   static fromIterable<T>(iterable: Iterable<T>): ConsList<T>;
@@ -367,14 +372,14 @@ export class ConsList<T> implements Iterable<T> {
 
   isEmpty(): boolean;
   prepend(value: T): ConsList<T>;
-  uncons(): { value: T | undefined; tail: ConsList<T> };
+  uncons(): Uncons<T>;
   equals(other: ConsList<T>): boolean;
   includes(value: T): boolean;
   member(value: T): ConsList<T>;
   reverse(): ConsList<T>;
   map<U>(fn: (value: T, index: number) => U): ConsList<U>;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
-  reduce<U>(fn: (acc: U, value: T, index: number) => U, acc?: U): U;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
 }

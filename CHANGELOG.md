@@ -4,12 +4,13 @@
 
 - Added `Result` class: a container holding either a value or an error
 - Added `ConsList` class and `cons`: immutable cons-list with
-  structural sharing; multiple branches share common tails at zero
-  copy cost; ADT surface is `value` / `tail` / `prepend` / `uncons` /
-  `equals` / `includes` / `member` / `reverse` / `map` / `reduce` /
-  static `merge`;
-  `cons(value, tail?)` is sugar for
-  `tail.prepend(value)` (`tail` defaults to `empty`)
+  structural sharing (branches share common tails at zero copy cost);
+  factories `empty` / `of` / `fromArray` / `fromIterable` / `merge`;
+  accessors `value` / `tail` / `size` / `isEmpty`; ops `prepend` /
+  `uncons` / `equals` / `includes` / `member` / `reverse` / `map` /
+  `reduce` / `toArray` / iterator; `cons(value, tail?)` sugar for
+  `tail.prepend(value)`; typings: `empty` as `ConsList<never>`,
+  `Uncons<T>`, and dual `reduce` overloads
 - Added `List` class: doubly-linked-list-backed sequence with a full
   API covering CRUD, slicing, rearranging, functional, and stats methods
 - Added `Deque` class: double-ended queue backed by a circular buffer
