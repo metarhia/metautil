@@ -365,6 +365,7 @@ structural contracts at the type level. `Stack` and `Queue` are thin
 ADT facades over `Deque` (same circular buffer; flavored method names).
 `List` is a value-level facade over an internal doubly-linked list.
 `ConsList` is an immutable cons-list ADT with structural sharing.
+`Trie` is a prefix tree for string keys with optional associated values.
 
 | Class      | ADT            | Backed by       | Ends | Index |
 | ---------- | -------------- | --------------- | ---- | ----- |
@@ -373,6 +374,7 @@ ADT facades over `Deque` (same circular buffer; flavored method names).
 | `Stack`    | LIFO           | `Deque`         | O(1) | —     |
 | `List`     | sequence       | doubly-linked   | O(1) | O(n)  |
 | `ConsList` | immutable cons | shared nodes    | O(1) | O(n)  |
+| `Trie`     | prefix map     | character nodes | —    | —     |
 
 ```js
 // Any structure can feed any other via iterables
@@ -796,6 +798,37 @@ function isBalanced(input) {
 
 console.log(isBalanced('{[()]}')); // true
 console.log(isBalanced('{[(])}')); // false
+```
+
+## Class `Trie`
+
+Prefix tree (trie) for string keys with optional associated values.
+Supports exact lookup, deletion with branch pruning, and prefix
+autocomplete via `complete`.
+
+- `size: number` — number of stored keys
+- `insert(word: string, value?: unknown): this` — store key (default
+  value `true`); throws `TypeError` if `word` is not a string
+- `delete(word: string): boolean` — remove key and prune empty branches
+- `clear(): void`
+- `isEmpty(): boolean`
+- `has(word: string): boolean` — exact key present
+- `get(word: string): unknown` — associated value, or `undefined` if
+  missing
+- `complete(prefix: string): Array<string>` — all keys with the given
+  prefix
+
+```js
+const trie = new Trie();
+trie.insert('cat');
+trie.insert('car', 42);
+trie.insert('card');
+
+trie.has('car'); // true
+trie.get('car'); // 42
+trie.complete('ca'); // ['cat', 'car', 'card'] (order may vary)
+trie.delete('car'); // true
+trie.size; // 2
 ```
 
 ## Array utilities
