@@ -130,7 +130,10 @@ export type ApiOptions = {
   body?: Body;
 };
 
-export function receiveBody(stream: IncomingMessage): Promise<Buffer | null>;
+export function receiveBody(
+  stream: IncomingMessage,
+  limit?: number,
+): Promise<Buffer>;
 export function ipToInt(ip?: string): number;
 export function intToIp(int: number): string;
 export function httpApiCall(url: string, options: ApiOptions): Promise<object>;

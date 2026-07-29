@@ -2,6 +2,7 @@
 
 const http = require('node:http');
 const { once } = require('node:events');
+const { Readable } = require('node:stream');
 const test = require('node:test');
 const assert = require('node:assert');
 const metatests = require('metatests');
@@ -14,22 +15,62 @@ const RATES_API_KEY = '9e329e4313bc4462b04e07f314c6f7eb';
 const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
 const MATH_API_URL = 'https://api.mathjs.org/v4';
 
-test('Newtork: receiveBody', async () => {
-  const value = Buffer.from('{ "a": 5 }');
-  let done = false;
-  const body = {
-    [Symbol.asyncIterator]() {
-      return {
-        async next() {
-          const res = { value, done };
-          done = true;
-          return res;
-        },
-      };
-    },
-  };
-  const data = await metautil.receiveBody(body);
+test('Network: receiveBody single chunk', async () => {
+  const chunk = Buffer.from('{ "a": 5 }');
+  const data = await metautil.receiveBody(Readable.from([chunk]));
+  assert.strictEqual(data, chunk);
   assert.strictEqual(data.toString(), '{ "a": 5 }');
+});
+
+test('Network: receiveBody multiple chunks', async () => {
+  const chunks = [Buffer.from('hello'), Buffer.from(' '), Buffer.from('world')];
+  const data = await metautil.receiveBody(Readable.from(chunks));
+  assert.ok(Buffer.isBuffer(data));
+  assert.strictEqual(data.toString(), 'hello world');
+});
+
+test('Network: receiveBody empty', async () => {
+  const data = await metautil.receiveBody(Readable.from([]));
+  assert.deepStrictEqual(data, Buffer.alloc(0));
+});
+
+test('Network: receiveBody exact limit', async () => {
+  const chunk = Buffer.alloc(10, 1);
+  const data = await metautil.receiveBody(Readable.from([chunk]), 10);
+  assert.strictEqual(data.length, 10);
+});
+
+test('Network: receiveBody exceeds limit', async () => {
+  const stream = Readable.from([Buffer.alloc(5), Buffer.alloc(6)]);
+  await assert.rejects(metautil.receiveBody(stream, 10), {
+    message: 'Body size limit exceeded',
+  });
+});
+
+test('Network: receiveBody zero limit', async () => {
+  const empty = await metautil.receiveBody(Readable.from([]), 0);
+  assert.deepStrictEqual(empty, Buffer.alloc(0));
+  await assert.rejects(
+    metautil.receiveBody(Readable.from([Buffer.from('x')]), 0),
+    { message: 'Body size limit exceeded' },
+  );
+});
+
+test('Network: receiveBody invalid limit', async () => {
+  const limits = [-1, 1.5, Number.NaN, Infinity, Number.MAX_SAFE_INTEGER + 1];
+  for (const limit of limits) {
+    await assert.rejects(
+      metautil.receiveBody(Readable.from([]), limit),
+      (error) => {
+        assert.ok(error instanceof TypeError);
+        assert.strictEqual(
+          error.message,
+          'Body size limit must be a non-negative safe integer',
+        );
+        return true;
+      },
+    );
+  }
 });
 
 metatests.case(
