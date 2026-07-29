@@ -454,6 +454,20 @@ export class Stack<T> implements Sequence<T> {
   [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
+// Submodule: trie
+
+export class Trie<T = boolean> {
+  readonly size: number;
+  constructor();
+  insert(word: string, value?: T): this;
+  delete(word: string): boolean;
+  clear(): void;
+  isEmpty(): boolean;
+  has(word: string): boolean;
+  get(word: string): T | undefined;
+  complete(prefix: string): Array<string>;
+}
+
 // Submodule: collector
 
 export interface CollectorOptions {

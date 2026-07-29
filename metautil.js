@@ -22,4 +22,5 @@ module.exports = {
   ...require('./lib/deque.js'),
   ...require('./lib/list.js'),
   ...require('./lib/cons-list.js'),
+  ...require('./lib/trie.js'),
 };

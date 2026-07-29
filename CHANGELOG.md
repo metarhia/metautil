@@ -4,6 +4,9 @@
 
 - Fixed unbounded memory consumption in `receiveBody`: default 10MB body
   size limit and optional `limit` parameter; return type is `Buffer`
+- Added `Trie` class: prefix tree for string keys with optional values;
+  `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
+  `isEmpty`; `undefined` is a valid stored value; typings included
 - Added `Result` class: a container holding either a value or an error
 - Added `ConsList` class with `cons` / `uncons`: immutable cons-list with
   structural sharing (branches share common tails at zero copy cost);
