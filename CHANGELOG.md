@@ -4,6 +4,23 @@
 
 - Fixed unbounded memory consumption in `receiveBody`: default 10MB body
   size limit and optional `limit` parameter; return type is `Buffer`
+- Replaced internal `LinkedList` with public `ListNode` (low-level
+  doubly-linked cell: `create` / `append` / `prepend` / `unlink` /
+  `seek` / `fromArray` / `copy` / `link`); removed `lib/linked-list.js`
+- Reworked `List` as a value/index facade over `ListNode`: factories
+  `of` / `fromArray` / `merge(...lists)`; `append` / `prepend` rest
+  args; bulk `remove(...values)` returns count; unified `rotate(n?)`
+  (default 1); trimmed API (no `fromIterable` / `range` / queue aliases /
+  lazy iterators / `distinct` / `shuffle` / `join` / async iterator /
+  separate left/right rotate helpers)
+- Hardened `List` / `ListNode`: non-integer indexes/counts are ignored
+  (no-op); `rotate` uses O(1) modulo; `tail` / `init` / `take` /
+  `slice` return `null` on invalid args; empty `clone` / `splitAt`
+  copy keep empty `List` (not `null`); `includes` / `remove` use
+  SameValueZero; `indexOf` / `lastIndexOf` / `equals` / `replace`
+  stay on strict `===`
+- Trimmed list typings: dropped unused `Sequence` / `Indexable`;
+  `ListNode` / `List` shapes match the runtime API
 - Added `Trie` class: prefix tree for string keys with optional values;
   `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
   `isEmpty`; `undefined` is a valid stored value; typings included
@@ -17,8 +34,6 @@
   `uncons(list)` are functional aliases of `prepend` / instance
   `uncons`; typings: `empty` as `ConsList<never>`, `Uncons<T>`, and
   dual `reduce` overloads
-- Added `List` class: doubly-linked-list-backed sequence with a full
-  API covering CRUD, slicing, rearranging, functional, and stats methods
 - Added `Deque` class: double-ended queue backed by a circular buffer
   with O(1) ops at both ends and O(1) index access; shared engine for
   `Stack` and `Queue`
@@ -26,8 +41,6 @@
   `peek` at the front)
 - Added `Stack` class: LIFO facade over `Deque` (`push` / `pop` / `peek`
   at the back)
-- Added `Sequence<T>` and `Indexable<T>` TypeScript interfaces for
-  shared structural contracts across data structure classes
 
 ## [5.5.2][] - 2026-03-15
 

@@ -29,7 +29,7 @@ test('Interop: Deque → Array → List', () => {
 });
 
 test('Interop: List → Array → Stack', () => {
-  const list = List.range(1, 5);
+  const list = List.fromArray([1, 2, 3, 4, 5]);
   const stack = Stack.fromArray(list.toArray());
   assert.strictEqual(stack.pop(), 5);
   assert.strictEqual(stack.pop(), 4);
@@ -71,15 +71,15 @@ test('Interop: Deque.fromIterable(ConsList)', () => {
   assert.deepStrictEqual(deque.toArray(), [2, 3, 4, 1]);
 });
 
-test('Interop: List.fromIterable(Stack)', () => {
+test('Interop: List.fromArray(Stack.toArray())', () => {
   const stack = Stack.fromArray([1, 2, 3]);
-  const list = List.fromIterable(stack);
+  const list = List.fromArray(stack.toArray());
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-test('Interop: List.fromIterable(Queue)', () => {
+test('Interop: List.fromArray(Queue.toArray())', () => {
   const queue = Queue.fromArray([10, 20, 30]);
-  const list = List.fromIterable(queue);
+  const list = List.fromArray(queue.toArray());
   assert.strictEqual(list.sum(), 60);
 });
 
@@ -92,7 +92,7 @@ test('Interop: ConsList.fromIterable(List)', () => {
 // --- Cross-structure functional pipeline ---
 
 test('Interop: filter from List, collect into Queue', () => {
-  const numbers = List.range(1, 10);
+  const numbers = List.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const evens = numbers.filter((n) => n % 2 === 0);
   const queue = Queue.fromIterable(evens);
   assert.strictEqual(queue.size, 5);
@@ -104,7 +104,7 @@ test('Interop: merge multiple structures via List.merge', () => {
   const a = List.fromArray([1, 2]);
   const b = List.fromArray(Deque.fromArray([3, 4]).toArray());
   const c = List.fromArray(Stack.fromArray([5, 6]).toArray());
-  const merged = List.merge([a, b, c]);
+  const merged = List.merge(a, b, c);
   assert.deepStrictEqual(merged.toArray(), [1, 2, 3, 4, 5, 6]);
 });
 

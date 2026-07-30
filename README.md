@@ -356,14 +356,15 @@ pool.release(item);
 
 ## Data structures
 
-All data structure classes implement a common interoperability contract:
-every class has `static fromArray`, `static fromIterable`, `toArray`,
-and `[Symbol.iterator]`, making any structure convertible to any other
-via `Array` as the universal interchange format. The shared TypeScript
-interfaces `Sequence<T>` and `Indexable<T>` (in `metautil.d.ts`) describe
-structural contracts at the type level. `Stack` and `Queue` are thin
-ADT facades over `Deque` (same circular buffer; flavored method names).
-`List` is a value-level facade over an internal doubly-linked list.
+All data structure classes share a common interoperability contract:
+every class has `static fromArray`, `toArray`, and `[Symbol.iterator]`,
+making any structure convertible to any other via `Array` as the universal
+interchange format. Most also expose `static fromIterable`.
+`Stack` and `Queue` are thin ADT facades over `Deque` (same circular buffer;
+flavored method names). `List` is a mutable sequence backed by a
+doubly-linked `ListNode` chain. `ListNode` is the low-level link cell
+(`create` / `append` / `prepend` / `unlink` / `seek` / `fromArray` /
+`copy` / `link`) for custom structures that own their own head/tail/size.
 `ConsList` is an immutable cons-list ADT with structural sharing.
 `Trie` is a prefix tree for string keys with optional associated values.
 
@@ -372,13 +373,13 @@ ADT facades over `Deque` (same circular buffer; flavored method names).
 | `Deque`    | double-ended   | circular buffer | O(1) | O(1)  |
 | `Queue`    | FIFO           | `Deque`         | O(1) | —     |
 | `Stack`    | LIFO           | `Deque`         | O(1) | —     |
-| `List`     | sequence       | doubly-linked   | O(1) | O(n)  |
+| `List`     | sequence       | `ListNode`      | O(1) | O(n)  |
 | `ConsList` | immutable cons | shared nodes    | O(1) | O(n)  |
 | `Trie`     | prefix map     | character nodes | —    | —     |
 
 ```js
-// Any structure can feed any other via iterables
-const list = List.range(1, 5);
+// Any structure can feed any other via Array / iterables
+const list = List.fromArray([1, 2, 3, 4, 5]);
 const queue = Queue.fromIterable(list.filter((n) => n % 2 === 0));
 const deque = Deque.fromIterable(queue);
 const cons = ConsList.fromArray(deque.toArray());
@@ -506,71 +507,110 @@ console.log(tail.toArray()); // [2, 3]
 console.log(cons(value, tail).toArray()); // [1, 2, 3]
 ```
 
+## Class `ListNode`
+
+Low-level doubly-linked node. Callers own head/tail/size invariants;
+mutating `prev` / `next` directly can corrupt any structure that uses
+the node.
+
+- `constructor(value?: T)` — creates an unlinked node (`prev` / `next`
+  are `null`)
+- `value: T`
+- `prev: ListNode<T> | null`
+- `next: ListNode<T> | null`
+- `append(value?: T): ListNode<T>` — splice a new node after this
+- `prepend(value?: T): ListNode<T>` — splice a new node before this
+- `unlink(): { prev, next }` — remove this from neighbors; clears links
+- `seek(n?: number): ListNode<T> | null` — move `n` steps (`+` via
+  `next`, `-` via `prev`); `0` returns this; non-integer or past the end
+  → `null`
+- `static create<T>(value?: T, prev?: ListNode<T> | null, next?: ListNode<T> | null): ListNode<T>` —
+  allocate and wire neighbors (`prev.next` / `next.prev`)
+- `static fromArray<T>(values: ArrayLike<T>): { head, tail, size }` —
+  build a detached chain; empty → `{ head: null, tail: null, size: 0 }`
+- `static copy<T>(node: ListNode<T>, count: number): { head, tail, next, size }` —
+  clone `count` nodes starting from `node`; `next` is the first source
+  node after the copied range (or `node` when `count` is invalid /
+  non-positive)
+- `static link(left: ListNode<T> | null, right: ListNode<T> | null): void` —
+  link `left.next` / `right.prev`; null side is skipped
+
+```js
+const { ListNode } = metautil;
+
+const a = new ListNode(1);
+const b = ListNode.create(2, a);
+console.log(a.next.value); // 2
+console.log(b.prev.value); // 1
+```
+
 ## Class `List`
 
 A doubly-linked-list-backed sequence with a comprehensive API. All
 push/pop/append/prepend operations are O(1); index-based operations
-are O(n).
+are O(n). Internally uses `ListNode`; the public API is value/index
+based and does not expose nodes. Indexes and counts must be integers
+(non-integers are ignored / no-op). Negative indexes count from the end
+(`at(-1)` is the last element).
 
 **Construction**
 
 - `constructor()`
+- `static of<T>(...values: Array<T>): List<T>`
 - `static fromArray<T>(values: Array<T>): List<T>`
-- `static fromIterable<T>(iterable: Iterable<T>): List<T>`
-- `static range(start: number, end: number, step?: number): List<number>`
-- `static merge<T>(lists: Array<List<T>>): List<T>`
+- `static merge<T>(...lists: Array<List<T>>): List<T>`
 
 **CRUD / index**
 
-- `append(value: T): void`
-- `prepend(value: T): void`
-- `enqueue(value: T): void` — alias for `append`
-- `dequeue(): T | undefined` — removes and returns first element
-- `insert(index: number, value: T, count?: number): void`
+- `append(...values: Array<T>): void`
+- `prepend(...values: Array<T>): void`
+- `insert(index: number, value?: T, count?: number): void`
 - `delete(index: number, count?: number): void`
 - `at(index: number): T | undefined`
-- `set(index: number, value: T): void`
+- `set(index: number, value?: T): void`
 - `first(): T | undefined`
 - `last(): T | undefined`
 
 **Slicing**
 
-- `tail(n?: number): List<T>` — all-but-first-n (default 1)
-- `init(n?: number): List<T>` — all-but-last-n (default 1)
+- `tail(n?: number): List<T> | null` — all-but-first-n (default 1);
+  `n < 0` or non-integer → `null`
+- `init(n?: number): List<T> | null` — all-but-last-n (default 1);
+  `n < 0` or non-integer → `null`
 - `drop(n: number): void` — drops first n (or last |n| if negative)
-- `take(n: number): List<T>` — first n (or last |n| if negative)
-- `slice(start?: number, end?: number): List<T>`
+- `take(n: number): List<T> | null` — first n (or last |n| if negative);
+  non-integer or `0` → `null`
+- `slice(start?: number, end?: number): List<T> | null` — non-integer
+  bounds → `null`; empty range → empty list
 
 **Rearranging**
 
-- `rotateLeft(steps?: number): void`
-- `rotateRight(steps?: number): void`
-- `rotate(n: number): void` — positive rotates left, negative right
+- `rotate(n?: number): void` — positive rotates left, negative right
+  (default 1); non-integer → no-op
 - `swap(i: number, j: number): void`
 - `move(from: number, to: number): void`
-- `splitAt(index: number): { before: List<T>; after: List<T> }`
+- `splitAt(index: number): { before: List<T>; after: List<T> }` —
+  non-integer index treated as `0`
 - `groupBy<K>(key: (v: T) => K): Map<K, List<T>>`
 
 **Search / compare**
 
-- `includes(value: T): boolean`
-- `indexOf(value: T): number`
-- `lastIndexOf(value: T): number`
-- `equals(other: List<T>): boolean`
+- `includes(value: T): boolean` — SameValueZero (like `Array.includes`;
+  finds `NaN`)
+- `indexOf(value: T): number` — strict `===` (like `Array.indexOf`;
+  `NaN` → `-1`)
+- `lastIndexOf(value: T): number` — strict `===`
+- `equals(other: List<T>): boolean` — strict `===` on elements;
+  non-`List` → `false`; same reference short-circuits
 
 **Bulk mutations**
 
-- `addAll(values: Iterable<T>): void`
-- `removeAll(values: Iterable<T>): void`
-- `fill(value: T, start?: number, end?: number): void`
-- `replace(oldValue: T, newValue: T): void`
-- `distinct(): void` — removes duplicates in place
-- `toDistinct(): List<T>`
+- `remove(...values: Array<T>): number` — SameValueZero match; returns
+  how many nodes were removed
+- `replace(oldValue: T, newValue?: T): void` — strict `===` match
 
 **Ordering**
 
-- `shuffle(): void`
-- `toShuffled(): List<T>`
 - `reverse(): void`
 - `toReversed(): List<T>`
 - `sort(compare?: (a: T, b: T) => number): void`
@@ -579,12 +619,9 @@ are O(n).
 **Functional**
 
 - `map<U>(fn: (value: T, index: number) => U): List<U>`
-- `lazyMap<U>(fn): IterableIterator<U>` — lazy, does not materialize
 - `flatMap<U>(fn: (value: T) => Iterable<U>): List<U>`
 - `filter(fn: (value: T, index: number) => boolean): List<T>`
-- `lazyFilter(fn): IterableIterator<T>` — lazy, does not materialize
 - `reduce<U>(fn, initial: U): U`
-- `lazyReduce<U>(fn, initial: U): IterableIterator<U>` — running accumulator (scan)
 - `some(fn): boolean`
 - `every(fn): boolean`
 - `find(fn): T | undefined`
@@ -602,14 +639,12 @@ are O(n).
 - `isEmpty(): boolean`
 - `clear(): void`
 - `toArray(): Array<T>`
-- `join(separator?: string): string`
 - `clone(): List<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterableIterator<T>`
 - `size: number`
 
 ```js
-const list = List.range(1, 5);
+const list = List.fromArray([1, 2, 3, 4, 5]);
 list.append(6);
 list.prepend(0);
 console.log(list.toArray()); // [0, 1, 2, 3, 4, 5, 6]
@@ -623,10 +658,7 @@ console.log(grouped.get(0).toArray()); // [0, 3, 6]
 **Use case: playlist manager**
 
 ```js
-const playlist = List.fromArray(['intro', 'verse', 'chorus', 'verse', 'outro']);
-
-playlist.distinct(); // drop duplicate tracks in place
-console.log(playlist.toArray()); // ['intro', 'verse', 'chorus', 'outro']
+const playlist = List.fromArray(['intro', 'verse', 'chorus', 'outro']);
 
 playlist.move(3, 0); // move 'outro' to the front
 console.log(playlist.toArray()); // ['outro', 'intro', 'verse', 'chorus']
