@@ -258,52 +258,61 @@ export function sizeToBytes(size: string): number;
 
 // Submodule: list
 
-export interface Sequence<T> extends Iterable<T>, AsyncIterable<T> {
-  readonly size: number;
-  first(): T | undefined;
-  last(): T | undefined;
-  includes(value: T): boolean;
-  isEmpty(): boolean;
-  clear(): void;
-  toArray(): Array<T>;
-  [Symbol.iterator](): IterableIterator<T>;
-  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
+export class ListNode<T = unknown> {
+  value: T;
+  prev: ListNode<T> | null;
+  next: ListNode<T> | null;
+  constructor(value?: T);
+  append(value?: T): ListNode<T>;
+  prepend(value?: T): ListNode<T>;
+  unlink(): { prev: ListNode<T> | null; next: ListNode<T> | null };
+  seek(n?: number): ListNode<T> | null;
+  static fromArray<T>(values: ArrayLike<T>): {
+    head: ListNode<T> | null;
+    tail: ListNode<T> | null;
+    size: number;
+  };
+  static copy<T>(
+    node: ListNode<T>,
+    count: number,
+  ): {
+    head: ListNode<T> | null;
+    tail: ListNode<T> | null;
+    next: ListNode<T> | null;
+    size: number;
+  };
+  static link<T>(left: ListNode<T> | null, right: ListNode<T> | null): void;
+  static create<T>(
+    value?: T,
+    prev?: ListNode<T> | null,
+    next?: ListNode<T> | null,
+  ): ListNode<T>;
 }
 
-export interface Indexable<T> {
-  at(index: number): T | undefined;
-  set(index: number, value: T): void;
-}
-
-export class List<T> implements Sequence<T>, Indexable<T> {
+export class List<T> {
   readonly size: number;
   constructor();
+  static of<T>(...values: Array<T>): List<T>;
   static fromArray<T>(values: Array<T>): List<T>;
-  static fromIterable<T>(iterable: Iterable<T>): List<T>;
-  static range(start: number, end: number, step?: number): List<number>;
-  static merge<T>(lists: Array<List<T>>): List<T>;
+  static merge<T>(...lists: Array<List<T>>): List<T>;
 
-  append(value: T): void;
-  prepend(value: T): void;
-  enqueue(value: T): void;
-  dequeue(): T | undefined;
-  insert(index: number, value: T, count?: number): void;
+  append(...values: Array<T>): void;
+  prepend(...values: Array<T>): void;
+  insert(index: number, value?: T, count?: number): void;
   delete(index: number, count?: number): void;
 
   at(index: number): T | undefined;
-  set(index: number, value: T): void;
+  set(index: number, value?: T): void;
   first(): T | undefined;
   last(): T | undefined;
 
-  tail(n?: number): List<T>;
-  init(n?: number): List<T>;
+  tail(n?: number): List<T> | null;
+  init(n?: number): List<T> | null;
   drop(n: number): void;
-  take(n: number): List<T>;
-  slice(start?: number, end?: number): List<T>;
+  take(n: number): List<T> | null;
+  slice(start?: number, end?: number): List<T> | null;
 
-  rotateLeft(steps?: number): void;
-  rotateRight(steps?: number): void;
-  rotate(n: number): void;
+  rotate(n?: number): void;
   swap(i: number, j: number): void;
   move(from: number, to: number): void;
   splitAt(index: number): { before: List<T>; after: List<T> };
@@ -314,30 +323,18 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   lastIndexOf(value: T): number;
   equals(other: List<T>): boolean;
 
-  addAll(values: Iterable<T>): void;
-  removeAll(values: Iterable<T>): void;
-  fill(value: T, start?: number, end?: number): void;
-  replace(oldValue: T, newValue: T): void;
-  distinct(): void;
-  toDistinct(): List<T>;
+  remove(...values: Array<T>): number;
+  replace(oldValue: T, newValue?: T): void;
 
-  shuffle(): void;
-  toShuffled(): List<T>;
   reverse(): void;
   toReversed(): List<T>;
   sort(compare?: (a: T, b: T) => number): void;
   toSorted(compare?: (a: T, b: T) => number): List<T>;
 
   map<U>(fn: (value: T, index: number) => U): List<U>;
-  lazyMap<U>(fn: (value: T, index: number) => U): IterableIterator<U>;
   flatMap<U>(fn: (value: T) => Iterable<U>): List<U>;
   filter(fn: (value: T, index: number) => boolean): List<T>;
-  lazyFilter(fn: (value: T, index: number) => boolean): IterableIterator<T>;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
-  lazyReduce<U>(
-    fn: (acc: U, value: T, index: number) => U,
-    initial: U,
-  ): IterableIterator<U>;
   some(fn: (value: T, index: number) => boolean): boolean;
   every(fn: (value: T, index: number) => boolean): boolean;
   find(fn: (value: T, index: number) => boolean): T | undefined;
@@ -351,10 +348,8 @@ export class List<T> implements Sequence<T>, Indexable<T> {
   isEmpty(): boolean;
   clear(): void;
   toArray(): Array<T>;
-  join(separator?: string): string;
   clone(): List<T>;
   [Symbol.iterator](): IterableIterator<T>;
-  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export interface Uncons<T> {
@@ -390,7 +385,7 @@ export class ConsList<T> implements Iterable<T> {
 export function cons<T>(value: T, tail?: ConsList<T>): ConsList<T>;
 export function uncons<T>(list: ConsList<T>): Uncons<T>;
 
-export class Deque<T> implements Sequence<T>, Indexable<T> {
+export class Deque<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Deque<T>;
@@ -416,7 +411,7 @@ export class Deque<T> implements Sequence<T>, Indexable<T> {
   [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
-export class Queue<T> implements Sequence<T> {
+export class Queue<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Queue<T>;
@@ -435,7 +430,7 @@ export class Queue<T> implements Sequence<T> {
   [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
-export class Stack<T> implements Sequence<T> {
+export class Stack<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Stack<T>;
