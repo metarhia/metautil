@@ -298,16 +298,12 @@ export class List<T> {
 
   append(...values: Array<T>): void;
   prepend(...values: Array<T>): void;
-  insert(index: number, value?: T, count?: number): void;
+  insert(index: number, ...values: Array<T>): void;
   delete(index: number, count?: number): void;
 
   at(index: number): T | undefined;
-  set(index: number, value?: T): void;
-  first(): T | undefined;
-  last(): T | undefined;
+  set(index: number, value: T): void;
 
-  tail(n?: number): List<T> | null;
-  init(n?: number): List<T> | null;
   drop(n: number): void;
   take(n: number): List<T> | null;
   slice(start?: number, end?: number): List<T> | null;
@@ -316,12 +312,11 @@ export class List<T> {
   swap(i: number, j: number): void;
   move(from: number, to: number): void;
   splitAt(index: number): { before: List<T>; after: List<T> };
-  groupBy<K>(key: (v: T) => K): Map<K, List<T>>;
+  groupBy<K>(getKey: (value: T) => K): Map<K, List<T>>;
 
   includes(value: T): boolean;
   indexOf(value: T): number;
   lastIndexOf(value: T): number;
-  equals(other: List<T>): boolean;
 
   remove(...values: Array<T>): number;
   replace(oldValue: T, newValue?: T): void;
@@ -340,10 +335,10 @@ export class List<T> {
   find(fn: (value: T, index: number) => boolean): T | undefined;
   findIndex(fn: (value: T, index: number) => boolean): number;
 
-  sum(fn?: (value: T) => number): number;
-  avg(fn?: (value: T) => number): number;
-  min(compare?: (a: T, b: T) => number): T | undefined;
-  max(compare?: (a: T, b: T) => number): T | undefined;
+  sum(fn: (value: T) => number): number;
+  avg(fn: (value: T) => number): number;
+  min(compare: (a: T, b: T) => number): T | undefined;
+  max(compare: (a: T, b: T) => number): T | undefined;
 
   isEmpty(): boolean;
   clear(): void;

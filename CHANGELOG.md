@@ -8,19 +8,21 @@
   doubly-linked cell: `create` / `append` / `prepend` / `unlink` /
   `seek` / `fromArray` / `copy` / `link`); removed `lib/linked-list.js`
 - Reworked `List` as a value/index facade over `ListNode`: factories
-  `of` / `fromArray` / `merge(...lists)`; `append` / `prepend` rest
-  args; bulk `remove(...values)` returns count; unified `rotate(n?)`
-  (default 1); trimmed API (no `fromIterable` / `range` / queue aliases /
-  lazy iterators / `distinct` / `shuffle` / `join` / async iterator /
+  `of` / `fromArray` / `merge(...lists)`; `append` / `prepend` /
+  `insert` rest args; bulk `remove(...values)` returns count; unified
+  `rotate(n?)` (default 1); trimmed API (no `first` / `last` / `tail` /
+  `init` / `equals` / `fromIterable` / `range` / queue aliases / lazy
+  iterators / `distinct` / `shuffle` / `join` / async iterator /
   separate left/right rotate helpers)
 - Hardened `List` / `ListNode`: non-integer indexes/counts are ignored
-  (no-op); `rotate` uses O(1) modulo; `tail` / `init` / `take` /
-  `slice` return `null` on invalid args; empty `clone` / `splitAt`
-  copy keep empty `List` (not `null`); `includes` / `remove` use
-  SameValueZero; `indexOf` / `lastIndexOf` / `equals` / `replace`
-  stay on strict `===`
+  (no-op); `rotate` uses O(1) modulo; `take` / `slice` return `null`
+  on invalid args, empty range, or empty source; empty `clone` /
+  `splitAt` copy keep empty `List` (not `null`); `includes` / `remove` /
+  `replace` use SameValueZero; `indexOf` / `lastIndexOf` stay on
+  strict `===`
 - Trimmed list typings: dropped unused `Sequence` / `Indexable`;
-  `ListNode` / `List` shapes match the runtime API
+  `ListNode` / `List` shapes match the runtime API; `set` value and
+  `sum` / `avg` / `min` / `max` callbacks are required in typings
 - Added `Trie` class: prefix tree for string keys with optional values;
   `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
   `isEmpty`; `undefined` is a valid stored value; typings included
