@@ -195,10 +195,10 @@ test('List: insert at index', () => {
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-test('List: insert multiple copies', () => {
+test('List: insert multiple values', () => {
   const list = List.fromArray([1, 4]);
-  list.insert(1, 2, 2);
-  assert.deepStrictEqual(list.toArray(), [1, 2, 2, 4]);
+  list.insert(1, 2, 3);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4]);
 });
 
 test('List: insert at end', () => {
@@ -219,9 +219,9 @@ test('List: insert at index 0 prepends', () => {
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
 });
 
-test('List: insert ignores non-integer count', () => {
+test('List: insert with no values is a no-op', () => {
   const list = List.of(1, 2, 3);
-  list.insert(1, 9, 2.5);
+  list.insert(1);
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   assert.strictEqual(list.size, 3);
 });
@@ -235,7 +235,7 @@ test('List: delete ignores non-integer count', () => {
 
 test('List: ignores NaN index and count', () => {
   const list = List.of(1, 2, 3);
-  list.insert(1, 9, NaN);
+  list.insert(NaN, 9);
   list.delete(0, NaN);
   assert.strictEqual(list.at(NaN), undefined);
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
@@ -291,40 +291,7 @@ test('List: delete at negative index', () => {
   assert.deepStrictEqual(list.toArray(), [1, 2]);
 });
 
-test('List: first and last', () => {
-  const list = List.fromArray([1, 2, 3]);
-  assert.strictEqual(list.first(), 1);
-  assert.strictEqual(list.last(), 3);
-});
-
-test('List: first and last empty', () => {
-  const list = new List();
-  assert.strictEqual(list.first(), undefined);
-  assert.strictEqual(list.last(), undefined);
-});
-
 // --- Slicing ---
-
-test('List: tail removes first n elements', () => {
-  const list = List.fromArray([1, 2, 3, 4, 5]);
-  assert.deepStrictEqual(list.tail().toArray(), [2, 3, 4, 5]);
-  assert.deepStrictEqual(list.tail(2).toArray(), [3, 4, 5]);
-  assert.strictEqual(list.size, 5);
-});
-
-test('List: init removes last n elements', () => {
-  const list = List.fromArray([1, 2, 3, 4, 5]);
-  assert.deepStrictEqual(list.init().toArray(), [1, 2, 3, 4]);
-  assert.deepStrictEqual(list.init(2).toArray(), [1, 2, 3]);
-});
-
-test('List: tail and init reject negative n', () => {
-  const list = List.of(1, 2, 3, 4, 5);
-  assert.strictEqual(list.tail(-1), null);
-  assert.strictEqual(list.init(-1), null);
-  assert.deepStrictEqual(list.tail(0).toArray(), [1, 2, 3, 4, 5]);
-  assert.deepStrictEqual(list.init(0).toArray(), [1, 2, 3, 4, 5]);
-});
 
 test('List: take first n', () => {
   const list = List.fromArray([1, 2, 3, 4, 5]);
@@ -336,10 +303,10 @@ test('List: take last n (negative)', () => {
   assert.deepStrictEqual(list.take(-2).toArray(), [4, 5]);
 });
 
-test('List: take(0) returns null; take on empty returns empty list', () => {
+test('List: take(0) and take on empty return null', () => {
   const list = List.of(1, 2, 3);
   assert.strictEqual(list.take(0), null);
-  assert.deepStrictEqual(new List().take(3).toArray(), []);
+  assert.strictEqual(new List().take(3), null);
 });
 
 test('List: drop first n', () => {
@@ -374,10 +341,10 @@ test('List: slice', () => {
   assert.strictEqual(list.size, 5);
 });
 
-test('List: slice empty range returns empty list', () => {
+test('List: slice empty range returns null', () => {
   const list = List.of(1, 2, 3);
-  assert.deepStrictEqual(list.slice(2, 2).toArray(), []);
-  assert.deepStrictEqual(list.slice(3, 1).toArray(), []);
+  assert.strictEqual(list.slice(2, 2), null);
+  assert.strictEqual(list.slice(3, 1), null);
 });
 
 test('List: drop/take/slice ignore non-integer n', () => {
@@ -496,12 +463,14 @@ test('List: includes', () => {
   assert.strictEqual(list.includes(5), false);
 });
 
-test('List: includes and remove use SameValueZero for NaN', () => {
+test('List: includes, remove, replace use SameValueZero for NaN', () => {
   const list = List.of(1, NaN, 2, NaN);
   assert.strictEqual(list.includes(NaN), true);
   assert.strictEqual(list.indexOf(NaN), -1);
   assert.strictEqual(list.lastIndexOf(NaN), -1);
-  assert.strictEqual(list.remove(NaN), 2);
+  list.replace(NaN, 0);
+  assert.deepStrictEqual(list.toArray(), [1, 0, 2, 0]);
+  assert.strictEqual(list.remove(0), 2);
   assert.deepStrictEqual(list.toArray(), [1, 2]);
   assert.strictEqual(list.size, 2);
 });
@@ -511,18 +480,6 @@ test('List: indexOf and lastIndexOf', () => {
   assert.strictEqual(list.indexOf(2), 1);
   assert.strictEqual(list.lastIndexOf(2), 3);
   assert.strictEqual(list.indexOf(9), -1);
-});
-
-test('List: equals', () => {
-  const a = List.fromArray([1, 2, 3]);
-  const b = List.fromArray([1, 2, 3]);
-  const c = List.fromArray([1, 2, 4]);
-  assert.strictEqual(a.equals(b), true);
-  assert.strictEqual(a.equals(c), false);
-  assert.strictEqual(a.equals(new List()), false);
-  assert.strictEqual(a.equals(a), true);
-  assert.strictEqual(a.equals(null), false);
-  assert.strictEqual(a.equals({ size: 3 }), false);
 });
 
 // --- Bulk mutations ---

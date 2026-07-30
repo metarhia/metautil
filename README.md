@@ -546,10 +546,10 @@ console.log(b.prev.value); // 1
 
 ## Class `List`
 
-A doubly-linked-list-backed sequence with a comprehensive API. All
-push/pop/append/prepend operations are O(1); index-based operations
-are O(n). Internally uses `ListNode`; the public API is value/index
-based and does not expose nodes. Indexes and counts must be integers
+A doubly-linked-list-backed sequence with a comprehensive API.
+`append` / `prepend` are O(1); index-based operations are O(n).
+Internally uses `ListNode`; the public API is value/index based and
+does not expose nodes. Indexes and counts must be integers
 (non-integers are ignored / no-op). Negative indexes count from the end
 (`at(-1)` is the last element).
 
@@ -564,24 +564,18 @@ based and does not expose nodes. Indexes and counts must be integers
 
 - `append(...values: Array<T>): void`
 - `prepend(...values: Array<T>): void`
-- `insert(index: number, value?: T, count?: number): void`
+- `insert(index: number, ...values: Array<T>): void`
 - `delete(index: number, count?: number): void`
 - `at(index: number): T | undefined`
-- `set(index: number, value?: T): void`
-- `first(): T | undefined`
-- `last(): T | undefined`
+- `set(index: number, value: T): void`
 
 **Slicing**
 
-- `tail(n?: number): List<T> | null` — all-but-first-n (default 1);
-  `n < 0` or non-integer → `null`
-- `init(n?: number): List<T> | null` — all-but-last-n (default 1);
-  `n < 0` or non-integer → `null`
 - `drop(n: number): void` — drops first n (or last |n| if negative)
 - `take(n: number): List<T> | null` — first n (or last |n| if negative);
-  non-integer or `0` → `null`
+  non-integer, `0`, or empty source → `null`
 - `slice(start?: number, end?: number): List<T> | null` — non-integer
-  bounds → `null`; empty range → empty list
+  bounds or empty range → `null`
 
 **Rearranging**
 
@@ -591,7 +585,7 @@ based and does not expose nodes. Indexes and counts must be integers
 - `move(from: number, to: number): void`
 - `splitAt(index: number): { before: List<T>; after: List<T> }` —
   non-integer index treated as `0`
-- `groupBy<K>(key: (v: T) => K): Map<K, List<T>>`
+- `groupBy<K>(getKey: (value: T) => K): Map<K, List<T>>`
 
 **Search / compare**
 
@@ -600,14 +594,12 @@ based and does not expose nodes. Indexes and counts must be integers
 - `indexOf(value: T): number` — strict `===` (like `Array.indexOf`;
   `NaN` → `-1`)
 - `lastIndexOf(value: T): number` — strict `===`
-- `equals(other: List<T>): boolean` — strict `===` on elements;
-  non-`List` → `false`; same reference short-circuits
 
 **Bulk mutations**
 
 - `remove(...values: Array<T>): number` — SameValueZero match; returns
   how many nodes were removed
-- `replace(oldValue: T, newValue?: T): void` — strict `===` match
+- `replace(oldValue: T, newValue?: T): void` — SameValueZero match
 
 **Ordering**
 
@@ -629,10 +621,10 @@ based and does not expose nodes. Indexes and counts must be integers
 
 **Stats**
 
-- `sum(fn?: (value: T) => number): number`
-- `avg(fn?: (value: T) => number): number`
-- `min(compare?: (a: T, b: T) => number): T | undefined`
-- `max(compare?: (a: T, b: T) => number): T | undefined`
+- `sum(fn: (value: T) => number): number`
+- `avg(fn: (value: T) => number): number`
+- `min(compare: (a: T, b: T) => number): T | undefined`
+- `max(compare: (a: T, b: T) => number): T | undefined`
 
 **Utility**
 
