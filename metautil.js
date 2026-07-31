@@ -17,6 +17,7 @@ module.exports = {
   ...require('./lib/struct.js'),
   ...require('./lib/units.js'),
   ...require('./lib/node.js'),
+  ...require('./lib/circular.js'),
   ...require('./lib/stack.js'),
   ...require('./lib/queue.js'),
   ...require('./lib/deque.js'),

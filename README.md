@@ -359,29 +359,33 @@ pool.release(item);
 All data structure classes share a common interoperability contract:
 every class has `static fromArray`, `toArray`, and `[Symbol.iterator]`,
 making any structure convertible to any other via `Array` as the universal
-interchange format. Most also expose `static fromIterable`.
-`Stack` and `Queue` are thin ADT facades over `Deque` (same circular buffer;
-flavored method names). `List` is a mutable sequence backed by a
-doubly-linked `ListNode` chain. `ListNode` is the low-level link cell
-(`create` / `append` / `prepend` / `unlink` / `seek` / `fromArray` /
-`copy` / `link`) for custom structures that own their own head/tail/size.
-`ConsList` is an immutable cons-list ADT with structural sharing.
-`Trie` is a prefix tree for string keys with optional associated values.
+interchange format. Some also expose `static fromIterable` (e.g.
+`ConsList`). `CircularBuffer` is a growable ring with Array-like end ops
+(`unshift` / `push` / `shift` / `pop`) and `at`. `Deque` mirrors those
+end ops; `Queue` (`enqueue` / `dequeue` / `peek`) and `Stack` (`push` /
+`pop` / `peek`) are thin ADT facades over the same buffer. `List` is a
+mutable sequence backed by a doubly-linked `ListNode` chain. `ListNode`
+is the low-level link cell (`create` / `append` / `prepend` / `unlink` /
+`seek` / `fromArray` / `copy` / `link`) for custom structures that own
+their own head/tail/size. `ConsList` is an immutable cons-list ADT with
+structural sharing. `Trie` is a prefix tree for string keys with optional
+associated values.
 
-| Class      | ADT            | Backed by       | Ends | Index |
-| ---------- | -------------- | --------------- | ---- | ----- |
-| `Deque`    | double-ended   | circular buffer | O(1) | O(1)  |
-| `Queue`    | FIFO           | `Deque`         | O(1) | —     |
-| `Stack`    | LIFO           | `Deque`         | O(1) | —     |
-| `List`     | sequence       | `ListNode`      | O(1) | O(n)  |
-| `ConsList` | immutable cons | shared nodes    | O(1) | O(n)  |
-| `Trie`     | prefix map     | character nodes | —    | —     |
+| Class            | ADT            | Backed by        | Ends | Index |
+| ---------------- | -------------- | ---------------- | ---- | ----- |
+| `CircularBuffer` | ring buffer    | array            | O(1) | O(1)  |
+| `Deque`          | double-ended   | `CircularBuffer` | O(1) | —     |
+| `Queue`          | FIFO           | `CircularBuffer` | O(1) | —     |
+| `Stack`          | LIFO           | `CircularBuffer` | O(1) | —     |
+| `List`           | sequence       | `ListNode`       | O(1) | O(n)  |
+| `ConsList`       | immutable cons | shared nodes     | O(1) | O(n)  |
+| `Trie`           | prefix map     | character nodes  | —    | —     |
 
 ```js
-// Any structure can feed any other via Array / iterables
+// Any structure can feed any other via Array
 const list = List.fromArray([1, 2, 3, 4, 5]);
-const queue = Queue.fromIterable(list.filter((n) => n % 2 === 0));
-const deque = Deque.fromIterable(queue);
+const queue = Queue.fromArray(list.filter((n) => n % 2 === 0).toArray());
+const deque = Deque.fromArray(queue.toArray());
 const cons = ConsList.fromArray(deque.toArray());
 ```
 
@@ -656,89 +660,78 @@ console.log(playlist.toArray()); // ['outro', 'intro', 'verse', 'chorus']
 console.log(playlist.find((track) => track.startsWith('ch'))); // 'chorus'
 ```
 
-## Class `Deque`
+## Class `CircularBuffer`
 
-Double-ended queue backed by a growable circular buffer — the shared
-engine for `Stack` and `Queue`. Supports O(1) ops at both ends and O(1)
-index-based access. Method names stay end-oriented (`prepend` / `append`
-/ `dequeue` / `pop`).
+Growable circular (ring) buffer with power-of-two capacity. Shared engine
+for `Deque`, `Queue`, and `Stack`. O(1) ops at both ends via masked index
+wrap — Array-like names: `unshift` / `push` / `shift` / `pop`.
 
 - `constructor()`
-- `static fromArray<T>(values: Array<T>): Deque<T>`
-- `static fromIterable<T>(iterable: Iterable<T>): Deque<T>`
-- `static range(start: number, end: number, step?: number): Deque<number>`
-- `prepend(value: T): void`
-- `append(value: T): void`
-- `dequeue(): T | undefined` — removes and returns the front element
-- `pop(): T | undefined` — removes and returns the back element
-- `at(index: number): T | undefined`
-- `set(index: number, value: T): void`
-- `first(): T | undefined`
-- `last(): T | undefined`
+- `static fromArray<T>(values: Array<T>): CircularBuffer<T>`
+- `unshift(value: T): void` — insert at the front
+- `push(value: T): void` — insert at the back
+- `shift(): T | undefined` — remove and return the front element
+- `pop(): T | undefined` — remove and return the back element
+- `at(index: number): T | undefined` — Array-like index access (`-1` is last)
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
-- `equals(other: Deque<T>): boolean`
-- `rotateLeft(steps?: number): void`
-- `rotateRight(steps?: number): void`
 - `clear(): void`
 - `toArray(): Array<T>`
-- `clone(): Deque<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
-- `[Symbol.asyncIterator](): AsyncIterableIterator<T>`
 - `size: number`
 
 ```js
-const deque = Deque.range(1, 5);
-// [1, 2, 3, 4, 5]
-deque.prepend(0);
-deque.append(6);
-console.log(deque.dequeue()); // 0
-console.log(deque.pop()); // 6
-deque.rotateLeft(2);
-console.log(deque.toArray()); // [3, 4, 5, 1, 2]
+const buf = CircularBuffer.fromArray([1, 2, 3]);
+buf.unshift(0);
+buf.push(4);
+console.log(buf.shift()); // 0
+console.log(buf.pop()); // 4
+console.log(buf.toArray()); // [1, 2, 3]
 ```
 
-**Use case: sliding window maximum**
+## Class `Deque`
+
+Double-ended queue facade over `CircularBuffer`. Supports O(1) ops at
+both ends with Array-like names (`unshift` / `push` / `shift` / `pop`).
+
+- `constructor()`
+- `static fromArray<T>(values: Array<T>): Deque<T>`
+- `unshift(value: T): void` — insert at the front
+- `push(value: T): void` — insert at the back
+- `shift(): T | undefined` — remove and return the front element
+- `pop(): T | undefined` — remove and return the back element
+- `isEmpty(): boolean`
+- `includes(value: T): boolean`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `CircularBuffer`
+- `size: number`
 
 ```js
-// Monotonic deque of indices — the front always holds the current max
-function maxSlidingWindow(nums, k) {
-  const deque = new Deque();
-  const result = [];
-  for (let i = 0; i < nums.length; i++) {
-    if (!deque.isEmpty() && deque.first() <= i - k) deque.dequeue();
-    while (!deque.isEmpty() && nums[deque.last()] <= nums[i]) deque.pop();
-    deque.append(i);
-    if (i >= k - 1) result.push(nums[deque.first()]);
-  }
-  return result;
-}
-
-console.log(maxSlidingWindow([1, 3, -1, -3, 5, 3, 6, 7], 3));
-// [3, 3, 5, 5, 6, 7]
+const deque = Deque.fromArray([1, 2, 3, 4, 5]);
+deque.unshift(0);
+deque.push(6);
+console.log(deque.shift()); // 0
+console.log(deque.pop()); // 6
+console.log(deque.toArray()); // [1, 2, 3, 4, 5]
 ```
 
 ## Class `Queue`
 
-FIFO (first in, first out) facade over `Deque`: `enqueue` appends at the
-back, `dequeue` / `peek` operate at the front. Same circular buffer and
-O(1) costs as `Deque`.
+FIFO (first in, first out) facade over `CircularBuffer`: `enqueue`
+appends at the back, `dequeue` / `peek` operate at the front. Same O(1)
+end costs as `CircularBuffer`.
 
 - `constructor()`
 - `static fromArray<T>(values: Array<T>): Queue<T>`
-- `static fromIterable<T>(iterable: Iterable<T>): Queue<T>`
 - `enqueue(value: T): void` — appends at the back
 - `dequeue(): T | undefined` — removes and returns the front
-- `peek(): T | undefined` — front element (`first`), does not remove
-- `first(): T | undefined`
-- `last(): T | undefined`
+- `peek(): T | undefined` — front element, does not remove
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
 - `clear(): void`
 - `toArray(): Array<T>`
-- `clone(): Queue<T>`
-- `[Symbol.iterator](): IterableIterator<T>` — delegates to `Deque`
-- `[Symbol.asyncIterator](): AsyncIterableIterator<T>` — delegates to `Deque`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `CircularBuffer`
 - `size: number`
 
 ```js
@@ -746,8 +739,8 @@ const queue = new Queue();
 queue.enqueue('a');
 queue.enqueue('b');
 queue.enqueue('c');
+console.log(queue.peek()); // 'a'
 console.log(queue.dequeue()); // 'a'
-console.log(queue.peek()); // 'b'
 console.log(queue.size); // 2
 ```
 
@@ -775,24 +768,19 @@ console.log(order); // [1, 2, 3, 4]
 
 ## Class `Stack`
 
-LIFO (last in, first out) facade over `Deque`: `push` / `pop` / `peek`
-operate at the back. Same circular buffer and O(1) end costs as `Deque`.
+LIFO (last in, first out) facade over `CircularBuffer`: `push` / `pop` /
+`peek` operate at the back. Same O(1) end costs as `CircularBuffer`.
 
 - `constructor()`
 - `static fromArray<T>(values: Array<T>): Stack<T>`
-- `static fromIterable<T>(iterable: Iterable<T>): Stack<T>`
 - `push(value: T): void` — appends at the back
 - `pop(): T | undefined` — removes and returns the back
-- `peek(): T | undefined` — back element (`last`), does not remove
-- `first(): T | undefined` — bottom (oldest)
-- `last(): T | undefined` — top (same as `peek`)
+- `peek(): T | undefined` — back element, does not remove
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
 - `clear(): void`
 - `toArray(): Array<T>`
-- `clone(): Stack<T>`
-- `[Symbol.iterator](): IterableIterator<T>` — delegates to `Deque`
-- `[Symbol.asyncIterator](): AsyncIterableIterator<T>` — delegates to `Deque`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `CircularBuffer`
 - `size: number`
 
 ```js

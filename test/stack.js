@@ -35,15 +35,6 @@ test('Stack: peek empty returns undefined', () => {
   assert.strictEqual(stack.peek(), undefined);
 });
 
-test('Stack: first and last', () => {
-  const stack = new Stack();
-  stack.push(1);
-  stack.push(2);
-  stack.push(3);
-  assert.strictEqual(stack.first(), 1);
-  assert.strictEqual(stack.last(), 3);
-});
-
 test('Stack: isEmpty', () => {
   const stack = new Stack();
   assert.strictEqual(stack.isEmpty(), true);
@@ -81,17 +72,6 @@ test('Stack: toArray', () => {
   assert.strictEqual(stack.size, 3);
 });
 
-test('Stack: clone', () => {
-  const stack = new Stack();
-  stack.push(1);
-  stack.push(2);
-  const clone = stack.clone();
-  assert.strictEqual(clone.size, 2);
-  clone.push(3);
-  assert.strictEqual(stack.size, 2);
-  assert.strictEqual(clone.size, 3);
-});
-
 test('Stack: fromArray', () => {
   const stack = Stack.fromArray([1, 2, 3]);
   assert.strictEqual(stack.size, 3);
@@ -99,22 +79,7 @@ test('Stack: fromArray', () => {
   assert.strictEqual(stack.pop(), 2);
 });
 
-test('Stack: fromIterable', () => {
-  const stack = Stack.fromIterable(new Set([10, 20, 30]));
-  assert.strictEqual(stack.size, 3);
-  assert.strictEqual(stack.includes(10), true);
-  assert.strictEqual(stack.includes(20), true);
-  assert.strictEqual(stack.includes(30), true);
-});
-
 test('Stack: Symbol.iterator', () => {
   const stack = Stack.fromArray([1, 2, 3]);
   assert.deepStrictEqual([...stack], [1, 2, 3]);
-});
-
-test('Stack: Symbol.asyncIterator', async () => {
-  const stack = Stack.fromArray([1, 2, 3]);
-  const values = [];
-  for await (const value of stack) values.push(value);
-  assert.deepStrictEqual(values, [1, 2, 3]);
 });
