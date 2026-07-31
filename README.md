@@ -589,17 +589,15 @@ does not expose nodes. Indexes and counts must be integers
 
 **Search / compare**
 
-- `includes(value: T): boolean` — SameValueZero (like `Array.includes`;
-  finds `NaN`)
-- `indexOf(value: T): number` — strict `===` (like `Array.indexOf`;
-  `NaN` → `-1`)
+- `includes(value: T): boolean` — strict `===` (`NaN` → `false`)
+- `indexOf(value: T): number` — strict `===` (`NaN` → `-1`)
 - `lastIndexOf(value: T): number` — strict `===`
 
 **Bulk mutations**
 
-- `remove(...values: Array<T>): number` — SameValueZero match; returns
+- `remove(...values: Array<T>): number` — strict `===` match; returns
   how many nodes were removed
-- `replace(oldValue: T, newValue?: T): void` — SameValueZero match
+- `replace(oldValue: T, newValue?: T): void` — strict `===` match
 
 **Ordering**
 
