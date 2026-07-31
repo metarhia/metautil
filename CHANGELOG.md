@@ -17,12 +17,11 @@
 - Hardened `List` / `ListNode`: non-integer indexes/counts are ignored
   (no-op); `rotate` uses O(1) modulo; `take` / `slice` return `null`
   on invalid args, empty range, or empty source; empty `clone` /
-  `splitAt` copy keep empty `List` (not `null`); `includes` / `remove` /
-  `replace` use SameValueZero; `indexOf` / `lastIndexOf` stay on
-  strict `===`
+  `splitAt` copy keep empty `List` (not `null`); `includes` /
+  `indexOf` / `lastIndexOf` / `remove` / `replace` use strict `===`
 - Trimmed list typings: dropped unused `Sequence` / `Indexable`;
-  `ListNode` / `List` shapes match the runtime API; `set` value and
-  `sum` / `avg` / `min` / `max` callbacks are required in typings
+  `ListNode` / `List` shapes match the runtime API; `set` value is
+  required; `sum` / `avg` / `min` / `max` callbacks are optional
 - Added `Trie` class: prefix tree for string keys with optional values;
   `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
   `isEmpty`; `undefined` is a valid stored value; typings included
