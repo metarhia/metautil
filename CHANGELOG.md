@@ -36,13 +36,16 @@
   `uncons(list)` are functional aliases of `prepend` / instance
   `uncons`; typings: `empty` as `ConsList<never>`, `Uncons<T>`, and
   dual `reduce` overloads
-- Added `Deque` class: double-ended queue backed by a circular buffer
-  with O(1) ops at both ends and O(1) index access; shared engine for
-  `Stack` and `Queue`
-- Added `Queue` class: FIFO facade over `Deque` (`enqueue` / `dequeue` /
-  `peek` at the front)
-- Added `Stack` class: LIFO facade over `Deque` (`push` / `pop` / `peek`
-  at the back)
+- Added `CircularBuffer` class: growable ring buffer with O(1) end ops
+  (`unshift` / `push` / `shift` / `pop`), Array-like `at`, `fromArray`,
+  `isEmpty` / `includes` / `clear` / `toArray` / iterator; shared engine
+  for `Deque`, `Queue`, and `Stack`
+- Added `Deque` class: double-ended facade over `CircularBuffer` with the
+  same Array-like end ops (`unshift` / `push` / `shift` / `pop`)
+- Added `Queue` class: FIFO facade over `CircularBuffer` (`enqueue` /
+  `dequeue` / `peek`)
+- Added `Stack` class: LIFO facade over `CircularBuffer` (`push` / `pop` /
+  `peek`)
 
 ## [5.5.2][] - 2026-03-15
 
