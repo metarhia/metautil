@@ -18,6 +18,7 @@ test('Error', async () => {
   assert(e1 instanceof Error);
   assert(e1 instanceof metautil.Error);
   assert.strictEqual(e1.message, 'Custom error');
+  assert.strictEqual(e1.name, 'Error');
   assert.strictEqual(e1.code, 1001);
   assert.strictEqual(e1.cause, undefined);
 
@@ -32,8 +33,23 @@ test('Error', async () => {
   const e4 = new metautil.Error('Something went wrong', 'ERRCODE');
   assert.strictEqual(e4.code, 'ERRCODE');
 
+  const eName = new metautil.Error('Timeout aborted', { name: 'AbortError' });
+  assert.strictEqual(eName.message, 'Timeout aborted');
+  assert.strictEqual(eName.name, 'AbortError');
+  assert.strictEqual(eName.code, undefined);
+
+  const eNameCode = new metautil.Error('Stopped', {
+    name: 'AbortError',
+    code: 'ABORT',
+    cause: e1,
+  });
+  assert.strictEqual(eNameCode.name, 'AbortError');
+  assert.strictEqual(eNameCode.code, 'ABORT');
+  assert.strictEqual(eNameCode.cause, e1);
+
   const de1 = new metautil.DomainError('ENOUSER');
   assert.strictEqual(de1.message, 'Domain error');
+  assert.strictEqual(de1.name, 'DomainError');
   assert.strictEqual(de1.code, 'ENOUSER');
 
   const e5 = de1.toError(errors);
