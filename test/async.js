@@ -15,9 +15,9 @@ test('Async: Abortable timeout', async () => {
   try {
     await timeout(10);
     assert.ifError(new Error('Should not be executed'));
-  } catch (err) {
-    assert.strictEqual(err.code, 'ETIMEOUT');
-    assert.strictEqual(err.message, 'Timeout of 10ms reached');
+  } catch (error) {
+    assert.strictEqual(error.code, 'ETIMEOUT');
+    assert.strictEqual(error.message, 'Timeout of 10ms reached');
   }
   const ac = new AbortController();
   setTimeout(() => {
@@ -26,8 +26,21 @@ test('Async: Abortable timeout', async () => {
   try {
     await timeout(100, ac.signal);
     assert.ifError(new Error('Should not be executed'));
-  } catch (err) {
-    assert.strictEqual(err.message, 'Timeout aborted');
+  } catch (error) {
+    assert.strictEqual(error.name, 'AbortError');
+    assert.strictEqual(error.message, 'Timeout aborted');
+  }
+});
+
+test('Async: Already aborted timeout', async () => {
+  const ac = new AbortController();
+  ac.abort();
+  try {
+    await timeout(100, ac.signal);
+    assert.ifError(new Error('Should not be executed'));
+  } catch (error) {
+    assert.strictEqual(error.name, 'AbortError');
+    assert.strictEqual(error.message, 'Timeout aborted');
   }
 });
 
@@ -45,8 +58,21 @@ test('Async: Abortable delay', async () => {
   try {
     await delay(100, ac.signal);
     assert.ifError(new Error('Should not be executed'));
-  } catch (err) {
-    assert.strictEqual(err.message, 'Delay aborted');
+  } catch (error) {
+    assert.strictEqual(error.name, 'AbortError');
+    assert.strictEqual(error.message, 'Delay aborted');
+  }
+});
+
+test('Async: Already aborted delay', async () => {
+  const ac = new AbortController();
+  ac.abort();
+  try {
+    await delay(100, ac.signal);
+    assert.ifError(new Error('Should not be executed'));
+  } catch (error) {
+    assert.strictEqual(error.name, 'AbortError');
+    assert.strictEqual(error.message, 'Delay aborted');
   }
 });
 
@@ -55,9 +81,9 @@ test('Async: timeoutify', async () => {
     const request = delay(1000);
     await timeoutify(request, 10);
     assert.ifError(new Error('Should not be executed'));
-  } catch (err) {
-    assert.strictEqual(err.code, 'ETIMEOUT');
-    assert.strictEqual(err.message, 'Timeout of 10ms reached');
+  } catch (error) {
+    assert.strictEqual(error.code, 'ETIMEOUT');
+    assert.strictEqual(error.message, 'Timeout of 10ms reached');
   }
   try {
     const request = delay(10);
