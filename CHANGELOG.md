@@ -17,12 +17,11 @@
 - Hardened `List` / `ListNode`: non-integer indexes/counts are ignored
   (no-op); `rotate` uses O(1) modulo; `take` / `slice` return `null`
   on invalid args, empty range, or empty source; empty `clone` /
-  `splitAt` copy keep empty `List` (not `null`); `includes` / `remove` /
-  `replace` use SameValueZero; `indexOf` / `lastIndexOf` stay on
-  strict `===`
+  `splitAt` copy keep empty `List` (not `null`); `includes` /
+  `indexOf` / `lastIndexOf` / `remove` / `replace` use strict `===`
 - Trimmed list typings: dropped unused `Sequence` / `Indexable`;
-  `ListNode` / `List` shapes match the runtime API; `set` value and
-  `sum` / `avg` / `min` / `max` callbacks are required in typings
+  `ListNode` / `List` shapes match the runtime API; `set` value is
+  required; `sum` / `avg` / `min` / `max` callbacks are optional
 - Added `Trie` class: prefix tree for string keys with optional values;
   `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
   `isEmpty`; `undefined` is a valid stored value; typings included
@@ -36,13 +35,16 @@
   `uncons(list)` are functional aliases of `prepend` / instance
   `uncons`; typings: `empty` as `ConsList<never>`, `Uncons<T>`, and
   dual `reduce` overloads
-- Added `Deque` class: double-ended queue backed by a circular buffer
-  with O(1) ops at both ends and O(1) index access; shared engine for
-  `Stack` and `Queue`
-- Added `Queue` class: FIFO facade over `Deque` (`enqueue` / `dequeue` /
-  `peek` at the front)
-- Added `Stack` class: LIFO facade over `Deque` (`push` / `pop` / `peek`
-  at the back)
+- Added `CircularBuffer` class: growable ring buffer with O(1) end ops
+  (`unshift` / `push` / `shift` / `pop`), Array-like `at`, `fromArray`,
+  `isEmpty` / `includes` / `clear` / `toArray` / iterator; shared engine
+  for `Deque`, `Queue`, and `Stack`
+- Added `Deque` class: double-ended facade over `CircularBuffer` with the
+  same Array-like end ops (`unshift` / `push` / `shift` / `pop`)
+- Added `Queue` class: FIFO facade over `CircularBuffer` (`enqueue` /
+  `dequeue` / `peek`)
+- Added `Stack` class: LIFO facade over `CircularBuffer` (`push` / `pop` /
+  `peek`)
 - Added `UnrolledList` class: high-throughput FIFO backed by pooled
   fixed-size unrolled nodes (`nodeSize` / `poolSize` options);
   `enqueue` / `dequeue` / `size`

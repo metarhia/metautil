@@ -380,49 +380,49 @@ export class ConsList<T> implements Iterable<T> {
 export function cons<T>(value: T, tail?: ConsList<T>): ConsList<T>;
 export function uncons<T>(list: ConsList<T>): Uncons<T>;
 
+export class CircularBuffer<T> {
+  readonly size: number;
+  constructor();
+  static fromArray<T>(values: Array<T>): CircularBuffer<T>;
+  unshift(value: T): void;
+  push(value: T): void;
+  shift(): T | undefined;
+  pop(): T | undefined;
+  at(index: number): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+}
+
 export class Deque<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Deque<T>;
-  static fromIterable<T>(iterable: Iterable<T>): Deque<T>;
-  static range(start: number, end: number, step?: number): Deque<number>;
-  prepend(value: T): void;
-  append(value: T): void;
-  dequeue(): T | undefined;
+  unshift(value: T): void;
+  push(value: T): void;
+  shift(): T | undefined;
   pop(): T | undefined;
-  at(index: number): T | undefined;
-  set(index: number, value: T): void;
-  first(): T | undefined;
-  last(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
-  equals(other: Deque<T>): boolean;
-  rotateLeft(steps?: number): void;
-  rotateRight(steps?: number): void;
   clear(): void;
   toArray(): Array<T>;
-  clone(): Deque<T>;
   [Symbol.iterator](): IterableIterator<T>;
-  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export class Queue<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Queue<T>;
-  static fromIterable<T>(iterable: Iterable<T>): Queue<T>;
   enqueue(value: T): void;
   dequeue(): T | undefined;
   peek(): T | undefined;
-  first(): T | undefined;
-  last(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
   clear(): void;
   toArray(): Array<T>;
-  clone(): Queue<T>;
   [Symbol.iterator](): IterableIterator<T>;
-  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 export interface UnrolledListOptions {
@@ -441,19 +441,14 @@ export class Stack<T> {
   readonly size: number;
   constructor();
   static fromArray<T>(values: Array<T>): Stack<T>;
-  static fromIterable<T>(iterable: Iterable<T>): Stack<T>;
   push(value: T): void;
   pop(): T | undefined;
   peek(): T | undefined;
-  first(): T | undefined;
-  last(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
   clear(): void;
   toArray(): Array<T>;
-  clone(): Stack<T>;
   [Symbol.iterator](): IterableIterator<T>;
-  [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
 // Submodule: trie

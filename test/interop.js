@@ -18,8 +18,7 @@ test('Interop: Stack → Array → Queue', () => {
 test('Interop: Queue → Array → Deque', () => {
   const queue = Queue.fromArray([10, 20, 30]);
   const deque = Deque.fromArray(queue.toArray());
-  assert.strictEqual(deque.first(), 10);
-  assert.strictEqual(deque.last(), 30);
+  assert.deepStrictEqual(deque.toArray(), [10, 20, 30]);
 });
 
 test('Interop: Deque → Array → List', () => {
@@ -48,27 +47,26 @@ test('Interop: List → Array → ConsList', () => {
   assert.deepStrictEqual(cons.toArray(), [1, 2, 3]);
 });
 
-// --- Using iterables across structures ---
+// --- Using iterables / arrays across structures ---
 
-test('Interop: Stack.fromIterable(List)', () => {
+test('Interop: Stack.fromArray(List.toArray())', () => {
   const list = List.fromArray([7, 8, 9]);
-  const stack = Stack.fromIterable(list);
+  const stack = Stack.fromArray(list.toArray());
   assert.strictEqual(stack.size, 3);
-  assert.strictEqual(stack.peek(), 9);
+  assert.strictEqual(stack.pop(), 9);
 });
 
-test('Interop: Queue.fromIterable(Deque)', () => {
+test('Interop: Queue.fromArray(Deque.toArray())', () => {
   const deque = Deque.fromArray([100, 200, 300]);
-  const queue = Queue.fromIterable(deque);
+  const queue = Queue.fromArray(deque.toArray());
   assert.strictEqual(queue.size, 3);
   assert.strictEqual(queue.dequeue(), 100);
 });
 
-test('Interop: Deque.fromIterable(ConsList)', () => {
+test('Interop: Deque.fromArray(ConsList.toArray())', () => {
   const cons = ConsList.of(1, 2, 3, 4);
-  const deque = Deque.fromIterable(cons);
-  deque.rotateLeft(1);
-  assert.deepStrictEqual(deque.toArray(), [2, 3, 4, 1]);
+  const deque = Deque.fromArray(cons.toArray());
+  assert.deepStrictEqual(deque.toArray(), [1, 2, 3, 4]);
 });
 
 test('Interop: List.fromArray(Stack.toArray())', () => {
@@ -94,7 +92,7 @@ test('Interop: ConsList.fromIterable(List)', () => {
 test('Interop: filter from List, collect into Queue', () => {
   const numbers = List.fromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   const evens = numbers.filter((n) => n % 2 === 0);
-  const queue = Queue.fromIterable(evens);
+  const queue = Queue.fromArray(evens.toArray());
   assert.strictEqual(queue.size, 5);
   assert.strictEqual(queue.dequeue(), 2);
   assert.strictEqual(queue.dequeue(), 4);
@@ -108,8 +106,8 @@ test('Interop: merge multiple structures via List.merge', () => {
   assert.deepStrictEqual(merged.toArray(), [1, 2, 3, 4, 5, 6]);
 });
 
-test('Interop: Deque.range consumed by ConsList', () => {
-  const deque = Deque.range(1, 4);
+test('Interop: Deque.fromArray consumed by ConsList', () => {
+  const deque = Deque.fromArray([1, 2, 3, 4]);
   const cons = ConsList.fromIterable(deque);
   assert.strictEqual(cons.size, 4);
   assert.strictEqual(cons.value, 1);

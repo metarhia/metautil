@@ -463,18 +463,6 @@ test('List: includes', () => {
   assert.strictEqual(list.includes(5), false);
 });
 
-test('List: includes, remove, replace use SameValueZero for NaN', () => {
-  const list = List.of(1, NaN, 2, NaN);
-  assert.strictEqual(list.includes(NaN), true);
-  assert.strictEqual(list.indexOf(NaN), -1);
-  assert.strictEqual(list.lastIndexOf(NaN), -1);
-  list.replace(NaN, 0);
-  assert.deepStrictEqual(list.toArray(), [1, 0, 2, 0]);
-  assert.strictEqual(list.remove(0), 2);
-  assert.deepStrictEqual(list.toArray(), [1, 2]);
-  assert.strictEqual(list.size, 2);
-});
-
 test('List: indexOf and lastIndexOf', () => {
   const list = List.fromArray([1, 2, 3, 2, 1]);
   assert.strictEqual(list.indexOf(2), 1);
