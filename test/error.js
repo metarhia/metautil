@@ -52,6 +52,15 @@ test('Error', async () => {
   assert.strictEqual(de1.name, 'DomainError');
   assert.strictEqual(de1.code, 'ENOUSER');
 
+  const deName = new metautil.DomainError('ENOUSER', { name: 'UserError' });
+  assert.strictEqual(deName.name, 'UserError');
+  assert.strictEqual(deName.code, 'ENOUSER');
+
+  const eNull = new metautil.Error('Null options', null);
+  assert.strictEqual(eNull.message, 'Null options');
+  assert.strictEqual(eNull.name, 'Error');
+  assert.strictEqual(eNull.code, null);
+
   const e5 = de1.toError(errors);
   assert.strictEqual(e5.message, 'User not found');
   assert.strictEqual(e5.code, 'ENOUSER');
