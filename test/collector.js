@@ -81,6 +81,7 @@ test('Collector: set after done', async () => {
 
 test('Collector: timeout', async () => {
   const dc = collect(['key1'], { timeout: 50 });
+  assert.strictEqual(dc.timeout, 50);
 
   setTimeout(() => {
     dc.set('key1', 1);

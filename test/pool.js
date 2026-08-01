@@ -20,9 +20,10 @@ test('Pool: add + next', () => {
   assert.strictEqual(pool.next(), obj1);
 });
 
-test('Pool: empty', () => {
+test('Pool: empty capture', async () => {
   const pool = new metautil.Pool();
   assert.strictEqual(pool.next(), null);
+  assert.strictEqual(await pool.capture(), null);
 });
 
 test('Pool: capture + release', async () => {
@@ -37,6 +38,7 @@ test('Pool: capture + release', async () => {
   assert.strictEqual(pool.isFree(obj2), true);
 
   const lease = await pool.capture();
+  assert(lease instanceof metautil.Lease);
   assert.strictEqual(lease.resource, obj1);
   assert.strictEqual(pool.isFree(obj1), false);
   assert.strictEqual(pool.next(), obj2);
