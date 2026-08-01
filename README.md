@@ -382,8 +382,8 @@ unrolled nodes; it does not implement the Array interoperability helpers.
 | ---------------- | -------------- | ---------------- | ---- | ----- |
 | `CircularBuffer` | ring buffer    | array            | O(1) | O(1)  |
 | `Deque`          | double-ended   | `CircularBuffer` | O(1) | O(1)  |
-| `Queue`          | FIFO           | `Deque`          | O(1) | —     |
-| `Stack`          | LIFO           | `Deque`          | O(1) | —     |
+| `Queue`          | FIFO           | `CircularBuffer` | O(1) | —     |
+| `Stack`          | LIFO           | `CircularBuffer` | O(1) | —     |
 | `UnrolledList`   | FIFO           | pooled unrolled  | O(1) | —     |
 | `List`           | sequence       | `ListNode`       | O(1) | O(n)  |
 | `ConsList`       | immutable cons | shared nodes     | O(1) | O(n)  |
