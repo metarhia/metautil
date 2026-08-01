@@ -356,20 +356,27 @@ pool.release(item);
 
 ## Data structures
 
-All data structure classes share a common interoperability contract:
-every class has `static fromArray`, `toArray`, and `[Symbol.iterator]`,
-making any structure convertible to any other via `Array` as the universal
-interchange format. Some also expose `static fromIterable` (e.g.
-`ConsList`). `CircularBuffer` is a growable ring with Array-like end ops
-(`unshift` / `push` / `shift` / `pop`) and `at`. `Deque` mirrors those
-end ops; `Queue` (`enqueue` / `dequeue` / `peek`) and `Stack` (`push` /
-`pop` / `peek`) are thin ADT facades over the same buffer. `List` is a
-mutable sequence backed by a doubly-linked `ListNode` chain. `ListNode`
-is the low-level link cell (`create` / `append` / `prepend` / `unlink` /
-`seek` / `fromArray` / `copy` / `link`) for custom structures that own
-their own head/tail/size. `ConsList` is an immutable cons-list ADT with
-structural sharing. `Trie` is a prefix tree for string keys with optional
-associated values.
+Most data structure classes share a common interoperability contract:
+`static fromArray`, `toArray`, and `[Symbol.iterator]`, making structures
+convertible through `Array` as the universal interchange format. Several
+also expose `static fromIterable`.
+
+`CircularBuffer` is a growable ring with Array-like end operations
+(`unshift` / `push` / `shift` / `pop`) and random access through `at`.
+`Deque` exposes the same double-ended operations over `CircularBuffer`.
+`Queue` (`enqueue` / `dequeue` / `peek`) and `Stack`
+(`push` / `pop` / `peek`) are thin ADT facades over `Deque`, sharing the
+same circular-buffer storage.
+
+`List` is a mutable sequence backed by a doubly-linked `ListNode` chain.
+`ListNode` is the low-level link cell (`create` / `append` / `prepend` /
+`unlink` / `seek` / `fromArray` / `copy` / `link`) for custom structures
+that own their own head, tail, and size.
+
+`ConsList` is an immutable cons-list ADT with structural sharing.
+`Trie` is a prefix tree for string keys with optional associated values.
+`UnrolledList` is a specialized high-throughput FIFO backed by pooled
+unrolled nodes; it does not implement the Array interoperability helpers.
 
 | Class            | ADT            | Backed by        | Ends | Index |
 | ---------------- | -------------- | ---------------- | ---- | ----- |
@@ -377,12 +384,13 @@ associated values.
 | `Deque`          | double-ended   | `CircularBuffer` | O(1) | —     |
 | `Queue`          | FIFO           | `CircularBuffer` | O(1) | —     |
 | `Stack`          | LIFO           | `CircularBuffer` | O(1) | —     |
+| `UnrolledList`   | FIFO           | pooled unrolled  | O(1) | —     |
 | `List`           | sequence       | `ListNode`       | O(1) | O(n)  |
 | `ConsList`       | immutable cons | shared nodes     | O(1) | O(n)  |
 | `Trie`           | prefix map     | character nodes  | —    | —     |
 
 ```js
-// Any structure can feed any other via Array
+// Any interoperable structure can feed any other through Array
 const list = List.fromArray([1, 2, 3, 4, 5]);
 const queue = Queue.fromArray(list.filter((n) => n % 2 === 0).toArray());
 const deque = Deque.fromArray(queue.toArray());
@@ -764,6 +772,46 @@ while (!queue.isEmpty()) {
   for (const child of node.children) queue.enqueue(child);
 }
 console.log(order); // [1, 2, 3, 4]
+```
+
+## Class `UnrolledList`
+
+High-throughput FIFO queue backed by a singly-linked chain of fixed-size
+array nodes, with an internal pool that reuses drained nodes. Prefer this
+over `Queue` when enqueue/dequeue volume is high and you do not need
+index access, peek, or Array interop.
+
+- `constructor(options?: UnrolledListOptions)`
+  - `options.nodeSize?: number` — items per node (default `1024`)
+  - `options.poolSize?: number` — max pooled drained nodes (default `2`)
+- `enqueue(item: T): void` — append at the write end
+- `dequeue(): T | undefined` — remove and return from the read end
+- `size: number`
+
+```js
+const list = new UnrolledList({ nodeSize: 64, poolSize: 4 });
+list.enqueue('a');
+list.enqueue('b');
+console.log(list.dequeue()); // 'a'
+console.log(list.size); // 1
+```
+
+**Use case: event / task drain loop**
+
+```js
+const pending = new UnrolledList({ nodeSize: 256 });
+
+const schedule = (task) => {
+  pending.enqueue(task);
+};
+
+const drain = () => {
+  let task = pending.dequeue();
+  while (task !== undefined) {
+    task();
+    task = pending.dequeue();
+  }
+};
 ```
 
 ## Class `Stack`

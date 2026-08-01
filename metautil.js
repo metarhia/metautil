@@ -24,4 +24,5 @@ module.exports = {
   ...require('./lib/list.js'),
   ...require('./lib/cons-list.js'),
   ...require('./lib/trie.js'),
+  ...require('./lib/unrolled.js'),
 };
