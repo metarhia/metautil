@@ -43,6 +43,9 @@
   `peek` at the front)
 - Added `Stack` class: LIFO facade over `Deque` (`push` / `pop` / `peek`
   at the back)
+- Added `UnrolledList` class: high-throughput FIFO backed by pooled
+  fixed-size unrolled nodes (`nodeSize` / `poolSize` options);
+  `enqueue` / `dequeue` / `size`
 
 ## [5.5.2][] - 2026-03-15
 

@@ -367,15 +367,18 @@ doubly-linked `ListNode` chain. `ListNode` is the low-level link cell
 `copy` / `link`) for custom structures that own their own head/tail/size.
 `ConsList` is an immutable cons-list ADT with structural sharing.
 `Trie` is a prefix tree for string keys with optional associated values.
+`UnrolledList` is a specialized high-throughput FIFO (pooled unrolled
+nodes); it does not implement the Array interop helpers.
 
-| Class      | ADT            | Backed by       | Ends | Index |
-| ---------- | -------------- | --------------- | ---- | ----- |
-| `Deque`    | double-ended   | circular buffer | O(1) | O(1)  |
-| `Queue`    | FIFO           | `Deque`         | O(1) | —     |
-| `Stack`    | LIFO           | `Deque`         | O(1) | —     |
-| `List`     | sequence       | `ListNode`      | O(1) | O(n)  |
-| `ConsList` | immutable cons | shared nodes    | O(1) | O(n)  |
-| `Trie`     | prefix map     | character nodes | —    | —     |
+| Class          | ADT            | Backed by       | Ends | Index |
+| -------------- | -------------- | --------------- | ---- | ----- |
+| `Deque`        | double-ended   | circular buffer | O(1) | O(1)  |
+| `Queue`        | FIFO           | `Deque`         | O(1) | —     |
+| `Stack`        | LIFO           | `Deque`         | O(1) | —     |
+| `UnrolledList` | FIFO           | pooled unrolled | O(1) | —     |
+| `List`         | sequence       | `ListNode`      | O(1) | O(n)  |
+| `ConsList`     | immutable cons | shared nodes    | O(1) | O(n)  |
+| `Trie`         | prefix map     | character nodes | —    | —     |
 
 ```js
 // Any structure can feed any other via Array / iterables
@@ -773,6 +776,46 @@ while (!queue.isEmpty()) {
   for (const child of node.children) queue.enqueue(child);
 }
 console.log(order); // [1, 2, 3, 4]
+```
+
+## Class `UnrolledList`
+
+High-throughput FIFO queue backed by a singly-linked chain of fixed-size
+array nodes, with an internal pool that reuses drained nodes. Prefer this
+over `Queue` when enqueue/dequeue volume is high and you do not need
+index access, peek, or Array interop.
+
+- `constructor(options?: UnrolledListOptions)`
+  - `options.nodeSize?: number` — items per node (default `1024`)
+  - `options.poolSize?: number` — max pooled drained nodes (default `2`)
+- `enqueue(item: T): void` — append at the write end
+- `dequeue(): T | undefined` — remove and return from the read end
+- `size: number`
+
+```js
+const list = new UnrolledList({ nodeSize: 64, poolSize: 4 });
+list.enqueue('a');
+list.enqueue('b');
+console.log(list.dequeue()); // 'a'
+console.log(list.size); // 1
+```
+
+**Use case: event / task drain loop**
+
+```js
+const pending = new UnrolledList({ nodeSize: 256 });
+
+const schedule = (task) => {
+  pending.enqueue(task);
+};
+
+const drain = () => {
+  let task = pending.dequeue();
+  while (task !== undefined) {
+    task();
+    task = pending.dequeue();
+  }
+};
 ```
 
 ## Class `Stack`

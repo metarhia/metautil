@@ -425,6 +425,18 @@ export class Queue<T> {
   [Symbol.asyncIterator](): AsyncIterableIterator<T>;
 }
 
+export interface UnrolledListOptions {
+  nodeSize?: number;
+  poolSize?: number;
+}
+
+export class UnrolledList<T = unknown> {
+  readonly size: number;
+  constructor(options?: UnrolledListOptions);
+  enqueue(item: T): void;
+  dequeue(): T | undefined;
+}
+
 export class Stack<T> {
   readonly size: number;
   constructor();
