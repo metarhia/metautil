@@ -204,18 +204,22 @@ const domains = getX509names(x509);
   - `constructor(message: string, options?: number | string | ErrorOptions)`
     - `options.code?: number | string`
     - `options.cause?: Error`
+    - `options.name?: string`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
   - `cause?: Error`
+  - `name: string`
 - Class `DomainError`
   - `constructor(code?: string, options?: number | string | ErrorOptions)`
     - `options.code?: number | string`
     - `options.cause?: Error`
+    - `options.name?: string`
   - `message: string`
   - `stack: string`
   - `code?: number | string`
   - `cause?: Error`
+  - `name: string`
   - `toError(errors: Errors): Error`
 - `isError(instance: object): boolean`
 
@@ -323,35 +327,48 @@ const User = metautil.Struct.mutable('User', {
 const marcus = User.create({ id: 1, name: 'Marcus' });
 ```
 
-## Class Pool
+## Class `Lease`
 
-- `constructor(options: PoolOptions)`
-  - `options.timeout?: number`
-- `items: Array<unknown>`
-- `free: Array<boolean>`
-- `queue: Array<unknown>`
-- `current: number`
-- `size: number`
-- `available: number`
-- `timeout: number`
-- `next(exclusive?: boolean): Promise<unknown>`
-- `add(item: unknown): void`
-- `capture(): Promise<unknown>`
-- `release(item: unknown): void`
-- `isFree(item: unknown): boolean`
+Exclusive handle returned by `Pool.capture()`. Holds a pool resource until
+`release()` is called (via the lease or `pool.release(lease)`).
+
+- `constructor(resource: unknown, release: () => void)`
+- `resource: unknown` — captured pool item (readonly)
+- `release(): void` — return the resource to the pool; throws if already
+  released
+
+## Class `Pool`
+
+Round-robin pool of reusable resources. `next()` peeks at the next free
+item without capturing it. `capture()` takes an exclusive `Lease` (waits
+when all items are busy, optionally timing out).
+
+- `constructor(options?: PoolOptions)`
+  - `options.timeout?: number` — max wait for `capture()` when no free
+    items; `0` (default) waits indefinitely
+- `add(resource: unknown): void`
+- `next(): unknown | null` — next free resource without capturing
+- `capture(): Lease | Promise<Lease> | null`
+- `release(lease: Lease): void`
+- `isFree(resource: unknown): boolean`
 
 ```js
 const pool = new Pool();
-pool.add({ a: 1 });
-pool.add({ a: 2 });
-pool.add({ a: 3 });
+const obj1 = { a: 1 };
+const obj2 = { a: 2 };
+const obj3 = { a: 3 };
+pool.add(obj1);
+pool.add(obj2);
+pool.add(obj3);
 
-if (pool.isFree(obj1)) console.log('1 is free');
-const item = await pool.capture();
-if (pool.isFree(obj1)) console.log('1 is captured');
-const obj = await pool.next();
-// obj is { a: 2 }
-pool.release(item);
+console.log(pool.isFree(obj1)); // true
+const lease = await pool.capture();
+console.log(lease.resource === obj1); // true
+console.log(pool.isFree(obj1)); // false
+console.log(pool.next()); // { a: 2 }
+pool.release(lease);
+// or: lease.release();
+console.log(pool.isFree(obj1)); // true
 ```
 
 ## Data structures
@@ -891,21 +908,21 @@ trie.size; // 2
 
 ## Array utilities
 
-### `sample(array: Array<unknown>): unknown`
+### `sample(array: Array<unknown>, random?: Function): unknown`
 
 ```js
 const cards = ['🂡', '🃒', '🂮', '🂷', '🃚'];
 const card = sample(cards);
 ```
 
-### `shuffle(array: Array<unknown>): Array<unknown>`
+### `shuffle(array: Array<unknown>, random?: Function): Array<unknown>`
 
 ```js
 const players = [{ id: 10 }, { id: 12 }, { id: 15 }];
 const places = shuffle(players);
 ```
 
-### `projection(source: object, fields: Array<string>): Array<unknown>`
+### `projection(source: object, fields: Array<string>): Record<string, unknown>`
 
 ```js
 const player = { name: 'Marcus', score: 1500, socket };
@@ -951,7 +968,6 @@ semaphore.leave();
 - `snakeToCamel(s: string): string`
 - `isConstant(s: string): boolean`
 - `fileExt(fileName: string): string`
-- `parsePath(relPath: string): Strings`
 - `trimLines(s: string): string`
 
 ## Units utilities

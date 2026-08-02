@@ -76,6 +76,7 @@ export function nextEvent(every: Every, date?: Date): number;
 export interface ErrorOptions {
   code?: number | string;
   cause?: Error;
+  name?: string;
 }
 
 export class Error extends global.Error {
@@ -84,6 +85,7 @@ export class Error extends global.Error {
   stack: string;
   code?: number | string;
   cause?: Error;
+  name: string;
 }
 
 type Errors = Record<string, string>;
@@ -105,6 +107,7 @@ export function exists(path: string): Promise<boolean>;
 export function directoryExists(path: string): Promise<boolean>;
 export function fileExists(path: string): Promise<boolean>;
 export function ensureDirectory(path: string): Promise<boolean>;
+export function parsePath(relPath: string): Strings;
 
 // Submodule: http
 
@@ -162,8 +165,8 @@ export function isInstanceOf(obj: unknown, constrName: string): boolean;
 // Submodule: pool
 
 export interface QueueElement {
-  resolve: Function;
-  timer: NodeJS.Timeout;
+  resolve: Function | null;
+  timer: NodeJS.Timeout | null;
 }
 
 export interface PoolOptions {
@@ -248,7 +251,6 @@ export function spinalToCamel(s: string): string;
 export function snakeToCamel(s: string): string;
 export function isConstant(s: string): boolean;
 export function fileExt(fileName: string): string;
-export function parsePath(relPath: string): Strings;
 export function trimLines(s: string): string;
 
 // Submodule: units
@@ -486,7 +488,7 @@ export class Collector {
   timeout: number;
   defaults: object;
   reassign: boolean;
-  validate?: (data: Record<string, unknown>) => unknown;
+  validate: ((data: Record<string, unknown>) => unknown) | null;
   signal: AbortSignal;
   constructor(keys: Array<string>, options?: CollectorOptions);
   set(key: string, value: unknown): void;
