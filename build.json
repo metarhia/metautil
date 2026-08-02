@@ -13,6 +13,15 @@
     "result.js",
     "semaphore.js",
     "units.js",
+    "circular.js",
+    "deque.js",
+    "queue.js",
+    "stack.js",
+    "list.js",
+    "cons-list.js",
+    "trie.js",
+    "unrolled.js",
+    "struct.js",
     "browser.js"
   ]
 }
