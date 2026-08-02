@@ -2,52 +2,27 @@
 
 ## [Unreleased][unreleased]
 
-- Fixed unbounded memory consumption in `receiveBody`: default 10MB body
-  size limit and optional `limit` parameter; return type is `Buffer`
-- Replaced internal `LinkedList` with public `ListNode` (low-level
-  doubly-linked cell: `create` / `append` / `prepend` / `unlink` /
-  `seek` / `fromArray` / `copy` / `link`); removed `lib/linked-list.js`
-- Reworked `List` as a value/index facade over `ListNode`: factories
-  `of` / `fromArray` / `merge(...lists)`; `append` / `prepend` /
-  `insert` rest args; bulk `remove(...values)` returns count; unified
-  `rotate(n?)` (default 1); trimmed API (no `first` / `last` / `tail` /
-  `init` / `equals` / `fromIterable` / `range` / queue aliases / lazy
-  iterators / `distinct` / `shuffle` / `join` / async iterator /
-  separate left/right rotate helpers)
-- Hardened `List` / `ListNode`: non-integer indexes/counts are ignored
-  (no-op); `rotate` uses O(1) modulo; `take` / `slice` return `null`
-  on invalid args, empty range, or empty source; empty `clone` /
-  `splitAt` copy keep empty `List` (not `null`); `includes` /
-  `indexOf` / `lastIndexOf` / `remove` / `replace` use strict `===`
-- Trimmed list typings: dropped unused `Sequence` / `Indexable`;
-  `ListNode` / `List` shapes match the runtime API; `set` value is
-  required; `sum` / `avg` / `min` / `max` callbacks are optional
-- Added `Trie` class: prefix tree for string keys with optional values;
-  `insert` / `delete` / `clear` / `has` / `get` / `complete` / `size` /
-  `isEmpty`; `undefined` is a valid stored value; typings included
-- Added `Result` class: a container holding either a value or an error
-- Added `ConsList` class with `cons` / `uncons`: immutable cons-list with
-  structural sharing (branches share common tails at zero copy cost);
-  factories `empty` / `of` / `fromArray` / `fromIterable` / `merge`;
-  accessors `value` / `tail` / `size` / `isEmpty`; ops `prepend` /
-  `uncons` / `equals` / `includes` / `member` / `reverse` / `map` /
-  `reduce` / `toArray` / iterator; `cons(value, tail?)` and
-  `uncons(list)` are functional aliases of `prepend` / instance
-  `uncons`; typings: `empty` as `ConsList<never>`, `Uncons<T>`, and
-  dual `reduce` overloads
-- Added `CircularBuffer` class: growable ring buffer with O(1) end ops
-  (`unshift` / `push` / `shift` / `pop`), Array-like `at`, `fromArray`,
-  `isEmpty` / `includes` / `clear` / `toArray` / iterator; shared engine
-  for `Deque`, `Queue`, and `Stack`
-- Added `Deque` class: double-ended facade over `CircularBuffer` with the
-  same Array-like end ops (`unshift` / `push` / `shift` / `pop`)
-- Added `Queue` class: FIFO facade over `CircularBuffer` (`enqueue` /
-  `dequeue` / `peek`)
-- Added `Stack` class: LIFO facade over `CircularBuffer` (`push` / `pop` /
-  `peek`)
-- Added `UnrolledList` class: high-throughput FIFO backed by pooled
-  fixed-size unrolled nodes (`nodeSize` / `poolSize` options);
-  `enqueue` / `dequeue` / `size`
+- Reworked `Pool` with exclusive `Lease` handles: privatized internals
+- Added `Struct.immutable` / `Struct.mutable`
+- Extended `Error` with `options.name` (defaults to constructor name)
+- Fixed `timeout` / `delay` reject with `AbortError`, clean up listeners
+- In `timeoutify` timer expiry keep `code: 'ETIMEOUT'`
+- Fixed `Collector.timeout` instance field to mirror constructor options
+- Optimized `projection` to build the result object directly
+- Hardened null checks in `Collector`, `ConsList`, `Pool`, `Semaphore`
+- Included browser-safe data structures and `Struct` in `metautil.mjs`
+- Fixed unbounded memory consumption in `receiveBody`: default 10MB
+- Replaced internal `LinkedList` with public `ListNode`
+- Reworked `List` as a value/index facade over `ListNode`
+- Update `List` public API: drop unneeded methods
+- Added `Trie` class: prefix tree for string keys with optional values
+- Added `Result` class: container for value or error
+- Added `ConsList` class with `cons` / `uncons`: immutable cons-list
+- Added `CircularBuffer` class: growable ring buffer with O(1)
+- Added `Deque` class: double-ended facade over `CircularBuffer`
+- Added `Queue` class: FIFO facade over `CircularBuffer`
+- Added `Stack` class: LIFO facade over `CircularBuffer`
+- Added `UnrolledList` class: high-throughput FIFO (pooled unrolled list)
 
 ## [5.5.2][] - 2026-03-15
 
