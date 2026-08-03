@@ -16,6 +16,22 @@ export function timeoutify(
   msec: number,
 ): Promise<unknown>;
 
+export interface LimitControl {
+  fn: (...args: Array<unknown>) => void;
+  cancel: () => void;
+  flush: () => void;
+}
+
+export function throttle(
+  fn: (...args: Array<unknown>) => unknown,
+  msec: number,
+): LimitControl;
+
+export function debounce(
+  fn: (...args: Array<unknown>) => unknown,
+  msec: number,
+): LimitControl;
+
 // Submodule: crypto
 
 export function cryptoRandom(min?: number, max?: number): number;
