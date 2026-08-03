@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Added `throttle` and `debounce` returning `{ fn, cancel, flush }`
 - Reworked `Pool` with exclusive `Lease` handles: privatized internals
 - Added `Struct.immutable` / `Struct.mutable`
 - Extended `Error` with `options.name` (defaults to constructor name)

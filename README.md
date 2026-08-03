@@ -19,6 +19,25 @@
 - `timeout(msec: number, signal?: AbortSignal): Promise<void>`
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
+- `throttle(fn: Function, msec: number): LimitControl`
+  - At most once per `msec`: leading call, trailing with latest args
+- `debounce(fn: Function, msec: number): LimitControl`
+  - After `msec` quiet: trailing with latest args
+- `LimitControl`: `{ fn, cancel, flush }`
+  - `fn(...args)` — rate-limited wrapper
+  - `cancel()` — clear timer, drop pending args
+  - `flush()` — invoke pending args now (no-op if idle)
+
+```js
+const { fn: onScroll, cancel } = throttle(updatePosition, 100);
+window.addEventListener('scroll', onScroll);
+window.addEventListener('popstate', cancel);
+
+const { fn: onType, flush } = debounce(search, 300);
+input.addEventListener('input', onType);
+form.addEventListener('submit', flush);
+```
+
 - `collect(keys: Array<string>, options?: CollectorOptions): Collector`
   - `options.exact?: boolean`
   - `options.timeout?: number`
