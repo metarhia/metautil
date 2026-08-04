@@ -483,6 +483,30 @@ export class Trie<T = boolean> {
   complete(prefix: string): Array<string>;
 }
 
+// Submodule: priority-queue
+
+export interface PriorityQueueOptions<T> {
+  kind?: 'min' | 'max';
+  compare?: (a: T, b: T) => number;
+}
+
+export class PriorityQueue<T> {
+  readonly size: number;
+  constructor(options?: PriorityQueueOptions<T>);
+  static fromArray<T>(
+    values: Array<T>,
+    options?: PriorityQueueOptions<T>,
+  ): PriorityQueue<T>;
+  push(value: T): void;
+  pop(): T | undefined;
+  peek(): T | undefined;
+  isEmpty(): boolean;
+  includes(value: T): boolean;
+  clear(): void;
+  toArray(): Array<T>;
+  [Symbol.iterator](): IterableIterator<T>;
+}
+
 // Submodule: collector
 
 export interface CollectorOptions {

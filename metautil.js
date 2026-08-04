@@ -25,4 +25,5 @@ module.exports = {
   ...require('./lib/cons-list.js'),
   ...require('./lib/trie.js'),
   ...require('./lib/unrolled.js'),
+  ...require('./lib/priority-queue.js'),
 };

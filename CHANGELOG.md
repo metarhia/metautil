@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Added `PriorityQueue` class: binary heap with min/max and custom comparator
 - Added `throttle` and `debounce` returning `{ fn, cancel, flush }`
 - Reworked `Pool` with exclusive `Lease` handles: privatized internals
 - Added `Struct.immutable` / `Struct.mutable`
