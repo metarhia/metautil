@@ -83,3 +83,39 @@ test('Stack: Symbol.iterator', () => {
   const stack = Stack.fromArray([1, 2, 3]);
   assert.deepStrictEqual([...stack], [1, 2, 3]);
 });
+
+test('Stack: every', () => {
+  const stack = Stack.fromArray([1, 2, 3]);
+  assert.strictEqual(
+    stack.every((v) => v > 0),
+    true,
+  );
+  assert.strictEqual(
+    stack.every((v) => v < 2),
+    false,
+  );
+  assert.strictEqual(
+    new Stack().every(() => false),
+    true,
+  );
+});
+
+test('Stack: reduce', () => {
+  const stack = Stack.fromArray([1, 2, 3]);
+  assert.strictEqual(
+    stack.reduce((acc, v) => acc + v, 0),
+    6,
+  );
+  assert.strictEqual(
+    stack.reduce((acc, v) => acc + v),
+    6,
+  );
+  assert.throws(
+    () => new Stack().reduce((acc, v) => acc + v),
+    /CircularBuffer is empty/,
+  );
+  assert.strictEqual(
+    new Stack().reduce((acc, v) => acc + v, 7),
+    7,
+  );
+});
