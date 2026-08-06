@@ -2,7 +2,10 @@
 
 ## [Unreleased][unreleased]
 
-- Added `throttle` and `debounce` returning `{ fn, cancel, flush }- Extended `ConsList` with `filter`, `find`, `some`, `every`
+- Added `throttle` and `debounce` returning `{ fn, cancel, flush }
+- Extended `ConsList`with`filter`, `find`, `some`, `every`
+- Renamed `ConsList.reverse` to `toReversed`
+- Extended `ConsList` with `filter`, `find`, `some`, `every`
 - Extended `CircularBuffer`, `Deque`, `Stack` with `every`, `reduce`
 - Aligned `ConsList` / `CircularBuffer` `reduce` with Array semantics
 - Reworked `Pool` with exclusive `Lease` handles: privatized internals
