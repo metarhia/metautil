@@ -19,7 +19,7 @@
 - `timeout(msec: number, signal?: AbortSignal): Promise<void>`
 - `delay(msec: number, signal?: AbortSignal): Promise<void>`
 - `timeoutify(promise: Promise<unknown>, msec: number): Promise<unknown>`
-- `throttle(fn: Function, msec: number): LimitControl`
+- `throttle(fn: (...args: Array<unknown>) => unknown, msec: number): LimitControl`
   - At most once per `msec`: leading call, trailing with latest args
 - `debounce(fn: Function, msec: number): LimitControl`
   - After `msec` quiet: trailing with latest args
@@ -42,6 +42,8 @@ form.addEventListener('submit', flush);
   - `options.exact?: boolean`
   - `options.timeout?: number`
   - `options.reassign?: boolean`
+  - `options.defaults?: object`
+  - `options.validate?: (data: Record<string, unknown>) => unknown`
 
 ## Class `Collector`
 
@@ -54,8 +56,8 @@ Async collection is an utility to collect needed keys and signalize on done.
   - `options.defaults?: object`
   - `options.validate?: (data: Record<string, unknown>) => unknown`
 - `set(key: string, value: unknown): void`
-- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args?: Array<unknown>): void`
-- `take(key: string, fn: Function, ...args?: Array<unknown>): void`
+- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args: Array<unknown>): void`
+- `take(key: string, fn: Function, ...args: Array<unknown>): void`
 - `collect(sources: Record<string, Collector>): void`
 - `fail(error: Error): void`
 - `abort(): void`
@@ -214,7 +216,7 @@ const domains = getX509names(x509);
 - `nowDateTimeUTC(date?: Date, timeSep?: string): string`
 - `parseMonth(s: string): number`
 - `parseDay(s: string): number`
-- `parseEvery(s: string): Every`
+- `parseEvery(s?: string): Every`
 - `nextEvent(every: Every, date?: Date): number`
 
 ## Error utilities
@@ -297,9 +299,10 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 
 - `makePrivate(instance: object): object`
 - `protect(allowMixins: Strings, ...namespaces: Namespaces): void`
-- `jsonParse(data: Buffer | string | null | undefined): Dictionary | null`
+- `jsonParse(data?: Buffer | string | null): unknown` — safe parse; returns
+  `null` on error or nullish input
 - `isHashObject(o: string | number | boolean | object): boolean`
-- `flatObject(source: Dictionary, fields: Strings): Dictionary`
+- `flatObject(source: Dictionary, fields?: Strings): Dictionary`
 - `unflatObject(source: Dictionary, fields: Strings): Dictionary`
 - `getSignature(method: Function): Strings`
 - `namespaceByPath(namespace: Dictionary, path: string): Dictionary | null`
@@ -460,19 +463,24 @@ at zero copy cost (inspired by LISP cons cells).
 - `toReversed(): ConsList<T>` — O(n), new list in reverse order
 - `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n), new
   list of mapped values
-- `filter(fn: (value: T, index: number) => boolean): ConsList<T>` — O(n)
-- `find(fn: (value: T, index: number) => boolean): T | undefined` — O(n)
-- `some(fn: (value: T, index: number) => boolean): boolean` — O(n)
-- `every(fn: (value: T, index: number) => boolean): boolean` — O(n)
-- `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n)
+- `filter(fn: (value: T, index: number) => boolean): ConsList<T>` — O(n),
+  keeps elements where `fn` returns strictly `true`
+- `find(fn: (value: T, index: number) => boolean): T | undefined` — O(n),
+  first element where `fn` returns strictly `true`
+- `some(fn: (value: T, index: number) => boolean): boolean` — O(n), whether
+  `fn` returns strictly `true` for any element
+- `every(fn: (value: T, index: number) => boolean): boolean` — O(n), whether
+  `fn` never returns strictly `false`
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n); throws
+  `TypeError` on empty list without a seed
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
   O(n)
-- `value: T | undefined` — head (front) element
-- `tail: ConsList<T>` — rest after the head (O(1), shared; `empty` when
-  none)
+- `readonly value: T | undefined` — head (front) element
+- `readonly tail: ConsList<T>` — rest after the head (O(1), shared;
+  `empty` when none)
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
-- `size: number`
+- `readonly size: number`
 - `isEmpty(): boolean`
 
 **Interface `Uncons<T>`** — result of `uncons()`:
@@ -661,11 +669,11 @@ does not expose nodes. Indexes and counts must be integers
 - `map<U>(fn: (value: T, index: number) => U): List<U>`
 - `flatMap<U>(fn: (value: T) => Iterable<U>): List<U>`
 - `filter(fn: (value: T, index: number) => boolean): List<T>`
-- `reduce<U>(fn, initial: U): U`
-- `some(fn): boolean`
-- `every(fn): boolean`
-- `find(fn): T | undefined`
-- `findIndex(fn): number`
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U`
+- `some(fn: (value: T, index: number) => boolean): boolean`
+- `every(fn: (value: T, index: number) => boolean): boolean`
+- `find(fn: (value: T, index: number) => boolean): T | undefined`
+- `findIndex(fn: (value: T, index: number) => boolean): number`
 
 **Stats**
 
@@ -723,7 +731,8 @@ wrap — Array-like names: `unshift` / `push` / `shift` / `pop`.
 - `includes(value: T): boolean`
 - `every(fn: (value: T, index: number) => boolean): boolean` — whether
   `fn` never returns strictly `false`
-- `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
+  throws `TypeError` when empty without a seed
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
   explicit seed
 - `clear(): void`
@@ -917,15 +926,16 @@ Prefix tree (trie) for string keys with optional associated values.
 Supports exact lookup, deletion with branch pruning, and prefix
 autocomplete via `complete`.
 
-- `size: number` — number of stored keys
-- `insert(word: string, value?: unknown): this` — store key (default
-  value `true`); throws `TypeError` if `word` is not a string
+- `readonly size: number` — number of stored keys
+- `insert(word: string, value?: T): this` — store key (default value
+  `true` when `T` defaults to `boolean`); throws `TypeError` if `word`
+  is not a string
 - `delete(word: string): boolean` — remove key and prune empty branches
 - `clear(): void`
 - `isEmpty(): boolean`
 - `has(word: string): boolean` — exact key present
-- `get(word: string): unknown` — associated value, or `undefined` if
-  missing
+- `get(word: string): T | undefined` — associated value, or `undefined`
+  if missing
 - `complete(prefix: string): Array<string>` — all keys with the given
   prefix
 
@@ -1042,8 +1052,8 @@ console.log({ size, bytes });
   - `toAsyncIterable(eventName: EventName): AsyncIterable<unknown>`
 - Utilities:
   - `clear(eventName?: EventName): void`
-  - `listeners(eventName?: EventName): Listener[]`
-  - `listenerCount(eventName?: EventName): number`
+  - `listeners(eventName: EventName): Listener[]`
+  - `listenerCount(eventName: EventName): number`
   - `eventNames(): EventName[]`
 
 Examples:

@@ -176,4 +176,8 @@ test('CircularBuffer: every and reduce', () => {
     return acc + v;
   });
   assert.deepStrictEqual(withoutSeed, [[1, 2]]);
+  assert.deepStrictEqual(
+    CircularBuffer.fromArray([1, 2]).reduce((acc, v) => [acc, v], undefined),
+    [1, 2],
+  );
 });

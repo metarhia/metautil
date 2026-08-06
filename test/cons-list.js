@@ -298,6 +298,10 @@ test('ConsList: reduce', () => {
     () => ConsList.empty.reduce((acc, v) => acc + v),
     /ConsList is empty/,
   );
+  assert.deepStrictEqual(
+    ConsList.of(1, 2).reduce((acc, v) => [acc, v], undefined),
+    [1, 2],
+  );
 });
 
 test('ConsList: merge', () => {
