@@ -21,6 +21,7 @@
     "cons-list.js",
     "trie.js",
     "unrolled.js",
+    "priority-queue.js",
     "struct.js",
     "browser.js"
   ]

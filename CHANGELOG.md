@@ -2,6 +2,7 @@
 
 ## [Unreleased][unreleased]
 
+- Added `PriorityQueue` class: binary heap with min/max and custom comparator
 - Added `throttle` and `debounce` returning `{ fn, cancel, flush }`
 - Extended `ConsList` with `filter`, `find`, `some`, `every`
 - Renamed `ConsList.reverse` to `toReversed`
