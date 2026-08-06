@@ -139,3 +139,41 @@ test('CircularBuffer: undefined is a valid value', () => {
   assert.strictEqual(buf.shift(), undefined);
   assert.strictEqual(buf.size, 0);
 });
+
+test('CircularBuffer: every and reduce', () => {
+  const buf = CircularBuffer.fromArray([2, 4, 6]);
+  assert.strictEqual(
+    buf.every((v) => v % 2 === 0),
+    true,
+  );
+  assert.strictEqual(
+    buf.every((v) => v < 6),
+    false,
+  );
+  assert.strictEqual(
+    new CircularBuffer().every(() => false),
+    true,
+  );
+  assert.strictEqual(
+    buf.reduce((acc, v) => acc + v, 0),
+    12,
+  );
+  assert.strictEqual(
+    buf.reduce((acc, v) => acc + v),
+    12,
+  );
+  assert.strictEqual(
+    new CircularBuffer().reduce((acc, v) => acc + v, 7),
+    7,
+  );
+  assert.throws(
+    () => new CircularBuffer().reduce((acc, v) => acc + v),
+    /CircularBuffer is empty/,
+  );
+  const withoutSeed = [];
+  CircularBuffer.fromArray([1, 2]).reduce((acc, v) => {
+    withoutSeed.push([acc, v]);
+    return acc + v;
+  });
+  assert.deepStrictEqual(withoutSeed, [[1, 2]]);
+});
