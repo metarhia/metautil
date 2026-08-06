@@ -71,7 +71,7 @@ export function nowDate(date?: Date): string;
 export function nowDateTimeUTC(date?: Date, timeSep?: string): string;
 export function parseMonth(s: string): number;
 export function parseDay(s: string): number;
-export function parseEvery(s: string): Every;
+export function parseEvery(s?: string): Every;
 
 type Every = {
   YY: number;
@@ -163,11 +163,9 @@ type Namespaces = Array<Dictionary>;
 
 export function makePrivate(instance: object): object;
 export function protect(allowMixins: Strings, ...namespaces: Namespaces): void;
-export function jsonParse(
-  data: Buffer | string | null | undefined,
-): Dictionary | null;
+export function jsonParse(data?: Buffer | string | null): unknown;
 export function isHashObject(o: string | number | boolean | object): boolean;
-export function flatObject(source: Dictionary, fields: Strings): Dictionary;
+export function flatObject(source: Dictionary, fields?: Strings): Dictionary;
 export function unflatObject(source: Dictionary, fields: Strings): Dictionary;
 export function getSignature(method: Function): Strings;
 export function namespaceByPath(

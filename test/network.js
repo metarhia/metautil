@@ -56,6 +56,14 @@ test('Network: receiveBody zero limit', async () => {
   );
 });
 
+test('Network: receiveBody exceeds default limit', async () => {
+  const overDefault = 10 * 1024 * 1024 + 1;
+  const stream = Readable.from([Buffer.alloc(overDefault)]);
+  await assert.rejects(metautil.receiveBody(stream), {
+    message: 'Body size limit exceeded',
+  });
+});
+
 test('Network: receiveBody invalid limit', async () => {
   const limits = [-1, 1.5, Number.NaN, Infinity, Number.MAX_SAFE_INTEGER + 1];
   for (const limit of limits) {
