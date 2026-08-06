@@ -204,6 +204,65 @@ test('ConsList: map', () => {
   );
 });
 
+test('ConsList: filter', () => {
+  const list = ConsList.of(1, 2, 3, 4, 5);
+  assert.deepStrictEqual(list.filter((v) => v % 2 === 0).toArray(), [2, 4]);
+  assert.deepStrictEqual(list.toArray(), [1, 2, 3, 4, 5]);
+  assert.deepStrictEqual(
+    list.filter((v, i) => i === 0 || v > 3).toArray(),
+    [1, 4, 5],
+  );
+  assert.strictEqual(
+    ConsList.empty.filter((v) => v),
+    ConsList.empty,
+  );
+  assert.strictEqual(list.filter(() => false).isEmpty(), true);
+});
+
+test('ConsList: find, some, every', () => {
+  const list = ConsList.of(1, 2, 3, 4);
+  assert.strictEqual(
+    list.find((v) => v > 2),
+    3,
+  );
+  assert.strictEqual(
+    list.find((v, i) => i === 1),
+    2,
+  );
+  assert.strictEqual(
+    list.find((v) => v > 10),
+    undefined,
+  );
+  assert.strictEqual(
+    ConsList.empty.find((v) => v),
+    undefined,
+  );
+  assert.strictEqual(
+    list.some((v) => v === 3),
+    true,
+  );
+  assert.strictEqual(
+    list.some((v) => v === 9),
+    false,
+  );
+  assert.strictEqual(
+    ConsList.empty.some((v) => v),
+    false,
+  );
+  assert.strictEqual(
+    list.every((v) => v > 0),
+    true,
+  );
+  assert.strictEqual(
+    list.every((v) => v < 3),
+    false,
+  );
+  assert.strictEqual(
+    ConsList.empty.every((v) => v),
+    true,
+  );
+});
+
 test('ConsList: reduce', () => {
   const list = ConsList.of(1, 2, 3, 4);
   assert.strictEqual(
