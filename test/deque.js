@@ -81,3 +81,45 @@ test('Deque: Symbol.iterator', () => {
   const deque = Deque.fromArray([1, 2, 3]);
   assert.deepStrictEqual([...deque], [1, 2, 3]);
 });
+
+test('Deque: every', () => {
+  const deque = Deque.fromArray([1, 2, 3]);
+  assert.strictEqual(
+    deque.every((v) => v > 0),
+    true,
+  );
+  assert.strictEqual(
+    deque.every((v) => v < 3),
+    false,
+  );
+  assert.strictEqual(
+    new Deque().every(() => false),
+    true,
+  );
+});
+
+test('Deque: reduce', () => {
+  const deque = Deque.fromArray([1, 2, 3, 4]);
+  assert.strictEqual(
+    deque.reduce((acc, v) => acc + v, 0),
+    10,
+  );
+  assert.strictEqual(
+    deque.reduce((acc, v) => acc + v),
+    10,
+  );
+  assert.throws(
+    () => new Deque().reduce((acc, v) => acc + v),
+    /CircularBuffer is empty/,
+  );
+  assert.strictEqual(
+    new Deque().reduce((acc, v) => acc + v, 7),
+    7,
+  );
+  const withoutSeed = [];
+  Deque.fromArray([1, 2]).reduce((acc, v) => {
+    withoutSeed.push([acc, v]);
+    return acc + v;
+  });
+  assert.deepStrictEqual(withoutSeed, [[1, 2]]);
+});
