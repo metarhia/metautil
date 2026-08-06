@@ -394,15 +394,14 @@ console.log(pool.isFree(obj1)); // true
 
 Most data structure classes share a common interoperability contract:
 `static fromArray`, `toArray`, and `[Symbol.iterator]`, making structures
-convertible through `Array` as the universal interchange format. Several
-also expose `static fromIterable`.
+convertible through `Array` as the universal interchange format.
+`ConsList` also exposes `static fromIterable`.
 
 `CircularBuffer` is a growable ring with Array-like end operations
 (`unshift` / `push` / `shift` / `pop`) and random access through `at`.
 `Deque` exposes the same double-ended operations over `CircularBuffer`.
 `Queue` (`enqueue` / `dequeue` / `peek`) and `Stack`
-(`push` / `pop` / `peek`) are thin ADT facades over `Deque`, sharing the
-same circular-buffer storage.
+(`push` / `pop` / `peek`) are thin ADT facades over `CircularBuffer`.
 
 `List` is a mutable sequence backed by a doubly-linked `ListNode` chain.
 `ListNode` is the low-level link cell (`create` / `append` / `prepend` /
@@ -461,10 +460,13 @@ at zero copy cost (inspired by LISP cons cells).
 - `reverse(): ConsList<T>` — O(n), new list in reverse order
 - `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n), new
   list of mapped values
-- `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n), left
-  fold with seed from head; empty → `TypeError`
+- `filter(fn: (value: T, index: number) => boolean): ConsList<T>` — O(n)
+- `find(fn: (value: T, index: number) => boolean): T | undefined` — O(n)
+- `some(fn: (value: T, index: number) => boolean): boolean` — O(n)
+- `every(fn: (value: T, index: number) => boolean): boolean` — O(n)
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n)
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
-  O(n), left fold with explicit seed
+  O(n)
 - `value: T | undefined` — head (front) element
 - `tail: ConsList<T>` — rest after the head (O(1), shared; `empty` when
   none)
@@ -719,6 +721,11 @@ wrap — Array-like names: `unshift` / `push` / `shift` / `pop`.
 - `at(index: number): T | undefined` — Array-like index access (`-1` is last)
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
+- `every(fn: (value: T, index: number) => boolean): boolean` — whether
+  `fn` never returns strictly `false`
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
+  explicit seed
 - `clear(): void`
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>`
@@ -746,6 +753,11 @@ both ends with Array-like names (`unshift` / `push` / `shift` / `pop`).
 - `pop(): T | undefined` — remove and return the back element
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
+- `every(fn: (value: T, index: number) => boolean): boolean` — delegates
+  to `CircularBuffer`
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
+  (delegates to `CircularBuffer`)
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U`
 - `clear(): void`
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>` — delegates to `CircularBuffer`
@@ -862,6 +874,11 @@ LIFO (last in, first out) facade over `CircularBuffer`: `push` / `pop` /
 - `peek(): T | undefined` — back element, does not remove
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
+- `every(fn: (value: T, index: number) => boolean): boolean` — delegates
+  to `CircularBuffer`
+- `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
+  (delegates to `CircularBuffer`)
+- `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U`
 - `clear(): void`
 - `toArray(): Array<T>`
 - `[Symbol.iterator](): IterableIterator<T>` — delegates to `CircularBuffer`
