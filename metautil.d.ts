@@ -389,6 +389,10 @@ export class ConsList<T> implements Iterable<T> {
   member(value: T): ConsList<T>;
   reverse(): ConsList<T>;
   map<U>(fn: (value: T, index: number) => U): ConsList<U>;
+  filter(fn: (value: T, index: number) => boolean): ConsList<T>;
+  find(fn: (value: T, index: number) => boolean): T | undefined;
+  some(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   toArray(): Array<T>;
@@ -409,6 +413,9 @@ export class CircularBuffer<T> {
   at(index: number): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  reduce(fn: (acc: T, value: T, index: number) => T): T;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
@@ -424,6 +431,9 @@ export class Deque<T> {
   pop(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  reduce(fn: (acc: T, value: T, index: number) => T): T;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
@@ -464,6 +474,9 @@ export class Stack<T> {
   peek(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
+  every(fn: (value: T, index: number) => boolean): boolean;
+  reduce(fn: (acc: T, value: T, index: number) => T): T;
+  reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
   toArray(): Array<T>;
   [Symbol.iterator](): IterableIterator<T>;
