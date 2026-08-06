@@ -177,15 +177,15 @@ test('ConsList: member', () => {
   assert.strictEqual(ConsList.empty.member(1), ConsList.empty);
 });
 
-test('ConsList: reverse', () => {
+test('ConsList: toReversed', () => {
   const list = ConsList.of(1, 2, 3);
-  const reversed = list.reverse();
+  const reversed = list.toReversed();
   assert.deepStrictEqual(reversed.toArray(), [3, 2, 1]);
   assert.deepStrictEqual(list.toArray(), [1, 2, 3]);
   assert.strictEqual(reversed.size, 3);
-  assert.strictEqual(ConsList.empty.reverse(), ConsList.empty);
-  assert.deepStrictEqual(ConsList.of(42).reverse().toArray(), [42]);
-  assert.strictEqual(list.reverse().reverse().equals(list), true);
+  assert.strictEqual(ConsList.empty.toReversed(), ConsList.empty);
+  assert.deepStrictEqual(ConsList.of(42).toReversed().toArray(), [42]);
+  assert.strictEqual(list.toReversed().toReversed().equals(list), true);
 });
 
 test('ConsList: map', () => {

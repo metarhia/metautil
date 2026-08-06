@@ -457,7 +457,7 @@ at zero copy cost (inspired by LISP cons cells).
 - `member(value: T): ConsList<T>` — O(n), first suffix whose head `===`
   `value` (shared node), or `empty` if missing; e.g.
   `of(1, 2, 3).member(2)` → `[2, 3]`
-- `reverse(): ConsList<T>` — O(n), new list in reverse order
+- `toReversed(): ConsList<T>` — O(n), new list in reverse order
 - `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n), new
   list of mapped values
 - `filter(fn: (value: T, index: number) => boolean): ConsList<T>` — O(n)
