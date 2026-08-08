@@ -2,3 +2,4 @@ node_modules
 *.log
 CHANGELOG.md
 */skills/metaskills
+examples/

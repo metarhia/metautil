@@ -2,32 +2,35 @@
 
 ## [Unreleased][unreleased]
 
-- Added `throttle` and `debounce` returning `{ fn, cancel, flush }`
-- Extended `ConsList` with `filter`, `find`, `some`, `every`
-- Renamed `ConsList.reverse` to `toReversed`
-- Extended `CircularBuffer`, `Deque`, `Stack` with `every`, `reduce`
-- Aligned `ConsList` / `CircularBuffer` `reduce` with Array semantics
+## [6.0.0-alpha.0][] - 2026-08-08
+
 - Reworked `Pool` with exclusive `Lease` handles: privatized internals
-- Added `Struct.immutable` / `Struct.mutable`
-- Extended `Error` with `options.name` (defaults to constructor name)
-- Fixed `timeout` / `delay` reject with `AbortError`, clean up listeners
-- In `timeoutify` timer expiry keep `code: 'ETIMEOUT'`
-- Fixed `Collector.timeout` instance field to mirror constructor options
-- Optimized `projection` to build the result object directly
-- Hardened null checks in `Collector`, `ConsList`, `Pool`, `Semaphore`
-- Included browser-safe data structures and `Struct` in `metautil.mjs`
-- Fixed unbounded memory consumption in `receiveBody`: default 10MB
 - Replaced internal `LinkedList` with public `ListNode`
 - Reworked `List` as a value/index facade over `ListNode`
-- Update `List` public API: drop unneeded methods
-- Added `Trie` class: prefix tree for string keys with optional values
+- Updated `List` public API: drop unneeded methods
+- Renamed `ConsList.reverse` to `toReversed`
+- Added `Struct.immutable` / `Struct.mutable`
 - Added `Result` class: container for value or error
 - Added `ConsList` class with `cons` / `uncons`: immutable cons-list
+- Extended `ConsList` with `filter`, `find`, `some`, `every`
 - Added `CircularBuffer` class: growable ring buffer with O(1)
 - Added `Deque` class: double-ended facade over `CircularBuffer`
 - Added `Queue` class: FIFO facade over `CircularBuffer`
 - Added `Stack` class: LIFO facade over `CircularBuffer`
 - Added `UnrolledList` class: high-throughput FIFO (pooled unrolled list)
+- Added `Trie` class: prefix tree for string keys with optional values
+- Extended `CircularBuffer`, `Deque`, `Stack` with `every`, `reduce`
+- Aligned `ConsList` / `CircularBuffer` `reduce` with Array semantics
+- Added `throttle` and `debounce` returning `{ fn, cancel, flush }`
+- Extended `Error` with `options.name` (defaults to constructor name)
+- Included browser-safe data structures and `Struct` in `metautil.mjs`
+- Fixed `timeout` / `delay` reject with `AbortError`, clean up listeners
+- In `timeoutify` timer expiry keep `code: 'ETIMEOUT'`
+- Fixed `Collector.timeout` instance field to mirror constructor options
+- Fixed unbounded memory consumption in `receiveBody`: default 10MB
+- Optimized `projection` to build the result object directly
+- Hardened null checks in `Collector`, `ConsList`, `Pool`, `Semaphore`
+- Added Node.js 26 to CI
 
 ## [5.5.2][] - 2026-03-15
 
@@ -380,7 +383,8 @@
 See this link for 2.2.0 and all previous versions:
 https://github.com/metarhia/common/blob/master/CHANGELOG.md
 
-[unreleased]: https://github.com/metarhia/metautil/compare/v5.5.2...HEAD
+[unreleased]: https://github.com/metarhia/metautil/compare/v6.0.0-alpha.0...HEAD
+[6.0.0-alpha.0]: https://github.com/metarhia/metautil/compare/v5.5.2...v6.0.0-alpha.0
 [5.5.2]: https://github.com/metarhia/metautil/compare/v5.5.1...v5.5.2
 [5.5.1]: https://github.com/metarhia/metautil/compare/v5.5.0...v5.5.1
 [5.5.0]: https://github.com/metarhia/metautil/compare/v5.4.0...v5.5.0
