@@ -287,7 +287,8 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 ## Network utilities
 
 - Deprecated in 4.x: `fetch(url: string, options?: FetchOptions): Promise<Response>`
-- `receiveBody(stream: IncomingMessage, limit?: number): Promise<Buffer>`
+- `receiveBody(stream: IncomingMessage, limit?: number): Promise<Buffer>` —
+  reads the request body; default `limit` is 10MB
 - `ipToInt(ip?: string): number`
 - `intToIp(int: number): string`
 - `httpApiCall(url: string, options: ApiOptions): Promise<object>`
