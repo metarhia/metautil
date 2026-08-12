@@ -5,6 +5,130 @@ const assert = require('node:assert');
 const metautil = require('..');
 
 const { UnrolledList } = metautil;
+const { UnrolledNode, NodePool } = require('../lib/unrolled.js');
+
+test('UnrolledNode and NodePool are not package exports', () => {
+  assert.strictEqual(metautil.UnrolledNode, undefined);
+  assert.strictEqual(metautil.NodePool, undefined);
+});
+
+test('UnrolledNode: enqueue and dequeue FIFO order', () => {
+  const node = new UnrolledNode(4);
+  assert.strictEqual(node.enqueue(1), true);
+  assert.strictEqual(node.enqueue(2), true);
+  assert.strictEqual(node.enqueue(3), true);
+  assert.strictEqual(node.length, 3);
+  assert.strictEqual(node.dequeue(), 1);
+  assert.strictEqual(node.dequeue(), 2);
+  assert.strictEqual(node.dequeue(), 3);
+  assert.strictEqual(node.length, 0);
+});
+
+test('UnrolledNode: enqueue full returns false', () => {
+  const node = new UnrolledNode(2);
+  assert.strictEqual(node.enqueue('a'), true);
+  assert.strictEqual(node.enqueue('b'), true);
+  assert.strictEqual(node.enqueue('c'), false);
+  assert.strictEqual(node.length, 2);
+  assert.strictEqual(node.dequeue(), 'a');
+  assert.strictEqual(node.enqueue('c'), false);
+  assert.strictEqual(node.length, 1);
+});
+
+test('UnrolledNode: dequeue empty returns undefined', () => {
+  const node = new UnrolledNode(2);
+  assert.strictEqual(node.dequeue(), undefined);
+  assert.strictEqual(node.length, 0);
+});
+
+test('UnrolledNode: stores undefined and null items', () => {
+  const node = new UnrolledNode(3);
+  node.enqueue(undefined);
+  node.enqueue(null);
+  node.enqueue(0);
+  assert.strictEqual(node.dequeue(), undefined);
+  assert.strictEqual(node.dequeue(), null);
+  assert.strictEqual(node.dequeue(), 0);
+});
+
+test('UnrolledNode: reset after drain allows reuse', () => {
+  const node = new UnrolledNode(2);
+  node.enqueue(1);
+  node.enqueue(2);
+  node.dequeue();
+  node.dequeue();
+  node.next = node;
+  node.reset();
+  assert.strictEqual(node.length, 0);
+  assert.strictEqual(node.readIndex, 0);
+  assert.strictEqual(node.writeIndex, 0);
+  assert.strictEqual(node.next, null);
+  assert.strictEqual(node.enqueue(3), true);
+  assert.strictEqual(node.dequeue(), 3);
+});
+
+test('UnrolledNode: clear drops remaining items', () => {
+  const node = new UnrolledNode(2);
+  node.enqueue('a');
+  node.enqueue('b');
+  node.dequeue();
+  node.next = new UnrolledNode(2);
+  node.clear();
+  assert.strictEqual(node.length, 0);
+  assert.strictEqual(node.readIndex, 0);
+  assert.strictEqual(node.writeIndex, 0);
+  assert.strictEqual(node.next, null);
+  assert.strictEqual(node.buffer[0], undefined);
+  assert.strictEqual(node.buffer[1], undefined);
+  assert.strictEqual(node.enqueue('c'), true);
+  assert.strictEqual(node.dequeue(), 'c');
+});
+
+test('NodePool: acquire uses prefilled instances then factory', () => {
+  let created = 0;
+  const pool = new NodePool(2, () => {
+    created++;
+    return { id: created };
+  });
+  assert.strictEqual(created, 2);
+  const a = pool.acquire();
+  const b = pool.acquire();
+  assert.strictEqual(a.id, 1);
+  assert.strictEqual(b.id, 2);
+  const c = pool.acquire();
+  assert.strictEqual(created, 3);
+  assert.strictEqual(c.id, 3);
+});
+
+test('NodePool: release reuses instance under cap', () => {
+  const pool = new NodePool(1, () => ({}));
+  const a = pool.acquire();
+  pool.release(a);
+  const b = pool.acquire();
+  assert.strictEqual(a, b);
+});
+
+test('NodePool: release drops instance at cap', () => {
+  const pool = new NodePool(1, () => ({}));
+  const a = pool.acquire();
+  const extra = pool.acquire();
+  pool.release(a);
+  pool.release(extra);
+  assert.strictEqual(pool.acquire(), a);
+  assert.notStrictEqual(pool.acquire(), extra);
+});
+
+test('NodePool: count 0 never pools', () => {
+  let created = 0;
+  const pool = new NodePool(0, () => {
+    created++;
+    return created;
+  });
+  assert.strictEqual(created, 0);
+  assert.strictEqual(pool.acquire(), 1);
+  pool.release(1);
+  assert.strictEqual(pool.acquire(), 2);
+});
 
 test('UnrolledList: enqueue and dequeue FIFO order', () => {
   const list = new UnrolledList();
