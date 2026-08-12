@@ -2735,6 +2735,13 @@ class UnrolledList {
     return this.#size;
   }
 
+  static fromArray(values, options) {
+    const list = new UnrolledList(options);
+    const { length } = values;
+    for (let i = 0; i < length; i++) list.enqueue(values[i]);
+    return list;
+  }
+
   enqueue(item) {
     if (!this.#head.enqueue(item)) {
       const node = this.#pool.acquire();
@@ -2764,7 +2771,7 @@ class UnrolledList {
   }
 
   peek() {
-    let item;
+    let item = undefined;
     if (this.#size > 0) {
       const tail = this.#tail;
       item = tail.buffer[tail.readIndex];
@@ -2788,6 +2795,107 @@ class UnrolledList {
     }
     this.#head = this.#tail;
     this.#size = 0;
+  }
+
+  includes(value) {
+    let node = this.#tail;
+    while (node !== null) {
+      const buffer = node.buffer;
+      const end = node.writeIndex;
+      for (let i = node.readIndex; i < end; i++) {
+        if (buffer[i] === value) return true;
+      }
+      node = node.next;
+    }
+    return false;
+  }
+
+  toArray() {
+    const result = new Array(this.#size);
+    let node = this.#tail;
+    let index = 0;
+    while (node !== null) {
+      const buffer = node.buffer;
+      const end = node.writeIndex;
+      for (let i = node.readIndex; i < end; i++) {
+        result[index++] = buffer[i];
+      }
+      node = node.next;
+    }
+    return result;
+  }
+
+  [Symbol.iterator]() {
+    let node = this.#tail;
+    let offset = node.readIndex;
+    return {
+      next: () => {
+        while (node !== null) {
+          if (offset < node.writeIndex) {
+            const value = node.buffer[offset++];
+            return { done: false, value };
+          }
+          node = node.next;
+          if (node !== null) offset = node.readIndex;
+        }
+        return { done: true, value: undefined };
+      },
+      [Symbol.iterator]() {
+        return this;
+      },
+    };
+  }
+}
+
+// unrolled-queue.js
+
+class UnrolledQueue {
+  #list = null;
+
+  constructor(options = {}) {
+    this.#list = new UnrolledList(options);
+  }
+
+  get size() {
+    return this.#list.size;
+  }
+
+  static fromArray(values, options) {
+    const queue = new UnrolledQueue(options);
+    queue.#list = UnrolledList.fromArray(values, options);
+    return queue;
+  }
+
+  enqueue(value = undefined) {
+    this.#list.enqueue(value);
+  }
+
+  dequeue() {
+    return this.#list.dequeue();
+  }
+
+  peek() {
+    return this.#list.peek();
+  }
+
+  isEmpty() {
+    return this.#list.isEmpty();
+  }
+
+  includes(value) {
+    return this.#list.includes(value);
+  }
+
+  clear() {
+    this.#list.clear();
+  }
+
+  toArray() {
+    return this.#list.toArray();
+  }
+
+  [Symbol.iterator]() {
+    return this.#list[Symbol.iterator]();
   }
 }
 
@@ -3050,6 +3158,9 @@ export {
   uncons,
   Trie,
   UnrolledList,
+  UnrolledNode,
+  NodePool,
+  UnrolledQueue,
   Struct,
   cryptoRandom,
   random,

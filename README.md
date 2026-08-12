@@ -415,7 +415,7 @@ that own their own head, tail, and size.
 `ConsList` is an immutable cons-list ADT with structural sharing.
 `Trie` is a prefix tree for string keys with optional associated values.
 `UnrolledList` is a specialized high-throughput FIFO backed by pooled
-unrolled nodes; it does not implement index access or Array interop.
+unrolled nodes. `UnrolledQueue` is the Queue-compatible facade over it.
 
 | Class            | ADT            | Backed by        | Ends | Index |
 | ---------------- | -------------- | ---------------- | ---- | ----- |
@@ -424,6 +424,7 @@ unrolled nodes; it does not implement index access or Array interop.
 | `Queue`          | FIFO           | `CircularBuffer` | O(1) | —     |
 | `Stack`          | LIFO           | `CircularBuffer` | O(1) | —     |
 | `UnrolledList`   | FIFO           | pooled unrolled  | O(1) | —     |
+| `UnrolledQueue`  | FIFO           | `UnrolledList`   | O(1) | —     |
 | `List`           | sequence       | `ListNode`       | O(1) | O(n)  |
 | `ConsList`       | immutable cons | shared nodes     | O(1) | O(n)  |
 | `Trie`           | prefix map     | character nodes  | —    | —     |
@@ -835,18 +836,22 @@ console.log(order); // [1, 2, 3, 4]
 ## Class `UnrolledList`
 
 High-throughput FIFO queue backed by a singly-linked chain of fixed-size
-array nodes, with an internal pool that reuses drained nodes. Prefer this
-over `Queue` when enqueue/dequeue volume is high and you do not need
-index access or Array interop.
+array nodes, with an internal pool that reuses drained nodes. Engine for
+`UnrolledQueue`. Prefer this over `CircularBuffer` when enqueue/dequeue
+volume is high and you do not need index access or ops at both ends.
 
 - `constructor(options?: UnrolledListOptions)`
   - `options.nodeSize?: number` — items per node (default `1024`)
   - `options.poolSize?: number` — max pooled drained nodes (default `2`)
+- `static fromArray<T>(values: Array<T>, options?: UnrolledListOptions): UnrolledList<T>`
 - `enqueue(item: T): void` — append at the write end
 - `dequeue(): T | undefined` — remove and return from the read end
 - `peek(): T | undefined` — next item at the read end without removing
 - `isEmpty(): boolean`
+- `includes(value: T): boolean`
 - `clear(): void` — drop all items and return extra nodes to the pool
+- `toArray(): Array<T>`
+- `[Symbol.iterator](): IterableIterator<T>`
 - `size: number`
 
 ```js
@@ -876,6 +881,34 @@ const drain = () => {
     task = pending.dequeue();
   }
 };
+```
+
+## Class `UnrolledQueue`
+
+FIFO facade over `UnrolledList` with the same contract as `Queue`
+(`enqueue` / `dequeue` / `peek`, Array interop). Prefer this over
+`Queue` when enqueue/dequeue volume is high and you do not need index
+access. Pass `UnrolledListOptions` to tune chunk and pool size.
+
+- `constructor(options?: UnrolledListOptions)`
+- `static fromArray<T>(values: Array<T>, options?: UnrolledListOptions): UnrolledQueue<T>`
+- `enqueue(value: T): void` — appends at the back
+- `dequeue(): T | undefined` — removes and returns the front
+- `peek(): T | undefined` — front element, does not remove
+- `isEmpty(): boolean`
+- `includes(value: T): boolean`
+- `clear(): void`
+- `toArray(): Array<T>`
+- `[Symbol.iterator](): IterableIterator<T>` — delegates to `UnrolledList`
+- `size: number`
+
+```js
+const queue = new UnrolledQueue({ nodeSize: 64 });
+queue.enqueue('a');
+queue.enqueue('b');
+console.log(queue.peek()); // 'a'
+console.log(queue.dequeue()); // 'a'
+console.log(queue.toArray()); // ['b']
 ```
 
 ## Class `Stack`

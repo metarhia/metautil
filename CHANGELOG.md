@@ -3,6 +3,7 @@
 ## [Unreleased][unreleased]
 
 - Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
+- Extended `UnrolledList` with `fromArray`
 
 ## [6.0.0-alpha.0][] - 2026-08-08
 
