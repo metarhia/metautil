@@ -459,6 +459,10 @@ export interface UnrolledListOptions {
 export class UnrolledList<T = unknown> {
   readonly size: number;
   constructor(options?: UnrolledListOptions);
+  static fromArray<T>(
+    values: Array<T>,
+    options?: UnrolledListOptions,
+  ): UnrolledList<T>;
   enqueue(item: T): void;
   dequeue(): T | undefined;
   peek(): T | undefined;

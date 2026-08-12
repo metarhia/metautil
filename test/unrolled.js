@@ -292,3 +292,10 @@ test('UnrolledList: clear empty', () => {
   list.enqueue(1);
   assert.strictEqual(list.dequeue(), 1);
 });
+
+test('UnrolledList: fromArray', () => {
+  const list = UnrolledList.fromArray([1, 2, 3], { nodeSize: 2 });
+  assert.strictEqual(list.size, 3);
+  const empty = UnrolledList.fromArray([]);
+  assert.strictEqual(empty.size, 0);
+});
