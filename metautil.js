@@ -1,5 +1,7 @@
 'use strict';
 
+const { UnrolledList } = require('./lib/unrolled.js');
+
 module.exports = {
   ...require('./lib/array.js'),
   ...require('./lib/async.js'),
@@ -24,5 +26,5 @@ module.exports = {
   ...require('./lib/list.js'),
   ...require('./lib/cons-list.js'),
   ...require('./lib/trie.js'),
-  ...require('./lib/unrolled.js'),
+  UnrolledList,
 };
