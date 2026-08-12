@@ -21,7 +21,7 @@ class DomainError extends Error {
 
   toError(errors) {
     const { code, cause } = this;
-    const message = errors[this.code] || this.message;
+    const message = errors[this.code] ?? this.message;
     return new Error(message, { code, cause });
   }
 }
@@ -36,10 +36,10 @@ const replace = (str, substr, newstr) => {
   let res = '';
   do {
     const index = src.indexOf(substr);
-    if (index === -1) return res + src;
+    if (index === -1) return `${res}${src}`;
     const start = src.substring(0, index);
-    src = src.substring(index + substr.length, src.length);
-    res += start + newstr;
+    src = src.substring(index + substr.length);
+    res += `${start}${newstr}`;
   } while (true);
 };
 
@@ -91,7 +91,7 @@ const fileExt = (fileName) => {
   const dot = fileName.lastIndexOf('.');
   const slash = fileName.lastIndexOf('/');
   if (slash > dot) return '';
-  return fileName.substring(dot + 1, fileName.length).toLowerCase();
+  return fileName.substring(dot + 1).toLowerCase();
 };
 
 const trimLines = (s) => {
@@ -133,7 +133,8 @@ const toBool = [() => true, () => false];
 
 const timeout = (msec, signal = null) =>
   new Promise((resolve, reject) => {
-    if (signal !== null && signal.aborted) {
+    const alreadyAborted = signal !== null && signal.aborted;
+    if (alreadyAborted) {
       return void reject(new Error('Timeout aborted', { name: 'AbortError' }));
     }
     let timer = null;
@@ -152,7 +153,8 @@ const timeout = (msec, signal = null) =>
 
 const delay = (msec, signal = null) =>
   new Promise((resolve, reject) => {
-    if (signal !== null && signal.aborted) {
+    const alreadyAborted = signal !== null && signal.aborted;
+    if (alreadyAborted) {
       return void reject(new Error('Delay aborted', { name: 'AbortError' }));
     }
     let timer = null;
@@ -179,6 +181,78 @@ const timeoutify = (promise, msec) =>
       if (timer !== null) clearTimeout(timer);
     });
   });
+
+const throttle = (fn, msec) => {
+  let timer = null;
+  let args = null;
+
+  const invoke = () => {
+    fn(...args);
+    args = null;
+  };
+
+  const wrapped = (...next) => {
+    args = next;
+    if (timer !== null) return;
+    invoke();
+    const tick = () => {
+      timer = null;
+      if (args === null) return;
+      invoke();
+      timer = setTimeout(tick, msec);
+    };
+    timer = setTimeout(tick, msec);
+  };
+
+  const cancel = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    args = null;
+  };
+
+  const flush = () => {
+    if (timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    if (args !== null) invoke();
+  };
+
+  return { fn: wrapped, cancel, flush };
+};
+
+const debounce = (fn, msec) => {
+  let timer = null;
+  let args = null;
+
+  const invoke = () => {
+    fn(...args);
+    args = null;
+  };
+
+  const wrapped = (...next) => {
+    args = next;
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      invoke();
+    }, msec);
+  };
+
+  const cancel = () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    args = null;
+  };
+
+  const flush = () => {
+    if (timer === null) return;
+    clearTimeout(timer);
+    timer = null;
+    if (args !== null) invoke();
+  };
+
+  return { fn: wrapped, cancel, flush };
+};
 
 // datetime.js
 
@@ -324,7 +398,9 @@ const nextEvent = (ev, d = new Date()) => {
   if (iM && ev.MM !== M) return ev.MM < M ? -1 : 0;
   if (iD && ev.DD !== D) return ev.DD < D ? -1 : 0;
   if (iw && ev.wd !== w) return 0;
-  if (ih && (ev.hh < h || (ev.hh === h && im && ev.mm < m))) return -1;
+  const hourPassed = ev.hh < h;
+  const minutePassed = ev.hh === h && im && ev.mm < m;
+  if (ih && (hourPassed || minutePassed)) return -1;
 
   if (ih) ms += (ev.hh - h) * DURATION_UNITS.h;
   if (im) ms += (ev.mm - m) * DURATION_UNITS.m;
@@ -362,9 +438,8 @@ const protect = (allowMixins, ...namespaces) => {
   }
 };
 
-const jsonParse = (data) => {
-  if (data === null || data === undefined) return null;
-  if (data.length === 0) return null;
+const jsonParse = (data = null) => {
+  if (data === null) return null;
   try {
     return JSON.parse(data);
   } catch {
@@ -556,7 +631,7 @@ class Collector {
   fail(error) {
     this.done = true;
     this.#timeout = null;
-    const cause = error || new Error('Collector aborted');
+    const cause = error ?? new Error('Collector aborted');
     this.#cause = cause;
     this.#controller.abort();
     if (this.#reject !== null) this.#reject(cause);
@@ -784,16 +859,16 @@ const parseCookies = (cookie) => {
   const values = [];
   const items = cookie.split(';');
   for (const item of items) {
-    const pair = item.split('=');
-    const key = pair[0];
-    const val = pair[1] === undefined ? '' : pair[1];
-    values.push([key.trim(), val.trim()]);
+    const parts = item.split('=');
+    const key = parts[0].trim();
+    const val = (parts[1] ?? '').trim();
+    values.push([key, val]);
   }
   return Object.fromEntries(values);
 };
 
 const parseRange = (range) => {
-  if (!range || !range.includes('=')) return {};
+  if (!range?.includes('=')) return {};
   const bytes = range.split('=').pop();
   if (!bytes || !range.includes('-')) return {};
   const bounds = bytes.split('-').map((n) => parseInt(n));
@@ -1078,7 +1153,7 @@ const bytesToSize = (bytes) => {
   const size = bytes / 1000 ** exp;
   const short = Math.round(size);
   const unit = exp === 0 ? '' : ` ${SIZE_UNITS[exp - 1]}`;
-  return short.toString() + unit;
+  return `${short}${unit}`;
 };
 
 const UNIT_SIZES = {
@@ -1200,6 +1275,39 @@ class CircularBuffer {
     return false;
   }
 
+  every(fn) {
+    const buffer = this.#buffer;
+    const mask = buffer.length - 1;
+    const head = this.#head;
+    for (let i = 0; i < this.#size; i++) {
+      const offset = (head + i) & mask;
+      const value = buffer[offset];
+      const matches = fn(value, i);
+      if (matches === false) return false;
+    }
+    return true;
+  }
+
+  reduce(fn, acc) {
+    const size = this.#size;
+    const buffer = this.#buffer;
+    const mask = buffer.length - 1;
+    const head = this.#head;
+    let index = 0;
+    let result = acc;
+    if (acc === undefined) {
+      if (size === 0) throw new TypeError('CircularBuffer is empty');
+      result = buffer[head];
+      index = 1;
+    }
+    for (; index < size; index++) {
+      const offset = (head + index) & mask;
+      const value = buffer[offset];
+      result = fn(result, value, index);
+    }
+    return result;
+  }
+
   clear() {
     this.#buffer = new Array(INITIAL_CAPACITY);
     this.#head = 0;
@@ -1272,6 +1380,14 @@ class Deque {
 
   includes(value) {
     return this.#buffer.includes(value);
+  }
+
+  every(fn) {
+    return this.#buffer.every(fn);
+  }
+
+  reduce(fn, acc) {
+    return this.#buffer.reduce(fn, acc);
   }
 
   clear() {
@@ -1368,6 +1484,14 @@ class Stack {
 
   includes(value) {
     return this.#buffer.includes(value);
+  }
+
+  every(fn) {
+    return this.#buffer.every(fn);
+  }
+
+  reduce(fn, acc) {
+    return this.#buffer.reduce(fn, acc);
   }
 
   clear() {
@@ -2307,7 +2431,7 @@ class ConsList {
     return ConsList.empty;
   }
 
-  reverse() {
+  toReversed() {
     let result = ConsList.empty;
     let current = this;
     for (let i = 0; i < this.#size; i++) {
@@ -2329,13 +2453,57 @@ class ConsList {
     return ConsList.fromArray(values);
   }
 
-  reduce(fn, acc = undefined) {
+  filter(fn) {
+    const values = [];
+    let current = this;
+    for (let i = 0; i < this.#size; i++) {
+      const value = current.#value;
+      const matches = fn(value, i);
+      if (matches === true) values.push(value);
+      current = current.#next;
+    }
+    return ConsList.fromArray(values);
+  }
+
+  find(fn) {
+    const result = undefined;
+    let current = this;
+    for (let i = 0; i < this.#size; i++) {
+      const value = current.#value;
+      const matches = fn(value, i);
+      if (matches === true) return value;
+      current = current.#next;
+    }
+    return result;
+  }
+
+  some(fn) {
+    let current = this;
+    for (let i = 0; i < this.#size; i++) {
+      const matches = fn(current.#value, i);
+      if (matches === true) return true;
+      current = current.#next;
+    }
+    return false;
+  }
+
+  every(fn) {
+    let current = this;
+    for (let i = 0; i < this.#size; i++) {
+      const matches = fn(current.#value, i);
+      if (matches === false) return false;
+      current = current.#next;
+    }
+    return true;
+  }
+
+  reduce(fn, acc) {
     const size = this.#size;
     let current = this;
     let index = 0;
     let result = acc;
     if (acc === undefined) {
-      if (this.isEmpty()) throw new TypeError('ConsList is empty');
+      if (size === 0) throw new TypeError('ConsList is empty');
       result = current.#value;
       current = current.#next;
       index = 1;
@@ -2479,7 +2647,7 @@ class Trie {
     const keys = Object.keys(node);
     for (let i = 0; i < keys.length; i++) {
       const char = keys[i];
-      this.#collect(node[char], path + char, words);
+      this.#collect(node[char], `${path}${char}`, words);
     }
     return words;
   }
@@ -2498,7 +2666,17 @@ class UnrolledNode {
   reset() {
     this.readIndex = 0;
     this.writeIndex = 0;
+    this.length = 0;
     this.next = null;
+  }
+
+  clear() {
+    const buffer = this.buffer;
+    const end = this.writeIndex;
+    for (let i = this.readIndex; i < end; i++) {
+      buffer[i] = undefined;
+    }
+    this.reset();
   }
 
   enqueue(item) {
@@ -2529,7 +2707,7 @@ class NodePool {
   }
 
   acquire() {
-    return this.instances.shift() || this.factory();
+    return this.instances.shift() ?? this.factory();
   }
 
   release(instance) {
@@ -2583,6 +2761,33 @@ class UnrolledList {
       }
     }
     return item;
+  }
+
+  peek() {
+    let item;
+    if (this.#size > 0) {
+      const tail = this.#tail;
+      item = tail.buffer[tail.readIndex];
+    }
+    return item;
+  }
+
+  isEmpty() {
+    return this.#size === 0;
+  }
+
+  clear() {
+    const pool = this.#pool;
+    let node = this.#tail.next;
+    this.#tail.clear();
+    while (node !== null) {
+      const next = node.next;
+      node.clear();
+      pool.release(node);
+      node = next;
+    }
+    this.#head = this.#tail;
+    this.#size = 0;
   }
 }
 
@@ -2801,6 +3006,8 @@ export {
   timeout,
   delay,
   timeoutify,
+  throttle,
+  debounce,
   duration,
   nowDate,
   nowDateTimeUTC,

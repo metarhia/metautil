@@ -415,7 +415,7 @@ that own their own head, tail, and size.
 `ConsList` is an immutable cons-list ADT with structural sharing.
 `Trie` is a prefix tree for string keys with optional associated values.
 `UnrolledList` is a specialized high-throughput FIFO backed by pooled
-unrolled nodes; it does not implement the Array interoperability helpers.
+unrolled nodes; it does not implement index access or Array interop.
 
 | Class            | ADT            | Backed by        | Ends | Index |
 | ---------------- | -------------- | ---------------- | ---- | ----- |
@@ -837,21 +837,27 @@ console.log(order); // [1, 2, 3, 4]
 High-throughput FIFO queue backed by a singly-linked chain of fixed-size
 array nodes, with an internal pool that reuses drained nodes. Prefer this
 over `Queue` when enqueue/dequeue volume is high and you do not need
-index access, peek, or Array interop.
+index access or Array interop.
 
 - `constructor(options?: UnrolledListOptions)`
   - `options.nodeSize?: number` — items per node (default `1024`)
   - `options.poolSize?: number` — max pooled drained nodes (default `2`)
 - `enqueue(item: T): void` — append at the write end
 - `dequeue(): T | undefined` — remove and return from the read end
+- `peek(): T | undefined` — next item at the read end without removing
+- `isEmpty(): boolean`
+- `clear(): void` — drop all items and return extra nodes to the pool
 - `size: number`
 
 ```js
 const list = new UnrolledList({ nodeSize: 64, poolSize: 4 });
 list.enqueue('a');
 list.enqueue('b');
+console.log(list.peek()); // 'a'
 console.log(list.dequeue()); // 'a'
 console.log(list.size); // 1
+list.clear();
+console.log(list.isEmpty()); // true
 ```
 
 **Use case: event / task drain loop**

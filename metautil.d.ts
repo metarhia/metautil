@@ -461,6 +461,9 @@ export class UnrolledList<T = unknown> {
   constructor(options?: UnrolledListOptions);
   enqueue(item: T): void;
   dequeue(): T | undefined;
+  peek(): T | undefined;
+  isEmpty(): boolean;
+  clear(): void;
 }
 
 export class Stack<T> {
