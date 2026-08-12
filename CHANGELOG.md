@@ -2,6 +2,8 @@
 
 ## [Unreleased][unreleased]
 
+- Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
+
 ## [6.0.0-alpha.0][] - 2026-08-08
 
 - Reworked `Pool` with exclusive `Lease` handles: privatized internals
