@@ -4,6 +4,7 @@
 
 - Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
 - Extended `UnrolledList` with `fromArray`
+- Added `Result.match` and boolean coercion via `Symbol.toPrimitive`
 
 ## [6.0.0-alpha.0][] - 2026-08-08
 

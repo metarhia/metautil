@@ -89,3 +89,38 @@ test('Result: map catches thrown errors', () => {
   assert.strictEqual(result.ok, false);
   assert.strictEqual(result.error.message, 'Division by zero');
 });
+
+test('Result: match ok', () => {
+  const result = Result.ok(21);
+  const output = result.match({
+    ok: (value) => value * 2,
+    fail: () => 0,
+  });
+  assert.strictEqual(output, 42);
+});
+
+test('Result: match fail', () => {
+  const error = new Error('Boom');
+  const result = Result.fail(error);
+  const output = result.match({
+    ok: () => 'ok',
+    fail: (error) => error.message,
+  });
+  assert.strictEqual(output, 'Boom');
+});
+
+test('Result: toPrimitive', () => {
+  const ok = Result.ok(42);
+  const fail = Result.fail('Bad input');
+
+  assert.strictEqual(ok[Symbol.toPrimitive]('boolean'), true);
+  assert.strictEqual(fail[Symbol.toPrimitive]('boolean'), false);
+  assert.strictEqual(ok[Symbol.toPrimitive]('number'), true);
+  assert.strictEqual(fail[Symbol.toPrimitive]('number'), false);
+  assert.strictEqual(ok[Symbol.toPrimitive]('default'), true);
+  assert.strictEqual(fail[Symbol.toPrimitive]('default'), false);
+  assert.strictEqual(+ok, 1);
+  assert.strictEqual(+fail, 0);
+  assert.strictEqual(`${ok}`, 'true');
+  assert.strictEqual(`${fail}`, 'false');
+});
