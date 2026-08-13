@@ -257,6 +257,8 @@ boilerplate and to pass either outcome around as a single value.
 - `value: unknown`
 - `error: unknown`
 - `ok: boolean`
+- `match(handlers: { ok, fail })`
+- `[Symbol.toPrimitive](hint: 'boolean'): boolean`
 - `unwrap(defaultValue?: unknown): unknown`
 - `map(fn: (value: unknown) => unknown): Result`
 
@@ -264,6 +266,11 @@ boilerplate and to pass either outcome around as a single value.
 const parsed = Result.from(() => JSON.parse(input));
 if (parsed.ok) console.log(parsed.value);
 else console.error(parsed.error);
+
+parsed.match({
+  ok: (value) => console.log(value),
+  fail: (error) => console.error(error),
+});
 
 const loaded = await Result.fromAsync(() => readFile(path));
 const size = loaded.map((buffer) => buffer.length).unwrap(0);

@@ -204,17 +204,19 @@ export class Pool {
 
 // Submodule: result
 
-export class Result<T = unknown> {
-  constructor(value?: T | null, error?: unknown);
+export class Result<T = unknown, E = unknown> {
+  constructor(value?: T | null, error?: E | null);
   static ok<T = unknown>(value?: T | null): Result<T>;
-  static fail<T = unknown>(error: unknown): Result<T>;
+  static fail<E = unknown>(error: E): Result<never, E>;
   static from<T = unknown>(fn: () => T): Result<T>;
   static fromAsync<T = unknown>(fn: () => Promise<T>): Promise<Result<T>>;
-  value: T | null;
-  error: unknown;
-  ok: boolean;
+  readonly value: T | null;
+  readonly error: E | null;
+  readonly ok: boolean;
+  match<U>(handlers: { ok: (value: T) => U; fail: (error: E) => U }): U;
   unwrap(defaultValue?: T): T;
-  map<U = unknown>(fn: (value: T) => U): Result<U>;
+  map<U = unknown>(fn: (value: T) => U): Result<U, E>;
+  [Symbol.toPrimitive](hint: 'boolean'): boolean;
 }
 
 // Submodule: array
