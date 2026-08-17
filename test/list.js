@@ -689,3 +689,94 @@ test('List: Symbol.iterator', () => {
   const list = List.fromArray([1, 2, 3]);
   assert.deepStrictEqual([...list], [1, 2, 3]);
 });
+// --- Argument validation ---
+
+test('List: map throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.map(42), TypeError);
+  assert.throws(() => list.map('x'), TypeError);
+  assert.throws(() => list.map(null), TypeError);
+});
+
+test('List: flatMap throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.flatMap(42), TypeError);
+  assert.throws(() => list.flatMap(null), TypeError);
+});
+
+test('List: filter throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.filter(42), TypeError);
+  assert.throws(() => list.filter(null), TypeError);
+});
+
+test('List: reduce throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.reduce(42, 0), TypeError);
+  assert.throws(() => list.reduce(null, 0), TypeError);
+});
+
+test('List: some throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.some(42), TypeError);
+  assert.throws(() => list.some(null), TypeError);
+});
+
+test('List: every throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.every(42), TypeError);
+  assert.throws(() => list.every(null), TypeError);
+});
+
+test('List: find throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.find(42), TypeError);
+  assert.throws(() => list.find(null), TypeError);
+});
+
+test('List: findIndex throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.findIndex(42), TypeError);
+  assert.throws(() => list.findIndex(null), TypeError);
+});
+
+test('List: groupBy throws TypeError if getKey is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.groupBy(42), TypeError);
+  assert.throws(() => list.groupBy(null), TypeError);
+});
+
+test('List: sum throws TypeError if fn is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.sum(42), TypeError);
+  assert.throws(() => list.sum('x'), TypeError);
+  assert.doesNotThrow(() => list.sum());
+});
+
+test('List: min throws TypeError if compare is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.min(42), TypeError);
+  assert.throws(() => list.min('x'), TypeError);
+  assert.doesNotThrow(() => list.min());
+});
+
+test('List: max throws TypeError if compare is not a function', () => {
+  const list = List.of(1, 2, 3);
+  assert.throws(() => list.max(42), TypeError);
+  assert.throws(() => list.max('x'), TypeError);
+  assert.doesNotThrow(() => list.max());
+});
+
+test('List: sort throws TypeError if compare is not a function', () => {
+  const list = List.of(3, 1, 2);
+  assert.throws(() => list.sort(42), TypeError);
+  assert.throws(() => list.sort('x'), TypeError);
+  assert.doesNotThrow(() => list.sort());
+});
+
+test('List: toSorted throws TypeError if compare is not a function', () => {
+  const list = List.of(3, 1, 2);
+  assert.throws(() => list.toSorted(42), TypeError);
+  assert.throws(() => list.toSorted('x'), TypeError);
+  assert.doesNotThrow(() => list.toSorted());
+});
