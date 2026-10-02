@@ -5,6 +5,8 @@
 - Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
 - Extended `UnrolledList` with `fromArray`
 - Added `Result.match` and boolean coercion via `Symbol.toPrimitive`
+- Added `bytesToBinarySize`: formats bytes using binary units (KiB, MiB, GiB, ...)
+- Extended `sizeToBytes` to parse binary units (KiB, MiB, GiB, ...) in addition to decimal
 
 ## [6.0.0-alpha.0][] - 2026-08-08
 

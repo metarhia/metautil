@@ -1145,16 +1145,20 @@ class Semaphore {
 
 // units.js
 
-const SIZE_UNITS = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+const DEC_SIZE_UNITS = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+const BIN_SIZE_UNITS = ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
 
-const bytesToSize = (bytes) => {
+const toSize = (base, units) => (bytes) => {
   if (bytes === 0) return '0';
-  const exp = Math.floor(Math.log(bytes) / Math.log(1000));
-  const size = bytes / 1000 ** exp;
+  const exp = Math.floor(Math.log(bytes) / Math.log(base));
+  const size = bytes / base ** exp;
   const short = Math.round(size);
-  const unit = exp === 0 ? '' : ` ${SIZE_UNITS[exp - 1]}`;
+  const unit = exp === 0 ? '' : ` ${units[exp - 1]}`;
   return `${short}${unit}`;
 };
+
+const bytesToSize = toSize(1000, DEC_SIZE_UNITS);
+const bytesToBinarySize = toSize(1024, BIN_SIZE_UNITS);
 
 const UNIT_SIZES = {
   yb: 24, // yottabyte
@@ -1167,13 +1171,26 @@ const UNIT_SIZES = {
   kb: 3, // kilobyte
 };
 
+const BINARY_UNIT_SIZES = {
+  yib: 80, // yobibyte
+  zib: 70, // zebibyte
+  eib: 60, // exbibyte
+  pib: 50, // pebibyte
+  tib: 40, // tebibyte
+  gib: 30, // gibibyte
+  mib: 20, // mebibyte
+  kib: 10, // kibibyte
+};
+
 const sizeToBytes = (size) => {
-  const length = size.length;
-  const unit = size.substring(length - 2, length).toLowerCase();
+  const binUnit = size.slice(-3).toLowerCase();
+  const binExp = BINARY_UNIT_SIZES[binUnit];
   const value = parseInt(size, 10);
-  const exp = UNIT_SIZES[unit];
-  if (!exp) return value;
-  return value * 10 ** exp;
+  if (binExp) return value * 2 ** binExp;
+  const decUnit = binUnit.slice(1);
+  const decExp = UNIT_SIZES[decUnit];
+  if (!decExp) return value;
+  return value * 10 ** decExp;
 };
 
 // circular.js
@@ -3147,6 +3164,7 @@ export {
   Semaphore,
   bytesToSize,
   sizeToBytes,
+  bytesToBinarySize,
   CircularBuffer,
   Deque,
   Queue,
