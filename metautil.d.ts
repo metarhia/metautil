@@ -245,7 +245,7 @@ export class Semaphore {
   counter: number;
   timeout: number;
   size: number;
-  empty: boolean;
+  readonly empty: boolean;
   queue: Array<QueueElement>;
   enter(): Promise<void>;
   leave(): void;

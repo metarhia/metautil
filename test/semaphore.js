@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+
 const { Semaphore, delay } = require('..');
 
 const concurrency = 3;
@@ -69,6 +70,21 @@ test('Semaphore default', async () => {
   semaphore.leave();
   assert.strictEqual(semaphore.counter, concurrency);
   assert.strictEqual(semaphore.empty, true);
+});
+
+test('Semaphore timeout zero waits without rejecting', async () => {
+  const semaphore = new Semaphore({ concurrency: 1, size: 2, timeout: 0 });
+  await semaphore.enter();
+  let entered = false;
+  const waiting = semaphore.enter().then(() => {
+    entered = true;
+  });
+  await delay(30);
+  assert.strictEqual(entered, false);
+  semaphore.leave();
+  await waiting;
+  assert.strictEqual(entered, true);
+  semaphore.leave();
 });
 
 test('Semaphore timeout', async () => {
