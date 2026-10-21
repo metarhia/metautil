@@ -4,6 +4,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const fsp = require('node:fs').promises;
 const path = require('node:path');
+
 const metatests = require('metatests');
 const metautil = require('..');
 

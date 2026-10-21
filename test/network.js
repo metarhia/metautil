@@ -5,6 +5,7 @@ const { once } = require('node:events');
 const { Readable } = require('node:stream');
 const test = require('node:test');
 const assert = require('node:assert');
+
 const metatests = require('metatests');
 const metautil = require('..');
 

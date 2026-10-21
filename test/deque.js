@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+
 const metautil = require('..');
 
 const { Deque } = metautil;
