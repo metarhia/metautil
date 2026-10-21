@@ -5,6 +5,21 @@
 - Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
 - Extended `UnrolledList` with `fromArray`
 - Added `Result.match` and boolean coercion via `Symbol.toPrimitive`
+- Fixed `parseHost` for IPv6 hosts: `[::1]:8080` → `::1`
+- Fixed `Semaphore` with `timeout: 0`: wait indefinitely instead of rejecting
+- Fixed `Semaphore` timeout to remove the timed-out waiter, not queue head
+- Made `Semaphore.empty` a read-only getter derived from queue and counter
+- Optimized `Semaphore` hand-off: resolve next waiter without `setTimeout`
+- Fixed `Collector` option `reassign: true` (was ignored)
+- Fixed `Collector` to run `validate` once, also when awaited before done
+- Predicates in `List`, `ConsList`, `CircularBuffer`, `Deque`, `Stack`
+  accept truthy/falsy results like Array methods
+- Fixed `Pool` to hand out falsy resources (`0`, `''`, `false`)
+- Optimized `Pool`: O(1) `next()` when nothing is free, faster `add`/`isFree`
+- Optimized `replace` (up to 1.7x), `List.map`, `ConsList.toArray`, `throttle`
+- `Emitter.clear`, `listeners`, `listenerCount` accept `''` and `0` as names
+- Parse integers with radix 10 in `duration`, `parseEvery`, `parseRange`
+- `namespaceByPath` returns falsy values (`0`, `''`) instead of `null`
 
 ## [6.0.0-alpha.0][] - 2026-08-08
 
