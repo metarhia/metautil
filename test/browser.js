@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+
 const metatests = require('metatests');
 
 const nodeMajorVersion = parseInt(process.version.slice(1).split('.')[0], 10);

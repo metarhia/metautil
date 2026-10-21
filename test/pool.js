@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+
 const metautil = require('..');
 
 test('Pool: add + next', () => {
