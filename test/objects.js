@@ -15,11 +15,9 @@ test('Object: makePrivate', () => {
     },
   };
   const iface = metautil.makePrivate(obj);
-  assert.strictEqual(typeof iface, 'object');
-  assert.strictEqual(obj === iface, false);
+  assert.notStrictEqual(iface, obj);
   assert.strictEqual(iface.field, undefined);
   assert.strictEqual(iface.CONSTANT, 1000);
-  assert.strictEqual(typeof iface.method, 'function');
   assert.strictEqual(iface.method(3, 5), 8);
 });
 
@@ -41,22 +39,12 @@ test('Object: protect', () => {
     },
   };
   metautil.protect(['module1'], obj1, obj2);
-  try {
-    obj1.field1 = 100;
-    assert.strictEqual(obj1.field1, 100);
-    obj1.module1.method = () => {};
-    assert.strictEqual(obj1.module1.method(3, 5), undefined);
-  } catch (err) {
-    assert.ifError(err);
-  }
-  try {
-    obj2.field1 = 200;
-    assert.strictEqual(obj2.field1, 200);
+  obj1.module1.method = () => {};
+  assert.strictEqual(obj1.module1.method(3, 5), undefined);
+  assert.throws(() => {
     obj2.module2.method = () => {};
-    assert.strictEqual(obj2.module2.method(3, 5), 8);
-  } catch (err) {
-    assert.strictEqual(err.constructor.name, 'TypeError');
-  }
+  }, TypeError);
+  assert.strictEqual(obj2.module2.method(3, 5), 8);
 });
 
 test('Introspection: getSignature', async () => {

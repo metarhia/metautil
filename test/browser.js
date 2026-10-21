@@ -14,38 +14,16 @@ if (nodeMajorVersion < 19) {
 const metautil = require('../lib/browser.js');
 
 const testRandom = (random) => {
-  {
-    const value = random(100, 100);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, 100);
-  }
-  {
-    const value = random(-100, -100);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, -100);
-  }
-  {
-    const value = random(0, 0);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, 0);
-  }
+  assert.strictEqual(random(100, 100), 100);
+  assert.strictEqual(random(-100, -100), -100);
+  assert.strictEqual(random(0, 0), 0);
   for (let i = 0; i < 200; i++) {
-    const value = random();
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 0);
-    assert(value <= 1);
-  }
-  for (let i = 0; i < 200; i++) {
-    const value = random(100);
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 0);
-    assert(value <= 100);
-  }
-  for (let i = 0; i < 200; i++) {
-    const value = random(100, 200);
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 100);
-    assert(value <= 200);
+    const fraction = random();
+    assert(fraction >= 0 && fraction < 1);
+    const upTo = random(100);
+    assert(Number.isInteger(upTo) && upTo >= 0 && upTo <= 100);
+    const between = random(100, 200);
+    assert(Number.isInteger(between) && between >= 100 && between <= 200);
   }
 };
 
@@ -53,7 +31,7 @@ test('Browser crypto: cryptoRandom', async () => {
   testRandom(metautil.cryptoRandom);
 });
 
-test('Browser crypto: cryptoRandom', async () => {
+test('Browser crypto: random', async () => {
   testRandom(metautil.random);
 });
 
