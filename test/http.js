@@ -13,6 +13,9 @@ metatests.case(
       ['localhost', 'localhost'],
       ['domain.com:8080', 'domain.com'],
       ['localhost:8080', 'localhost'],
+      ['[::1]:8080', '::1'],
+      ['[2001:db8::1]', '2001:db8::1'],
+      ['[2001:db8::1]:443', '2001:db8::1'],
     ],
     'metautil.parseParams': [
       ['a=1&b=2', { a: '1', b: '2' }],
