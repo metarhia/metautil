@@ -26,28 +26,31 @@ class DomainError extends Error {
   }
 }
 
-const isError = (err) => err?.constructor?.name?.includes('Error') || false;
+const isError = (err) => err?.constructor?.name?.includes('Error') === true;
 
 // strings.js
 
 const replace = (str, substr, newstr) => {
   if (substr === '') return str;
-  let src = str;
-  let res = '';
-  do {
-    const index = src.indexOf(substr);
-    if (index === -1) return `${res}${src}`;
-    const start = src.substring(0, index);
-    src = src.substring(index + substr.length);
-    res += `${start}${newstr}`;
-  } while (true);
+  let index = str.indexOf(substr);
+  if (index === -1) return str;
+  const step = substr.length;
+  let result = '';
+  let from = 0;
+  while (index !== -1) {
+    result += str.substring(from, index);
+    result += newstr;
+    from = index + step;
+    index = str.indexOf(substr, from);
+  }
+  return result + str.substring(from);
 };
 
 const between = (s, prefix, suffix) => {
   let i = s.indexOf(prefix);
   if (i === -1) return '';
   s = s.substring(i + prefix.length);
-  if (suffix) {
+  if (suffix !== undefined && suffix !== '') {
     i = s.indexOf(suffix);
     if (i === -1) return '';
     s = s.substring(0, i);
@@ -63,9 +66,9 @@ const split = (s, separator) => {
 
 const inRange = (x, min, max) => x >= min && x <= max;
 
-const isFirstUpper = (s) => !!s && inRange(s[0], 'A', 'Z');
+const isFirstUpper = (s) => s.length > 0 && inRange(s[0], 'A', 'Z');
 
-const isFirstLower = (s) => !!s && inRange(s[0], 'a', 'z');
+const isFirstLower = (s) => s.length > 0 && inRange(s[0], 'a', 'z');
 
 const isFirstLetter = (s) => isFirstUpper(s) || isFirstLower(s);
 
@@ -131,136 +134,115 @@ const projection = (source, fields) => {
 
 const toBool = [() => true, () => false];
 
-const timeout = (msec, signal = null) =>
+const timeoutError = (msec) =>
+  new Error(`Timeout of ${String(msec)}ms reached`, 'ETIMEOUT');
+
+const abortable = (msec, signal, label, onElapsed) =>
   new Promise((resolve, reject) => {
-    const alreadyAborted = signal !== null && signal.aborted;
-    if (alreadyAborted) {
-      return void reject(new Error('Timeout aborted', { name: 'AbortError' }));
+    const message = `${label} aborted`;
+    if (signal !== null && signal.aborted) {
+      return void reject(new Error(message, { name: 'AbortError' }));
     }
     let timer = null;
     const onAbort = () => {
       clearTimeout(timer);
-      reject(new Error('Timeout aborted', { name: 'AbortError' }));
+      reject(new Error(message, { name: 'AbortError' }));
     };
     timer = setTimeout(() => {
       if (signal !== null) signal.removeEventListener('abort', onAbort);
-      reject(new Error(`Timeout of ${msec}ms reached`, 'ETIMEOUT'));
+      onElapsed(resolve, reject);
     }, msec);
     if (signal !== null) {
       signal.addEventListener('abort', onAbort, { once: true });
     }
   });
 
+const timeout = (msec, signal = null) =>
+  abortable(msec, signal, 'Timeout', (resolve, reject) => {
+    reject(timeoutError(msec));
+  });
+
 const delay = (msec, signal = null) =>
-  new Promise((resolve, reject) => {
-    const alreadyAborted = signal !== null && signal.aborted;
-    if (alreadyAborted) {
-      return void reject(new Error('Delay aborted', { name: 'AbortError' }));
-    }
-    let timer = null;
-    const onAbort = () => {
-      clearTimeout(timer);
-      reject(new Error('Delay aborted', { name: 'AbortError' }));
-    };
-    timer = setTimeout(() => {
-      if (signal !== null) signal.removeEventListener('abort', onAbort);
-      resolve();
-    }, msec);
-    if (signal !== null) {
-      signal.addEventListener('abort', onAbort, { once: true });
-    }
+  abortable(msec, signal, 'Delay', (resolve) => {
+    resolve();
   });
 
 const timeoutify = (promise, msec) =>
   new Promise((resolve, reject) => {
-    let timer = setTimeout(() => {
-      timer = null;
-      reject(new Error(`Timeout of ${msec}ms reached`, 'ETIMEOUT'));
+    const timer = setTimeout(() => {
+      reject(timeoutError(msec));
     }, msec);
     promise.then(resolve, reject).finally(() => {
-      if (timer !== null) clearTimeout(timer);
+      clearTimeout(timer);
     });
   });
 
+const createDeferred = (fn) => ({ fn, timer: null, args: null });
+
+const invokeDeferred = (deferred) => {
+  deferred.fn(...deferred.args);
+  deferred.args = null;
+};
+
+const deferredControls = (deferred, wrapped) => ({
+  fn: wrapped,
+  cancel: () => {
+    clearTimeout(deferred.timer);
+    deferred.timer = null;
+    deferred.args = null;
+  },
+  flush: () => {
+    if (deferred.timer === null) return;
+    clearTimeout(deferred.timer);
+    deferred.timer = null;
+    if (deferred.args !== null) invokeDeferred(deferred);
+  },
+});
+
 const throttle = (fn, msec) => {
-  let timer = null;
-  let args = null;
+  const deferred = createDeferred(fn);
 
-  const invoke = () => {
-    fn(...args);
-    args = null;
+  const tick = () => {
+    deferred.timer = null;
+    if (deferred.args === null) return;
+    invokeDeferred(deferred);
+    deferred.timer = setTimeout(tick, msec);
   };
 
-  const wrapped = (...next) => {
-    args = next;
-    if (timer !== null) return;
-    invoke();
-    const tick = () => {
-      timer = null;
-      if (args === null) return;
-      invoke();
-      timer = setTimeout(tick, msec);
-    };
-    timer = setTimeout(tick, msec);
+  const wrapped = (...args) => {
+    deferred.args = args;
+    if (deferred.timer !== null) return;
+    invokeDeferred(deferred);
+    deferred.timer = setTimeout(tick, msec);
   };
 
-  const cancel = () => {
-    if (timer !== null) clearTimeout(timer);
-    timer = null;
-    args = null;
-  };
-
-  const flush = () => {
-    if (timer === null) return;
-    clearTimeout(timer);
-    timer = null;
-    if (args !== null) invoke();
-  };
-
-  return { fn: wrapped, cancel, flush };
+  return deferredControls(deferred, wrapped);
 };
 
 const debounce = (fn, msec) => {
-  let timer = null;
-  let args = null;
+  const deferred = createDeferred(fn);
 
-  const invoke = () => {
-    fn(...args);
-    args = null;
+  const elapsed = () => {
+    deferred.timer = null;
+    invokeDeferred(deferred);
   };
 
-  const wrapped = (...next) => {
-    args = next;
-    if (timer !== null) clearTimeout(timer);
-    timer = setTimeout(() => {
-      timer = null;
-      invoke();
-    }, msec);
+  const wrapped = (...args) => {
+    deferred.args = args;
+    clearTimeout(deferred.timer);
+    deferred.timer = setTimeout(elapsed, msec);
   };
 
-  const cancel = () => {
-    if (timer !== null) clearTimeout(timer);
-    timer = null;
-    args = null;
-  };
-
-  const flush = () => {
-    if (timer === null) return;
-    clearTimeout(timer);
-    timer = null;
-    if (args !== null) invoke();
-  };
-
-  return { fn: wrapped, cancel, flush };
+  return deferredControls(deferred, wrapped);
 };
 
 // datetime.js
 
 const DURATION_UNITS = {
-  d: 86400, // days
-  h: 3600, // hours
-  m: 60, // minutes
-  s: 1, // seconds
+  d: 86400,
+  h: 3600,
+  m: 60,
+  s: 1,
 };
 
 const duration = (s) => {
@@ -270,30 +252,30 @@ const duration = (s) => {
   const parts = s.split(' ');
   for (const part of parts) {
     const unit = part.slice(-1);
-    const value = parseInt(part.slice(0, -1));
+    const digits = part.slice(0, -1);
+    const value = parseInt(digits, 10);
     const mult = DURATION_UNITS[unit];
-    if (!isNaN(value) && mult) result += value * mult;
+    if (!Number.isNaN(value) && mult !== undefined) result += value * mult;
   }
   return result * 1000;
 };
 
 const twoDigit = (n) => n.toString().padStart(2, '0');
 
-const nowDate = (date = new Date()) => {
+const utcDate = (date) => {
   const yyyy = date.getUTCFullYear().toString();
   const mm = twoDigit(date.getUTCMonth() + 1);
   const dd = twoDigit(date.getUTCDate());
   return `${yyyy}-${mm}-${dd}`;
 };
 
+const nowDate = (date = new Date()) => utcDate(date);
+
 const nowDateTimeUTC = (date = new Date(), timeSep = ':') => {
-  const yyyy = date.getUTCFullYear().toString();
-  const mm = twoDigit(date.getUTCMonth() + 1);
-  const dd = twoDigit(date.getUTCDate());
   const hh = twoDigit(date.getUTCHours());
   const min = twoDigit(date.getUTCMinutes());
   const ss = twoDigit(date.getUTCSeconds());
-  return `${yyyy}-${mm}-${dd}T${hh}${timeSep}${min}${timeSep}${ss}`;
+  return `${utcDate(date)}T${hh}${timeSep}${min}${timeSep}${ss}`;
 };
 
 const MONTHS = [
@@ -313,19 +295,17 @@ const MONTHS = [
 
 const NAME_LEN = 3;
 
-const parseMonth = (s) => {
+const parseName = (names) => (s) => {
   const name = s.substring(0, NAME_LEN);
-  const i = MONTHS.indexOf(name);
+  const i = names.indexOf(name);
   return i >= 0 ? i + 1 : -1;
 };
+
+const parseMonth = parseName(MONTHS);
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-const parseDay = (s) => {
-  const name = s.substring(0, NAME_LEN);
-  const i = DAYS.indexOf(name);
-  return i >= 0 ? i + 1 : -1;
-};
+const parseDay = parseName(DAYS);
 
 const ORDINAL = ['st', 'nd', 'rd', 'th'];
 
@@ -347,16 +327,16 @@ const parseEvery = (s = '') => {
       const hm = split(part, ':');
       const h = hm[0];
       const m = hm[1];
-      if (h !== '') hh = parseInt(h);
-      mm = m === '' ? 0 : parseInt(m);
+      if (h !== '') hh = parseInt(h, 10);
+      mm = m === '' ? 0 : parseInt(m, 10);
       continue;
     }
     if (isOrdinal(part)) {
-      DD = parseInt(part);
+      DD = parseInt(part, 10);
       continue;
     }
     if (part.length === YEAR_LEN) {
-      YY = parseInt(part);
+      YY = parseInt(part, 10);
       continue;
     }
     if (MM === -1) {
@@ -370,8 +350,8 @@ const parseEvery = (s = '') => {
     const unit = part.slice(-1);
     const mult = DURATION_UNITS[unit];
     if (typeof mult === 'number') {
-      const value = parseInt(part);
-      if (!isNaN(value)) ms += value * mult;
+      const value = parseInt(part, 10);
+      if (!Number.isNaN(value)) ms += value * mult;
     }
   }
   return { YY, MM, DD, wd, hh, mm, ms: ms > 0 ? ms * 1000 : -1 };
@@ -483,13 +463,13 @@ const unflatObject = (source, fields) => {
     const key = entry[0];
     const value = entry[1];
     const prefix = fields.find((name) => key.startsWith(name));
-    if (prefix) {
+    if (prefix !== undefined) {
       if (Object.hasOwn(source, prefix)) {
         throw new Error(`Can not combine keys: key "${prefix}" already exists`);
       }
       const newKey = key.substring(prefix.length).toLowerCase();
       const section = result[prefix];
-      if (section) section[newKey] = value;
+      if (section !== undefined) section[newKey] = value;
       else result[prefix] = { [newKey]: value };
       continue;
     }
@@ -510,13 +490,13 @@ const namespaceByPath = (namespace, path) => {
   const key = parts[0];
   const rest = parts[1];
   const step = namespace[key];
-  if (!step) return null;
+  if (step === undefined || step === null) return null;
   if (rest === '') return step;
   return namespaceByPath(step, rest);
 };
 
 const serializeArguments = (fields, args) => {
-  if (!fields) return '';
+  if (fields === undefined || fields === null) return '';
   const data = {};
   for (const par of fields) {
     data[par] = args[par];
@@ -545,35 +525,37 @@ class Collector {
   #cause = null;
   #controller = null;
   #signal = null;
-  #timeout = null;
 
   constructor(keys, options = {}) {
     const { exact = true, reassign = false } = options;
     const { timeout = 0, defaults = {}, validate = null } = options;
-    if (validate !== null) this.validate = validate;
+    this.validate = validate;
     this.keys = keys;
-    if (exact === false) this.exact = false;
-    if (reassign === false) this.reassign = reassign;
+    this.exact = Boolean(exact);
+    this.reassign = Boolean(reassign);
     if (typeof defaults === 'object') this.defaults = defaults;
-    if (typeof timeout === 'number') this.timeout = timeout;
     this.#controller = new AbortController();
     this.#signal = this.#controller.signal;
-    if (typeof timeout === 'number' && timeout > 0) {
-      this.#timeout = AbortSignal.timeout(timeout);
-      this.#signal = AbortSignal.any([this.#signal, this.#timeout]);
-      this.#signal.addEventListener('abort', () => {
-        if (Object.keys(this.defaults).length > 0) this.#default();
-        if (this.done) return;
-        this.fail(this.#signal.reason);
-      });
+    if (typeof timeout === 'number') {
+      this.timeout = timeout;
+      if (timeout > 0) {
+        const timer = AbortSignal.timeout(timeout);
+        this.#signal = AbortSignal.any([this.#signal, timer]);
+        this.#signal.addEventListener('abort', () => {
+          this.#default();
+          if (this.done) return;
+          this.fail(this.#signal.reason);
+        });
+      }
     }
   }
 
   #default() {
-    for (const entry of Object.entries(this.defaults)) {
-      const key = entry[0];
-      const value = entry[1];
-      if (this.data[key] === undefined) this.set(key, value);
+    const { defaults, data } = this;
+    const keys = Object.keys(defaults);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      if (data[key] === undefined) this.set(key, defaults[key]);
     }
   }
 
@@ -597,40 +579,46 @@ class Collector {
     this.data[key] = value;
     if (this.count === this.keys.length) {
       this.done = true;
-      this.#timeout = null;
-      if (this.#fulfill !== null) this.#fulfill(this.data);
+      if (this.validate !== null) {
+        try {
+          this.validate(this.data);
+        } catch (error) {
+          this.#cause = error;
+        }
+      }
+      this.#finish();
     }
   }
 
   take(key, fn, ...args) {
     fn(...args, (error, data) => {
-      if (error) this.fail(error);
+      if (error !== null && error !== undefined) this.fail(error);
       else this.set(key, data);
     });
   }
 
   wait(key, fn, ...args) {
     const promise = fn instanceof Promise ? fn : fn(...args);
-    promise.then(
+    this.#await(key, promise);
+  }
+
+  collect(sources) {
+    const keys = Object.keys(sources);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      this.#await(key, sources[key]);
+    }
+  }
+
+  #await(key, thenable) {
+    thenable.then(
       (data) => this.set(key, data),
       (error) => this.fail(error),
     );
   }
 
-  collect(sources) {
-    for (const entry of Object.entries(sources)) {
-      const key = entry[0];
-      const collector = entry[1];
-      collector.then(
-        (data) => this.set(key, data),
-        (error) => this.fail(error),
-      );
-    }
-  }
-
   fail(error) {
     this.done = true;
-    this.#timeout = null;
     const cause = error ?? new Error('Collector aborted');
     this.#cause = cause;
     this.#controller.abort();
@@ -641,20 +629,19 @@ class Collector {
     this.fail();
   }
 
+  #finish() {
+    if (this.#cause !== null) {
+      if (this.#reject !== null) this.#reject(this.#cause);
+    } else if (this.#fulfill !== null) {
+      this.#fulfill(this.data);
+    }
+  }
+
   then(onFulfilled, onRejected = null) {
     return new Promise((resolve, reject) => {
       this.#fulfill = resolve;
       this.#reject = reject;
-      if (!this.done) return;
-      if (this.validate !== null) {
-        try {
-          this.validate(this.data);
-        } catch (error) {
-          this.#cause = error;
-        }
-      }
-      if (this.#cause !== null) reject(this.#cause);
-      else resolve(this.data);
+      if (this.done) this.#finish();
     }).then(onFulfilled, onRejected);
   }
 }
@@ -664,6 +651,7 @@ const collect = (keys, options) => new Collector(keys, options);
 // events.js
 
 const DONE = { done: true, value: undefined };
+const DEFAULT_MAX_LISTENERS = 10;
 
 class EventIterator {
   #resolvers = [];
@@ -681,7 +669,7 @@ class EventIterator {
       const resolvers = this.#resolvers;
       this.#resolvers = [];
       for (const resolver of resolvers) {
-        resolver.resolve({ done: this.#done, value });
+        resolver.resolve({ done: false, value });
       }
     };
     emitter.on(eventName, this.#listener);
@@ -742,32 +730,30 @@ class EventIterable {
 
 class Emitter {
   #events = new Map();
-  #maxListeners = 10;
+  #maxListeners = DEFAULT_MAX_LISTENERS;
 
   constructor(options = {}) {
-    this.#maxListeners = options.maxListeners ?? 10;
+    this.#maxListeners = options.maxListeners ?? DEFAULT_MAX_LISTENERS;
   }
 
   emit(eventName, value) {
     const event = this.#events.get(eventName);
-    if (!event) {
+    if (event === undefined) {
       if (eventName !== 'error') return Promise.resolve();
       throw new Error('Unhandled error');
     }
     const listeners = event.on.slice();
     const promises = listeners.map(async (fn) => fn(value));
-    if (event.once.size > 0) {
-      const len = event.on.length;
-      const remaining = new Array(len);
-      let index = 0;
-      for (let i = 0; i < len; i++) {
-        const listener = event.on[i];
-        if (!event.once.has(listener)) remaining[index++] = listener;
+    const { on, once } = event;
+    if (once.size > 0) {
+      const remaining = [];
+      for (let i = 0; i < on.length; i++) {
+        const listener = on[i];
+        if (!once.has(listener)) remaining.push(listener);
       }
-      if (index === 0) {
+      if (remaining.length === 0) {
         this.#events.delete(eventName);
       } else {
-        remaining.length = index;
         this.#events.set(eventName, { on: remaining, once: new Set() });
       }
     }
@@ -776,21 +762,19 @@ class Emitter {
 
   #addListener(eventName, listener, once) {
     let event = this.#events.get(eventName);
-    if (!event) {
-      const on = [listener];
-      event = { on, once: once ? new Set(on) : new Set() };
+    if (event === undefined) {
+      event = { on: [], once: new Set() };
       this.#events.set(eventName, event);
-    } else {
-      if (event.on.includes(listener)) {
-        throw new Error('Duplicate listeners detected');
-      }
-      event.on.push(listener);
-      if (once) event.once.add(listener);
+    } else if (event.on.includes(listener)) {
+      throw new Error('Duplicate listeners detected');
     }
+    event.on.push(listener);
+    if (once) event.once.add(listener);
     if (event.on.length > this.#maxListeners) {
+      const max = String(this.#maxListeners);
       throw new Error(
         `MaxListenersExceededWarning: Possible memory leak. ` +
-          `Current maxListeners is ${this.#maxListeners}.`,
+          `Current maxListeners is ${max}.`,
       );
     }
   }
@@ -804,9 +788,11 @@ class Emitter {
   }
 
   off(eventName, listener) {
-    if (!listener) return void this.#events.delete(eventName);
+    if (listener === undefined || listener === null) {
+      return void this.#events.delete(eventName);
+    }
     const event = this.#events.get(eventName);
-    if (!event) return;
+    if (event === undefined) return;
     const index = event.on.indexOf(listener);
     if (index > -1) event.on.splice(index, 1);
     event.once.delete(listener);
@@ -823,37 +809,44 @@ class Emitter {
   }
 
   clear(eventName) {
-    if (!eventName) return void this.#events.clear();
+    if (eventName === undefined) return void this.#events.clear();
     this.#events.delete(eventName);
   }
 
   listeners(eventName) {
-    if (!eventName) throw new Error('Expected eventName');
+    if (eventName === undefined) throw new Error('Expected eventName');
     const event = this.#events.get(eventName);
-    return event ? event.on : [];
+    return event === undefined ? [] : event.on;
   }
 
   listenerCount(eventName) {
-    if (!eventName) throw new Error('Expected eventName');
-    const event = this.#events.get(eventName);
-    return event ? event.on.length : 0;
+    return this.listeners(eventName).length;
   }
 
   eventNames() {
-    return Array.from(this.#events.keys());
+    const names = this.#events.keys();
+    return Array.from(names);
   }
 }
 
 // http.js
 
 const parseHost = (host) => {
-  if (!host) return 'no-host-name-in-http-headers';
+  if (host === undefined || host === '') return 'no-host-name-in-http-headers';
+  if (host.startsWith('[')) {
+    const end = host.indexOf(']');
+    if (end === -1) return host;
+    return host.substring(1, end);
+  }
   const portOffset = host.indexOf(':');
   if (portOffset > -1) return host.substring(0, portOffset);
   return host;
 };
 
-const parseParams = (params) => Object.fromEntries(new URLSearchParams(params));
+const parseParams = (params) => {
+  const searchParams = new URLSearchParams(params);
+  return Object.fromEntries(searchParams);
+};
 
 const parseCookies = (cookie) => {
   const values = [];
@@ -868,14 +861,14 @@ const parseCookies = (cookie) => {
 };
 
 const parseRange = (range) => {
-  if (!range?.includes('=')) return {};
+  if (range?.includes('=') !== true) return {};
   const bytes = range.split('=').pop();
-  if (!bytes || !range.includes('-')) return {};
-  const bounds = bytes.split('-').map((n) => parseInt(n));
-  const start = bounds[0];
-  const end = bounds[1];
-  if (isNaN(start)) return isNaN(end) ? {} : { tail: end };
-  return isNaN(end) ? { start } : { start, end };
+  if (bytes === '' || !range.includes('-')) return {};
+  const bounds = bytes.split('-');
+  const start = parseInt(bounds[0], 10);
+  const end = parseInt(bounds[1], 10);
+  if (Number.isNaN(start)) return Number.isNaN(end) ? {} : { tail: end };
+  return Number.isNaN(end) ? { start } : { start, end };
 };
 
 // pool.js
@@ -910,7 +903,6 @@ class Pool {
   #leases = new WeakSet();
   #timeout = 0;
   #current = 0;
-  #size = 0;
   #available = 0;
 
   constructor(options = {}) {
@@ -920,22 +912,26 @@ class Pool {
   }
 
   next() {
-    if (this.#size === 0) return null;
-    let attempts = 0;
-    do {
-      const index = this.#current;
-      const resource = this.#items[index];
-      const free = this.#free[index];
-      this.#current++;
-      if (this.#current === this.#size) this.#current = 0;
-      if (resource && free) return resource;
-      attempts++;
-    } while (attempts < this.#size);
-    return null;
+    const index = this.#nextFreeIndex();
+    return index === -1 ? null : this.#items[index];
   }
 
   capture() {
-    return this.#nextLease(true);
+    if (this.#items.length === 0) return null;
+    if (this.#available === 0) {
+      return new Promise((resolve, reject) => {
+        const waiting = { resolve, timer: null };
+        if (this.#timeout > 0) {
+          waiting.timer = setTimeout(() => {
+            const position = this.#queue.indexOf(waiting);
+            this.#queue.splice(position, 1);
+            reject(new Error('Pool next item timeout'));
+          }, this.#timeout);
+        }
+        this.#queue.push(waiting);
+      });
+    }
+    return this.#takeLease();
   }
 
   release(lease) {
@@ -946,58 +942,36 @@ class Pool {
   }
 
   isFree(resource) {
-    for (let i = 0; i < this.#size; i++) {
-      if (this.#items[i] === resource) return this.#free[i];
-    }
-    return false;
+    const index = this.#items.indexOf(resource);
+    return index === -1 ? false : this.#free[index];
   }
 
   add(resource) {
-    for (let i = 0; i < this.#size; i++) {
-      if (this.#items[i] === resource) {
-        throw new Error('Pool: add duplicates');
-      }
+    if (this.#items.indexOf(resource) !== -1) {
+      throw new Error('Pool: add duplicates');
     }
     this.#items.push(resource);
     this.#free.push(true);
-    this.#size++;
     this.#available++;
   }
 
-  #nextLease(exclusive) {
-    if (this.#size === 0) return null;
-    if (exclusive && this.#available === 0) {
-      return new Promise((resolve, reject) => {
-        const waiting = { resolve, reject, timer: null };
-        if (this.#timeout > 0) {
-          waiting.timer = setTimeout(() => {
-            waiting.resolve = null;
-            this.#removeWaiting(waiting);
-            reject(new Error('Pool next item timeout'));
-          }, this.#timeout);
-        }
-        this.#queue.push(waiting);
-      });
+  #nextFreeIndex() {
+    if (this.#available === 0) return -1;
+    const size = this.#items.length;
+    for (let attempts = 0; attempts < size; attempts++) {
+      const index = this.#current;
+      this.#current = index + 1 === size ? 0 : index + 1;
+      if (this.#free[index]) return index;
     }
-    return this.#takeLease();
+    return -1;
   }
 
   #takeLease() {
-    let attempts = 0;
-    do {
-      const index = this.#current;
-      const resource = this.#items[index];
-      const free = this.#free[index];
-      this.#current++;
-      if (this.#current === this.#size) this.#current = 0;
-      if (resource && free) {
-        this.#free[index] = false;
-        this.#available--;
-        return this.#createLease(resource, index);
-      }
-      attempts++;
-    } while (attempts < this.#size);
-    return null;
+    const index = this.#nextFreeIndex();
+    if (index === -1) return null;
+    this.#free[index] = false;
+    this.#available--;
+    return this.#createLease(this.#items[index], index);
   }
 
   #createLease(resource, index) {
@@ -1015,21 +989,15 @@ class Pool {
     if (this.#free[index]) {
       throw new Error('Pool: release not captured');
     }
-    const waiting = this.#queue.shift() ?? null;
-    if (waiting !== null) {
-      if (waiting.timer !== null) clearTimeout(waiting.timer);
-      if (waiting.resolve !== null) {
-        waiting.resolve(this.#createLease(resource, index));
-        return;
-      }
+    const waiting = this.#queue.shift();
+    if (waiting !== undefined) {
+      clearTimeout(waiting.timer);
+      const lease = this.#createLease(resource, index);
+      waiting.resolve(lease);
+      return;
     }
     this.#free[index] = true;
     this.#available++;
-  }
-
-  #removeWaiting(waiting) {
-    const index = this.#queue.indexOf(waiting);
-    if (index !== -1) this.#queue.splice(index, 1);
   }
 }
 
@@ -1042,8 +1010,8 @@ class Result {
   #error = null;
 
   constructor(value = null, error = null) {
-    if (value !== null) this.#value = value;
-    if (error !== null) this.#error = error;
+    this.#value = value;
+    this.#error = error;
   }
 
   static ok(value = null) {
@@ -1056,7 +1024,8 @@ class Result {
 
   static from(fn) {
     try {
-      return Result.ok(fn());
+      const value = fn();
+      return Result.ok(value);
     } catch (error) {
       return Result.fail(error);
     }
@@ -1064,7 +1033,8 @@ class Result {
 
   static async fromAsync(fn) {
     try {
-      return Result.ok(await fn());
+      const value = await fn();
+      return Result.ok(value);
     } catch (error) {
       return Result.fail(error);
     }
@@ -1079,6 +1049,15 @@ class Result {
   }
 
   get ok() {
+    return this.#error === null;
+  }
+
+  match({ ok, fail }) {
+    if (this.#error !== null) return fail(this.#error);
+    return ok(this.#value);
+  }
+
+  [Symbol.toPrimitive]() {
     return this.#error === null;
   }
 
@@ -1103,43 +1082,41 @@ class Semaphore {
     this.timeout = timeout;
     this.size = size;
     this.queue = [];
-    this.empty = true;
   }
 
-  async enter() {
+  get empty() {
+    return this.queue.length === 0 && this.counter === this.concurrency;
+  }
+
+  enter() {
     return new Promise((resolve, reject) => {
       if (this.counter > 0) {
         this.counter--;
-        this.empty = false;
         return void resolve();
       }
       if (this.queue.length >= this.size) {
         return void reject(new Error('Semaphore queue is full'));
       }
       const waiting = { resolve, timer: null };
-      waiting.timer = setTimeout(() => {
-        waiting.resolve = null;
-        this.queue.shift();
-        const { counter, concurrency } = this;
-        this.empty = this.queue.length === 0 && counter === concurrency;
-        reject(new Error('Semaphore timeout'));
-      }, this.timeout);
+      if (this.timeout > 0) {
+        waiting.timer = setTimeout(() => {
+          const position = this.queue.indexOf(waiting);
+          this.queue.splice(position, 1);
+          reject(new Error('Semaphore timeout'));
+        }, this.timeout);
+      }
       this.queue.push(waiting);
-      this.empty = false;
     });
   }
 
   leave() {
     if (this.queue.length === 0) {
       this.counter++;
-      this.empty = this.counter === this.concurrency;
       return;
     }
     const { resolve, timer } = this.queue.shift();
     clearTimeout(timer);
-    if (resolve !== null) setTimeout(resolve, 0);
-    const { counter, concurrency } = this;
-    this.empty = this.queue.length === 0 && counter === concurrency;
+    resolve();
   }
 }
 
@@ -1153,7 +1130,7 @@ const bytesToSize = (bytes) => {
   const size = bytes / 1000 ** exp;
   const short = Math.round(size);
   const unit = exp === 0 ? '' : ` ${SIZE_UNITS[exp - 1]}`;
-  return `${short}${unit}`;
+  return `${String(short)}${unit}`;
 };
 
 const UNIT_SIZES = {
@@ -1168,11 +1145,10 @@ const UNIT_SIZES = {
 };
 
 const sizeToBytes = (size) => {
-  const length = size.length;
-  const unit = size.substring(length - 2, length).toLowerCase();
+  const unit = size.slice(-2).toLowerCase();
   const value = parseInt(size, 10);
   const exp = UNIT_SIZES[unit];
-  if (!exp) return value;
+  if (exp === undefined) return value;
   return value * 10 ** exp;
 };
 
@@ -1282,8 +1258,7 @@ class CircularBuffer {
     for (let i = 0; i < this.#size; i++) {
       const offset = (head + i) & mask;
       const value = buffer[offset];
-      const matches = fn(value, i);
-      if (matches === false) return false;
+      if (!fn(value, i)) return false;
     }
     return true;
   }
@@ -1515,6 +1490,12 @@ const compareAsc = (a, b) => {
   return 0;
 };
 
+const clampIndex = (index, size) => {
+  const at = index < 0 ? index + size : index;
+  if (at < 0) return 0;
+  return at > size ? size : at;
+};
+
 class ListNode {
   static fromArray(values) {
     const { length } = values;
@@ -1619,21 +1600,8 @@ class List {
   }
 
   static fromArray(values) {
-    const { length } = values;
-    const list = new List();
-    if (length === 0) return list;
-    const head = new ListNode(values[0]);
-    let tail = head;
-    for (let i = 1; i < length; i++) {
-      const node = new ListNode(values[i]);
-      node.prev = tail;
-      tail.next = node;
-      tail = node;
-    }
-    list.#head = head;
-    list.#tail = tail;
-    list.#size = length;
-    return list;
+    const { head, tail, size } = ListNode.fromArray(values);
+    return List.#create(head, tail, size);
   }
 
   static merge(...lists) {
@@ -1674,16 +1642,6 @@ class List {
     return node;
   }
 
-  #detach(node) {
-    const prev = node.prev;
-    const next = node.next;
-    if (prev === null) this.#head = next;
-    else prev.next = next;
-    if (next === null) this.#tail = prev;
-    else next.prev = prev;
-    this.#size--;
-  }
-
   #detachRange(first, last, count) {
     const prev = first.prev;
     const next = last.next;
@@ -1696,18 +1654,27 @@ class List {
     this.#size -= count;
   }
 
-  static #copyFrom(node, count) {
-    const head = new ListNode(node.value);
-    let tail = head;
-    let current = node.next;
-    for (let i = 1; i < count; i++) {
-      const copied = new ListNode(current.value);
-      copied.prev = tail;
-      tail.next = copied;
-      tail = copied;
-      current = current.next;
+  // `before === null` attaches the chain at the tail
+  #attach(head, tail, count, before) {
+    const prev = before === null ? this.#tail : before.prev;
+    if (prev === null) {
+      this.#head = head;
+    } else {
+      prev.next = head;
+      head.prev = prev;
     }
-    return List.#create(head, tail, count);
+    if (before === null) {
+      this.#tail = tail;
+    } else {
+      tail.next = before;
+      before.prev = tail;
+    }
+    this.#size += count;
+  }
+
+  static #copyFrom(node, count) {
+    const { head, tail, size } = ListNode.copy(node, count);
+    return List.#create(head, tail, size);
   }
 
   append(...values) {
@@ -1759,9 +1726,7 @@ class List {
     const { length } = values;
     if (length === 0) return;
     const size = this.#size;
-    let at = index < 0 ? index + size : index;
-    if (at < 0) at = 0;
-    else if (at > size) at = size;
+    const at = clampIndex(index, size);
     const head = new ListNode(values[0]);
     let tail = head;
     for (let i = 1; i < length; i++) {
@@ -1770,28 +1735,8 @@ class List {
       tail.next = node;
       tail = node;
     }
-    if (at === size) {
-      const last = this.#tail;
-      if (last === null) {
-        this.#head = head;
-      } else {
-        last.next = head;
-        head.prev = last;
-      }
-      this.#tail = tail;
-    } else {
-      const before = this.#nodeAt(at);
-      const prev = before.prev;
-      if (prev === null) {
-        this.#head = head;
-      } else {
-        prev.next = head;
-        head.prev = prev;
-      }
-      tail.next = before;
-      before.prev = tail;
-    }
-    this.#size += length;
+    const before = at === size ? null : this.#nodeAt(at);
+    this.#attach(head, tail, length, before);
   }
 
   delete(index, count = 1) {
@@ -1800,8 +1745,7 @@ class List {
     const size = this.#size;
     const from = index < 0 ? index + size : index;
     if (from < 0 || from >= size) return;
-    const rest = size - from;
-    const actual = count < rest ? count : rest;
+    const actual = Math.min(count, size - from);
     const first = this.#nodeAt(from);
     let last = first;
     for (let i = 1; i < actual; i++) last = last.next;
@@ -1824,18 +1768,14 @@ class List {
     if (size === 0) return;
     if (n > 0) {
       if (n >= size) return void this.clear();
-      const first = this.#head;
-      let last = first;
-      for (let i = 1; i < n; i++) last = last.next;
-      this.#detachRange(first, last, n);
+      const lastDropped = this.#nodeAt(n - 1);
+      this.#detachRange(this.#head, lastDropped, n);
       return;
     }
     const count = -n;
     if (count >= size) return void this.clear();
-    const last = this.#tail;
-    let first = last;
-    for (let i = 1; i < count; i++) first = first.prev;
-    this.#detachRange(first, last, count);
+    const firstDropped = this.#nodeAt(size - count);
+    this.#detachRange(firstDropped, this.#tail, count);
   }
 
   take(n) {
@@ -1843,30 +1783,23 @@ class List {
     const size = this.#size;
     if (size === 0) return null;
     if (n > 0) {
-      const count = n < size ? n : size;
+      const count = Math.min(n, size);
       return List.#copyFrom(this.#head, count);
     }
-    const count = -n < size ? -n : size;
-    let node = this.#tail;
-    for (let i = 1; i < count; i++) node = node.prev;
-    return List.#copyFrom(node, count);
+    const count = Math.min(-n, size);
+    const firstTaken = this.#nodeAt(size - count);
+    return List.#copyFrom(firstTaken, count);
   }
 
   slice(start = 0, end) {
     if (!Number.isInteger(start)) return null;
     if (end !== undefined && !Number.isInteger(end)) return null;
     const size = this.#size;
-    let from = start < 0 ? start + size : start;
-    if (from < 0) from = 0;
-    else if (from > size) from = size;
-    let to = size;
-    if (end !== undefined) {
-      to = end < 0 ? end + size : end;
-      if (to < 0) to = 0;
-      else if (to > size) to = size;
-    }
+    const from = clampIndex(start, size);
+    const to = end === undefined ? size : clampIndex(end, size);
     if (from >= to) return null;
-    return List.#copyFrom(this.#nodeAt(from), to - from);
+    const first = this.#nodeAt(from);
+    return List.#copyFrom(first, to - from);
   }
 
   rotate(n = 1) {
@@ -1902,42 +1835,21 @@ class List {
     const t = to < 0 ? to + size : to;
     if (f < 0 || f >= size || t < 0 || t >= size || f === t) return;
     const node = this.#nodeAt(f);
-    let target = null;
-    if (t < size - 1) target = this.#nodeAt(f < t ? t + 1 : t);
-    const prev = node.prev;
-    const next = node.next;
-    if (prev === null) this.#head = next;
-    else prev.next = next;
-    if (next === null) this.#tail = prev;
-    else next.prev = prev;
-    if (target === null) {
-      const last = this.#tail;
-      node.prev = last;
-      node.next = null;
-      if (last === null) this.#head = node;
-      else last.next = node;
-      this.#tail = node;
-    } else {
-      const before = target.prev;
-      node.prev = before;
-      node.next = target;
-      target.prev = node;
-      if (before === null) this.#head = node;
-      else before.next = node;
+    let before = null;
+    if (t < size - 1) {
+      const beforeIndex = f < t ? t + 1 : t;
+      before = this.#nodeAt(beforeIndex);
     }
+    this.#detachRange(node, node, 1);
+    this.#attach(node, node, 1, before);
   }
 
   splitAt(index) {
     const size = this.#size;
-    let at = 0;
-    if (Number.isInteger(index)) {
-      at = index < 0 ? index + size : index;
-      if (at < 0) at = 0;
-      else if (at > size) at = size;
-    }
-    const before = at === 0 ? new List() : List.#copyFrom(this.#head, at);
-    let after = new List();
-    if (at < size) after = List.#copyFrom(this.#nodeAt(at), size - at);
+    const at = Number.isInteger(index) ? clampIndex(index, size) : 0;
+    const splitNode = this.#nodeAt(at);
+    const before = List.#copyFrom(this.#head, at);
+    const after = List.#copyFrom(splitNode, size - at);
     return { before, after };
   }
 
@@ -2007,7 +1919,7 @@ class List {
       while (node !== null) {
         const next = node.next;
         if (node.value === target) {
-          this.#detach(node);
+          this.#detachRange(node, node, 1);
           removed++;
         }
         node = next;
@@ -2018,7 +1930,7 @@ class List {
       const next = node.next;
       for (let i = 0; i < length; i++) {
         if (node.value === values[i]) {
-          this.#detach(node);
+          this.#detachRange(node, node, 1);
           removed++;
           break;
         }
@@ -2051,10 +1963,8 @@ class List {
   }
 
   toReversed() {
-    const size = this.#size;
-    const list = new List();
     let node = this.#tail;
-    if (node === null) return list;
+    if (node === null) return new List();
     const head = new ListNode(node.value);
     let tail = head;
     node = node.prev;
@@ -2065,10 +1975,7 @@ class List {
       tail = copied;
       node = node.prev;
     }
-    list.#head = head;
-    list.#tail = tail;
-    list.#size = size;
-    return list;
+    return List.#create(head, tail, this.#size);
   }
 
   sort(compare) {
@@ -2090,33 +1997,31 @@ class List {
 
   map(fn) {
     let node = this.#head;
-    const list = new List();
-    if (node === null) return list;
+    if (node === null) return new List();
     const size = this.#size;
-    const head = new ListNode(fn(node.value, 0));
+    const first = fn(node.value, 0);
+    const head = new ListNode(first);
     let tail = head;
     node = node.next;
     for (let index = 1; index < size; index++) {
-      const item = new ListNode(fn(node.value, index));
+      const mapped = fn(node.value, index);
+      const item = new ListNode(mapped);
       item.prev = tail;
       tail.next = item;
       tail = item;
       node = node.next;
     }
-    list.#head = head;
-    list.#tail = tail;
-    list.#size = size;
-    return list;
+    return List.#create(head, tail, size);
   }
 
   flatMap(fn) {
-    const list = new List();
     let head = null;
     let tail = null;
     let size = 0;
     let node = this.#head;
     while (node !== null) {
-      for (const value of fn(node.value)) {
+      const values = fn(node.value);
+      for (const value of values) {
         const item = new ListNode(value);
         if (tail === null) {
           head = item;
@@ -2129,14 +2034,10 @@ class List {
       }
       node = node.next;
     }
-    list.#head = head;
-    list.#tail = tail;
-    list.#size = size;
-    return list;
+    return List.#create(head, tail, size);
   }
 
   filter(fn) {
-    const list = new List();
     let head = null;
     let tail = null;
     let size = 0;
@@ -2158,10 +2059,7 @@ class List {
       node = node.next;
       index++;
     }
-    list.#head = head;
-    list.#tail = tail;
-    list.#size = size;
-    return list;
+    return List.#create(head, tail, size);
   }
 
   reduce(fn, initial) {
@@ -2203,7 +2101,8 @@ class List {
     let node = this.#head;
     let index = 0;
     while (node !== null) {
-      if (fn(node.value, index)) return node.value;
+      const value = node.value;
+      if (fn(value, index)) return value;
       node = node.next;
       index++;
     }
@@ -2224,7 +2123,7 @@ class List {
   sum(fn) {
     let total = 0;
     let node = this.#head;
-    if (fn) {
+    if (fn !== undefined) {
       while (node !== null) {
         total += fn(node.value);
         node = node.next;
@@ -2291,7 +2190,6 @@ class List {
   }
 
   clone() {
-    if (this.#size === 0) return new List();
     return List.#copyFrom(this.#head, this.#size);
   }
 
@@ -2335,15 +2233,20 @@ class ConsList {
   }
 
   static fromArray(values) {
-    let list = ConsList.empty;
+    return ConsList.#prependAll(values, ConsList.empty);
+  }
+
+  static #prependAll(values, list) {
+    let result = list;
     for (let i = values.length - 1; i >= 0; i--) {
-      list = list.prepend(values[i]);
+      result = result.prepend(values[i]);
     }
-    return list;
+    return result;
   }
 
   static fromIterable(iterable) {
-    return ConsList.fromArray(Array.from(iterable));
+    const values = Array.from(iterable);
+    return ConsList.fromArray(values);
   }
 
   static merge(...lists) {
@@ -2357,16 +2260,8 @@ class ConsList {
         result = list;
         continue;
       }
-      const size = list.#size;
-      const values = new Array(size);
-      let current = list;
-      for (let j = 0; j < size; j++) {
-        values[j] = current.#value;
-        current = current.#next;
-      }
-      for (let j = size - 1; j >= 0; j--) {
-        result = result.prepend(values[j]);
-      }
+      const values = list.toArray();
+      result = ConsList.#prependAll(values, result);
     }
     return result;
   }
@@ -2394,8 +2289,7 @@ class ConsList {
   }
 
   uncons() {
-    const tail = this.#next === null ? ConsList.empty : this.#next;
-    return { value: this.#value, tail };
+    return { value: this.#value, tail: this.tail };
   }
 
   equals(other) {
@@ -2443,7 +2337,6 @@ class ConsList {
 
   map(fn) {
     const size = this.#size;
-    if (size === 0) return ConsList.empty;
     const values = new Array(size);
     let current = this;
     for (let i = 0; i < size; i++) {
@@ -2458,8 +2351,7 @@ class ConsList {
     let current = this;
     for (let i = 0; i < this.#size; i++) {
       const value = current.#value;
-      const matches = fn(value, i);
-      if (matches === true) values.push(value);
+      if (fn(value, i)) values.push(value);
       current = current.#next;
     }
     return ConsList.fromArray(values);
@@ -2470,8 +2362,7 @@ class ConsList {
     let current = this;
     for (let i = 0; i < this.#size; i++) {
       const value = current.#value;
-      const matches = fn(value, i);
-      if (matches === true) return value;
+      if (fn(value, i)) return value;
       current = current.#next;
     }
     return result;
@@ -2480,8 +2371,7 @@ class ConsList {
   some(fn) {
     let current = this;
     for (let i = 0; i < this.#size; i++) {
-      const matches = fn(current.#value, i);
-      if (matches === true) return true;
+      if (fn(current.#value, i)) return true;
       current = current.#next;
     }
     return false;
@@ -2490,8 +2380,7 @@ class ConsList {
   every(fn) {
     let current = this;
     for (let i = 0; i < this.#size; i++) {
-      const matches = fn(current.#value, i);
-      if (matches === false) return false;
+      if (!fn(current.#value, i)) return false;
       current = current.#next;
     }
     return true;
@@ -2516,11 +2405,11 @@ class ConsList {
   }
 
   toArray() {
-    const result = new Array(this.#size);
+    const size = this.#size;
+    const result = new Array(size);
     let current = this;
-    let index = 0;
-    while (current !== null && !current.isEmpty()) {
-      result[index++] = current.#value;
+    for (let i = 0; i < size; i++) {
+      result[i] = current.#value;
       current = current.#next;
     }
     return result;
@@ -2528,13 +2417,13 @@ class ConsList {
 
   [Symbol.iterator]() {
     let current = this;
+    let remaining = this.#size;
     return {
       next: () => {
-        if (current === null || current.isEmpty()) {
-          return { done: true, value: undefined };
-        }
+        if (remaining === 0) return { done: true, value: undefined };
         const value = current.#value;
         current = current.#next;
+        remaining--;
         return { done: false, value };
       },
       [Symbol.iterator]() {
@@ -2550,6 +2439,12 @@ const uncons = (list) => list.uncons();
 // trie.js
 
 const VALUE = Symbol('value');
+
+// for-in instead of Object.keys to avoid allocating an array
+const hasChildren = (node) => {
+  for (const key in node) return true;
+  return false;
+};
 
 class Trie {
   #root = Object.create(null);
@@ -2568,7 +2463,7 @@ class Trie {
     for (let i = 0; i < word.length; i++) {
       const char = word[i];
       let child = node[char];
-      if (!child) {
+      if (child === undefined) {
         child = Object.create(null);
         node[char] = child;
       }
@@ -2586,7 +2481,7 @@ class Trie {
     for (let i = 0; i < word.length; i++) {
       const char = word[i];
       const child = node[char];
-      if (!child) return false;
+      if (child === undefined) return false;
       path.push(node, char);
       node = child;
     }
@@ -2598,7 +2493,7 @@ class Trie {
       const char = path[i + 1];
       const child = parent[char];
       if (Object.hasOwn(child, VALUE)) break;
-      if (Object.keys(child).length > 0) break;
+      if (hasChildren(child)) break;
       Reflect.deleteProperty(parent, char);
     }
     return true;
@@ -2620,14 +2515,12 @@ class Trie {
 
   get(word) {
     const node = this.#find(word);
-    let value;
-    if (node !== null && Object.hasOwn(node, VALUE)) value = node[VALUE];
-    return value;
+    return node === null ? undefined : node[VALUE];
   }
 
   complete(prefix) {
     const node = this.#find(prefix);
-    if (!node) return [];
+    if (node === null) return [];
     return this.#collect(node, prefix);
   }
 
@@ -2637,7 +2530,7 @@ class Trie {
     for (let i = 0; i < word.length; i++) {
       const char = word[i];
       node = node[char];
-      if (!node) return null;
+      if (node === undefined) return null;
     }
     return node;
   }
@@ -2660,7 +2553,9 @@ class UnrolledNode {
     this.length = 0;
     this.size = size;
     this.buffer = new Array(size);
-    this.reset();
+    this.readIndex = 0;
+    this.writeIndex = 0;
+    this.next = null;
   }
 
   reset() {
@@ -2743,11 +2638,12 @@ class UnrolledList {
   }
 
   enqueue(item) {
-    if (!this.#head.enqueue(item)) {
+    const head = this.#head;
+    if (!head.enqueue(item)) {
       const node = this.#pool.acquire();
-      this.#head.next = node;
+      head.next = node;
       this.#head = node;
-      this.#head.enqueue(item);
+      node.enqueue(item);
     }
     this.#size++;
   }
@@ -2759,7 +2655,7 @@ class UnrolledList {
       item = tail.dequeue();
       this.#size--;
       if (tail.length === 0) {
-        const next = this.#tail.next;
+        const next = tail.next;
         if (next !== null) {
           this.#tail = next;
           this.#pool.release(tail);
@@ -2795,107 +2691,6 @@ class UnrolledList {
     }
     this.#head = this.#tail;
     this.#size = 0;
-  }
-
-  includes(value) {
-    let node = this.#tail;
-    while (node !== null) {
-      const buffer = node.buffer;
-      const end = node.writeIndex;
-      for (let i = node.readIndex; i < end; i++) {
-        if (buffer[i] === value) return true;
-      }
-      node = node.next;
-    }
-    return false;
-  }
-
-  toArray() {
-    const result = new Array(this.#size);
-    let node = this.#tail;
-    let index = 0;
-    while (node !== null) {
-      const buffer = node.buffer;
-      const end = node.writeIndex;
-      for (let i = node.readIndex; i < end; i++) {
-        result[index++] = buffer[i];
-      }
-      node = node.next;
-    }
-    return result;
-  }
-
-  [Symbol.iterator]() {
-    let node = this.#tail;
-    let offset = node.readIndex;
-    return {
-      next: () => {
-        while (node !== null) {
-          if (offset < node.writeIndex) {
-            const value = node.buffer[offset++];
-            return { done: false, value };
-          }
-          node = node.next;
-          if (node !== null) offset = node.readIndex;
-        }
-        return { done: true, value: undefined };
-      },
-      [Symbol.iterator]() {
-        return this;
-      },
-    };
-  }
-}
-
-// unrolled-queue.js
-
-class UnrolledQueue {
-  #list = null;
-
-  constructor(options = {}) {
-    this.#list = new UnrolledList(options);
-  }
-
-  get size() {
-    return this.#list.size;
-  }
-
-  static fromArray(values, options) {
-    const queue = new UnrolledQueue(options);
-    queue.#list = UnrolledList.fromArray(values, options);
-    return queue;
-  }
-
-  enqueue(value = undefined) {
-    this.#list.enqueue(value);
-  }
-
-  dequeue() {
-    return this.#list.dequeue();
-  }
-
-  peek() {
-    return this.#list.peek();
-  }
-
-  isEmpty() {
-    return this.#list.isEmpty();
-  }
-
-  includes(value) {
-    return this.#list.includes(value);
-  }
-
-  clear() {
-    this.#list.clear();
-  }
-
-  toArray() {
-    return this.#list.toArray();
-  }
-
-  [Symbol.iterator]() {
-    return this.#list[Symbol.iterator]();
   }
 }
 
@@ -2946,7 +2741,9 @@ class Struct {
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const expected = schema[key];
-        if (!expected) throw new TypeError(`Unknown field "${key}"`);
+        if (expected === undefined) {
+          throw new TypeError(`Unknown field "${key}"`);
+        }
         const value = data[key];
         if (!matchesType(expected, value)) {
           const actual = typeOf(value);
@@ -2990,7 +2787,8 @@ class Struct {
         }
 
         fork(updates = {}) {
-          return new Entity({ ...this.toObject(), ...updates });
+          const data = { ...this.toObject(), ...updates };
+          return new Entity(data);
         }
 
         branch(updates = {}) {
@@ -3030,9 +2828,15 @@ const UINT32_MAX = 0xffffffff;
 const BUF_LEN = 1024;
 const BUF_SIZE = BUF_LEN * Uint32Array.BYTES_PER_ELEMENT;
 
+const randomBuffer = crypto.getRandomValues(new Uint8Array(BUF_SIZE));
+
 const randomPrefetcher = {
-  buf: new Uint8Array(BUF_SIZE),
-  view: null,
+  buf: randomBuffer,
+  view: new DataView(
+    randomBuffer.buffer,
+    randomBuffer.byteOffset,
+    randomBuffer.byteLength,
+  ),
   pos: 0,
   next() {
     const { buf, view, pos } = this;
@@ -3047,15 +2851,7 @@ const randomPrefetcher = {
   },
 };
 
-crypto.getRandomValues(randomPrefetcher.buf);
-randomPrefetcher.view = new DataView(
-  randomPrefetcher.buf.buffer,
-  randomPrefetcher.buf.byteOffset,
-  randomPrefetcher.buf.byteLength,
-);
-
-const cryptoRandom = (min, max) => {
-  const rnd = randomPrefetcher.next();
+const toRange = (rnd, min, max) => {
   if (min === undefined) return rnd;
   const hasMax = max !== undefined;
   const a = hasMax ? min : 0;
@@ -3063,13 +2859,14 @@ const cryptoRandom = (min, max) => {
   return a + Math.floor(rnd * (b - a + 1));
 };
 
+const cryptoRandom = (min, max) => {
+  const rnd = randomPrefetcher.next();
+  return toRange(rnd, min, max);
+};
+
 const random = (min, max) => {
   const rnd = Math.random();
-  if (min === undefined) return rnd;
-  const hasMax = max !== undefined;
-  const a = hasMax ? min : 0;
-  const b = hasMax ? max : min;
-  return a + Math.floor(rnd * (b - a + 1));
+  return toRange(rnd, min, max);
 };
 
 const generateUUID = () => crypto.randomUUID();
@@ -3160,7 +2957,6 @@ export {
   UnrolledList,
   UnrolledNode,
   NodePool,
-  UnrolledQueue,
   Struct,
   cryptoRandom,
   random,
