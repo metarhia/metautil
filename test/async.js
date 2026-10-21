@@ -14,94 +14,58 @@ test('Async: toBool', async () => {
   assert.strictEqual(rejected, false);
 });
 
+const TIMEOUT_ERROR = { code: 'ETIMEOUT', message: 'Timeout of 10ms reached' };
+
 test('Async: Abortable timeout', async () => {
-  try {
-    await timeout(10);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.code, 'ETIMEOUT');
-    assert.strictEqual(error.message, 'Timeout of 10ms reached');
-  }
+  await assert.rejects(timeout(10), TIMEOUT_ERROR);
   const ac = new AbortController();
   setTimeout(() => {
     ac.abort();
   }, 10);
-  try {
-    await timeout(100, ac.signal);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.name, 'AbortError');
-    assert.strictEqual(error.message, 'Timeout aborted');
-  }
+  await assert.rejects(timeout(100, ac.signal), {
+    name: 'AbortError',
+    message: 'Timeout aborted',
+  });
 });
 
 test('Async: Already aborted timeout', async () => {
   const ac = new AbortController();
   ac.abort();
-  try {
-    await timeout(100, ac.signal);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.name, 'AbortError');
-    assert.strictEqual(error.message, 'Timeout aborted');
-  }
+  await assert.rejects(timeout(100, ac.signal), {
+    name: 'AbortError',
+    message: 'Timeout aborted',
+  });
 });
 
 test('Async: Abortable delay', async () => {
-  try {
-    const res = await delay(10);
-    assert.strictEqual(res, undefined);
-  } catch {
-    assert.ifError(new Error('Should not be executed'));
-  }
+  assert.strictEqual(await delay(10), undefined);
   const ac = new AbortController();
   setTimeout(() => {
     ac.abort();
   }, 10);
-  try {
-    await delay(100, ac.signal);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.name, 'AbortError');
-    assert.strictEqual(error.message, 'Delay aborted');
-  }
+  await assert.rejects(delay(100, ac.signal), {
+    name: 'AbortError',
+    message: 'Delay aborted',
+  });
 });
 
 test('Async: Already aborted delay', async () => {
   const ac = new AbortController();
   ac.abort();
-  try {
-    await delay(100, ac.signal);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.name, 'AbortError');
-    assert.strictEqual(error.message, 'Delay aborted');
-  }
+  await assert.rejects(delay(100, ac.signal), {
+    name: 'AbortError',
+    message: 'Delay aborted',
+  });
 });
 
 test('Async: timeoutify', async () => {
-  try {
-    const request = delay(1000);
-    await timeoutify(request, 10);
-    assert.ifError(new Error('Should not be executed'));
-  } catch (error) {
-    assert.strictEqual(error.code, 'ETIMEOUT');
-    assert.strictEqual(error.message, 'Timeout of 10ms reached');
-  }
-  try {
-    const request = delay(10);
-    const response = await timeoutify(request, 1000);
-    assert.strictEqual(response, undefined);
-  } catch {
-    assert.ifError(new Error('Should not be executed'));
-  }
+  await assert.rejects(timeoutify(delay(1000), 10), TIMEOUT_ERROR);
+  assert.strictEqual(await timeoutify(delay(10), 1000), undefined);
 });
 
 test('Async: throttle leading call', () => {
-  let count = 0;
   const calls = [];
   const { fn: throttled, cancel } = throttle((...args) => {
-    count++;
     calls.push(args);
   }, 50);
 
@@ -109,7 +73,6 @@ test('Async: throttle leading call', () => {
   throttled('b');
   throttled('c');
 
-  assert.strictEqual(count, 1);
   assert.deepStrictEqual(calls, [['a']]);
   cancel();
 });
@@ -176,14 +139,13 @@ test('Async: throttle continuous windows', async () => {
 
 test('Async: throttle flush', () => {
   const calls = [];
-  const control = throttle((...args) => {
+  const {
+    fn: throttled,
+    flush,
+    cancel,
+  } = throttle((...args) => {
     calls.push(args);
   }, 50);
-  const { fn: throttled, flush, cancel } = control;
-
-  assert.strictEqual(typeof control.fn, 'function');
-  assert.strictEqual(typeof control.cancel, 'function');
-  assert.strictEqual(typeof control.flush, 'function');
 
   flush();
   assert.deepStrictEqual(calls, []);
@@ -228,14 +190,13 @@ test('Async: debounce cancel prevents call', async () => {
 
 test('Async: debounce flush', () => {
   const calls = [];
-  const control = debounce((...args) => {
+  const {
+    fn: debounced,
+    flush,
+    cancel,
+  } = debounce((...args) => {
     calls.push(args);
   }, 50);
-  const { fn: debounced, flush, cancel } = control;
-
-  assert.strictEqual(typeof control.fn, 'function');
-  assert.strictEqual(typeof control.cancel, 'function');
-  assert.strictEqual(typeof control.flush, 'function');
 
   flush();
   assert.deepStrictEqual(calls, []);

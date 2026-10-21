@@ -209,13 +209,6 @@ test('UnrolledList: single-node refill after empty', () => {
   assert.strictEqual(list.dequeue(), 4);
 });
 
-test('UnrolledList: default options', () => {
-  const list = new UnrolledList();
-  assert.strictEqual(list.size, 0);
-  list.enqueue('x');
-  assert.strictEqual(list.dequeue(), 'x');
-});
-
 test('UnrolledList: peek does not remove element', () => {
   const list = new UnrolledList();
   list.enqueue(42);

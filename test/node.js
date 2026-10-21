@@ -9,38 +9,16 @@ const metatests = require('metatests');
 const metautil = require('..');
 
 const testRandom = (random) => {
-  {
-    const value = random(100, 100);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, 100);
-  }
-  {
-    const value = random(-100, -100);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, -100);
-  }
-  {
-    const value = random(0, 0);
-    assert.strictEqual(typeof value, 'number');
-    assert.strictEqual(value, 0);
-  }
+  assert.strictEqual(random(100, 100), 100);
+  assert.strictEqual(random(-100, -100), -100);
+  assert.strictEqual(random(0, 0), 0);
   for (let i = 0; i < 200; i++) {
-    const value = random();
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 0);
-    assert(value <= 1);
-  }
-  for (let i = 0; i < 200; i++) {
-    const value = random(100);
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 0);
-    assert(value <= 100);
-  }
-  for (let i = 0; i < 200; i++) {
-    const value = random(100, 200);
-    assert.strictEqual(typeof value, 'number');
-    assert(value >= 100);
-    assert(value <= 200);
+    const fraction = random();
+    assert(fraction >= 0 && fraction < 1);
+    const upTo = random(100);
+    assert(Number.isInteger(upTo) && upTo >= 0 && upTo <= 100);
+    const between = random(100, 200);
+    assert(Number.isInteger(between) && between >= 100 && between <= 200);
   }
 };
 
@@ -108,7 +86,6 @@ test('Crypto: hashing passwords', async () => {
   const password = 'password';
 
   const hash = await metautil.hashPassword(password);
-  assert.strictEqual(typeof hash, 'string');
   assert.strictEqual(hash.length, 170);
 
   const res = metautil.deserializeHash(hash);
@@ -123,7 +100,9 @@ test('Crypto: hashing passwords', async () => {
   assert.strictEqual(serialized.length, 170);
 
   const valid = await metautil.validatePassword(password, hash);
-  assert(valid, true);
+  assert.strictEqual(valid, true);
+  const invalid = await metautil.validatePassword('wrong', hash);
+  assert.strictEqual(invalid, false);
 });
 
 test('Crypto: md5', async () => {

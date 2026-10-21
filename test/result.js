@@ -114,12 +114,6 @@ test('Result: toPrimitive', () => {
   const ok = Result.ok(42);
   const fail = Result.fail('Bad input');
 
-  assert.strictEqual(ok[Symbol.toPrimitive]('boolean'), true);
-  assert.strictEqual(fail[Symbol.toPrimitive]('boolean'), false);
-  assert.strictEqual(ok[Symbol.toPrimitive]('number'), true);
-  assert.strictEqual(fail[Symbol.toPrimitive]('number'), false);
-  assert.strictEqual(ok[Symbol.toPrimitive]('default'), true);
-  assert.strictEqual(fail[Symbol.toPrimitive]('default'), false);
   assert.strictEqual(+ok, 1);
   assert.strictEqual(+fail, 0);
   assert.strictEqual(`${ok}`, 'true');

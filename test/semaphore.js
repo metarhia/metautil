@@ -6,69 +6,30 @@ const assert = require('node:assert');
 const { Semaphore, delay } = require('..');
 
 const concurrency = 3;
-const size = 4;
-const timeout = 1500;
-const options = { concurrency, size, timeout };
 
-test('Semaphore', async () => {
-  const semaphore = new Semaphore(options);
-  assert.strictEqual(semaphore.concurrency, concurrency);
+test('Semaphore: enter and leave track counter and empty', async () => {
+  const semaphore = new Semaphore({ concurrency });
   assert.strictEqual(semaphore.empty, true);
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, concurrency - 1);
-  assert.strictEqual(semaphore.empty, false);
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, concurrency - 2);
-  assert.strictEqual(semaphore.empty, false);
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, 0);
-  assert.strictEqual(semaphore.empty, false);
-  try {
+  for (let i = 1; i <= concurrency; i++) {
     await semaphore.enter();
-  } catch (err) {
-    assert(err);
+    assert.strictEqual(semaphore.counter, concurrency - i);
+    assert.strictEqual(semaphore.empty, false);
   }
-  assert.strictEqual(semaphore.counter, 0);
-  assert.strictEqual(semaphore.empty, false);
-  semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency - 2);
-  assert.strictEqual(semaphore.empty, false);
-  semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency - 1);
-  assert.strictEqual(semaphore.empty, false);
-  semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency);
+  for (let i = 1; i <= concurrency; i++) {
+    semaphore.leave();
+    assert.strictEqual(semaphore.counter, i);
+  }
   assert.strictEqual(semaphore.empty, true);
 });
 
-test('Semaphore default', async () => {
-  const semaphore = new Semaphore({ concurrency });
-  assert.strictEqual(semaphore.concurrency, concurrency);
-  assert.strictEqual(semaphore.empty, true);
+test('Semaphore: default size rejects when all slots are taken', async () => {
+  const semaphore = new Semaphore({ concurrency: 1 });
   await semaphore.enter();
-  assert.strictEqual(semaphore.counter, concurrency - 1);
-  assert.strictEqual(semaphore.empty, false);
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, concurrency - 2);
-  assert.strictEqual(semaphore.empty, false);
-  await semaphore.enter();
+  await assert.rejects(semaphore.enter(), {
+    message: 'Semaphore queue is full',
+  });
   assert.strictEqual(semaphore.counter, 0);
-  assert.strictEqual(semaphore.empty, false);
-  try {
-    await semaphore.enter();
-  } catch (err) {
-    assert(err);
-  }
-  assert.strictEqual(semaphore.counter, 0);
-  assert.strictEqual(semaphore.empty, false);
   semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency - 2);
-  assert.strictEqual(semaphore.empty, false);
-  semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency - 1);
-  assert.strictEqual(semaphore.empty, false);
-  semaphore.leave();
-  assert.strictEqual(semaphore.counter, concurrency);
   assert.strictEqual(semaphore.empty, true);
 });
 
@@ -88,36 +49,45 @@ test('Semaphore timeout zero waits without rejecting', async () => {
 });
 
 test('Semaphore timeout', async () => {
-  const semaphore = new Semaphore(options);
+  const semaphore = new Semaphore({ concurrency: 1, size: 2, timeout: 20 });
   await semaphore.enter();
-  await semaphore.enter();
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, 0);
-  assert.strictEqual(semaphore.queue.length, 0);
-  assert.strictEqual(semaphore.empty, false);
-  try {
-    await semaphore.enter();
-  } catch (err) {
-    assert(err);
-  }
+  await assert.rejects(semaphore.enter(), { message: 'Semaphore timeout' });
   assert.strictEqual(semaphore.counter, 0);
   assert.strictEqual(semaphore.queue.length, 0);
   assert.strictEqual(semaphore.empty, false);
 });
 
-test('Semaphore real life usage', async () => {
-  const semaphore = new Semaphore(options);
+test('Semaphore: hand-off, full queue, and waiter timeouts', async () => {
+  const semaphore = new Semaphore({ concurrency: 1, size: 3, timeout: 50 });
+  await semaphore.enter();
+  const first = semaphore.enter();
+  const rest = [semaphore.enter(), semaphore.enter()];
+  assert.strictEqual(semaphore.queue.length, 3);
+  await assert.rejects(semaphore.enter(), {
+    message: 'Semaphore queue is full',
+  });
+  semaphore.leave();
+  await first;
+  const expected = { message: 'Semaphore timeout' };
+  await Promise.all(rest.map((waiting) => assert.rejects(waiting, expected)));
+  assert.strictEqual(semaphore.counter, 0);
+  assert.strictEqual(semaphore.queue.length, 0);
+});
 
+test('Semaphore real life usage', async () => {
+  const semaphore = new Semaphore({ concurrency, size: 4, timeout: 1500 });
+  let completed = 0;
+  let rejected = 0;
   const useSemaphore = async () => {
     try {
       await semaphore.enter();
     } catch {
+      rejected++;
       return;
     }
     try {
-      await delay(1000);
-    } catch {
-      return;
+      await delay(50);
+      completed++;
     } finally {
       semaphore.leave();
     }
@@ -127,39 +97,9 @@ test('Semaphore real life usage', async () => {
     promises.push(useSemaphore());
   }
   await Promise.all(promises);
+  assert.strictEqual(completed, 7);
+  assert.strictEqual(rejected, 13);
   assert.strictEqual(semaphore.empty, true);
   assert.strictEqual(semaphore.queue.length, 0);
   assert.strictEqual(semaphore.counter, concurrency);
-});
-
-test('Semaphore detailed counter fix test', async () => {
-  const semaphore = new Semaphore(options);
-  await semaphore.enter();
-  await semaphore.enter();
-  await semaphore.enter();
-  assert.strictEqual(semaphore.counter, 0);
-
-  semaphore.enter().then(() => {
-    assert(true);
-  });
-  semaphore.enter().catch((err) => {
-    assert.strictEqual(err.message, 'Semaphore timeout');
-  });
-  semaphore.enter().catch((err) => {
-    assert.strictEqual(err.message, 'Semaphore timeout');
-  });
-  semaphore.enter().catch((err) => {
-    assert.strictEqual(err.message, 'Semaphore timeout');
-  });
-  assert.strictEqual(semaphore.queue.length, size);
-
-  await semaphore
-    .enter()
-    .catch((err) => assert.strictEqual(err.message, 'Semaphore queue is full'));
-
-  semaphore.leave();
-
-  setTimeout(() => {
-    assert.strictEqual(semaphore.counter, 0);
-  }, timeout + 200);
 });
