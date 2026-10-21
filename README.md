@@ -286,7 +286,8 @@ const size = loaded.map((buffer) => buffer.length).unwrap(0);
 
 ## HTTP utilities
 
-- `parseHost(host?: string): string`
+- `parseHost(host?: string): string` — host name without port; IPv6
+  `[addr]:port` → `addr`
 - `parseParams(params: string): Cookies`
 - `parseCookies(cookie: string): Headers`
 - `parseRange(range: string): StreamRange`
@@ -472,14 +473,14 @@ at zero copy cost (inspired by LISP cons cells).
 - `toReversed(): ConsList<T>` — O(n), new list in reverse order
 - `map<U>(fn: (value: T, index: number) => U): ConsList<U>` — O(n), new
   list of mapped values
-- `filter(fn: (value: T, index: number) => boolean): ConsList<T>` — O(n),
-  keeps elements where `fn` returns strictly `true`
-- `find(fn: (value: T, index: number) => boolean): T | undefined` — O(n),
-  first element where `fn` returns strictly `true`
-- `some(fn: (value: T, index: number) => boolean): boolean` — O(n), whether
-  `fn` returns strictly `true` for any element
-- `every(fn: (value: T, index: number) => boolean): boolean` — O(n), whether
-  `fn` never returns strictly `false`
+- `filter(fn: (value: T, index: number) => unknown): ConsList<T>` — O(n),
+  keeps elements where `fn` returns a truthy value
+- `find(fn: (value: T, index: number) => unknown): T | undefined` — O(n),
+  first element where `fn` returns a truthy value
+- `some(fn: (value: T, index: number) => unknown): boolean` — O(n), whether
+  `fn` returns a truthy value for any element
+- `every(fn: (value: T, index: number) => unknown): boolean` — O(n), whether
+  `fn` returns a truthy value for every element
 - `reduce(fn: (acc: T, value: T, index: number) => T): T` — O(n); throws
   `TypeError` on empty list without a seed
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
@@ -677,12 +678,12 @@ does not expose nodes. Indexes and counts must be integers
 
 - `map<U>(fn: (value: T, index: number) => U): List<U>`
 - `flatMap<U>(fn: (value: T) => Iterable<U>): List<U>`
-- `filter(fn: (value: T, index: number) => boolean): List<T>`
+- `filter(fn: (value: T, index: number) => unknown): List<T>`
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U`
-- `some(fn: (value: T, index: number) => boolean): boolean`
-- `every(fn: (value: T, index: number) => boolean): boolean`
-- `find(fn: (value: T, index: number) => boolean): T | undefined`
-- `findIndex(fn: (value: T, index: number) => boolean): number`
+- `some(fn: (value: T, index: number) => unknown): boolean`
+- `every(fn: (value: T, index: number) => unknown): boolean`
+- `find(fn: (value: T, index: number) => unknown): T | undefined`
+- `findIndex(fn: (value: T, index: number) => unknown): number`
 
 **Stats**
 
@@ -738,8 +739,8 @@ wrap — Array-like names: `unshift` / `push` / `shift` / `pop`.
 - `at(index: number): T | undefined` — Array-like index access (`-1` is last)
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
-- `every(fn: (value: T, index: number) => boolean): boolean` — whether
-  `fn` never returns strictly `false`
+- `every(fn: (value: T, index: number) => unknown): boolean` — whether
+  `fn` returns a truthy value for every element
 - `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
   throws `TypeError` when empty without a seed
 - `reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U` —
@@ -771,7 +772,7 @@ both ends with Array-like names (`unshift` / `push` / `shift` / `pop`).
 - `pop(): T | undefined` — remove and return the back element
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
-- `every(fn: (value: T, index: number) => boolean): boolean` — delegates
+- `every(fn: (value: T, index: number) => unknown): boolean` — delegates
   to `CircularBuffer`
 - `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
   (delegates to `CircularBuffer`)
@@ -930,7 +931,7 @@ LIFO (last in, first out) facade over `CircularBuffer`: `push` / `pop` /
 - `peek(): T | undefined` — back element, does not remove
 - `isEmpty(): boolean`
 - `includes(value: T): boolean`
-- `every(fn: (value: T, index: number) => boolean): boolean` — delegates
+- `every(fn: (value: T, index: number) => unknown): boolean` — delegates
   to `CircularBuffer`
 - `reduce(fn: (acc: T, value: T, index: number) => T): T` — Array-like;
   (delegates to `CircularBuffer`)
@@ -1027,12 +1028,13 @@ const playerState = projection(player, ['name', 'score']);
 - `constructor(options: SemaphoreOptions)`
   - `options.concurrency: number`
   - `options.size?: number`
-  - `options.timeout?: number`
+  - `options.timeout?: number` — max wait in queue; `0` (default) waits
+    indefinitely
 - `concurrency: number`
 - `counter: number`
 - `timeout: number`
 - `size: number`
-- `empty: boolean`
+- `readonly empty: boolean` — no queued waiters and all slots free
 - `queue: Array<QueueElement>`
 - `enter(): Promise<void>`
 - `leave(): void`
@@ -1093,12 +1095,13 @@ console.log({ size, bytes });
   - `emit(eventName: EventName, data: unknown): Promise<void>`
   - `on(eventName: EventName, listener: Listener): void`
   - `once(eventName: EventName, listener: Listener): void`
-  - `off(eventName: EventName, listener?: Listener): void`
+  - `off(eventName: EventName, listener?: Listener): void` — without
+    `listener` removes all listeners of `eventName`
 - Adapters:
   - `toPromise(eventName: EventName): Promise<unknown>`
   - `toAsyncIterable(eventName: EventName): AsyncIterable<unknown>`
 - Utilities:
-  - `clear(eventName?: EventName): void`
+  - `clear(eventName?: EventName): void` — without `eventName` removes all
   - `listeners(eventName: EventName): Listener[]`
   - `listenerCount(eventName: EventName): number`
   - `eventNames(): EventName[]`

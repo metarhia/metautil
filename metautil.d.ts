@@ -179,7 +179,7 @@ export function isInstanceOf(obj: unknown, constrName: string): boolean;
 // Submodule: pool
 
 export interface QueueElement {
-  resolve: Function | null;
+  resolve: () => void;
   timer: NodeJS.Timeout | null;
 }
 
@@ -346,12 +346,12 @@ export class List<T> {
 
   map<U>(fn: (value: T, index: number) => U): List<U>;
   flatMap<U>(fn: (value: T) => Iterable<U>): List<U>;
-  filter(fn: (value: T, index: number) => boolean): List<T>;
+  filter(fn: (value: T, index: number) => unknown): List<T>;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, initial: U): U;
-  some(fn: (value: T, index: number) => boolean): boolean;
-  every(fn: (value: T, index: number) => boolean): boolean;
-  find(fn: (value: T, index: number) => boolean): T | undefined;
-  findIndex(fn: (value: T, index: number) => boolean): number;
+  some(fn: (value: T, index: number) => unknown): boolean;
+  every(fn: (value: T, index: number) => unknown): boolean;
+  find(fn: (value: T, index: number) => unknown): T | undefined;
+  findIndex(fn: (value: T, index: number) => unknown): number;
 
   sum(fn: (value: T) => number): number;
   avg(fn: (value: T) => number): number;
@@ -389,10 +389,10 @@ export class ConsList<T> implements Iterable<T> {
   member(value: T): ConsList<T>;
   toReversed(): ConsList<T>;
   map<U>(fn: (value: T, index: number) => U): ConsList<U>;
-  filter(fn: (value: T, index: number) => boolean): ConsList<T>;
-  find(fn: (value: T, index: number) => boolean): T | undefined;
-  some(fn: (value: T, index: number) => boolean): boolean;
-  every(fn: (value: T, index: number) => boolean): boolean;
+  filter(fn: (value: T, index: number) => unknown): ConsList<T>;
+  find(fn: (value: T, index: number) => unknown): T | undefined;
+  some(fn: (value: T, index: number) => unknown): boolean;
+  every(fn: (value: T, index: number) => unknown): boolean;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   toArray(): Array<T>;
@@ -413,7 +413,7 @@ export class CircularBuffer<T> {
   at(index: number): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
-  every(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => unknown): boolean;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
@@ -431,7 +431,7 @@ export class Deque<T> {
   pop(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
-  every(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => unknown): boolean;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
@@ -481,7 +481,7 @@ export class Stack<T> {
   peek(): T | undefined;
   isEmpty(): boolean;
   includes(value: T): boolean;
-  every(fn: (value: T, index: number) => boolean): boolean;
+  every(fn: (value: T, index: number) => unknown): boolean;
   reduce(fn: (acc: T, value: T, index: number) => T): T;
   reduce<U>(fn: (acc: U, value: T, index: number) => U, acc: U): U;
   clear(): void;
