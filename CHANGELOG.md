@@ -3,6 +3,8 @@
 ## [Unreleased][unreleased]
 
 - Added `Result` class: a container holding either a value or an error
+- Fixed `Collector` timeout: keep process alive until it fires (was unref'd
+  `AbortSignal.timeout`) and cancel it when done to release memory
 
 ## [5.5.2][] - 2026-03-15
 

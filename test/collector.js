@@ -2,14 +2,8 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { execFile } = require('node:child_process');
 const { collect } = require('..');
-
-// AbortSignal.timeout() uses an internal timer that is never ref'd, so on
-// Node.js versions before 24 it does not by itself keep the event loop (and
-// thus the test) alive long enough to fire. Tests that rely solely on
-// Collector's `timeout` option, with no other pending work, need a harmless
-// ref'd timer to keep the process alive until the abort fires.
-const keepEventLoopAlive = (ms) => setTimeout(() => {}, ms);
 
 test('Collector: create collector', () => {
   const dc = collect(['key1', 'key2']);
@@ -131,18 +125,67 @@ test('Collector: timeout applies defaults', async () => {
   const defaults = { key1: 1 };
   const dc = collect(['key1'], { defaults, timeout: 50 });
 
-  keepEventLoopAlive(100);
   assert.deepStrictEqual(await dc, defaults);
 });
 
 test('Collector: timeout rejects when defaults are not enough', async () => {
   const dc = collect(['key1', 'key2'], { defaults: { key1: 1 }, timeout: 50 });
 
-  keepEventLoopAlive(100);
   await assert.rejects(async () => dc, {
     name: 'TimeoutError',
     message: 'The operation was aborted due to timeout',
   });
+});
+
+test('Collector: timeout aborts signal with TimeoutError', async () => {
+  const dc = collect(['key1'], { timeout: 50 });
+
+  await assert.rejects(
+    async () => dc,
+    (error) => {
+      assert.ok(error instanceof DOMException);
+      assert.strictEqual(error.name, 'TimeoutError');
+      return true;
+    },
+  );
+  assert.strictEqual(dc.signal.aborted, true);
+  assert.ok(dc.signal.reason instanceof DOMException);
+  assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
+});
+
+test('Collector: timeout with defaults still aborts signal', async () => {
+  const dc = collect(['key1'], { defaults: { key1: 1 }, timeout: 50 });
+
+  assert.deepStrictEqual(await dc, { key1: 1 });
+  assert.strictEqual(dc.signal.aborted, true);
+  assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
+});
+
+test('Collector: timeout keeps process alive until it fires', async () => {
+  const script = `
+    const { collect } = require(${JSON.stringify(require.resolve('..'))});
+    collect(['key1'], { timeout: 50 }).then(
+      () => console.log('resolved'),
+      (error) => console.log(error.name),
+    );
+  `;
+  const output = await new Promise((resolve, reject) => {
+    execFile(process.execPath, ['-e', script], (error, stdout) => {
+      if (error) reject(error);
+      else resolve(stdout.trim());
+    });
+  });
+
+  assert.strictEqual(output, 'TimeoutError');
+});
+
+test('Collector: timeout is cancelled when done', async () => {
+  const dc = collect(['key1'], { timeout: 20 });
+  dc.set('key1', 1);
+
+  assert.deepStrictEqual(await dc, { key1: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  assert.strictEqual(dc.signal.aborted, false);
 });
 
 test('Collector: abort rejects', async () => {
@@ -152,6 +195,8 @@ test('Collector: abort rejects', async () => {
   setTimeout(() => dc.abort(), 100);
 
   await assert.rejects(async () => dc, { message: 'Collector aborted' });
+  assert.ok(dc.signal.reason instanceof DOMException);
+  assert.strictEqual(dc.signal.reason.name, 'AbortError');
 });
 
 test('Collector: validation success resolves', async () => {
