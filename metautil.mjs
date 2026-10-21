@@ -935,7 +935,7 @@ class Pool {
   }
 
   release(lease) {
-    if (!(lease instanceof Lease) || !this.#leases.has(lease)) {
+    if (!this.#leases.has(lease)) {
       throw new Error('Pool: release unexpected lease');
     }
     lease.release();
@@ -983,12 +983,6 @@ class Pool {
   }
 
   #releaseResource(resource, index) {
-    if (this.#items[index] !== resource) {
-      throw new Error('Pool: release unexpected item');
-    }
-    if (this.#free[index]) {
-      throw new Error('Pool: release not captured');
-    }
     const waiting = this.#queue.shift();
     if (waiting !== undefined) {
       clearTimeout(waiting.timer);

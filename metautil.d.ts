@@ -216,7 +216,7 @@ export class Result<T = unknown, E = unknown> {
   match<U>(handlers: { ok: (value: T) => U; fail: (error: E) => U }): U;
   unwrap(defaultValue?: T): T;
   map<U = unknown>(fn: (value: T) => U): Result<U, E>;
-  [Symbol.toPrimitive](hint: 'boolean'): boolean;
+  [Symbol.toPrimitive](hint: 'number' | 'string' | 'default'): boolean;
 }
 
 // Submodule: array
@@ -555,7 +555,7 @@ interface EventResolver {
   reject: (reason?: unknown) => void;
 }
 
-export class EventIterator implements AsyncIterator<unknown> {
+declare class EventIterator implements AsyncIterator<unknown> {
   constructor(emitter: Emitter, eventName: EventName);
 
   next(): Promise<IteratorResult<unknown>>;
@@ -563,7 +563,7 @@ export class EventIterator implements AsyncIterator<unknown> {
   throw(): Promise<IteratorResult<unknown>>;
 }
 
-export class EventIterable implements AsyncIterable<unknown> {
+declare class EventIterable implements AsyncIterable<unknown> {
   constructor(emitter: Emitter, eventName: EventName);
   [Symbol.asyncIterator](): EventIterator;
 }
