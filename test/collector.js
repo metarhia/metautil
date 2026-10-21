@@ -1,273 +1,21 @@
 'use strict';
 
 const test = require('node:test');
-const assert = require('node:assert');
-
+const assert = require('node:assert/strict');
+const { execFile } = require('node:child_process');
 const { collect } = require('..');
 
-test('Collector: keys', async () => {
-  const expectedResult = { key1: 1, key2: 2 };
+test('Collector: create collector', () => {
   const dc = collect(['key1', 'key2']);
 
-  setTimeout(() => {
-    dc.set('key1', 1);
-  }, 50);
-
-  setTimeout(() => {
-    dc.set('key2', 2);
-  }, 100);
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
+  assert.strictEqual(dc.done, false);
+  assert.strictEqual(dc.count, 0);
+  assert.deepStrictEqual(dc.keys, ['key1', 'key2']);
+  assert.deepStrictEqual(dc.data, {});
 });
 
-test('Collector: exact', async () => {
+test('Collector: collect values with set', async () => {
   const dc = collect(['key1', 'key2']);
-
-  setTimeout(() => {
-    dc.set('wrongKey', 'someVal');
-  }, 50);
-
-  await assert.rejects(async () => dc, { message: 'Unexpected key: wrongKey' });
-});
-
-test('Collector: not exact', async () => {
-  const expectedResult = { key1: 1, wrongKey: 'someVal', key2: 2 };
-  const dc = collect(['key1', 'key2'], { exact: false });
-
-  setTimeout(() => {
-    dc.set('key1', 1);
-  }, 50);
-
-  setTimeout(() => {
-    dc.set('wrongKey', 'someVal');
-  }, 75);
-
-  setTimeout(() => {
-    dc.set('key2', 2);
-  }, 100);
-
-  try {
-    const result = await dc;
-    assert.deepStrictEqual(result, expectedResult);
-  } catch (error) {
-    assert.ifError(error);
-  }
-});
-
-test('Collector: set after done is ignored', async () => {
-  const dc = collect(['key1'], { exact: false, reassign: true });
-  dc.set('key1', 1);
-  dc.set('key1', 2);
-  dc.set('key2', 2);
-  assert.strictEqual(dc.done, true);
-  assert.deepStrictEqual(await dc, { key1: 1 });
-});
-
-test('Collector: timeout', async () => {
-  const dc = collect(['key1'], { timeout: 50 });
-  assert.strictEqual(dc.timeout, 50);
-
-  setTimeout(() => {
-    dc.set('key1', 1);
-    dc.abort();
-  }, 100);
-
-  dc.signal.addEventListener('abort', (event) => {
-    assert.strictEqual(event.type, 'abort');
-    assert(dc.signal.reason instanceof DOMException);
-    assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
-  });
-
-  await assert.rejects(async () => dc, {
-    message: 'The operation was aborted due to timeout',
-  });
-});
-
-test('Collector: default values', async () => {
-  const defaults = { key1: 1 };
-
-  const dc1 = collect(['key1'], { defaults, timeout: 50 });
-  const dc2 = collect(['key1'], { defaults: {}, timeout: 50 });
-  const dc3 = collect(['key1', 'key2'], { defaults, timeout: 50 });
-  dc3.set('key2', 1);
-
-  setTimeout(() => {
-    dc1.set('key1', 2);
-    dc2.set('key1', 2);
-    dc3.set('key1', 2);
-  }, 100);
-
-  const result1 = await dc1;
-  assert.deepStrictEqual(result1, defaults);
-  const result3 = await dc3;
-  assert.deepStrictEqual(result3, { ...defaults, key2: 1 });
-
-  await assert.rejects(async () => dc2, {
-    message: 'The operation was aborted due to timeout',
-  });
-});
-
-test('Collector: fail', async () => {
-  const dc = collect(['key1']);
-
-  setTimeout(() => {
-    dc.fail(new Error('Custom error'));
-  }, 50);
-
-  await assert.rejects(async () => dc, { message: 'Custom error' });
-});
-
-test('Collector: take', async () => {
-  const expectedResult = { key1: 'User: Marcus' };
-  const dc = collect(['key1']);
-
-  const fn = (name, callback) => {
-    setTimeout(() => {
-      callback(null, `User: ${name}`);
-    }, 100);
-  };
-  dc.take('key1', fn, 'Marcus');
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
-});
-
-test('Collector: wait', async () => {
-  const expectedResult = { key1: 'User: Marcus' };
-  const dc = collect(['key1']);
-
-  const fn = async (name) =>
-    new Promise((resolve) => {
-      setTimeout(() => resolve(`User: ${name}`), 100);
-    });
-  dc.wait('key1', fn, 'Marcus');
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
-});
-
-test('Collector: wait for promise', async () => {
-  const expectedResult = { key1: 'User: Marcus' };
-  const dc = collect(['key1']);
-
-  const promise = new Promise((resolve) => {
-    setTimeout(() => resolve('User: Marcus'), 100);
-  });
-  dc.wait('key1', promise);
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
-});
-
-test('Collector: compose collect', async () => {
-  const expectedResult = { key1: { sub1: 11 }, key2: 2, key3: { sub3: 31 } };
-  const dc = collect(['key1', 'key2', 'key3']);
-  const key1 = collect(['sub1']);
-  const key3 = collect(['sub3']);
-  dc.collect({ key1, key3 });
-
-  setTimeout(() => {
-    key1.set('sub1', 11);
-  }, 50);
-
-  setTimeout(() => {
-    dc.set('key2', 2);
-  }, 100);
-
-  setTimeout(() => {
-    key3.set('sub3', 31);
-  }, 150);
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
-});
-
-test('Collector: completed before await', async () => {
-  const expectedResult = { key1: 1, key2: 2 };
-  const dc = collect(['key1', 'key2']);
-
-  dc.set('key1', 1);
-  dc.set('key2', 2);
-
-  const result = await dc;
-  assert.deepStrictEqual(result, expectedResult);
-});
-
-test('Collector: then chain', async () => {
-  const dc = collect(['key1', 'key2']);
-  dc.set('key1', 1);
-  dc.set('key2', 2);
-  const result = await dc.then((data) => ({ ...data, key3: 3 }));
-  assert.deepStrictEqual(result, { key1: 1, key2: 2, key3: 3 });
-});
-
-test('Collector: error in then chain', async () => {
-  const dc = collect(['key1', 'key2']);
-  dc.set('key1', 1);
-  dc.set('key2', 2);
-  const chained = dc.then(() => {
-    throw new Error('expected error');
-  });
-  await assert.rejects(chained, { message: 'expected error' });
-});
-
-test('Collector: reassign is off', async () => {
-  const dc = collect(['key1', 'key2'], { reassign: false });
-
-  dc.set('key1', 1);
-  dc.set('key1', 5);
-  dc.set('key2', 7);
-
-  await assert.rejects(async () => dc, {
-    message: 'Collector reassign mode is off',
-  });
-});
-
-test('Collector: reassign is on', async () => {
-  const dc = collect(['key1', 'key2'], { reassign: true });
-  dc.set('key1', 1);
-  dc.set('key1', 5);
-  dc.set('key2', 7);
-  const result = await dc;
-  assert.deepStrictEqual(result, { key1: 5, key2: 7 });
-});
-
-test('Collector: abort', async () => {
-  const dc = collect(['key1', 'key2'], { timeout: 200 });
-
-  setTimeout(() => {
-    dc.set('key1', 1);
-  }, 50);
-
-  setTimeout(() => {
-    dc.abort();
-  }, 100);
-
-  dc.signal.addEventListener('abort', (event) => {
-    assert.strictEqual(event.type, 'abort');
-    assert(dc.signal.reason instanceof DOMException);
-    assert.strictEqual(dc.signal.reason.name, 'AbortError');
-  });
-
-  await assert.rejects(async () => dc, { message: 'Collector aborted' });
-});
-
-test('Collector: validate scheme(valid)', async () => {
-  const from = (schema) => (data) => {
-    for (const [key, value] of Object.entries(data)) {
-      const type = schema[key];
-      if (type && typeof value === type) continue;
-      throw new Error('Schema validate error');
-    }
-  };
-
-  const schema = {
-    key1: 'number',
-    key2: 'number',
-  };
-
-  const dc = collect(['key1', 'key2'], { validate: from(schema) });
 
   dc.set('key1', 1);
   dc.set('key2', 2);
@@ -275,24 +23,285 @@ test('Collector: validate scheme(valid)', async () => {
   assert.deepStrictEqual(await dc, { key1: 1, key2: 2 });
 });
 
-test('Collector: validate scheme(invalid)', async () => {
-  const from = (schema) => (data) => {
-    for (const [key, value] of Object.entries(data)) {
-      const type = schema[key];
-      if (type && typeof value === type) continue;
-      throw new Error('Schema validate error');
-    }
-  };
+test('Collector: reject unexpected key in exact mode', async () => {
+  const dc = collect(['key1', 'key2']);
+  dc.set('wrongKey', 'value');
 
-  const schema = {
-    key1: 'number',
-    key2: 'string',
-  };
+  await assert.rejects(async () => dc, { message: 'Unexpected key: wrongKey' });
+});
 
-  const dc = collect(['key1', 'key2'], { validate: from(schema) });
+test('Collector: allow unexpected key when exact is disabled', async () => {
+  const dc = collect(['key1', 'key2'], { exact: false });
+
+  dc.set('key1', 1);
+  dc.set('extra', 'value');
+  dc.set('key2', 2);
+
+  assert.deepStrictEqual(await dc, { key1: 1, extra: 'value', key2: 2 });
+});
+
+test('Collector: reject duplicate key when reassign is disabled', async () => {
+  const dc = collect(['key1', 'key2'], { reassign: false });
+
+  dc.set('key1', 1);
+  dc.set('key1', 5);
+
+  await assert.rejects(async () => dc, {
+    message: 'Collector reassign mode is off',
+  });
+});
+
+test('Collector: allow duplicate key when reassign is enabled', async () => {
+  const dc = collect(['key1', 'key2'], { reassign: true });
+
+  dc.set('key1', 1);
+  dc.set('key1', 2);
+  dc.set('key2', 3);
+
+  assert.deepStrictEqual(await dc, { key1: 2, key2: 3 });
+});
+
+test('Collector: resolve after all expected keys are collected', async () => {
+  const dc = collect(['key1', 'key2']);
+
+  setTimeout(() => dc.set('key1', 1), 50);
+  setTimeout(() => dc.set('key2', 2), 100);
+
+  assert.deepStrictEqual(await dc, { key1: 1, key2: 2 });
+});
+
+test('Collector: take collects callback result', async () => {
+  const dc = collect(['key1']);
+
+  const fn = (name, callback) => {
+    setTimeout(() => callback(null, `User: ${name}`), 50);
+  };
+  dc.take('key1', fn, 'Marcus');
+
+  assert.deepStrictEqual(await dc, { key1: 'User: Marcus' });
+});
+
+test('Collector: wait collects promise result', async () => {
+  const dc = collect(['key1']);
+
+  const fn = (name) =>
+    new Promise((resolve) => {
+      setTimeout(() => resolve(`User: ${name}`), 50);
+    });
+  dc.wait('key1', fn, 'Marcus');
+
+  assert.deepStrictEqual(await dc, { key1: 'User: Marcus' });
+});
+
+test('Collector: wait collects direct promise', async () => {
+  const dc = collect(['key1']);
+
+  const promise = new Promise((resolve) => {
+    setTimeout(() => resolve('User: Marcus'), 50);
+  });
+  dc.wait('key1', promise);
+
+  assert.deepStrictEqual(await dc, { key1: 'User: Marcus' });
+});
+
+test('Collector: collect multiple thenables', async () => {
+  const dc = collect(['key1', 'key2', 'key3']);
+  const key1 = collect(['sub1']);
+  const key3 = collect(['sub3']);
+  dc.collect({ key1, key3 });
+
+  setTimeout(() => key1.set('sub1', 11), 50);
+  setTimeout(() => dc.set('key2', 2), 100);
+  setTimeout(() => key3.set('sub3', 31), 150);
+
+  assert.deepStrictEqual(await dc, {
+    key1: { sub1: 11 },
+    key2: 2,
+    key3: { sub3: 31 },
+  });
+});
+
+test('Collector: timeout applies defaults', async () => {
+  const defaults = { key1: 1 };
+  const dc = collect(['key1'], { defaults, timeout: 50 });
+
+  assert.deepStrictEqual(await dc, defaults);
+});
+
+test('Collector: timeout rejects when defaults are not enough', async () => {
+  const dc = collect(['key1', 'key2'], { defaults: { key1: 1 }, timeout: 50 });
+
+  await assert.rejects(async () => dc, {
+    name: 'TimeoutError',
+    message: 'The operation was aborted due to timeout',
+  });
+});
+
+test('Collector: timeout aborts signal with TimeoutError', async () => {
+  const dc = collect(['key1'], { timeout: 50 });
+
+  await assert.rejects(
+    async () => dc,
+    (error) => {
+      assert.ok(error instanceof DOMException);
+      assert.strictEqual(error.name, 'TimeoutError');
+      return true;
+    },
+  );
+  assert.strictEqual(dc.signal.aborted, true);
+  assert.ok(dc.signal.reason instanceof DOMException);
+  assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
+});
+
+test('Collector: timeout with defaults still aborts signal', async () => {
+  const dc = collect(['key1'], { defaults: { key1: 1 }, timeout: 50 });
+
+  assert.deepStrictEqual(await dc, { key1: 1 });
+  assert.strictEqual(dc.signal.aborted, true);
+  assert.strictEqual(dc.signal.reason.name, 'TimeoutError');
+});
+
+test('Collector: timeout keeps process alive until it fires', async () => {
+  const script = `
+    const { collect } = require(${JSON.stringify(require.resolve('..'))});
+    collect(['key1'], { timeout: 50 }).then(
+      () => console.log('resolved'),
+      (error) => console.log(error.name),
+    );
+  `;
+  const output = await new Promise((resolve, reject) => {
+    execFile(process.execPath, ['-e', script], (error, stdout) => {
+      if (error) reject(error);
+      else resolve(stdout.trim());
+    });
+  });
+
+  assert.strictEqual(output, 'TimeoutError');
+});
+
+test('Collector: timeout is cancelled when done', async () => {
+  const dc = collect(['key1'], { timeout: 20 });
+  dc.set('key1', 1);
+
+  assert.deepStrictEqual(await dc, { key1: 1 });
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  assert.strictEqual(dc.signal.aborted, false);
+});
+
+test('Collector: abort rejects', async () => {
+  const dc = collect(['key1', 'key2'], { timeout: 200 });
+
+  setTimeout(() => dc.set('key1', 1), 50);
+  setTimeout(() => dc.abort(), 100);
+
+  await assert.rejects(async () => dc, { message: 'Collector aborted' });
+  assert.ok(dc.signal.reason instanceof DOMException);
+  assert.strictEqual(dc.signal.reason.name, 'AbortError');
+});
+
+test('Collector: validation success resolves', async () => {
+  const validate = (data) => {
+    if (typeof data.key1 !== 'number') throw new Error('invalid');
+  };
+  const dc = collect(['key1'], { validate });
+
+  dc.set('key1', 1);
+
+  assert.deepStrictEqual(await dc, { key1: 1 });
+});
+
+test('Collector: validation error rejects', async () => {
+  const validate = () => {
+    throw new Error('Schema validate error');
+  };
+  const dc = collect(['key1', 'key2'], { validate });
 
   dc.set('key1', 1);
   dc.set('key2', 2);
 
   await assert.rejects(async () => dc, { message: 'Schema validate error' });
+});
+
+test('Collector: validation runs once', async () => {
+  let calls = 0;
+  const validate = () => {
+    calls++;
+  };
+  const dc = collect(['key1'], { validate });
+  const pending = dc.then((data) => data);
+
+  dc.set('key1', 1);
+
+  assert.deepStrictEqual(await pending, { key1: 1 });
+  assert.deepStrictEqual(await dc, { key1: 1 });
+  assert.strictEqual(calls, 1);
+});
+
+test('Collector: public mutable fields are not exposed', () => {
+  const dc = collect(['key1'], { validate: () => {} });
+
+  assert.strictEqual(Object.hasOwn(dc, 'data'), false);
+  assert.strictEqual('exact' in dc, false);
+  assert.strictEqual('reassign' in dc, false);
+  assert.strictEqual('timeout' in dc, false);
+  assert.strictEqual('defaults' in dc, false);
+  assert.strictEqual('validate' in dc, false);
+  assert.strictEqual(typeof dc.done, 'boolean');
+  assert.strictEqual(typeof dc.count, 'number');
+});
+
+test('Collector: getters do not expose mutable references', () => {
+  const dc = collect(['key1']);
+  dc.set('key1', 1);
+
+  const keys = dc.keys;
+  const data = dc.data;
+
+  keys.push('key2');
+  data.key2 = 2;
+
+  assert.deepStrictEqual(dc.keys, ['key1']);
+  assert.deepStrictEqual(dc.data, { key1: 1 });
+});
+
+test('Collector: set after done', async () => {
+  const dc = collect(['key1']);
+
+  dc.set('key1', 1);
+  assert.deepStrictEqual(await dc, { key1: 1 });
+
+  dc.set('key2', 2);
+  assert.deepStrictEqual(dc.data, { key1: 1 });
+});
+
+test('Collector: fail', async () => {
+  const dc = collect(['key1']);
+
+  setTimeout(() => dc.fail(new Error('Custom error')), 50);
+
+  await assert.rejects(async () => dc, { message: 'Custom error' });
+});
+
+test('Collector: then chain', async () => {
+  const dc = collect(['key1', 'key2']);
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  const result = await dc.then((value) => ({ ...value, key3: 3 }));
+  assert.deepStrictEqual(result, { key1: 1, key2: 2, key3: 3 });
+});
+
+test('Collector: error in then chain', async () => {
+  const dc = collect(['key1', 'key2']);
+
+  dc.set('key1', 1);
+  dc.set('key2', 2);
+
+  await assert.rejects(
+    dc.then(() => {
+      throw new Error('expected error');
+    }),
+    { message: 'expected error' },
+  );
 });
