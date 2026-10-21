@@ -534,7 +534,8 @@ export class Collector {
   abort(): void;
   then<TResult1 = Dictionary, TResult2 = never>(
     onFulfilled?:
-      ((value: Dictionary) => TResult1 | PromiseLike<TResult1>) | null,
+      | ((value: Dictionary) => TResult1 | PromiseLike<TResult1>)
+      | null,
     onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2>;
 }
