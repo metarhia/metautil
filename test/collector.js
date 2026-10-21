@@ -2,6 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert');
+
 const { collect } = require('..');
 
 test('Collector: keys', async () => {
@@ -271,6 +272,15 @@ test('Collector: reassign is off', async () => {
   } catch (error) {
     assert.strictEqual(error.message, expectedError.message);
   }
+});
+
+test('Collector: reassign is on', async () => {
+  const dc = collect(['key1', 'key2'], { reassign: true });
+  dc.set('key1', 1);
+  dc.set('key1', 5);
+  dc.set('key2', 7);
+  const result = await dc;
+  assert.deepStrictEqual(result, { key1: 5, key2: 7 });
 });
 
 test('Collector: abort', async () => {
