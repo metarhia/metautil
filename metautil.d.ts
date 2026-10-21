@@ -273,16 +273,15 @@ export class Collector {
   take(key: string | symbol, fn: Function, ...args: Array<unknown>): void;
   wait(
     key: string | symbol,
-    fn: AsyncFunction | Promise<unknown>,
+    fn: AsyncFunction | PromiseLike<unknown>,
     ...args: Array<unknown>
   ): void;
-  collect(sources: Record<string, Collector>): void;
+  collect(sources: Record<string, PromiseLike<unknown>>): void;
   fail(error?: Error): void;
   abort(): void;
   then<TResult1 = Dictionary, TResult2 = never>(
     onFulfilled?:
-      | ((value: Dictionary) => TResult1 | PromiseLike<TResult1>)
-      | null,
+      ((value: Dictionary) => TResult1 | PromiseLike<TResult1>) | null,
     onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2>;
 }

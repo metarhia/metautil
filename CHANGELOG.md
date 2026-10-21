@@ -5,6 +5,11 @@
 - Added `Result` class: a container holding either a value or an error
 - Fixed `Collector` timeout: keep process alive until it fires (was unref'd
   `AbortSignal.timeout`) and cancel it when done to release memory
+- Made `Collector` state private: `done`, `count`, `keys`, `data`, `signal`
+  are read-only getters (`keys`/`data` return copies); options
+  (`exact`, `reassign`, `timeout`, `defaults`, `validate`) are not exposed
+- Validated `Collector` constructor arguments: throws `TypeError`
+- Supported symbol keys and thenables in `Collector.wait`
 
 ## [5.5.2][] - 2026-03-15
 
