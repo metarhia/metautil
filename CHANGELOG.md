@@ -4,7 +4,7 @@
 
 - Extended `UnrolledList` with `peek`, `isEmpty`, `clear`
 - Extended `UnrolledList` with `fromArray`
-- Added `Result.match` and boolean coercion via `Symbol.toPrimitive`
+- Added `Result.match` and number/string coercion via `Symbol.toPrimitive`
 - Fixed `parseHost` for IPv6 hosts: `[::1]:8080` → `::1`
 - Fixed `Semaphore` with `timeout: 0`: wait indefinitely instead of rejecting
 - Fixed `Semaphore` timeout to remove the timed-out waiter, not queue head
@@ -20,6 +20,11 @@
 - `Emitter.clear`, `listeners`, `listenerCount` accept `''` and `0` as names
 - Parse integers with radix 10 in `duration`, `parseEvery`, `parseRange`
 - `namespaceByPath` returns falsy values (`0`, `''`) instead of `null`
+- Fixed typings: `EventIterator` / `EventIterable` are not package exports
+- Fixed `Result[Symbol.toPrimitive]` typing: hints are number/string/default
+- Removed unreachable checks in `Pool` release
+- Made `httpApiCall` tests local; live API tests opt-in: `METAUTIL_LIVE_TESTS`
+- Removed tests that asserted nothing or duplicated other tests
 
 ## [6.0.0-alpha.0][] - 2026-08-08
 

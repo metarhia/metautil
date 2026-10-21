@@ -258,7 +258,9 @@ boilerplate and to pass either outcome around as a single value.
 - `error: unknown`
 - `ok: boolean`
 - `match(handlers: { ok, fail })`
-- `[Symbol.toPrimitive](hint: 'boolean'): boolean`
+- `[Symbol.toPrimitive](hint: 'number' | 'string' | 'default'): boolean` —
+  `+result` is `1` or `0`, `` `${result}` `` is `'true'` or `'false'`; note
+  that `if (result)` is always true (objects are truthy), use `result.ok`
 - `unwrap(defaultValue?: unknown): unknown`
 - `map(fn: (value: unknown) => unknown): Result`
 
