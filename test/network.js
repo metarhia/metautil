@@ -9,12 +9,27 @@ const assert = require('node:assert');
 const metatests = require('metatests');
 const metautil = require('..');
 
-const RATES_HOST = 'openexchangerates.org';
+// Live tests call third-party APIs and are skipped by default:
+// METAUTIL_LIVE_TESTS=1 OPENEXCHANGERATES_API_KEY=<key> npm test
+const LIVE = process.env.METAUTIL_LIVE_TESTS === '1';
+const RATES_API_KEY = process.env.OPENEXCHANGERATES_API_KEY ?? '';
 const RATES_PATH = '/api/latest.json?app_id=';
-const RATES_API_KEY = '9e329e4313bc4462b04e07f314c6f7eb';
-// Alternative key: '1f43ea96b1e343fe94333dd2b97a109d'
-const RATES_API_URL = `https://${RATES_HOST}/${RATES_PATH}${RATES_API_KEY}`;
+const RATES_API_URL = `https://openexchangerates.org${RATES_PATH}${RATES_API_KEY}`;
 const MATH_API_URL = 'https://api.mathjs.org/v4';
+
+const liveSkip = (...requirements) => {
+  if (!LIVE) return 'set METAUTIL_LIVE_TESTS=1 to call third-party APIs';
+  const missing = requirements.filter((name) => !process.env[name]);
+  return missing.length > 0 ? `set ${missing.join(', ')}` : false;
+};
+
+const startServer = async (onRequest) => {
+  const server = http.createServer(onRequest);
+  server.listen(0);
+  await once(server, 'listening');
+  const url = `http://localhost:${server.address().port}`;
+  return { server, url };
+};
 
 test('Network: receiveBody single chunk', async () => {
   const chunk = Buffer.from('{ "a": 5 }');
@@ -126,27 +141,57 @@ metatests.case(
   },
 );
 
-test('Network: httpApiCall', async () => {
-  const res1 = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
-  assert.strictEqual(typeof res1.disclaimer, 'string');
-  assert.strictEqual(typeof res1.license, 'string');
-  assert.strictEqual(typeof res1.timestamp, 'number');
-  assert.strictEqual(res1.base, 'USD');
-  assert.strictEqual(typeof res1.rates, 'object');
-  assert.strictEqual(typeof res1.rates['UAH'], 'number');
-
-  const body = '{"expr":"2+3*sqrt(4)","precision":3}';
-  const options = { method: 'POST', body };
-  const res2 = await metautil.httpApiCall(MATH_API_URL, options);
-  assert.deepStrictEqual(Object.keys(res2), ['result', 'error']);
-  assert.strictEqual(res2.result, '8');
-  assert.strictEqual(res2.error, null);
-
-  const res3 = await metautil.httpApiCall(MATH_API_URL, { body });
-  assert.deepStrictEqual(Object.keys(res3), ['result', 'error']);
-  assert.strictEqual(res3.result, '8');
-  assert.strictEqual(res3.error, null);
+test('Network: httpApiCall (default method is POST)', async () => {
+  const body = '{"expr":"2+3*sqrt(4)"}';
+  const { server, url } = await startServer(async (req, res) => {
+    let received = '';
+    for await (const chunk of req) received += chunk;
+    assert.strictEqual(req.method, 'POST');
+    assert.strictEqual(received, body);
+    res.end('{"result":"8","error":null}');
+  });
+  try {
+    const res = await metautil.httpApiCall(url, { body });
+    assert.deepStrictEqual(res, { result: '8', error: null });
+  } finally {
+    server.close();
+  }
 });
+
+test('Network: httpApiCall (error status)', async () => {
+  const { server, url } = await startServer((req, res) => {
+    res.statusCode = 429;
+    res.end('{"error":true,"message":"too_many_requests"}');
+  });
+  try {
+    await assert.rejects(metautil.httpApiCall(url, { method: 'GET' }), {
+      message: `HTTP status code 429 for GET ${url}`,
+    });
+  } finally {
+    server.close();
+  }
+});
+
+test(
+  'Network: httpApiCall live (openexchangerates.org)',
+  { skip: liveSkip('OPENEXCHANGERATES_API_KEY') },
+  async () => {
+    const res = await metautil.httpApiCall(RATES_API_URL, { method: 'GET' });
+    assert.strictEqual(typeof res.timestamp, 'number');
+    assert.strictEqual(res.base, 'USD');
+    assert.strictEqual(typeof res.rates['UAH'], 'number');
+  },
+);
+
+test(
+  'Network: httpApiCall live (api.mathjs.org)',
+  { skip: liveSkip() },
+  async () => {
+    const body = '{"expr":"2+3*sqrt(4)","precision":3}';
+    const res = await metautil.httpApiCall(MATH_API_URL, { body });
+    assert.deepStrictEqual(res, { result: '8', error: null });
+  },
+);
 
 test('Network: httpApiCall (POST)', async () => {
   const expectedBody = '{"key":"value"}';
