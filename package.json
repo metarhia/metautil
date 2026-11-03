@@ -52,5 +52,8 @@
     "metatests": "^0.9.3",
     "prettier": "^3.8.4",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "minimatch": "^11.0.1"
   }
 }
