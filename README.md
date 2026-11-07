@@ -38,40 +38,43 @@ input.addEventListener('input', onType);
 form.addEventListener('submit', flush);
 ```
 
-- `collect(keys: Array<string>, options?: CollectorOptions): Collector`
-  - `options.exact?: boolean`
-  - `options.timeout?: number`
-  - `options.reassign?: boolean`
-  - `options.defaults?: object`
-  - `options.validate?: (data: Record<string, unknown>) => unknown`
+- `collect(keys: Array<string | symbol>, options?: CollectorOptions): Collector`
+  - `options.exact?: boolean` — reject unexpected keys, default `true`
+  - `options.reassign?: boolean` — allow setting a key twice, default `false`
+  - `options.timeout?: number` — msec, `0` (default) waits indefinitely;
+    keeps the process alive until it fires and is cancelled when done
+  - `options.defaults?: Dictionary` — values for unset keys on timeout
+  - `options.validate?: (data: Dictionary) => unknown` — runs once on
+    completion; throw to reject the collector
 
 ## Class `Collector`
 
 Async collection is an utility to collect needed keys and signalize on done.
 
-- `constructor(keys: Array<string>, options?: CollectorOptions)`
-  - `options.exact?: boolean`
-  - `options.timeout?: number`
-  - `options.reassign?: boolean`
-  - `options.defaults?: object`
-  - `options.validate?: (data: Record<string, unknown>) => unknown`
-- `set(key: string, value: unknown): void`
-- `wait(key: string, fn: AsyncFunction | Promise<unknown>, ...args: Array<unknown>): void`
-- `take(key: string, fn: Function, ...args: Array<unknown>): void`
-- `collect(sources: Record<string, Collector>): void`
-- `fail(error: Error): void`
+- `constructor(keys: Array<string | symbol>, options?: CollectorOptions)`
+  - `options.exact?: boolean` — reject unexpected keys, default `true`
+  - `options.reassign?: boolean` — allow setting a key twice, default `false`
+  - `options.timeout?: number` — msec, `0` (default) waits indefinitely;
+    keeps the process alive until it fires and is cancelled when done
+  - `options.defaults?: Dictionary` — values for unset keys on timeout
+  - `options.validate?: (data: Dictionary) => unknown` — runs once on
+    completion; throw to reject the collector
+  - throws `TypeError` on invalid `keys` or options
+- `set(key: string | symbol, value: unknown): void`
+- `wait(key: string | symbol, fn: AsyncFunction | PromiseLike<unknown>, ...args: Array<unknown>): void`
+- `take(key: string | symbol, fn: Function, ...args: Array<unknown>): void`
+- `collect(sources: Record<string, PromiseLike<unknown>>): void`
+- `fail(error?: Error): void`
 - `abort(): void`
-- `then(onFulfilled: Function, onRejected?: Function): Promise<unknown>`
-- `done: boolean`
-- `data: Dictionary`
-- `keys: Array<string>`
-- `count: number`
-- `exact: boolean`
-- `timeout: number`
-- `defaults: object`
-- `reassign: boolean`
-- `validate?: (data: Record<string, unknown>) => unknown`
-- `signal: AbortSignal`
+- `then(onFulfilled?: Function, onRejected?: Function): Promise<unknown>`
+- `readonly done: boolean`
+- `readonly count: number`
+- `readonly keys: Array<string | symbol>` — copy of expected keys
+- `readonly data: Dictionary` — copy of collected data
+- `readonly signal: AbortSignal` — aborted on `fail`, `abort`, and timeout
+
+Options are not exposed as instance fields; state is private and getters
+return copies, so the collector can't be mutated from outside.
 
 Collect keys with `.set` method:
 
